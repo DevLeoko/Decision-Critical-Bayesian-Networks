@@ -1,0 +1,906 @@
+\documentclass[parskip=full,11pt,twoside]{scrartcl}
+\usepackage[utf8]{inputenc}
+
+\title{DCBN: Decision Critical Bayesian Networks}
+\author{Johann Bonneau, Leo Garbe, Ruben Grewal, Fabio Mayer, Daniel Vollmer}
+
+% section numbers in margins:
+\renewcommand\sectionlinesformat[4]{\makebox[0pt][r]{#3}#4}
+
+% header & footer
+\usepackage{scrlayer-scrpage}
+\lofoot{\today}
+\refoot{\today}
+\pagestyle{scrheadings}
+
+\usepackage[sfdefault,light]{roboto}
+\usepackage[T1]{fontenc}
+\usepackage[german]{babel}
+\usepackage[]{datetime} % must be after babel
+\renewcommand{\dateseparator}{-} % ISO8601 date format
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage[nameinlink]{cleveref}
+\crefname{figure}{Abb}{Abb}
+\usepackage[section]{placeins}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\hypersetup{
+	pdftitle={Pflichtenheft},
+	bookmarks=true,
+}
+\usepackage{csquotes}
+
+\usepackage{amsmath} % for $\text{}$
+\newcommand\urlpart[2]{$\underbrace{\text{\texttt{#1}}}_{\text{#2}}$}
+
+\usepackage{pflichtenheft}
+
+\begin{document}
+\maketitle
+\pagebreak
+\tableofcontents
+
+
+\section{Einleitung}
+
+
+\section{Kriterien}
+% Diese Section sollte kurz und knapp "für Manager" sein
+% und auf eine Seite passen.
+
+\subsection{Muss}
+
+%net zu netman geändert, evimake hinzugefügt
+\criterium{Netze erstellen/bearbeiten}{crt:netmake}
+\criterium{Netze verwalten}{crt:netman}
+\criterium{Netze importieren}{crt:netimport}
+\criterium{Evidenzen erstellen/bearbeiten}{crt:evimake}
+\criterium{Evidenzen verwalten}{crt:eviman}
+\criterium{Playground}{crt:playgr}
+\criterium{Ordnerstruktur für Netz}{crt:ordstr}
+\criterium{Export}{crt:expo}
+\criterium{Superadmin}{crt:sudo}
+\criterium{Benutzersystem}{crt:usersys}
+\criterium{Inferenz berechnen}{crt:infcal}
+\criterium{Integration mit IOSB Servern}{crt:IOSB}
+
+\subsection{Kann}
+
+\criteriumOptional{Submodels in Netzen}{crt:submodplus}
+\criteriumOptional{Netz-Kanten über mehr als einen Zeitschritt}{crt:tplus}
+\criteriumOptional{Beispieldaten im Playground speichern/laden}{crt:playdataplus}
+\criteriumOptional{Automatische Anordnung von Netzen}{crt:autolayoutplus}
+\criteriumOptional{Live Daten Stream im Playground}{crt:liveplus}
+\criteriumOptional{Annotationsdaten Auswertung in Evidenzen}{crt:annotplus}
+
+\subsection{Abgrenzung}
+
+ \
+\criteriumOptional{Temporal Unterscheidung}{crt:tempabgr}
+Keine Unterscheidung zw. temporalen und nicht-temporalen Knoten.
+\criteriumOptional{Verschiedenen Knoten-Typen im Netz}{crt:typeabgr}
+Es gibt lediglich normale Wahrscheinlichkeits-Knoten.
+\criteriumOptional{Unroll}{crt:unrollabgr}
+Ein temporales Netz muss nicht automatisch zu einem nicht-temporalen Netz ausgerollt werden können.
+
+
+%%%%%%%%%%%%%%
+\section{Produkteinsatz}
+
+Das Produkt soll mit minimalen Administrationskenntnissen zu betreiben sein.
+
+Besucher des Diensts sollen diesen ohne Schulung oder andere Information benutzen können.
+
+\section{Produktumgebung}
+
+\textbf{Frontend:} Das Programm soll auf jeden modernen Webbrowser (IE 11+ und Safari 9+) laufen. Dazu sollen ca. 4GB RAM zur verfügung stehen (abhängig vom Webbrowser).
+
+\textbf{Backend:} Server mit mindestens 4 Kernen und mindestens 8GB DDR3+ RAM.
+
+%%%%%%%%%%%
+\section{Funktionale Anforderungen}
+
+\subsection{Benutzersystem}
+
+\subsubsection{Superadmin}
+
+\functionality{Fester Superadmin-Account}{fnc:sudoinit}
+\fulfills{crt:sudo}
+Das Programm soll mit einem festgelegten Superadmin-Nutzer initialisiert werden. Die Logindaten des Superadmins werden dem Kunden mitgeteilt.
+
+\functionality{Nach Konten suchen}{fnc:searchusr}
+\fulfills{crt:sudo}
+Der Superadmin soll in der Lage sein, nach existierenden Konten zu suchen. Diese Suche erfolgt über Name, Benutzername, Rolle oder Email-Addresse des gesuchten Nutzers. 
+
+\functionality{Konten erstellen}{fnc:addusr}
+\fulfills{crt:sudo}
+\fulfills{crt:usersys}
+Der Superadmin kann neue Konten erstellen. Dafür muss der Superdamin Benutzername, Name, Email und Rolle des Nutzers beim Erstellen eingeben.
+
+
+\functionality{Konten löschen}{fnc:delusr}
+\fulfills{crt:sudo}
+\fulfills{crt:usersys}
+Der Superadmin kann nutzer (Admins und Moderator) löschen. 
+
+\functionality{Konten Daten ändern }{fnc:editusr}
+\fulfills{crt:sudo}
+\fulfills{crt:usersys}
+Der Superadmin kann Nutzerdaten wie Name, Email, Benutzername oder Rolle eines Netzers ändern. 
+
+\subsubsection{Startseite}%Von Außen ist nicht Klar was gemeint ist
+
+\functionality{Anmelden}{fnc:login}
+\fulfills{crt:usersys}
+Auf der Startseite soll man sich mit Benutzername und Passwort anmelden können.
+
+
+\functionality{Passwort-Zurücksetzung anfordern}{fnc:resetpass}
+\fulfills{crt:usersys}
+Falls man seinen Passwort vergessen hat kann man anfordern, dass das Passwort zurückgesetzt wird. Man erhält dann eine Email mit einem Link zur Passwort-Wiederherstellung.  
+
+\functionality{Neues Passwort festsetzen}{fnc:editpass}
+\fulfills{crt:usersys}
+Der Nutzer soll mit dem Link in der Email ein neues Passwort festlegen können. Danach kann der Nutzer sich mit dem neuen Passwort anmelden.
+
+\subsubsection{Moderator}
+
+
+\functionality{Playground benutzen}{fnc:play}
+\fulfills{crt:playgr}
+\fulfills{crt:usersys}
+Ein Moderator ist in der Lage den Playground ohne Einschränkungen zu benutzen. Siehe dazu \ref{fnc:showgraph}.
+
+\functionality{Netze exportieren}{fnc:expnet}
+\fulfills{crt:playgr}
+\fulfills{crt:expo}
+Ein Moderator ist in der Lage ein Netze zu exportieren. Dies bedeutet, dass der Moderator Netze, die auf dem Server gespeichert sind, herunterladen kann. Hierbei kann der Moderator eines der folgenden Formate zum exportieren auswählen:
+\begin{enumerate}
+    \item .xdsl - GeNIe2 Format
+    \item .net - Hugin Format % Stimmt das überhaupt? 
+\end{enumerate}
+
+\functionality{Abmelden}{fnc:logout}
+\fulfills{crt:usersys}
+Der Moderator soll sich abmelden können und wieder auf der Login-Page landen. 
+
+
+
+\subsubsection{Admin}
+
+\functionality{Moderatorrechte}{fnc:modlev}
+\fulfills{crt:usersys}
+
+Ein Administrator verfügt über alle Rechte, über die auch ein Moderator verfügt. Siehe dazu \ref{fnc:play}.
+
+\functionality{Netz-Editor benutzen}{fnc:useeditor}
+\fulfills{crt:usersys}
+
+Ein Administrator ist in der Lage den Netz-Editor ohne Einschränkungen zu benutzen. Siehe dazu \ref{fnc:opennet}.
+
+\functionality{Ordnerstruktur ändern}{fnc:cngfilestr}
+\fulfills{crt:usersys}
+
+Ein Administrator ist in der Lage die Ordnerstruktur zu verändern. Dies bedeutet, dass er neue Ordner anlegen kann. Des Weiteren kann der Administrator bestehende Ordner löschen, umbenennen und verschieben.  
+
+\functionality{Netze importieren}{fnc:netimport}
+\fulfills{crt:usersys}
+\fulfills{crt:netimport}
+
+Ein Administrator ist in der Lage Netze zu importieren. Dies bedeutet, dass lokal gespeicherte Netze auf den Server hochgeladen werden. Hierbei muss die Datei eines der folgenden Formate haben:
+\begin{enumerate}
+    \item .xdsl - GeNIe2 Format
+    \item .net - Hugin Format % Stimmt das überhaupt? 
+    % Noch andere?
+\end{enumerate}
+
+\functionality{Netze umbenennen}{fnc:renamenet}
+\fulfills{crt:usersys}
+Ein Administrator ist in der Lage Netze umzubenennen. 
+
+\functionality{Netze kopieren}{fnc:copynet}
+\fulfills{crt:usersys}
+% Ist das Kopieren nur ein Duplizieren in den selben Ordner oder ein Copy-Paste auch in andere Ordner?
+% Falls Letzteres, bräuchte man dann nicht auch noch eine FA zum Einfügen?
+
+%(Ruben)Ich glaube es ist nur als eine Kopie von Netz im selben Ordner erstellen gedacht (Copy of Net.xddsl)
+
+Ein Administrator ist in der Lage durch ein Tastenkürzel bzw. ein Rechtsklickmenü Netze zu kopieren. Dabei wird das komplette Netz in den selben Ordner dupliziert.
+
+% Rechtsklickmenü eigene FA?
+\subsection{Netz-Editor}
+
+\functionality{Netze öffnen}{fnc:opennet}
+\fulfills{crt:netmake}
+\fulfills{crt:netman}
+Im Netzeditor kann ein Netz durch einen Klick auf den Dateinamen des Netzes im Dateibaum geöffnet werden. Diese muss auf dem Server liegen. Zum Öffnen von lokalen Dateien siehe % F15 kein Plan
+
+\functionality{Netze erstellen}{fnc:makenet}
+\fulfills{crt:netmake}
+Im Netzeditor kann ein neues Netz durch einen Klick auf den \enquote{Create Net} Knopf im Ordnerbaum erstellt werden. Hierfür wird ein neues, leeres  und temporäres Netz erstellt. Diesem kann man durch %FA 
+einen festen Speicherort in der Ordnerstruktur zuweisen.
+
+\functionality{Netz speichern}{fnc:savenet}
+\fulfills{crt:netman}
+% Vielleicht anders formulieren falls ihr immer noch verwirrt seid.
+Im Netzeditor kann ein Netz durch das als Standard angesehene Tastenkürzel des jeweiligen Betriebssystems zum Speichern bzw. durch einen Klick auf den Speicher-Knopf (siehe \Cref{section:gui}) gespeichert werden.
+
+\functionality{Netz sperren wenn Netz bearbeitet wird}{fnc:locknet}
+\fulfills{crt:netman}
+Jeweils nur ein Admin kann ein Netz zur selben Zeit bearbeiten. Sollte ein Netz bereits von einem Admin bearbeitet werden, so wird bei dem Versuch eines anderen Admins auf das Netz zuzugreifen eine Fehlermeldung zurückgegeben.
+
+\functionality{Knoten hinzufügen}{fnc:addnode}
+\fulfills{crt:netmake}
+Im Netzeditor kann ein neuer Knoten zu einem Netz hinzugefügt werden. Hierfür wählt der Nutzer den \enquote{Add Node} Knopf aus und klickt auf das Bearbeitungsfenster der Editor-GUI. Ein komplett leerer Knoten wird an der angeklickten Stelle erzeugt.
+
+% Sollte der Nutzer vielleicht noch vorher gefragt werden, ob er den Knoten wirklich löschen will?
+\functionality{Knoten löschen}{fnc:delnode}
+\fulfills{crt:netmake}
+Wählt der Nutzer einen Knoten aus, so kann er diesen Knoten durch Betätigen der \enquote{Delete}-Taste bzw. durch einen Klick auf \enquote{Delete} im Rechtsklickmenü aus dem Netz entfernen. Sollte der gelöschte Knoten durch Pfeile mit anderen Knoten verbunden sein, so werden alle mit diesem Knoten verbundenen Pfeile automatisch auch gelöscht.
+
+\functionality{Knoten bewegen}{fnc:movenode}
+\fulfills{crt:netmake}
+Der Nutzer kann beliebige Knoten durch Drag-and-Drop innerhalb des selben Netzes verschieben. Hierbei werden mögliche Verbindungen zwischen den Knoten automatisch angepasst. Sollte der verschobene Knoten einen anderen Knoten überdecken, so wird die Verschiebung nicht ausgeführt. % ?
+
+\functionality{Knoten Name ändern}{fnc:renamenode}
+\fulfills{crt:netmake}
+Ein Knoten kann durch einen Klick auf \enquote{Rename} im Rechtsklickmenü oder mit einem Doppelklick auf den Namen des Knoten umbenannt werden.
+
+% Vielleicht sollte man für dieses Eigenschaften Menü eine eigene FA hinzufügen...
+\functionality{Knoten Farbe ändern}{fnc:cngcolor}
+\fulfills{crt:netmake}
+Die Hintergrundfarbe eines Knoten kann im \enquote{Properties}-Menü des Knotens geändert werden. Hierfür macht der Nutzer einen Doppelklick auf den Knoten oder wählt \enquote{Properties} im Rechtsklickmenü des Knoten aus. Die Farbe des Textes des Knoten wird automatisch angepasst um die Lesbarkeit des Textes zu gewährleisten. % Kann der Nutzer eine beliebige Farbe wählen, oder gibt es nur vorgewählte Möglichkeiten?
+% Wie genau sieht das Eigenschaften Menü des Knoten aus, öffnet sich wie in GeNie ein eigenes Fenster, oder wird das Ganze im unteren Teil des Editors angezeigt?
+
+\functionality{Wahrscheinlichkeiten eingeben}{fnc:insert}
+\fulfills{crt:netmake}
+Im \enquote{Eigenschaften}-Menü des Knoten kann der Nutzer die von der Inferenz verwendeten Wahrscheinlichkeiten angeben. Hierfür wird dem Nutzer eine Tabelle mit allen Kombinationsmöglichkeiten präsentiert, welche in den durch Pfeile vorangehenden Knoten-Ergebnissen auftreten können (vgl. mit GeNie2). Dem Nutzer wird außerdem die Möglichkeit gegeben die bereits eingegebenen Wahrscheinlichkeiten einer Spalte zu \enquote{Eins} zu ergänzen.
+
+\functionality{Pfeile hinzufügen}{fnc:addarrow}
+\fulfills{crt:netmake}
+Im Netzeditor kann ein neuer Pfeil zu einem Netz hinzugefügt werden. Hierfür wählt der Nutzer den \enquote{Add Arrow} Knopf aus und klickt zuerst auf den Startknoten und dann auf den Endknoten im Bearbeitungsfenster. Daraufhin werden beide Knoten durch einen Pfeil verbunden. % Standardpfeil auf sich selbst in Zeitpfeil umwandeln oder einfach nicht zulassen?
+
+\functionality{Zeitpfeile hinzufügen}{fnc:addtimearrow}
+\fulfills{crt:netmake}
+\fulfills{crt:tplus}
+Im Netzeditor kann ein neuer Zeitpfeil zu einem Netz hinzugefügt werden. Hierfür wählt der Nutzer den \enquote{Add Time Arrow} Knopf aus und klickt zuerst auf den Startknoten und dann auf den Endknoten im Bearbeitungsfenster. Daraufhin werden beide Knoten durch einen Zeitpfeil verbunden. Der Nutzer hat dann die Möglichkeit durch ein Eingabefeld die Anzahl der betrachteten Zeitschritte festzulegen. Diese Anzahl muss hierbei im Intervall zwischen 1 und 1000 liegen (beide einschließlich). Sollte hierbei der Nutzer eine ungültige Eingabe machen (keine Ganzzahl im verlangten Intervall), so wird die Anzahl der Zeitschritte automatisch auf 1 gesetzt. Die Bestätigung der Eingabe erfolgt durch Drücken der \enquote{Enter}-Taste oder durch Klicken außerhalb des Eingabefelds.
+
+\functionality{Pfeile löschen}{fnc:delarrow}
+\fulfills{crt:netmake}
+Wählt der Nutzer einen Pfeil aus, so kann er diesen Pfeil durch Betätigen der \enquote{Delete}-Taste bzw. durch einen Klick auf \enquote{Delete} im Rechtsklickmenü aus dem Netz entfernen. Die Wahrscheinlichkeitstabelle des Endknotens wird dementsprechend angepasst. Dies funktioniert sowohl für Zeitpfeile als auch für normale Pfeile.
+
+\functionality{Evidenz einem Knoten zuweisen}{fnc:assignevi}
+\fulfills{crt:netmake}
+\fulfills{crt:eviman}
+Der Nutzer kann einem Knoten eine Evidenz zuweisen. Hierfür wählt er im \enquote{Properties}-Menü des Knotens den Reiter \enquote{Evidences} aus. Hier kann der Nutzer einem Knoten durch ein Drop-Down-Menü eine der bestehenden Evidenzen zuordnen. % Durch Druck auf den \enquote{Create Evidence}-Knopf öffnet sich der Evidenzeneditor??
+
+% Was passiert wenn der Nutzer einfach nur den Zwischenstand speichern will und das Netz nicht valide ist.
+% Wie wird das behandelt.
+\functionality{Netz Validieren (DAG, Zusammenhängend)}{fnc:validatenet}
+Beim Speichern des Netzes wird es validiert.
+
+% Letzte Schritte??? Vielleicht bis zu 20?
+\functionality{Letzten Schritt rückgängig machen}{fnc:undo}
+\fulfills{crt:netmake}
+Durch einen Klick auf den \enquote{Undo}-Knopf oder durch das Tastenkürzel \enquote{CTRL + z} kann die zuletzt durchgeführte Aktion rückgängig gemacht werden. Dies kann für die letzten 20 Aktionen durchgeführt werden.
+
+\functionality{Rückgängig gemachte Aktion wieder herstellen}{fnc:redo}
+\fulfills{crt:netmake}
+Durch einen Klick auf den \enquote{Redo}-Knopf oder durch das Tastenkürzel \enquote{CTRL + y} kann die zuletzt rückgängig gemachte Aktion wiederhergestellt werden. Es können nur so lange Aktionen wiederhergestellt werden, bis der Nutzer eine andere Aktion ausführt oder man wieder im Ursprungszustand angekommen ist.
+
+\functionality{Submodel erstellen}{fnc:createsubmodel}
+\fulfills{crt:netmake}
+\fulfills{crt:submodplus}
+Der Nutzer kann Submodelle definieren. Dies sind Netze, welche in anderen Netzen als Knoten eingefügt werden können.
+% Man muss noch klären, was genau alles möglich ist. Kann man z.b. schon bestehende Netze zu Submodellen machen, wie wählt man Submodelle die man hinzufügen will aus, ...
+% Es gibt derzeit auch noch keinen Test, da ich nicht genau weiß wie das in der GUI umgesetzt wird.
+
+\functionality{Auto-Layout}{fnc:autolayoutplus}
+\fulfills{crt:netmake}
+\fulfills{crt:autolayoutplus}
+Durch einen Klick auf den \enquote{Auto-Layout}-Knopf werden die Knoten und Pfeile des aktuellen Netzes dem zuletzt ausgewählten Algorithmus entsprechend angeordnet. Anhand eines Pfeil-Drop-Down-Menüs an der rechten Seite des \enquote{Auto-Layout}-Knopfes kann man den Algorithmus auswählen, welcher verwendet werden soll.
+
+\subsection{Evidenz-Editor}
+
+\functionality{Evidenzen erstellen}{fnc:creaEvi}
+\fulfills{crt:evimake}
+
+Durch einen Linksklick auf den \enquote{New Evidence} Knopf öffnet sich der Evidenz-Editor. 
+Der Benutzer kann den Namen der Evidenz oben in einem Eingabefeld eingeben.
+Die Evidenzen werden in Form von logischen Formeln dargestellt. Diese werden in ein Eingabefeld eingegeben.
+Durch einen Linksklick auf den \enquote{Save} Knopf wird die erstellte Evidenz mit den angegebenen Namen gespeichert.
+Falls kein Name, keine Formel oder eine Falsche Formel (z.B Falsche Klammerung)... eingegeben wurde, scheitert das Speichern und eine Fehlermeldung wird angezeigt.
+
+\functionality{Information Seite}{fnc:showInfo}
+
+Durch einen Linksklick auf den \enquote{Info} Knopf wird eine Pop-up Seite angezeigt.
+Auf dieser werden allgemeine Informationen zu Evidenz-Formeln angezeigt sowie auch eine Liste aller verfügbaren Operatoren und Methoden.
+Durch einen Linksklick auf den \enquote{Close} Knopf wird die Pop-up Seite geschlossen.
+
+\functionality{Formel eingeben}{fnc:entForm}
+
+Der Benutzer kann eine Aussagenlogische Formel im Formel-Eingabefeld eingeben.
+Diese Verknüpfungen stehen zur Verfügung : \{=, >, >=, <, <=, !, \&, |\}.
+Des weiteren kann der Benutzer vordefinierte Methoden nutzen (Im den Informationen beschrieben).
+Der Benutzer kann auch Variablen eingeben. Diese Variablen stehen dann zum Testen zur Verfügung.
+
+\functionality{Evidenzen bearbeiten}{fnc:modEvi}
+
+Durch einen Linksklick auf den \enquote{Edit} Knopf (Mit einen Bleistift dargestellt)
+wird die ausgewählte Evidenz im Editor angezeigt. Der Benutzer kann sie dann bearbeiten und testen.
+
+\functionality{Formeln mit Beispieldaten testen}{fnc:testCalc}
+
+Der Benutzer kann eine Formel testen die er bereits eingegeben hat. Dazu muss er seine Variablen in der Liste suchen und den Wert eingeben. Durch Linksklick auf den \enquote{Test} Knopf wird das Ergebnis angezeigt (false/true).
+
+\functionality{Vordefinierte Funktionen in Formeln nutzen}{fnc:callFnc}
+
+Es gibt vordefiniert Funktionen die der Benutzer in den Formeln einsetzen kann. Die Liste und Beschreibung der Funktionen steht in der Information Pop-up Seite.
+
+\functionality{Evidenzen löschen}{fnc:delEvi}
+
+Durch einen Linksklick auf den \enquote{Delete} Knopf (Durch einen Mülleimer dargestellt) wird die ausgewählte Evidenz gelöscht. Es wird durch ein Pop-up Fenster nachgefragt ob der Benutzer diese Aktion wirklich durchführen möchte.
+Durch einen Linksklick auf den \enquote{Yes} Knopf wird die Evidenz gelöscht und das Pop-up Fenster geschlossen.
+Durch einen Linksklick auf den \enquote{No} Knopf wird die Evidenz nicht gelöscht und das Pop-up Fenster geschlossen.
+
+\subsection{Playground}
+\functionality{Netz graphisch anzeigen}{fnc:showgraph}
+
+Durch einen Linksklick auf einen Netz in der Ordner Ansicht wird das Netz angezeigt. 
+Der Benutzer kann in die graphische Ansicht das Netz bewegen aber nicht die Knoten bewegen.
+
+\functionality{Virtuelle Evidenzen einsetzen}{fnc:setVirEvi}
+
+Durch Doppelklick auf einen Knoten taucht ein Pop-up Fenster auf wo der Benutzer eine Virtuelle Evidenz eingeben kann.
+Er kann entweder auf den \enquote{True} Knopf klicken um die Evidenz auf true zu stellen.
+Er kann entweder auf den \enquote{False} Knopf klicken um die Evidenz auf false zu stellen.
+Falls schon Berechnungen durchgeführt wurden und eine Evidenz eingegeben wurde werden die Berechnungen automatisch
+neu durchgeführt
+Virtuelle Evidenzen überschreiben bereits existierende Werte.
+
+\functionality{Virtuelle Evidenzen löschen}{fnc:delVirEvi}
+
+Durch Doppelklick auf einen Knoten taucht ein Pop-up Fenster auf wo der Benutzer eine Virtuelle Evidenz eingeben kann.
+Er kann auf den \enquote{Remove} Knopf klicken um die Evidenz zu löschen.
+Falls schon Berechnungen durchgeführt wurden und eine Evidenz eingegeben wurde werden die Berechnungen automatisch
+neu durchgeführt
+
+\functionality{Evidenzen/Berechnungen graphisch anzeigen}{fnc:showVirEvi}
+
+Nachdem eine Berechnung durchgeführt wurde werden die Ergebnisse im Knoten durch einen horizontalen Stab-Diagramm angezeigt.
+
+\functionality{Aktueller Stand des Graphen speichern}{fnc:saveGraphState}
+
+Nachdem der Benutzer den Graphen ausprobiert hat liegt ihm die Möglichkeit vor seinen Test zu speichern.
+Durch Linksklick auf den \enquote{Save test} Knopf wird ein Pop-up Fenster angezeigt. Der Benutzer kann da einen Namen eingeben. 
+Durch einen Linksklick auf den \enquote{Save} Knopf wird der Name überprüft und dann der Test gespeichert.
+Falls der Name schon benutzt wurde kommt eine Fehlermeldung.
+Durch einen Linksklick auf den \enquote{Cancel} wird der Speicher Vorgang abgebrochen.
+
+\functionality{Stand eines Graphen benutzen}{fnc:loadGraphState}
+
+Der Benutzer kann den Stand eines Graphen benutzen. Beim Laden des Standes werden die Werte eingesetzt und automatisch die
+Berechnungen durchgeführt.
+
+\functionality{Daten-Stream auswählen}{fnc:loadDataStream}
+
+Der Benutzer kann einen, zu Verfügung gestellten, Daten-Stream zur Ausführung auswählen.
+
+\subsection{Ordnerstruktur}
+
+\functionality{Ordner umbenennen}{fnc:modFolName}
+\fulfills{crt:ordstr}
+
+Durch einen Rechtsklick auf einen Ordner öffnet sich ein Dropdown mit der Option \enquote{Rename}. Wird diese ausgewählt, so öffnet sich ein Dialog mit einem Eingabefeld in dem der aktuelle Name des Ordners steht. Hier kann dieser geändert werden und durch ein Klick auf \enquote{Confirm} die Änderung wirksam gemacht werden.
+Falls ein DBN in dem ausgewählten Ordner aktuell bearbeitet wird, schlägt die Aktion fehl und eine Fehlermeldung wird angezeigt.
+
+\functionality{Ordner löschen}{fnc:delFol}
+\fulfills{crt:ordstr}
+
+Durch einen Rechtsklick auf einen Ordner öffnet sich ein Dropdown mit der Option \enquote{Delete}. Wird diese ausgewählt, so öffnet sich ein Dialog mit einer Warnung in der das Löschen erneut bestätigt werden muss. Wird dies getan, so wird der Ordner mit allen Unterordnern und DBNs entfernt.
+Falls ein DBN in dem ausgewählten Ordner aktuell bearbeitet wird, schlägt die Aktion fehl und eine Fehlermeldung wird angezeigt.
+
+\functionality{Netze in Ordner schieben}{fnc:putNetInFol}
+\fulfills{crt:ordstr}
+\fulfills{crt:netman}
+
+Durch einen Rechtsklick auf ein Netz öffnet sich ein Dropdown mit der Option \enquote{Move}.
+Wird diese ausgewählt, so öffnet sich ein Dialog mit einem Abbild der Ordnerstruktur in der der aktuelle Ordner ausgewählt ist. Hier kann ein andere ausgewählt werden und durch ein Klick auf \enquote{Confirm} die Änderung wirksam gemacht werden.
+Falls das Netz aktuell bearbeitet wird, schlägt die Aktion fehl und eine Fehlermeldung wird angezeigt.
+
+\functionality{Netze löschen}{fnc:delNet}
+\fulfills{crt:ordstr}
+\fulfills{crt:netman}
+
+Durch einen Rechtsklick auf ein Netz öffnet sich ein Dropdown mit der Option \enquote{Delete}. Wird diese ausgewählt, so öffnet sich ein Dialog mit einer Warnung in der das Löschen erneut bestätigt werden muss. Wird dies getan, so wird das Netz entfernt.
+Falls das Netz aktuell bearbeitet wird, schlägt die Aktion fehl und eine Fehlermeldung wird angezeigt.
+
+\subsection{Server}
+
+%\functionality{ REST-Schnittstelle für Frontend }{fnc:i interface}
+
+\functionality{ Daten von IOSB-Servern empfangen }{fnc:getServData}
+Sobald Daten in der ActiveMQ der IOSB-Server anliegen werden diese entsprechend deserialisiert und für die Inferenz bereitgestellt.
+\fulfills{crt:IOSB}
+
+\functionality{ Nötige Daten cachen }{fnc:cacheData}
+Für die Inferenz eines DBNs mit N Zeitschritten, werden insbesondere die letzten N Datensätze benötigt. Der Server stellt also sicher, dass immer die M letzten Datensätze zur Verfügung stehen, wobei M die größte Anzahl an Zeitschritten aller DBNs ist.
+\fulfills{crt:IOSB}
+
+\functionality{ Evidenz-Formeln interpretieren }{fnc:intInf}
+Die Evidenz-Formeln beschreiben eine Verknüpfung der DBN-Knoten mit gegebenen Datensätzen. Diese Formeln müssen zum Zeitpunkt der Inferenz vom Server für gegebene Daten interpretiert und evaluiert werden.
+\fulfills{crt:IOSB}
+\fulfills{crt:infcal}
+
+\functionality{ Evidenz-Formeln für Annotationen }{fnc:infAnnot}
+Es besteht die Möglichkeit, dass Evidenz-Formeln nicht nur für gegebene Datentypen in evaluiert werden können, sondern auch für beliebige Annotationen.
+\fulfills{crt:annotplus}
+
+\functionality{ Inferenz berechnen }{fnc:calcInf}
+Für ein DBN kann der Server mit Hilfe einer Inferenz-Engine die Inferenz berechnen. Hierzu können entweder virtuelle Evidenzen aus dem Playground vorliegen oder die tatsächlichen Datensätze von den IOSB-Servern.
+\fulfills{crt:IOSB}
+\fulfills{crt:infcal}
+
+\functionality{ Inferenz-Ergebnisse an IOSB Server senden }{fnc:sendRes}
+Die Ergebnisse der der Inferenz für gegebene Datensätze werden in Echtzeit an die IOSB-Server zur weiteren Verarbeitung zurückgegeben. Hierbei müssen die Ergebnisse in ein von den IOSB-Servern akzeptiertes Format serialisiert werden.
+\fulfills{crt:IOSB}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Produktdaten}
+
+\section{Nicht-Funktionale Anforderungen}
+
+\nonFunctionality{Modernes GUI}{nfc:GUI}
+
+Die GUI soll modern und einfach zu nutzen sein.
+
+\nonFunctionality{50 gleichzeitige Nutzer}{nfc:concurrent}
+
+Es sollen 50 Nutzer gleichzeitig an verschiedenen Netzen arbeiten dürfen. 
+
+\nonFunctionality{Modularität}{nfc:modular}
+
+Das Produkt soll modular aufgebaut werden, sodass es nach der Übernahme vom Kunden leicht erweiterbar ist. 
+
+%%%%%%%%%%%
+\section{Tests}
+
+\test{Login}{tst:log}
+\tests{fnc:sudoinit}
+\tests{fnc:login}
+\tests{fnc:resetpass}
+\tests{fnc:editpass}
+
+\teststep{Anmeldeseite ist im Browser geöffnet.}
+{Superadmin meldet sich mit den korrekten Daten ich an. }
+{Webseite zur Benutzerverwaltung öffnet sich.}
+
+\teststep{Anmeldeseite ist im Browser geöffnet.}
+{Admin meldet sich mit korrektem Nutzername und Passwort an.}
+{Netzwerk-Editor wird geöffnet.}
+
+\teststep{Anmeldeseite ist im Browser geöffnet.}
+{Moderator meldet sich mit korrektem Nutzername und Passwort an.}
+{Playground wird geöffnet.}
+
+\teststep{Anmeldeseite ist im Browser geöffnet.}
+{Nutzer hat sein Passwort vergessen und Klick auf den \enquote{Forgot Password?} Knopf. Danach gibt der Nutzer seine Email-Adresse im vorgegebenen Textfeld ein und klickt auf den \enquote{Reset Password} Knopf.}{Falls die Email-Adresse in der Datenbank gespeichert ist wird dem Nutzer ein Link zur Zurücksetzung per Email geschickt.}
+
+\teststep{Nutzer hat eine Passwort-Zurücksetzung angefordert und eine Email mit dem Link zum Zurücksetzen erhalten}
+{Nutzer klick auf den Link und wird auf angefordert ein neues Passwort zu setzen. Der Nutzer gib sein neues Passwort ein und klickt auf den \enquote{Confirm} Knopf.}
+{Das Passwort für den Nutzer wird in der Datenbank aktualisiert. Der Nutzer kann sich mit dem neuen Passwort anmelden.}
+
+
+\test{Nutzerverwaltung}{tst:super}
+\tests{fnc:sudoinit}
+\tests{fnc:searchusr}
+\tests{fnc:addusr}
+\tests{fnc:delusr}
+\tests{fnc:editusr}
+
+
+\teststep{Superadmin ist eingeloggt und die Seite zur Benutzerverwaltung ist im Browser geöffnet}
+{Superadmin erstellt einen neuen Nutzer mit Benutzername:\enquote{jsmith}, Name:\enquote{John Smith}, Email:\enquote{john.smith@kit.edu} und Rolle:\enquote{Admin}}
+{Ein Adminkonto mit Benutzername:\enquote{jsmith} wird für John Smith erstellt. Ein zufällig generiertes Passwort wird an die Email-addresse: \enquote{john.smith@kit.edu} gesendet.  }
+
+\teststep{Superadmin ist eingeloggt und die Seite zur Benutzerverwaltung ist im Browser geöffnet. Nutzer John Smith hat einen Adminkonto.}
+{Der Superadmin gibt in der Such-leiste jsmith ein}
+{Das Sucherbegnis liefert ein Konto mit Benutzername jsmith}
+
+\teststep{Die Seite zur Benutzerverwaltung ist im Browser offen und zeigt das Suchergebnis der Suche nach \enquote{jsmith} ab.}
+{Der Superadmin klickt auf den \enquote{Edit} Knopf für den Benutzer: \enquote{jsmith} und änder den Benutzernamen von \enquote{jsmith} zu \enquote{smith}.}
+{Die Datenabnk wird akualisiert. John Smith kann nicht mehr mit dem Nutzernamen \enquote{jsmith} anmelden. John Smith muss sich mit dem Nutznamen \enquote{smith} und seinem alten passwort anmelden.}
+
+\teststep{Die Seite zur Benutzerverwaltung ist im Browser offen und zeigt alle Nutzer in Listenform an.}
+{Der Superadmin klickt auf den \enquote{Delete} Knopf für den Benutzernamen: \enquote{bobby} und bestätigt die Warnmeldung.}
+{Das Konto vom Nutzer \enquote{bobby} wird von der Datenbank gelöscht. Alle Netze die der Nutzer erzeugt hat bleiben unberührt.}
+
+
+\test{Moderatorrechte}{tst:modrules}
+\tests{fnc:play}
+\tests{fnc:expnet}
+\tests{fnc:logout}
+\tests{fnc:showgraph}
+
+%GEhöhren diese Tests nich in den Playground abschnitt?
+
+\teststep{Alice ist angemeldet und im Playground. Auf der Playground-Fläche steht \enquote{Netz wählen}.}
+{Alice wählt aus der Ordnerstruktur ein Netz und wählt das Netz durch einen Doppelklick aus. }
+{Das Netz wird auf der Playground-Fläche graphisch angezeigt. Man kann jetzt Virtuelle Evidenzen setzen und das Netz austesten.}
+
+\teststep{Alice ist angemeldet und im Playground. Auf der Playground-Fläche ist ein Netz graphisch dargestellt.}
+{Alice klickt auf den \enquote{Export} Knopf und wählt im Pop-up das .xdsl Format.}
+{Das geöffnete Netz im Playground wird vom Server heruntergeladen und lokal im .xdsl Format gespeichert. }
+
+\teststep{Alice ist angemeldet und im Playground. Auf der Playground-Fläche ist ein Netz graphisch dargestellt.}
+{Alice klickt auf den \enquote{Log out} Knopf.}
+{Alice wird abgemeldet und landet auf der Startseite.}
+
+
+
+\test{Evidenz Editor}{tst:eviMakeT}
+\tests{fnc:creaEvi}
+\tests{fnc:showInfo}
+\tests{fnc:delEvi}
+\tests{fnc:modEvi}
+
+\teststep{Tom ist angemeldet und im Evidenz-Editor. Die Editorfläche ist leer.}
+{Tom Klickt auf den \enquote{New Evidence} Knopf. Danach gibt er einen Namen für seine Evidenz ein. Er gibt die Formel : 
+\enquote{var1 >= 10} ein und drückt auf den \enquote{Save} Knopf}
+{Die Evidenz wird in der Liste links vom Editorfläche angezeigt}
+
+\teststep{Tom ist angemeldet und im Evidenz-Editor. Die Editorfläche ist leer.}
+{Tom vergisst einen Namen einzugeben und gibt eine Valide Formel an. Er drückt auf den \enquote{Save} Knopf}
+{Es wird eine Fehlermeldung angegeben die Tom sagt das er einen Namen eingeben muss. Die Evidenz wurde nicht gespeichert}
+
+\teststep{Tom ist angemeldet und im Evidenz-Editor. Die Editorfläche ist leer. Es gibt eine Evidenz mit den Namen
+\enquote{Im Bereich}}
+{Tom gibt den Namen \enquote{Im Bereich} und eine Valide Formel an. Er drückt auf den \enquote{Save} Knopf}
+{Es wird eine Fehlermeldung angegeben die Tom sagt das er einen noch nicht benutzten Namen eingeben muss. Die Evidenz wurde nicht gespeichert}
+
+\teststep{Tom ist angemeldet und im Evidenz-Editor. Tom erstellt eine Neue Evidenz. Diese Evidenz ist in der 
+Editorfläche angezeigt.}
+{Tom druckt auf den \enquote{?} Knopf.}
+{Die Pop-up Seite mit allen Informationen wird angezeigt.}
+
+\teststep{Tom ist angemeldet und im Evidenz-Editor. Tom erstellt eine Neue Evidenz. Diese Evidenz ist in der 
+Editorfläche angezeigt. Er hat auf den \enquote{?} Knopf gedrückt und die Pop-up Seite
+mit allen Information wird angezeigt.}
+{Tom druckt auf den \enquote{Close} Knopf.}
+{Die Pop-up Seite mit allen Informationen wird geschlossen.}
+
+\teststep{Tom ist angemeldet und im Evidenz-Editor. Die Editorfläche ist leer.}
+{Tom klick auf den \enquote{Edit} Knopf (mit einem Bleistift dargestellt) von einer Evidenz (in der Liste).}
+{Der Name und dir Formel werden in den entsprechende Eingabefelder geschrieben.}
+
+\teststep{Tom ist angemeldet und im Evidenz-Editor. Die Editorfläche ist leer.}
+{Er klickt auf den \enquote{Delete} Knopf (durch einen Mülleimer dargestellt) von einer Evidenz. Auf das Pop-up Fenster drückt er auf den
+\enquote{Yes} Knopf.}
+{Die Evidenz ist nicht wehr in der Liste verfügbar}
+
+\test{Formel eingeben}{tst:entForm}
+\tests{fnc:entForm}
+\tests{fnc:testCalc}
+\tests{fnc:callFnc}
+
+\teststep{Tom ist angemeldet und im Evidenz-Editor. Die Editorfläche ist leer.}
+{Tom Klickt auf den \enquote{New Evidence} Knopf. Danach gibt er einen Namen für seine Evidenz ein.
+Er gibt eine falsche Formel (z.B \enquote{((10 > Ship.speed)}) ein und drückt auf den \enquote{Save} Knopf}
+{Eine Fehlermeldung wird angezeigt die Tom sagt das seine Formel falsch ist. Die Evidenz wurde nicht gespeichert}
+
+\teststep{Tom hat eine gespeicherte Evidenz geladen. Der Name und die Formel werden angezeigt.}
+{Tom gibt in der Formel eine Variable ein die noch nicht in der Liste der test Variablen steht. Tom klickt
+auf den \enquote{Save} Knopf }
+{Es wurde keine Fehlermeldung zurückgegeben und die Variable wurde zu den Test Variablen hinzugefügt.}
+
+\teststep{Tom hat eine gespeicherte Evidenz geladen. Der Name und die Formel werden angezeigt. Die Formel ist : \enquote{Ship.speed} > 20}
+{Tom gibt als Test Wert 30 für die Variable Ship.speed ein. Er drückt auf den \enquote{Test} Knopf}
+{Der Wert \enquote{True wird zurückgegeben.}}
+
+\teststep{Tom ist auf den Evidenz-Editor. Er hat auf den \enquote{New Evidence} Knopf geklickt und einen Namen eingegeben}
+{Im Formel Eingabefeld gibt er eine vordefinierte Funktion ein : \enquote{shipInSquare((Ship.x;Ship.y), (10;10), (10;-10), (-10,-10), (-10;10))}.
+Er gibt als Test Variable die werde 0 zu Ship.x und Ship.y ein. Er drückt auf den \enquote{Test} Knopf}
+{Es wird True zurückgegeben.}
+
+\teststep{Tom ist auf den Evidenz-Editor. Er hat auf den \enquote{New Evidence} Knopf geklickt und einen Namen eingegeben}
+{Im Formel Eingabefeld gibt er eine vordefinierte Funktion ein die nicht existiert. Er klickt auf den \enquote{Save} Knopf.}
+{Es wird eine Fehlermeldung zurückgegeben}
+
+\test{Playground}{}
+
+
+
+
+
+
+
+
+
+
+\test{Modifizierung der Ordnerstruktur}{tst:ordst}
+\tests{fnc:cngfilestr}
+\tests{fnc:renamenet}
+\tests{fnc:netimport}
+\tests{fnc:copynet}
+
+
+\teststep{Tom ist im System angemeldet und hat die DBN Ansicht aktiv. Es existiert ein Ordner \enquote{TestFolder} mit einem Netz \enquote{TestDBN}. Das Netz wird aktuell nicht bearbeitet.}
+{Tom macht Rechtsklick auf den Ordner und wählt \enquote{Rename} aus. Er gibt den Namen \enquote{TestFolder2} ein und bestätigt seine Aktion.}
+{Der Ordner wird zu \enquote{TestFolder2} umbenannt und direkt unter neuem Namen angezeigt.}
+
+\teststep{Tom ist im System angemeldet und hat die DBN Ansicht aktiv. Es existiert ein Ordner \enquote{TestFolder} mit einem Netz \enquote{TestDBN}. Das Netz wird aktuell bearbeitet.}
+{Tom macht Rechtsklick auf den Ordner und wählt \enquote{Rename} aus. Er gibt den Namen \enquote{TestFolder2} ein und bestätigt seine Aktion.}
+{Tom erhält eine Fehlermeldung und die Änderung wird nicht durchgeführt.}
+\tests{fnc:modFolName}
+
+\teststep{Tom ist im System angemeldet und hat die DBN Ansicht aktiv. Es existiert ein Ordner \enquote{TestFolder} mit einem Netz \enquote{TestDBN}. Das Netz wird aktuell nicht bearbeitet.}
+{Tom macht Rechtsklick auf den Ordner, wählt \enquote{Delete} aus und bestätigt seine Aktion.}
+{Der Ordner und das enthaltene DBN \enquote{TestDBN} werden gelöscht.}
+
+\teststep{Tom ist im System angemeldet und hat die DBN Ansicht aktiv. Es existiert ein Ordner \enquote{TestFolder} mit einem Netz \enquote{TestDBN}. Das Netz wird aktuell bearbeitet.}
+{Tom macht Rechtsklick auf den Ordner, wählt \enquote{Delete} aus und bestätigt seine Aktion.}
+{Tom erhält eine Fehlermeldung und sowohl Ordner als auch DBN bleiben bestehen.}
+\tests{fnc:delFol}
+
+\teststep{Tom ist im System angemeldet und hat die DBN Ansicht aktiv. Es existiert ein Ordner \enquote{TestFolder} der leer ist und ein Ordner \enquote{TestFolder2} mit einem Netz \enquote{TestDBN}. Das Netz wird aktuell nicht bearbeitet.}
+{Tom macht Rechtsklick auf \enquote{TestDBN} und wählt \enquote{Move} aus. Er wählt im aufkommendem Dialog \enquote{TestFolder} aus und bestätigt seine Aktion.}
+{Das Netz wird verschoben: Der Ordner \enquote{TestFolder} enthält nun das Netz \enquote{TestDBN} und der Ordner \enquote{TestFolder2} ist leer.}
+
+\teststep{Tom ist im System angemeldet und hat die DBN Ansicht aktiv. Es existiert ein Ordner \enquote{TestFolder} der leer ist und ein Ordner \enquote{TestFolder2} mit einem Netz \enquote{TestDBN}. Das Netz wird aktuell bearbeitet.}
+{Tom macht Rechtsklick auf \enquote{TestDBN} und wählt \enquote{Move} aus. Er wählt im aufkommendem Dialog \enquote{TestFolder} aus und bestätigt seine Aktion.}
+{Tom erhält eine Fehlermeldung und die Änderung wird nicht durchgeführt.}
+\tests{fnc:putNetInFol}
+
+\teststep{Tom ist im System angemeldet und hat die DBN Ansicht aktiv. Es existiert ein Ordner \enquote{TestFolder} mit einem Netz \enquote{TestDBN}. Das Netz wird aktuell nicht bearbeitet.}
+{Tom macht Rechtsklick auf das Netz \enquote{TestDBN}, wählt \enquote{Delete} aus und bestätigt seine Aktion.}
+{Das Netz \enquote{TestDBN} wird gelöscht und der Ordner \enquote{TestFolder} ist im Anschluss leer.}
+
+\teststep{Tom ist im System angemeldet und hat die DBN Ansicht aktiv. Es existiert ein Ordner \enquote{TestFolder} mit einem Netz \enquote{TestDBN}. Das Netz wird aktuell bearbeitet.}
+{Tom macht Rechtsklick auf das Netz \enquote{TestDBN}, wählt \enquote{Delete} aus und bestätigt seine Aktion.}
+{Tom erhält eine Fehlermeldung und das Netz bleibt bestehen.}
+\tests{fnc:delNet}
+
+\teststep{Tom ist im System angemeldet und hat die DBN Ansicht aktiv. Es existiert ein Ordner \enquote{TestFolder} mit einem Netz \enquote{TestDBN}. Das Netz wird aktuell nicht bearbeitet.}
+{Tom klickt auf \enquote{Import Net} und wählt im aufkommenden Dateidialog die Datei \enquote{test.xdsl} aus.}
+{Das Netz \enquote{test} wurde in den aktuell ausgewählten Ordner eingefügt.}
+
+\teststep{Tom ist im System angemeldet und hat die DBN Ansicht aktiv. Es existiert ein Ordner \enquote{TestFolder} mit einem Netz \enquote{TestDBN} und \enquote{test}. Das Netz wird aktuell nicht bearbeitet.}
+{Tom rechtsklickt auf \enquote{TestDBN} und wählt die Option \enquote{Duplicate}.}
+{Das Netz \enquote{TestDBN} wurde in den aktuell ausgewählten Ordner dupliziert unter dem Namen \enquote{TestDBN (Copy)}.}
+
+
+\test{Kommunikation über ActiveMQ}{tst:amq}
+\tests{fnc:getServData}
+\tests{fnc:sendRes}
+
+\teststep{Der Server ist einsatzbereit.}
+{In der ActiveMQ der IOSB-Server liegten Schiffsdaten an.}
+{Der Server entnimmt die Daten aus der Queue und deserialisiert diese in ein Schiffsobjekt ohne dabei den Informationsgehalt zu ändern.}
+
+\teststep{Der Server ist einsatzbereit und berechnet die Inferenz für ein Schiffsobjekt.}
+{Die Inferenzberechnung für das Schiffsobjekt ist abgeschlossen.}
+{Der Server serialisiert die Inferenzergebnisse in ein von den IOSB-Servern akzeptiertes Format und übergibt diese an ActiveMQ}
+
+
+\test{Caching}{tst:caching}
+\tests{fnc:cacheData}
+
+\teststep{Der Server ist einsatzbereit und es gibt DBNs mit max. 12 Zeitschritten.}
+{Der Server erhält 13 Schiffsobjekte nacheinander.}
+{Mindestens die letzten 12 dieser Schiffsobjekte stehen noch dem Server zur Verfügung.}
+
+
+\test{Inferenzberechnung}{tst:infr}
+\tests{fnc:intInf}
+\tests{fnc:calcInf}
+\tests{fnc:infAnnot}
+
+\teststep{Der Server ist einsatzbereit und es gibt:
+\begin{itemize}
+      \item Ein dem Server bekanntes Gebiet namens \enquote{AREA4}, welches den Punkt (x = 32.243, y = 27.148) nicht enthält
+      \item Ein anliegendes Schiffsobjekt mit speed = 2.54, x = 32.243 und y = 27.148
+      \item Die Inferenz-Formel namens \enquote{TestExp} mit dem Wert \enquote{(ship.speed < 9.5) \& !(isInArea(ship.x, ship.y, AREA4))}
+      \item Ein Netz namens \enquote{TestDBN}, das für einen Knoten die Formel \enquote{TestExp} nutzt
+   \end{itemize}}
+{Das beschriebene Schiffsobjekt trifft ein und löst so eine Inferenzberechnung für \enquote{TestDBN} aus.}
+{Die Formel \enquote{TestExp} wird durch den Server interpretiert und evaluiert und als Evidenz in den Knoten eingesetzt. Der Knoten sollte im Anschluss den Wert 1 (bzw. true) haben.}
+
+\teststep{Der Server ist einsatzbereit und es gibt ein vordefiniertes Netz namens \enquote{TestDBN}.}
+{Eine vom Playground ausgelöste Anfrage löst die Inferenzberechnung für \enquote{TestDBN} mit gegebenen virtuellen Evidenzen aus.}
+{Der Server übergibt das Netz und die Virtuellen Evidenzen an die Inferenz-Engine wartet auf die erfolgreiche Berechnung.}
+
+\test{Grundlegende Netz-Editor Funktionen}{tst:neteditorbasics}
+\tests{fnc:useeditor}
+\tests{fnc:makenet}
+\tests{fnc:savenet}
+\tests{fnc:addnode}
+\tests{fnc:delnode}
+\tests{fnc:movenode}
+\tests{fnc:renamenode}
+\tests{fnc:validatenet}
+
+\teststep{Ein Admin befindet sich im Startbildschirm. Es sind bisher keine Netze im System vorhanden.}
+{Der Admin klickt auf den \enquote{Create Net}-Knopf.}
+{Der Netzeditor öffnet sich und ein leeres Bearbeitungsfenster erscheint. Das Netz ist bisher nur lokal und nicht auf dem Server verfügbar.}
+
+\teststep{Ein Admin befindet sich im Netzeditor. Es sind keine Netze auf dem Server verfügbar. Ein leeres Netz ist lokal geöffnet.}
+{Der Admin klickt auf den \enquote{Add Node}-Knopf. Danach klickt er im leeren Bearbeitungsfenster auf den Ort, an dem der Knoten erscheinen soll.} 
+{Ein neuer Knoten erscheint an der angeklickten Stelle und der Name des Knotens ist im Bearbeitungsmodus und wartet auf eine Eingabe.}
+
+\teststep{Ein Admin befindet sich im Netzeditor. Es sind keine Netze auf dem Server verfügbar. Ein Netz mit einem Knoten ist lokal geöffnet. Der Name des Knotens wird derzeit bearbeitet.}
+{Der Admin gibt dem Knoten den Namen \enquote{TestNode} und bestätigt seine Eingabe mit dem \enquote{Enter}-Knopf}
+{Der Knoten im lokalen Netz ist nun als \enquote{TestNode} gespeichert und der Knoten wird abgewählt.}
+
+\teststep{Ein Admin befindet sich im Netzeditor. Es sind keine Netze auf dem Server verfügbar. Ein Netz mit einem Knoten namens \enquote{TestNode} ist lokal geöffnet. Derzeit ist kein Element ausgewählt.}
+{Der Admin klickt auf den Knoten \enquote{TestNode} und zieht ihn an eine andere Position innerhalb des Bearbeitungsfensters. Dann lässt er die Maustaste los.}
+{Der Knoten ist nun an der Stelle, zu der er gezogen wurde. Der Knoten ist dann wieder abgewählt.}
+
+\teststep{Ein Admin befindet sich im Netzeditor. Es sind keine Netze auf dem Server verfügbar. Ein Netz mit einem Knoten namens \enquote{TestNode} ist lokal geöffnet. Derzeit ist kein Element ausgewählt.}
+{Der Admin erstellt wie in den Schritten 2 und 3 beschrieben einen neuen Knoten namens \enquote{TestNode2}.}
+{Ein neuer Knoten namens \enquote{TestNode2} erscheint im Bearbeitungsfenster and der vom Nutzer angegebenen Position.}
+
+\teststep{Ein Admin befindet sich im Netzeditor. Es sind keine Netze auf dem Server verfügbar. Ein Netz mit einem Knoten namens \enquote{TestNode} und einem Knoten namens \enquote{TestNode2} ist lokal geöffnet. Derzeit ist kein Element ausgewählt.}
+{Der Admin wählt den Knoten \enquote{TestNode} mit einem Linksklick an und drückt dann die \enquote{Delete}-Taste}
+{Der Knoten \enquote{TestNode} wird aus dem dem aktuellen Netz gelöscht. Es ist zur Zeit kein Knoten ausgewählt.}
+
+\teststep{Ein Admin befindet sich im Netzeditor. Es sind keine Netze auf dem Server verfügbar. Ein Netz mit einem Knoten namens \enquote{TestNode2} ist lokal geöffnet. Derzeit ist kein Element ausgewählt.}
+{Der Admin gibt das Tastenkürzel \enquote{CTRL + s} ein.}
+{Das Netz ist nun nicht mehr nur lokal verfügbar sondern wird auf den Server hochgeladen. Da das Netz valide ist gibt es keine Fehlermeldung durch den Validierer.}
+
+\test{Ändern der Hintergrundfarbe im Netzeditor}{tst:netcolorchange}
+\tests{fnc:opennet}
+\tests{fnc:cngcolor}
+
+\teststep{Ein Admin befindet sich im Startbildschirm. Ein Netz namens \enquote{NetTest} mit einem Knoten namens \enquote{NodeOne} existiert bereits.}
+{Der Admin öffnet das Netz \enquote{NetTest} durch Klick auf den Netznamen in der Orderstruktur.}
+{Der Netzeditor öffnet sich mit und der Knoten \enquote{NodeOne} befindet sich im Bearbeitungsfenster.}
+
+\teststep{Der Admin befindet sich nun im Netzeditor und bearbeitet das Netz \enquote{NetTest}. Ein leerer Knoten \enquote{NodeOne} wird im Bearbeitungsfenster angezeigt.}
+{Der Admin öffnet das \enquote{Properties}-Menü des Knoten \enquote{NodeOne} und klickt auf den \enquote{Background}-Knopf.}
+{Es öffnet sich ein Pop-Up-Fenster mit einem Farbrad wobei die aktuelle Farbe des Knotens (weiß) markiert ist.}
+
+\teststep{Der Admin ist im Netzeditor und ein Fenster zum Auswählen der Hintergrundfarbe ist geöffnet.}
+{Der Admin wählt einen dunkelblauen Hintergrund im Farbrad aus und bestätigt seine Auswahl mit dem \enquote{OK}-Knopf.}
+{Das Farbwähl-Fenster schließt sich und der Knoten \enquote{NodeOne} hat nun eine dunkelblaue Hintergrundfarbe. Da der neue Hintergrund dunkel ist, wurde die Textfarbe automatisch auf weiß gesetzt.}
+
+\test{Ein derzeit bearbeitetes Netz wird gesperrt}{tst:locknet}
+\tests{fnc:locknet}
+
+\teststep{Der Admin befindet sich im Startbildschirm. Es existiert ein einziges Netz welches gerade von einem anderen Admin bearbeitet wird.}
+{Der Admin klickt auf das derzeit bearbeitete Netz.}
+{Ein Fehler wird angezeigt, da das Netz derzeit bearbeitet wird.}
+
+\teststep{Der Admin befindet sich im Startbildschirm. Es existiert ein einziges Netz welches gerade von einem anderen Admin bearbeitet wird.}
+{Der Admin wählt \enquote{Delete} im Rechtsklickmenü des Netzes aus.}
+{Ein Fehler wird angezeigt, da das Netz derzeit bearbeitet wird.}
+
+\test{Undo und Redo}{tst:undoredo}
+\tests{fnc:undo}
+\tests{fnc:redo}
+
+\teststep{Ein Admin befindet sich im Netzeditor. Ein Netz ist geöffnet mit einem Knoten.}
+{Der Admin löscht den Knoten durch Klick auf die \enquote{Delete}-Taste während der Knoten ausgewählt ist.}
+{Der Knoten wird gelöscht.}
+
+\teststep{Der Admin befindet sich im Netzeditor. Es existieren keine Knoten im Netz.}
+{Der Admin klickt den \enquote{Undo}-Knopf.}
+{Das Löschen des Knoten wird Rückgängig gemacht.}
+
+\teststep{Der Admin befindet sich im Netzeditor. Das Netz besteht aus einem Knoten.}
+{Der Admin klickt den \enquote{Redo}-Knopf.}
+{Der zuvor gelöschte und dann wiederhergestellte Knoten wird wieder gelöscht.}
+
+\teststep{Der Admin befindet sich im Netzeditor. Es existieren keine Knoten im Netz.}
+{Der Admin klickt wieder den \enquote{Undo}-Knopf.}
+{Der gelöschte Knoten wird wiederhergestellt.}
+
+\teststep{Der Admin befindet sich im Netzeditor. Es existiert ein Knoten im Netz.}
+{Der Admin führt eine beliebige Aktion aus (außer Undo und Redo).}
+{Der \enquote{Redo}-Knopf ist nun nicht mehr betätigbar, da der Admin eine Aktion ausgeführt hat.}
+
+\test{Wahrscheinlichkeiten und Pfeile}{tst:probabilitiesarrows}
+\tests{fnc:insert}
+\tests{fnc:addarrow}
+\tests{fnc:addtimearrow}
+\tests{fnc:delarrow}
+\tests{fnc:assignevi}
+
+\teststep{Ein Admin befindet sich im Netzeditor. Ein Netz ist geöffnet mit:
+\begin{itemize}
+    \item Einem Knoten namens \enquote{NodeOne}
+    \item Einem Knoten namens \enquote{NodeTwo}
+\end{itemize}}
+{Der Admin klickt auf den \enquote{Add Arrow}-Knopf und klickt dann zuerst auf \enquote{NodeOne} und dann auf \enquote{NodeTwo}}
+{Ein Pfeil zwischen \enquote{NodeOne} und \enquote{NodeTwo} ist hinzugefügt worden.}
+
+\teststep{Ein Admin befindet sich im Netzeditor mit zwei durch einen Pfeil verbundenen Knoten.}
+{Der Admin öffnet mit Doppelklick auf \enquote{NodeTwo} das \enquote{Properties}-Menü und geht dort auf den \enquote{Probabilities}-Reiter.}
+{Das \enquote{Properties}-Fenster öffnet sich und ist gefüllt mit einer Wahrscheinlichkeitstabelle:
+\begin{tabular}{c || c | c}
+    NodeOne => & true & false \\
+    \hline
+    true & 0.5 & 0.5 \\
+    false & 0.5 & 0.5
+\end{tabular}}
+
+\teststep{Ein Admin befindet sich im Netzeditor mit zwei durch einen Pfeil verbundenen Knoten. Das \enquote{Properties}-Menü ist geöffnet und zeigt den \enquote{Probabilities}-Reiter.}
+{Der Admin verändert den Wert des linksoben stehenden Felds auf 0.75 und drückt dann den \enquote{Recalculate}-Knopf.}
+{Der Wert des linksunten stehenden Felds verändert sich von 0.5 zu 0.25.}
+
+\teststep{Ein Admin befindet sich im Netzeditor mit zwei durch einen Pfeil verbundenen Knoten. Das \enquote{Properties}-Menü ist geöffnet und zeigt den \enquote{Probabilities}-Reiter.}
+{Der Admin klickt auf den \enquote{OK}-Knopf.}
+{Das \enquote{Properties}-Fenster schließt sich und die Wahrscheinlichkeiten werden gespeichert.}
+
+\teststep{Ein Admin befindet sich im Netzeditor mit zwei durch einen Pfeil verbundenen Knoten.}
+{Der Admin wählt den Pfeil zwischen \enquote{NodeOne} und \enquote{NodeTwo} aus und drückt die \enquote{Delete}-Taste.}
+{Der Pfeil wird gelöscht.}
+
+\teststep{Ein Admin befindet sich im Netzeditor mit zwei Knoten.}
+{Der Admin klickt auf den \enquote{Add Time Arrow}-Knopf. Danach klickt er zuerst auf \enquote{NodeOne} und dann auf \enquote{NodeTwo}.}
+{Die beiden Knoten werden mit einem Zeitpfeil verbunden. Das Zeitschrittfeld ist zur Bearbeitung ausgewählt.}
+
+\teststep{Ein Admin befindet sich im Netzeditor mit zwei durch einen Zeitpfeil verbundenen Knoten.}
+{Der Admin fügt den Wert \enquote{2} in das Zeitschrittfeld ein und bestätigt seine Eingabe mit der \enquote{Return}-Taste.}
+{Das Zeitschrittfeld wird nun nicht mehr bearbeitet und enthält den Wert \enquote{2}.}
+
+\test{Evidenzen zuweisen}{tst:assignevidences}
+\tests{fnc:assignevi}
+
+\test{Autolayout}{tst:autolayout}
+\tests{fnc:autolayoutplus}
+
+\teststep{Ein Admin befindet sich im Netzeditor. Ein Netz mit mehreren Knoten und Pfeilverbindungen ist geladen.}
+{Der Admin klickt auf den \enquote{Autolayout}-Knopf.}
+{Die Knoten und Pfeile des Netzes werden nach dem Standardalgorithmus angeordnet.}
+
+%%%%%%%%%%%%%
+\pagebreak
+
+\section{Systemmodelle}
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{image/PSE20191028.pdf}
+  \caption{Systemmodel}
+  \label{fig: Systemmodel}
+\end{figure}
+
+\appendix
+
+\section{GUI-Entwürfe}
+\label{section:gui}
+
+% made via https://gomockingbird.com/projects/mnf0cwf/4gXVnC
+
+\section{Glossar}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
