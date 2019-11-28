@@ -1,0 +1,1092 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="580"
+   height="400"
+   version="1.1"
+   id="svg4286"
+   sodipodi:docname="editor_properties.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   inkscape:export-filename="C:\Users\s_fmayer\Downloads\editor_properties.png"
+   inkscape:export-xdpi="164.94846"
+   inkscape:export-ydpi="164.94846">
+  <metadata
+     id="metadata4292">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4290" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview4288"
+     showgrid="false"
+     inkscape:zoom="1.668772"
+     inkscape:cx="471.17435"
+     inkscape:cy="272.18609"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g4284" />
+  <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+  <g
+     id="g4189">
+    <title
+       id="title4184">background</title>
+    <rect
+       x="-1"
+       y="-1"
+       width="582"
+       height="402"
+       id="canvas_background"
+       fill="#fff" />
+    <g
+       id="canvasGrid"
+       display="none">
+      <rect
+         id="svg_6"
+         width="100%"
+         height="100%"
+         x="0"
+         y="0"
+         stroke-width="0"
+         fill="url(#gridpattern)" />
+    </g>
+  </g>
+  <g
+     id="g4284">
+    <title
+       id="title4191">Layer 1</title>
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:2"
+       x="1"
+       y="1"
+       width="578"
+       height="398"
+       id="svg_1" />
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="232.035991"
+       y="244.460893"
+       width="93.421296"
+       height="98.026572"
+       id="svg_21" />
+    <rect
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="1"
+       y="1"
+       width="578"
+       height="45"
+       id="svg_2"
+       stroke-width="2"
+       stroke="#000"
+       fill="#fff" />
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="10"
+       y="20.368414"
+       id="svg_3"
+       font-size="11"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve"
+       font-weight="bold">Max Mustermann</text>
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="10"
+       y="38"
+       id="svg_4"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve"
+       font-style="italic">Reset Password</text>
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       x="419.276663"
+       y="13.631553"
+       width="78.289678"
+       height="19.736894"
+       id="svg_11" />
+    <rect
+       fill="none"
+       stroke="#000"
+       x="193.61818"
+       y="223.355332"
+       width="0.657896"
+       height="0"
+       id="svg_10" />
+    <rect
+       fill="none"
+       stroke-width="2"
+       x="508.092675"
+       y="13.631552"
+       width="54.605412"
+       height="19.736894"
+       id="svg_13"
+       stroke="#000" />
+    <text
+       fill="#000000"
+       stroke="#000"
+       x="519.662855"
+       y="26.397164"
+       id="svg_12"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve"
+       stroke-width="0">Logout</text>
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="0.806826"
+       y="46.047692"
+       width="110"
+       height="353"
+       id="svg_14" />
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="111"
+       y="46"
+       width="468"
+       height="30"
+       id="svg_15" />
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="433"
+       y="51.000001"
+       width="130"
+       height="20"
+       id="svg_17" />
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="438.842104"
+       y="63.894338"
+       id="svg_16"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">Switch to Testenvironment</text>
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="291.57059"
+       y="102.302384"
+       width="93.421296"
+       height="98.026572"
+       id="svg_19" />
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="349.522517"
+       y="244.460888"
+       width="93.421296"
+       height="98.026572"
+       id="svg_20" />
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="232.035989"
+       y="244.460877"
+       width="93.44747"
+       height="30.786957"
+       id="svg_27" />
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="256.533206"
+       y="263.04413"
+       id="svg_22"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">Nullspeed</text>
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="349.522521"
+       y="244.46089"
+       width="93.44747"
+       height="30.786957"
+       id="svg_28" />
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="361.615659"
+       y="263.254644"
+       id="svg_23"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">Near Wreckage</text>
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="291.570585"
+       y="102.302374"
+       width="93.44747"
+       height="30.786957"
+       id="svg_26" />
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="309.912658"
+       y="120.886443"
+       id="svg_24"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">Illegal Diving</text>
+    <line
+       fill="none"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="278.375573"
+       y1="244.157192"
+       x2="338.219836"
+       y2="200.565789"
+       id="svg_29"
+       stroke-linejoin="null"
+       stroke-linecap="null"
+       stroke="#000" />
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="397.752001"
+       y1="243.932936"
+       x2="339.838198"
+       y2="200.69063"
+       id="svg_32"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="337.594804"
+       y1="200.619323"
+       x2="329.745848"
+       y2="202.861882"
+       id="svg_35"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <line
+       fill="none"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="337.755775"
+       y1="201.387933"
+       x2="337.692514"
+       y2="206.097307"
+       id="svg_36"
+       stroke-linejoin="null"
+       stroke-linecap="null"
+       stroke="#000" />
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="341.182899"
+       y1="201.067835"
+       x2="345.892272"
+       y2="201.292091"
+       id="svg_37"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="339.875431"
+       y1="200.827631"
+       x2="339.875431"
+       y2="206.003107"
+       id="svg_38"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="28.575789"
+       y="91.185705"
+       width="16"
+       height="12"
+       id="svg_41" />
+    <rect
+       fill="#fff"
+       stroke="#000"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="35.575792"
+       y="87.080698"
+       width="9"
+       height="4"
+       id="svg_42" />
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="38.347822"
+       y="69.790174"
+       id="svg_43"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">All Samples</text>
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="53.586437"
+       y="98.78306"
+       id="svg_44"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">Project 1</text>
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="14.837393"
+       y="62.459967"
+       width="16"
+       height="12"
+       id="svg_47" />
+    <rect
+       fill="#fff"
+       stroke="#000"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="21.837396"
+       y="58.354959"
+       width="9"
+       height="4"
+       id="svg_48" />
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="22.099942"
+       y1="74.641355"
+       x2="22.099942"
+       y2="97.989766"
+       id="svg_49"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="21.933777"
+       y1="97.572136"
+       x2="28.746545"
+       y2="97.572136"
+       id="svg_50"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <ellipse
+       fill="none"
+       stroke="#000"
+       stroke-width="0.5"
+       stroke-opacity="null"
+       fill-opacity="null"
+       cx="45.097057"
+       cy="119.802811"
+       id="svg_54"
+       rx="1.827816"
+       ry="1.827816" />
+    <ellipse
+       fill="none"
+       stroke="#000"
+       stroke-width="0.5"
+       stroke-opacity="null"
+       fill-opacity="null"
+       cx="43.457182"
+       cy="112.505283"
+       id="svg_55"
+       rx="1.827816"
+       ry="1.827816" />
+    <ellipse
+       fill="none"
+       stroke="#000"
+       stroke-width="0.5"
+       stroke-opacity="null"
+       fill-opacity="null"
+       cx="49.482676"
+       cy="114.665429"
+       id="svg_56"
+       rx="1.827816"
+       ry="1.827816" />
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-width="0.5"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="44.674098"
+       y1="113.518989"
+       x2="47.561887"
+       y2="114.385326"
+       id="svg_57"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-width="0.5"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="46.262382"
+       y1="118.283841"
+       x2="48.139445"
+       y2="115.97361"
+       id="svg_59"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <ellipse
+       fill="none"
+       stroke="#000"
+       stroke-width="0.5"
+       stroke-opacity="null"
+       fill-opacity="null"
+       cx="45.097057"
+       cy="136.56754"
+       id="svg_60"
+       rx="1.827816"
+       ry="1.827816" />
+    <ellipse
+       fill="none"
+       stroke="#000"
+       stroke-width="0.5"
+       stroke-opacity="null"
+       fill-opacity="null"
+       cx="43.457182"
+       cy="129.270012"
+       id="svg_61"
+       rx="1.827816"
+       ry="1.827816" />
+    <ellipse
+       fill="none"
+       stroke="#000"
+       stroke-width="0.5"
+       stroke-opacity="null"
+       fill-opacity="null"
+       cx="49.482676"
+       cy="131.430158"
+       id="svg_62"
+       rx="1.827816"
+       ry="1.827816" />
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-width="0.5"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="44.674098"
+       y1="130.283718"
+       x2="47.561887"
+       y2="131.150055"
+       id="svg_63"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-width="0.5"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="46.262382"
+       y1="135.04857"
+       x2="48.139445"
+       y2="132.738339"
+       id="svg_64"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="58.391096"
+       y="120.016515"
+       id="svg_65"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">TestGraph</text>
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="58.391096"
+       y="136.049598"
+       id="svg_66"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">TestG4</text>
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="35.144394"
+       y1="103.267338"
+       x2="35.144394"
+       y2="133.736593"
+       id="svg_68"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="35.144394"
+       y1="115.829221"
+       x2="41.066122"
+       y2="115.829221"
+       id="svg_69"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="34.687794"
+       y1="133.4356"
+       x2="40.609522"
+       y2="133.4356"
+       id="svg_70"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="25"
+       y="339.010364"
+       width="63"
+       height="20.507834"
+       id="svg_73" />
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="30.929431"
+       y="352.45076"
+       id="svg_71"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve"
+       stroke-width="0">+ New DBN</text>
+    <rect
+       fill="none"
+       stroke="#000"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="25.166757"
+       y="367.020053"
+       width="62.760784"
+       height="21"
+       id="svg_74" />
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="30.449226"
+       y="380.701096"
+       id="svg_72"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">Import DBN</text>
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="223.730999"
+       y="58.493253"
+       id="svg_97"
+       font-size="6"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">T</text>
+    <rect
+       fill="#fff"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       x="110.883278"
+       y="302.553741"
+       width="468"
+       height="96"
+       id="svg_116" />
+    <rect
+       fill="#000000"
+       x="567.41052"
+       y="305.845765"
+       width="2"
+       height="13"
+       id="svg_117"
+       transform="rotate(45 568.4107666015627,312.34576416015614) "
+       stroke="#000000" />
+    <rect
+       fill="#000000"
+       stroke="#000000"
+       x="567.41052"
+       y="305.845765"
+       width="2"
+       height="13"
+       id="svg_118"
+       transform="rotate(135 568.4107666015625,312.34576416015625) " />
+    <text
+       fill="#000000"
+       stroke="#000000"
+       stroke-width="0"
+       x="116.512662"
+       y="317.42835"
+       id="svg_119"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve"
+       font-style="italic">General</text>
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="163.072126"
+       y="317.428523"
+       id="svg_120"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">Probabilities</text>
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="227.039057"
+       y="317.426048"
+       id="svg_121"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">Evidences</text>
+    <line
+       fill="none"
+       stroke="#000"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x1="110.72"
+       y1="325"
+       x2="579"
+       y2="325"
+       id="svg_122"
+       stroke-linejoin="null"
+       stroke-linecap="null" />
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="121.845185"
+       y="352.24"
+       id="svg_123"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve"
+       font-weight="bold">Name:</text>
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="121.838935"
+       y="378.64"
+       id="svg_124"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve"
+       font-style="normal"
+       font-weight="bold">Background:</text>
+    <rect
+       fill="#fff"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="196.320009"
+       y="341.04"
+       width="140.399998"
+       height="16"
+       id="svg_125"
+       stroke="#000" />
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="202.32"
+       y="351.598731"
+       id="svg_126"
+       font-size="8"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">Illegal Diving</text>
+    <rect
+       fill="#fff"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="196.320009"
+       y="367.887719"
+       width="16"
+       height="16"
+       id="svg_127"
+       stroke="#000" />
+    <rect
+       fill="#e5e5e5"
+       x="200.320009"
+       y="371.887719"
+       width="8"
+       height="8"
+       id="svg_128"
+       stroke="#e5e5e5" />
+    <rect
+       stroke="#000"
+       fill="none"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="242.509644"
+       y="51.000001"
+       width="59.015281"
+       height="20"
+       id="svg_7" />
+    <text
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="248.351748"
+       y="64.472463"
+       id="svg_8"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve">Autolayout</text>
+    <rect
+       stroke="#000"
+       fill="none"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="301.6649"
+       y="51.000001"
+       width="13.269579"
+       height="20"
+       id="svg_9" />
+    <path
+       id="svg_39"
+       d="m305.177904,59.451596l3.163395,3.130102l3.080151,-3.163399"
+       fill-opacity="null"
+       stroke-opacity="null"
+       stroke-width="2"
+       stroke="#000"
+       fill="none" />
+    <rect
+       fill="none"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="368.762895"
+       y="13.5457"
+       width="26.273777"
+       height="20"
+       id="svg_18"
+       stroke="#000" />
+    <text
+       style="cursor: text;"
+       fill="#000000"
+       stroke="#000"
+       stroke-width="0"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="374.955945"
+       y="27.024799"
+       id="svg_25"
+       font-size="10"
+       font-family="Helvetica, Arial, sans-serif"
+       text-anchor="start"
+       xml:space="preserve"
+       font-weight="bold">EN</text>
+    <rect
+       stroke="#000"
+       fill="none"
+       stroke-width="2"
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="395.176634"
+       y="13.5457"
+       width="13.269579"
+       height="20"
+       id="svg_30" />
+    <path
+       id="svg_31"
+       d="m398.689638,21.997295l3.163394,3.130102l3.080151,-3.163398"
+       fill-opacity="null"
+       stroke-opacity="null"
+       stroke-width="2"
+       stroke="#000"
+       fill="none" />
+    <g
+       id="g3945"
+       transform="translate(115.06328,49.128063)">
+      <path
+         id="path3931"
+         d="M 0,0 H 24 V 24 H 0 Z"
+         inkscape:connector-curvature="0"
+         style="fill:none" />
+      <path
+         id="path3933"
+         d="M 17,3 H 5 C 3.89,3 3,3.9 3,5 v 14 c 0,1.1 0.89,2 2,2 h 14 c 1.1,0 2,-0.9 2,-2 V 7 Z m -5,16 c -1.66,0 -3,-1.34 -3,-3 0,-1.66 1.34,-3 3,-3 1.66,0 3,1.34 3,3 0,1.66 -1.34,3 -3,3 z M 15,9 H 5 V 5 h 10 z"
+         inkscape:connector-curvature="0" />
+    </g>
+    <path
+       id="path3947"
+       d="m 162.68031,61.628928 h -6 v 6 h -2 v -6 h -6 v -2 h 6 v -6 h 2 v 6 h 6 z"
+       inkscape:connector-curvature="0" />
+    <g
+       id="g3977"
+       transform="matrix(0.6395142,0,0,0.50779822,178.79511,60.577049)">
+      <path
+         id="path3963"
+         d="M 0,0 H 24 V 24 H 0 Z"
+         inkscape:connector-curvature="0"
+         style="fill:none" />
+      <path
+         id="path3965"
+         d="M 12,4 10.59,5.41 16.17,11 H 4 v 2 H 16.17 L 10.59,18.59 12,20 20,12 Z"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       id="g3977-5"
+       transform="matrix(0.6395142,0,0,0.50779822,210.73068,60.52496)">
+      <path
+         id="path3963-7"
+         d="M 0,0 H 24 V 24 H 0 Z"
+         inkscape:connector-curvature="0"
+         style="fill:none" />
+      <path
+         id="path3965-8"
+         d="M 12,4 10.59,5.41 16.17,11 H 4 v 2 H 16.17 L 10.59,18.59 12,20 20,12 Z"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       id="g3961-1"
+       transform="matrix(0.57019,0,0,0.57019,180.05458,49.149201)">
+      <path
+         id="path3947-6"
+         d="m 19,13 h -6 v 6 H 11 V 13 H 5 v -2 h 6 V 5 h 2 v 6 h 6 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path3949-0"
+         d="M 0,0 H 24 V 24 H 0 Z"
+         inkscape:connector-curvature="0"
+         style="fill:none" />
+    </g>
+    <g
+       id="g3961-1-0"
+       transform="matrix(0.57019,0,0,0.57019,210.56429,49.793575)">
+      <path
+         id="path3947-6-2"
+         d="m 19,13 h -6 v 6 H 11 V 13 H 5 v -2 h 6 V 5 h 2 v 6 h 6 z"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path3949-0-8"
+         d="M 0,0 H 24 V 24 H 0 Z"
+         inkscape:connector-curvature="0"
+         style="fill:none" />
+    </g>
+    <g
+       id="g4056"
+       transform="matrix(0.77941176,0,0,0.77941176,327.68762,51.550845)">
+      <path
+         id="path4042"
+         d="M 0,0 H 24 V 24 H 0 Z"
+         inkscape:connector-curvature="0"
+         style="fill:none" />
+      <path
+         id="path4044"
+         d="M 12.5,8 C 9.85,8 7.45,8.99 5.6,10.6 L 2,7 v 9 h 9 L 7.38,12.38 c 1.39,-1.16 3.16,-1.88 5.12,-1.88 3.54,0 6.55,2.31 7.6,5.5 l 2.37,-0.78 C 21.08,11.03 17.15,8 12.5,8 Z"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       id="g4072"
+       transform="matrix(0.79901961,0,0,0.79901961,352.94483,51.21564)">
+      <path
+         id="path4058"
+         d="M 0,0 H 24 V 24 H 0 Z"
+         inkscape:connector-curvature="0"
+         style="fill:none" />
+      <path
+         id="path4060"
+         d="M 18.4,10.6 C 16.55,8.99 14.15,8 11.5,8 6.85,8 2.92,11.03 1.54,15.22 L 3.9,16 c 1.05,-3.19 4.05,-5.5 7.6,-5.5 1.95,0 3.73,0.72 5.12,1.88 L 13,16 h 9 V 7 Z"
+         inkscape:connector-curvature="0" />
+    </g>
+    <text
+       stroke-opacity="null"
+       fill-opacity="null"
+       x="422.5759"
+       y="27.231691"
+       id="svg_5-6"
+       font-size="10"
+       xml:space="preserve"
+       style="font-size:10px;font-family:Helvetica, Arial, sans-serif;text-anchor:start;fill:#000000;stroke:#000000;stroke-width:0">Evidence-Editor</text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="376.15036"
+       y="53.11927"
+       id="text238"><tspan
+         sodipodi:role="line"
+         id="tspan236"
+         x="376.15036"
+         y="53.11927"
+         style="font-size:5.33333349px">Timesteps</tspan></text>
+    <rect
+       id="rect240"
+       width="48.249634"
+       height="15.473165"
+       x="376.98224"
+       y="55.947701"
+       style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="381.14169"
+       y="67.261406"
+       id="text4755"><tspan
+         sodipodi:role="line"
+         x="381.14169"
+         y="67.261406"
+         id="tspan4757">2</tspan></text>
+  </g>
+</svg>
