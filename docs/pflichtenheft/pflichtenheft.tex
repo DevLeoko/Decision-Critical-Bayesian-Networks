@@ -92,7 +92,7 @@ description={Fraunhofer-Institut für Optronik, Systemtechnik und Bildauswertung
 \newglossaryentry{konto}{
 name={Konto},
 plural={Konten},
-description={Repräsentiert die Zugriffsrechte und weite Informationen einer Person im System. Eine Person mit einen einem Konto kann sich mit Email und Passwort des Kontos im System einloggen.}
+description={Repräsentiert die Zugriffsrechte und weitere Informationen einer Person im System. Eine Person mit einen einem Konto kann sich mit Email und Passwort des Kontos im System einloggen.}
 }
 \newglossaryentry{zeitschritte}{
 name={Zeitschritte},
@@ -280,6 +280,7 @@ Jeder Nutzer hat die Möglichkeit, sich durch einen Klick auf den \enquote{Logou
 \fulfills{crt:multiling}
 Im Menü wird dem Nutzer die aktuell ausgewählte Sprache angezeigt (standardmäßig Englisch). Durch einen Klick auf diese öffnet sich ein Drop-Down-Menü in dem der Nutzer eine andere Sprache auswählen kann. Tut der Nutzer dies, ändern sich automatisch alle Texte auf die entsprechende Sprache.
 
+\pagebreak
 \subsection{Netzverwaltung}  
 
 \functionality{Netze importieren}{fnc:netimport}
@@ -312,7 +313,7 @@ Ein Administrator ist in der Lage Netze umzubenennen. Hierzu klickt er mit der r
 %(Ruben)Ich glaube es ist nur als eine Kopie von Netz im selben Ordner erstellen gedacht (Copy of Net.xddsl)
 
 Ein Administrator ist in der Lage Netze durch ein Tastenkürzel bzw. ein Rechtsklickmenü Netze zu kopieren. Dabei wird das komplette Netz in den selben Ordner dupliziert.
-
+\pagebreak
 \functionality{Netze löschen}{fnc:delNet}
 \fulfills{crt:ordstr}
 \fulfills{crt:netman}
@@ -454,6 +455,7 @@ Die Evidenzen werden in Form von logischen Formeln dargestellt. Diese werden in 
 Durch einen Klick auf den \enquote{Save}-Knopf wird die erstellte Evidenz mit dem angegebenen Namen gespeichert.
 Falls kein Name, keine Formel oder eine falsche Formel (z.B falsche Klammerung)... eingegeben wurde, scheitert das Speichern und eine Fehlermeldung wird angezeigt.
 
+\pagebreak
 \functionality{Information Seite}{fnc:showInfo}
 
 Durch einen Klick auf den \enquote{Info}-Knopf wird eine Pop-Up-Seite angezeigt.
@@ -560,6 +562,7 @@ Die Evidenz-Formeln beschreiben eine Verknüpfung der DBN-Knoten mit gegebenen D
 \fulfills{crt:IOSB}
 \fulfills{crt:infcal}
 
+\pagebreak
 \functionality{ Evidenz-Formeln für Annotationen }{fnc:infAnnot}
 Es besteht die Möglichkeit, dass Evidenz-Formeln nicht nur für gegebene Datentypen evaluiert werden können, sondern auch für beliebige Annotationen.
 \fulfills{crt:annotplus}
@@ -586,7 +589,7 @@ Die folgenden Daten werden für Nutzer-Konten gespeichert:
   \item Rolle
   \item Hash des Passworts
 \end{itemize}
-
+\pagebreak
 \prodData{Netze}
 Die folgenden Daten werden für Netze gespeichert:
 \begin{itemize}
@@ -1041,7 +1044,7 @@ Er führt die Berechnungen durch.}
 {Die Inferenzberechnung für das Schiffsobjekt ist abgeschlossen.}
 {Der Server serialisiert die Inferenzergebnisse in ein von den IOSB-Servern akzeptiertes Format und übergibt diese an ActiveMQ.}
 
-
+\pagebreak
 \test{Caching}{tst:caching}
 \tests{fnc:cacheData}
 
@@ -1092,26 +1095,27 @@ Der angemeldete Nutzer (Admin oder Moderator) kann die Testumgebung benutzen um 
 
 Ein angemeldeter Admin hat zudem die Optionen den Netz-Editor und den Evidenzen-Editor zu benutzen. Der Admin kann auch noch die Ordnerstruktur bearbeiten und Netze verwalten (importieren, umbenennen und duplizieren). 
 
-\begin{figure}[ht!]
-  \includegraphics[width=\linewidth]{image/PSE20191028.pdf}
-  \caption{Systemmodel}
-  \label{fig:Systemmodel}
+\newpage
+\begin{figure}[h!]
+   \centering
+   \includegraphics[scale = 0.7]{image/PSE20191028.pdf}
+   \caption{Systemmodel}
+   \label{fig:Systemmodel}
 \end{figure}
 
-
-\pagebreak
+\newpage
 \appendix
 \section{GUI-Entwürfe}
 \label{section:gui}
 
 \begin{figure}[ht!]
-    \includegraphics[width=\linewidth]{image/editor.png}
+    \includegraphics[scale = 0.8]{image/editor.png}
     \caption{Netzeditor mit geöffnetem Rechtsklickmenü des Knotens}
     \label{fig:neteditor}
 \end{figure}
 
 \begin{figure}[ht!]
-  \includegraphics[width=\linewidth]{image/editor_properties.png}
+  \includegraphics[scale = 0.8]{image/editor_properties.png}
   \caption{Netzeditor mit geöffneten Einstellungen}
   \label{fig:neteditorproperties}
 \end{figure}
