@@ -1,0 +1,849 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is the REST-Api of DCBN.",
+    "version": "1.0.0",
+    "title": "Decision Critical Bayesian Networks",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "login",
+      "description": "Login and Password Reset."
+    },
+    {
+      "name": "users",
+      "description": "Access to users"
+    },
+    {
+      "name": "graphs",
+      "description": "Access to bayesian networks"
+    },
+    {
+      "name": "evidences",
+      "description": "Access to evidences"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": [
+          "login"
+        ],
+        "description": "Logs in with email and password.",
+        "requestBody": {
+          "description": "The login data.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                },
+                "example": {
+                  "email": "mail@mustermann.de",
+                  "password": "password123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The current users authentication token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/request-password": {
+      "post": {
+        "tags": [
+          "login"
+        ],
+        "description": "Requests a password reset email to be send to the given address.",
+        "requestBody": {
+          "description": "The email.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "example": "mail@mustermann.de"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Reset email successfully send."
+          },
+          "404": {
+            "description": "Email not found."
+          }
+        }
+      }
+    },
+    "/reset-password": {
+      "post": {
+        "tags": [
+          "login"
+        ],
+        "description": "Requests a password reset email to be send to the given address.",
+        "requestBody": {
+          "description": "The reset data.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "resetToken": {
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                },
+                "example": {
+                  "resetToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                  "newPassword": "password123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Password reset successful."
+          },
+          "400": {
+            "description": "Invalid password format."
+          },
+          "401": {
+            "description": "Reset token is invalid or missing."
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "description": "Creates a new user with the given user data.",
+        "requestBody": {
+          "description": "The data of the user that is to be created.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created user object and the given ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "409": {
+            "description": "User with given email already exists."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "description": "Gets a list of users matching the query.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of users matching the query.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "description": "Gets user with the given ID.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The user with the given ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "No user with the given ID found."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "users"
+        ],
+        "description": "Deletes the user with the given ID.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User was deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "No user with the given ID found."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "users"
+        ],
+        "description": "Replaces the user with the given ID.",
+        "requestBody": {
+          "description": "The new user data.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRequest"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User was replaced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "No user with the given ID found."
+          }
+        }
+      }
+    },
+    "/graphs": {
+      "post": {
+        "tags": [
+          "graphs"
+        ],
+        "description": "Creates a new graph.",
+        "requestBody": {
+          "description": "The graph that should be created.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GraphRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Graph creation successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Graph"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid graph."
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "graphs"
+        ],
+        "description": "Gets a list of all graphs.",
+        "parameters": [
+          {
+            "in": "query",
+            "description": "Should the structure be included?",
+            "name": "structure",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of all graphs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Graph"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/graphs/{id}": {
+      "get": {
+        "tags": [
+          "graphs"
+        ],
+        "description": "Gets the graph with the given ID.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The graph with the given ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Graph"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Graph Not Found."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "graphs"
+        ],
+        "description": "Deletes the graph with the given ID.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Graph deleted successfully."
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Graph Not Found."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "graphs"
+        ],
+        "description": "Updates the graph with the given ID.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated graph.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Graph"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Graph Not Found."
+          }
+        }
+      }
+    },
+    "/evidences": {
+      "post": {
+        "tags": [
+          "evidences"
+        ],
+        "description": "Creates a new evidence with the given data.",
+        "requestBody": {
+          "description": "The evidence data.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Evidence"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created evidence object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Evidence"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid evidence formula."
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "409": {
+            "description": "Evidence with given name already exists."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "evidences"
+        ],
+        "description": "Gets a list of all evidences.",
+        "responses": {
+          "200": {
+            "description": "A list of all evidences.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Evidence"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/evidences/{name}": {
+      "get": {
+        "tags": [
+          "evidences"
+        ],
+        "description": "Gets evidence with the given name.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The evidence with the given name.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Evidence"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "No evidence with the given name found."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "evidences"
+        ],
+        "description": "Deletes the evidence with the given name.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Evidence was deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "No evidence with the given name found."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "evidences"
+        ],
+        "description": "Replaces the evidence with the given name.",
+        "requestBody": {
+          "description": "The new evidence data.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvidenceRequest"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Evidence was replaced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Evidence"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid evidence formula."
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "No evidence with the given name found."
+          }
+        }
+      }
+    },
+    "/evidences/{name}/evaluate": {
+      "get": {
+        "tags": [
+          "evidences"
+        ],
+        "description": "Evaluates the evidence with the given name and values. Values that are used but not given have a default value. The given value parameters are just examples the list is not complete.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lat",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "in": "query",
+            "name": "long",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "in": "query",
+            "name": "speed",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "No evidence with the given name found."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "UnauthorizedError": {
+        "description": "Access token is missing or invalid."
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "id": 0,
+          "name": "Max Mustermann",
+          "email": "mail@mustermann.de"
+        }
+      },
+      "UserRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "name": "Max Mustermann",
+          "email": "mail@mustermann.de"
+        }
+      },
+      "Graph": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "structure": {
+            "type": "object"
+          }
+        },
+        "example": {
+          "id": 0,
+          "name": "TestGraph",
+          "structure": {}
+        }
+      },
+      "GraphRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "structure": {
+            "type": "object"
+          }
+        },
+        "example": {
+          "name": "TestGraph",
+          "structure": {}
+        }
+      },
+      "Evidence": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "formula": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "name": "An_Der_Kueste",
+          "formula": "ship.speed <= 13.5 & isInArea(ship.lat, ship.long, AREA_COAST)"
+        }
+      },
+      "EvidenceRequest": {
+        "type": "object",
+        "properties": {
+          "formula": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "formula": "ship.speed <= 13.5 & isInArea(ship.lat, ship.long, AREA_COAST)"
+        }
+      }
+    }
+  }
+}
