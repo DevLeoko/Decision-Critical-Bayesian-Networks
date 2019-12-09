@@ -1,9 +1,14 @@
 ﻿# Frontend
- - Componenten-Diagramm
- - Aktivitäts & Zustands Diagramme
- 
+- Componenten-Diagramm (Leo)
+- Zustands Diagramme
+  - Login (Ruben)
+  - Benuzerverwaltung (Ruben)
+- Aktivitätsdiagramme
+ - Evidenzeditor (Johann)
+ - Netzeditor (Daniel)
+  
 # REST
- - With OpenAPI?
+ - With OpenAPI (Fabio)
 
 # Backend
 - Klassendiagramm
