@@ -23,6 +23,7 @@ security:
 paths:
   /login:
     post:
+      security: []
       tags:
         - login
       description: "Logs in with email and password."
@@ -54,6 +55,7 @@ paths:
   
   /request-password:
     post:
+      security: []
       tags:
         - login
       description: "Requests a password reset email to be send to the given address."
@@ -74,6 +76,7 @@ paths:
   
   /reset-password:
     post:
+      security: []
       tags:
         - login
       description: "Requests a password reset email to be send to the given address."
@@ -113,7 +116,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRequest'
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+              example:
+                name: "Max Mustermann"
+                email: "mail@mustermann.de"
               
       responses:
         201:
@@ -201,7 +212,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRequest'
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+              example:
+                name: "Max Mustermann"
+                email: "mail@mustermann.de"
       
       parameters:
         - in: path
@@ -233,7 +252,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GraphRequest'
+              type: object
+              properties:
+                name: 
+                  type: string
+                structure:
+                  type: object
+              example:
+                name: "TestGraph"
+                structure: {}
       
       responses:
         201:
@@ -431,7 +458,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EvidenceRequest'
+              type: object
+              properties:
+                formula:
+                  type: string
+              example:
+                formula: "ship.speed <= 13.5 & isInArea(ship.lat, ship.long, AREA_COAST)"
       
       parameters:
         - in: path
@@ -521,16 +553,7 @@ components:
         id: 0
         name: "Max Mustermann"
         email: "mail@mustermann.de"
-    UserRequest:
-      type: object
-      properties:
-        name:
-          type: string
-        email:
-          type: string
-      example:
-        name: "Max Mustermann"
-        email: "mail@mustermann.de"
+      
     Graph:
       type: object
       properties:
@@ -544,16 +567,6 @@ components:
         id: 0
         name: "TestGraph"
         structure: {}
-    GraphRequest:
-      type: object
-      properties:
-        name: 
-          type: string
-        structure:
-          type: object
-      example:
-        name: "TestGraph"
-        structure: {}
     Evidence:
       type: object
       properties:
@@ -563,11 +576,4 @@ components:
           type: string
       example:
         name: "An_Der_Kueste"
-        formula: "ship.speed <= 13.5 & isInArea(ship.lat, ship.long, AREA_COAST)"
-    EvidenceRequest:
-      type: object
-      properties:
-        formula:
-          type: string
-      example:
         formula: "ship.speed <= 13.5 & isInArea(ship.lat, ship.long, AREA_COAST)"
