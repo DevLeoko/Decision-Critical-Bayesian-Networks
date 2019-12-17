@@ -761,6 +761,66 @@
           "description": "The name of the evidence formula"
         }
       ]
+    },
+    "/graphs/{id}/evaluate": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "integer"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "The graph id"
+        }
+      ],
+      "post": {
+        "summary": "",
+        "operationId": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "description": "Mapping of nodes to inference results"
+          }
+        },
+        "description": "Run inference on the graph with the submitted vitrual evidences.",
+        "parameters": [],
+        "requestBody": {
+          "description": "Mapping of nodes to viritual evidences",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
