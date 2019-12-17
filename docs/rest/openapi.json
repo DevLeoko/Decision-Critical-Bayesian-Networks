@@ -618,7 +618,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EvidenceFormulas"
+                  "$ref": "#/components/schemas/EvidenceFormula"
                 }
               }
             }
@@ -747,8 +747,20 @@
             }
           },
           "description": ""
+        },
+        "parameters": []
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "description": "The name of the evidence formula"
         }
-      }
+      ]
     }
   },
   "components": {
@@ -786,6 +798,11 @@
       },
       "Graph": {
         "type": "object",
+        "example": {
+          "id": 0,
+          "name": "TestGraph",
+          "structure": {}
+        },
         "properties": {
           "id": {
             "type": "string"
@@ -796,11 +813,6 @@
           "structure": {
             "type": "object"
           }
-        },
-        "example": {
-          "id": 0,
-          "name": "TestGraph",
-          "structure": {}
         }
       },
       "EvidenceFormula": {
