@@ -846,19 +846,15 @@
             -->
             <li class="nav-fixed nav-header active" data-group="_"><a href="#api-_">API Summary</a></li>
 
-                  <li class="nav-header" data-group="Default"><a href="#api-Default">API Methods - Default</a></li>
-                    <li data-group="Default" data-name="evidenceFormulasNameEvaluatePost" class="">
-                      <a href="#api-Default-evidenceFormulasNameEvaluatePost">evidenceFormulasNameEvaluatePost</a>
-                    </li>
-                    <li data-group="Default" data-name="graphsIdEvaluatePost" class="">
-                      <a href="#api-Default-graphsIdEvaluatePost">graphsIdEvaluatePost</a>
-                    </li>
                   <li class="nav-header" data-group="EvidenceFormulas"><a href="#api-EvidenceFormulas">API Methods - EvidenceFormulas</a></li>
                     <li data-group="EvidenceFormulas" data-name="evidenceFormulasGet" class="">
                       <a href="#api-EvidenceFormulas-evidenceFormulasGet">evidenceFormulasGet</a>
                     </li>
                     <li data-group="EvidenceFormulas" data-name="evidenceFormulasNameDelete" class="">
                       <a href="#api-EvidenceFormulas-evidenceFormulasNameDelete">evidenceFormulasNameDelete</a>
+                    </li>
+                    <li data-group="EvidenceFormulas" data-name="evidenceFormulasNameEvaluatePost" class="">
+                      <a href="#api-EvidenceFormulas-evidenceFormulasNameEvaluatePost">evidenceFormulasNameEvaluatePost</a>
                     </li>
                     <li data-group="EvidenceFormulas" data-name="evidenceFormulasNameGet" class="">
                       <a href="#api-EvidenceFormulas-evidenceFormulasNameGet">evidenceFormulasNameGet</a>
@@ -875,6 +871,9 @@
                     </li>
                     <li data-group="Graphs" data-name="graphsIdDelete" class="">
                       <a href="#api-Graphs-graphsIdDelete">graphsIdDelete</a>
+                    </li>
+                    <li data-group="Graphs" data-name="graphsIdEvaluatePost" class="">
+                      <a href="#api-Graphs-graphsIdEvaluatePost">graphsIdEvaluatePost</a>
                     </li>
                     <li data-group="Graphs" data-name="graphsIdGet" class="">
                       <a href="#api-Graphs-graphsIdGet">graphsIdGet</a>
@@ -930,796 +929,6 @@
           </div>
         </div>
         <div id="sections">
-                <section id="api-Default">
-                  <h1>Default</h1>
-                    <div id="api-Default-evidenceFormulasNameEvaluatePost">
-                      <article id="api-Default-evidenceFormulasNameEvaluatePost-0" data-group="User" data-name="evidenceFormulasNameEvaluatePost" data-version="0">
-                        <div class="pull-left">
-                          <h1>evidenceFormulasNameEvaluatePost</h1>
-                          <p></p>
-                        </div>
-                        <div class="pull-right"></div>
-                        <div class="clearfix"></div>
-                        <p></p>
-                        <p class="marked">Evaluates the evidence-formula with the given name and values. Values that are used but not given have a default value. The given value parameters are just examples the list is not complete.</p>
-                        <p></p>
-                        <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/evidence-formulas/{name}/evaluate</span></code></pre>
-                        <p>
-                          <h3>Usage and SDK Samples</h3>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-evidenceFormulasNameEvaluatePost-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-evidenceFormulasNameEvaluatePost-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-evidenceFormulasNameEvaluatePost-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-evidenceFormulasNameEvaluatePost-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-evidenceFormulasNameEvaluatePost-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-evidenceFormulasNameEvaluatePost-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-evidenceFormulasNameEvaluatePost-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-evidenceFormulasNameEvaluatePost-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-evidenceFormulasNameEvaluatePost-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-evidenceFormulasNameEvaluatePost-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-evidenceFormulasNameEvaluatePost-0-python">Python</a></li>
-                        </ul>
-
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-evidenceFormulasNameEvaluatePost-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "//evidence-formulas/{name}/evaluate"</code></pre>
-                          </div>
-                          <div class="tab-pane" id="examples-Default-evidenceFormulasNameEvaluatePost-0-java">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
-import io.swagger.client.auth.*;
-import io.swagger.client.model.*;
-import io.swagger.client.api.DefaultApi;
-
-import java.io.File;
-import java.util.*;
-
-public class DefaultApiExample {
-
-    public static void main(String[] args) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-
-
-        DefaultApi apiInstance = new DefaultApi();
-        String name = name_example; // String | The name of the evidence formula
-        Object body = ; // Object | 
-        try {
-            'Boolean' result = apiInstance.evidenceFormulasNameEvaluatePost(name, body);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#evidenceFormulasNameEvaluatePost");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-Default-evidenceFormulasNameEvaluatePost-0-android">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
-
-public class DefaultApiExample {
-
-    public static void main(String[] args) {
-        DefaultApi apiInstance = new DefaultApi();
-        String name = name_example; // String | The name of the evidence formula
-        Object body = ; // Object | 
-        try {
-            'Boolean' result = apiInstance.evidenceFormulasNameEvaluatePost(name, body);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#evidenceFormulasNameEvaluatePost");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-  <!--
-  <div class="tab-pane" id="examples-Default-evidenceFormulasNameEvaluatePost-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
-                            <div class="tab-pane" id="examples-Default-evidenceFormulasNameEvaluatePost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
-String *name = name_example; // The name of the evidence formula
-Object *body = ; //  (optional)
-
-DefaultApi *apiInstance = [[DefaultApi alloc] init];
-
-[apiInstance evidenceFormulasNameEvaluatePostWith:name
-    body:body
-              completionHandler: ^('Boolean' output, NSError* error) {
-                            if (output) {
-                                NSLog(@"%@", output);
-                            }
-                            if (error) {
-                                NSLog(@"Error: %@", error);
-                            }
-                        }];
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-evidenceFormulasNameEvaluatePost-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var DecisionCriticalBayesianNetworks = require('decision_critical_bayesian_networks');
-var defaultClient = DecisionCriticalBayesianNetworks.ApiClient.instance;
-
-
-var api = new DecisionCriticalBayesianNetworks.DefaultApi()
-var name = name_example; // {{String}} The name of the evidence formula
-
-var callback = function(error, data, response) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
-};
-api.evidenceFormulasNameEvaluatePost(name, callback);
-</code></pre>
-                            </div>
-
-                            <!--<div class="tab-pane" id="examples-Default-evidenceFormulasNameEvaluatePost-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
-                            <div class="tab-pane" id="examples-Default-evidenceFormulasNameEvaluatePost-0-csharp">
-                              <pre class="prettyprint"><code class="language-cs">using System;
-using System.Diagnostics;
-using IO.Swagger.Api;
-using IO.Swagger.Client;
-using IO.Swagger.Model;
-
-namespace Example
-{
-    public class evidenceFormulasNameEvaluatePostExample
-    {
-        public void main()
-        {
-
-
-            var apiInstance = new DefaultApi();
-            var name = name_example;  // String | The name of the evidence formula
-            var body = new Object(); // Object |  (optional) 
-
-            try
-            {
-                'Boolean' result = apiInstance.evidenceFormulasNameEvaluatePost(name, body);
-                Debug.WriteLine(result);
-            }
-            catch (Exception e)
-            {
-                Debug.Print("Exception when calling DefaultApi.evidenceFormulasNameEvaluatePost: " + e.Message );
-            }
-        }
-    }
-}
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-evidenceFormulasNameEvaluatePost-0-php">
-                              <pre class="prettyprint"><code class="language-php"><&#63;php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-
-$api_instance = new Swagger\Client\ApiDefaultApi();
-$name = name_example; // String | The name of the evidence formula
-$body = ; // Object | 
-
-try {
-    $result = $api_instance->evidenceFormulasNameEvaluatePost($name, $body);
-    print_r($result);
-} catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->evidenceFormulasNameEvaluatePost: ', $e->getMessage(), PHP_EOL;
-}
-?></code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-evidenceFormulasNameEvaluatePost-0-perl">
-                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
-use WWW::SwaggerClient::Configuration;
-use WWW::SwaggerClient::DefaultApi;
-
-
-my $api_instance = WWW::SwaggerClient::DefaultApi->new();
-my $name = name_example; # String | The name of the evidence formula
-my $body = WWW::SwaggerClient::Object::Object->new(); # Object | 
-
-eval { 
-    my $result = $api_instance->evidenceFormulasNameEvaluatePost(name => $name, body => $body);
-    print Dumper($result);
-};
-if ($@) {
-    warn "Exception when calling DefaultApi->evidenceFormulasNameEvaluatePost: $@\n";
-}</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-evidenceFormulasNameEvaluatePost-0-python">
-                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
-import time
-import swagger_client
-from swagger_client.rest import ApiException
-from pprint import pprint
-
-
-# create an instance of the API class
-api_instance = swagger_client.DefaultApi()
-name = name_example # String | The name of the evidence formula
-body =  # Object |  (optional)
-
-try: 
-    api_response = api_instance.evidence_formulas_name_evaluate_post(name, body=body)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DefaultApi->evidenceFormulasNameEvaluatePost: %s\n" % e)</code></pre>
-                            </div>
-                          </div>
-
-                          <h2>Parameters</h2>
-
-                            <div class="methodsubtabletitle">Path parameters</div>
-                            <table id="methodsubtable">
-                                <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
-                                </tr>
-                                  <tr><td style="width:150px;">name*</td>
-                                  <td>
-                                  
-                                  
-                                      <div id="d2e199_evidenceFormulasNameEvaluatePost_name">
-                                          <div class="json-schema-view">
-                                              <div class="primitive">
-                                                  <span class="type">
-                                                      String
-                                                  </span>
-                                  
-                                                      <div class="inner description">
-                                                          The name of the evidence formula
-                                                      </div>
-                                              </div>
-                                                  <div class="inner required">
-                                                      Required
-                                                  </div>
-                                          </div>
-                                      </div>
-                                  </td>
-                                  </tr>
-                            </table>
-
-
-                            <div class="methodsubtabletitle">Body parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">body </td>
-                                <td>
-                                
-                                
-                                <script>
-                                $(document).ready(function() {
-                                  var schemaWrapper = {
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "type" : "object"
-      }
-    }
-  }
-};
-                                  var schema = schemaWrapper.content["application/json"].schema;
-                                  if (schema.$ref != null) {
-                                    schema = defsParser.$refs.get(schema.$ref);
-                                  } else {
-                                    schemaWrapper.components = {};
-                                    schemaWrapper.components.schemas = Object.assign({}, defs);
-                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                      console.log(err);
-                                    });
-                                  }
-                                
-                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_evidenceFormulasNameEvaluatePost_body');
-                                  result.empty();
-                                  result.append(view.render());
-                                });
-                                </script>
-                                <div id="d2e199_evidenceFormulasNameEvaluatePost_body"></div>
-                                </td>
-                                </tr>
-                            </table>
-
-
-
-                          <h2>Responses</h2>
-                            <h3> Status: 200 - The result. </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-evidenceFormulasNameEvaluatePost-200-schema">Schema</a>
-                                </li>
-
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-evidenceFormulasNameEvaluatePost-200-schema">
-                                  <div id='responses-evidenceFormulasNameEvaluatePost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "The result.",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "type" : "boolean",
-        "x-content-type" : "application/json"
-      }
-    }
-  }
-};
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        //console.log(JSON.stringify(schema));
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-evidenceFormulasNameEvaluatePost-200-schema-data').val(stringify(schema));
-                                        var result = $('#responses-evidenceFormulasNameEvaluatePost-200-schema-200');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-evidenceFormulasNameEvaluatePost-200-schema-data' type='hidden' value=''></input>
-                                </div>
-                            </div>
-
-                            <h3> Status: 401 - Unauthorized </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                            </div>
-
-                            <h3> Status: 404 - No evidence-formula with the given name found. </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                            </div>
-
-                        </article>
-                      </div>
-                      <hr>
-                    <div id="api-Default-graphsIdEvaluatePost">
-                      <article id="api-Default-graphsIdEvaluatePost-0" data-group="User" data-name="graphsIdEvaluatePost" data-version="0">
-                        <div class="pull-left">
-                          <h1>graphsIdEvaluatePost</h1>
-                          <p></p>
-                        </div>
-                        <div class="pull-right"></div>
-                        <div class="clearfix"></div>
-                        <p></p>
-                        <p class="marked">Run inference on the graph with the submitted vitrual evidences.</p>
-                        <p></p>
-                        <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/graphs/{id}/evaluate</span></code></pre>
-                        <p>
-                          <h3>Usage and SDK Samples</h3>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-graphsIdEvaluatePost-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-graphsIdEvaluatePost-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-graphsIdEvaluatePost-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-graphsIdEvaluatePost-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-graphsIdEvaluatePost-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-graphsIdEvaluatePost-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-graphsIdEvaluatePost-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-graphsIdEvaluatePost-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-graphsIdEvaluatePost-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-graphsIdEvaluatePost-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-graphsIdEvaluatePost-0-python">Python</a></li>
-                        </ul>
-
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-graphsIdEvaluatePost-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "//graphs/{id}/evaluate"</code></pre>
-                          </div>
-                          <div class="tab-pane" id="examples-Default-graphsIdEvaluatePost-0-java">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
-import io.swagger.client.auth.*;
-import io.swagger.client.model.*;
-import io.swagger.client.api.DefaultApi;
-
-import java.io.File;
-import java.util.*;
-
-public class DefaultApiExample {
-
-    public static void main(String[] args) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-
-
-        DefaultApi apiInstance = new DefaultApi();
-        Integer id = 56; // Integer | The graph id
-        Object body = ; // Object | Mapping of nodes to viritual evidences
-        try {
-            Object result = apiInstance.graphsIdEvaluatePost(id, body);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#graphsIdEvaluatePost");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-Default-graphsIdEvaluatePost-0-android">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
-
-public class DefaultApiExample {
-
-    public static void main(String[] args) {
-        DefaultApi apiInstance = new DefaultApi();
-        Integer id = 56; // Integer | The graph id
-        Object body = ; // Object | Mapping of nodes to viritual evidences
-        try {
-            Object result = apiInstance.graphsIdEvaluatePost(id, body);
-            System.out.println(result);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#graphsIdEvaluatePost");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-  <!--
-  <div class="tab-pane" id="examples-Default-graphsIdEvaluatePost-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
-                            <div class="tab-pane" id="examples-Default-graphsIdEvaluatePost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
-Integer *id = 56; // The graph id
-Object *body = ; // Mapping of nodes to viritual evidences (optional)
-
-DefaultApi *apiInstance = [[DefaultApi alloc] init];
-
-[apiInstance graphsIdEvaluatePostWith:id
-    body:body
-              completionHandler: ^(Object output, NSError* error) {
-                            if (output) {
-                                NSLog(@"%@", output);
-                            }
-                            if (error) {
-                                NSLog(@"Error: %@", error);
-                            }
-                        }];
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-graphsIdEvaluatePost-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var DecisionCriticalBayesianNetworks = require('decision_critical_bayesian_networks');
-var defaultClient = DecisionCriticalBayesianNetworks.ApiClient.instance;
-
-
-var api = new DecisionCriticalBayesianNetworks.DefaultApi()
-var id = 56; // {{Integer}} The graph id
-
-var callback = function(error, data, response) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
-};
-api.graphsIdEvaluatePost(id, callback);
-</code></pre>
-                            </div>
-
-                            <!--<div class="tab-pane" id="examples-Default-graphsIdEvaluatePost-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
-                            <div class="tab-pane" id="examples-Default-graphsIdEvaluatePost-0-csharp">
-                              <pre class="prettyprint"><code class="language-cs">using System;
-using System.Diagnostics;
-using IO.Swagger.Api;
-using IO.Swagger.Client;
-using IO.Swagger.Model;
-
-namespace Example
-{
-    public class graphsIdEvaluatePostExample
-    {
-        public void main()
-        {
-
-
-            var apiInstance = new DefaultApi();
-            var id = 56;  // Integer | The graph id
-            var body = new Object(); // Object | Mapping of nodes to viritual evidences (optional) 
-
-            try
-            {
-                Object result = apiInstance.graphsIdEvaluatePost(id, body);
-                Debug.WriteLine(result);
-            }
-            catch (Exception e)
-            {
-                Debug.Print("Exception when calling DefaultApi.graphsIdEvaluatePost: " + e.Message );
-            }
-        }
-    }
-}
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-graphsIdEvaluatePost-0-php">
-                              <pre class="prettyprint"><code class="language-php"><&#63;php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-
-$api_instance = new Swagger\Client\ApiDefaultApi();
-$id = 56; // Integer | The graph id
-$body = ; // Object | Mapping of nodes to viritual evidences
-
-try {
-    $result = $api_instance->graphsIdEvaluatePost($id, $body);
-    print_r($result);
-} catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->graphsIdEvaluatePost: ', $e->getMessage(), PHP_EOL;
-}
-?></code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-graphsIdEvaluatePost-0-perl">
-                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
-use WWW::SwaggerClient::Configuration;
-use WWW::SwaggerClient::DefaultApi;
-
-
-my $api_instance = WWW::SwaggerClient::DefaultApi->new();
-my $id = 56; # Integer | The graph id
-my $body = WWW::SwaggerClient::Object::Object->new(); # Object | Mapping of nodes to viritual evidences
-
-eval { 
-    my $result = $api_instance->graphsIdEvaluatePost(id => $id, body => $body);
-    print Dumper($result);
-};
-if ($@) {
-    warn "Exception when calling DefaultApi->graphsIdEvaluatePost: $@\n";
-}</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-graphsIdEvaluatePost-0-python">
-                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
-import time
-import swagger_client
-from swagger_client.rest import ApiException
-from pprint import pprint
-
-
-# create an instance of the API class
-api_instance = swagger_client.DefaultApi()
-id = 56 # Integer | The graph id
-body =  # Object | Mapping of nodes to viritual evidences (optional)
-
-try: 
-    api_response = api_instance.graphs_id_evaluate_post(id, body=body)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DefaultApi->graphsIdEvaluatePost: %s\n" % e)</code></pre>
-                            </div>
-                          </div>
-
-                          <h2>Parameters</h2>
-
-                            <div class="methodsubtabletitle">Path parameters</div>
-                            <table id="methodsubtable">
-                                <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
-                                </tr>
-                                  <tr><td style="width:150px;">id*</td>
-                                  <td>
-                                  
-                                  
-                                      <div id="d2e199_graphsIdEvaluatePost_id">
-                                          <div class="json-schema-view">
-                                              <div class="primitive">
-                                                  <span class="type">
-                                                      Integer
-                                                  </span>
-                                  
-                                                      <div class="inner description">
-                                                          The graph id
-                                                      </div>
-                                              </div>
-                                                  <div class="inner required">
-                                                      Required
-                                                  </div>
-                                          </div>
-                                      </div>
-                                  </td>
-                                  </tr>
-                            </table>
-
-
-                            <div class="methodsubtabletitle">Body parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">body </td>
-                                <td>
-                                
-                                
-                                <script>
-                                $(document).ready(function() {
-                                  var schemaWrapper = {
-  "description" : "Mapping of nodes to viritual evidences",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "type" : "object",
-        "properties" : { }
-      }
-    }
-  }
-};
-                                  var schema = schemaWrapper.content["application/json"].schema;
-                                  if (schema.$ref != null) {
-                                    schema = defsParser.$refs.get(schema.$ref);
-                                  } else {
-                                    schemaWrapper.components = {};
-                                    schemaWrapper.components.schemas = Object.assign({}, defs);
-                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                      console.log(err);
-                                    });
-                                  }
-                                
-                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_graphsIdEvaluatePost_body');
-                                  result.empty();
-                                  result.append(view.render());
-                                });
-                                </script>
-                                <div id="d2e199_graphsIdEvaluatePost_body"></div>
-                                </td>
-                                </tr>
-                            </table>
-
-
-
-                          <h2>Responses</h2>
-                            <h3> Status: 200 - OK </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-graphsIdEvaluatePost-200-schema">Schema</a>
-                                </li>
-
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-graphsIdEvaluatePost-200-schema">
-                                  <div id='responses-graphsIdEvaluatePost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "OK",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "type" : "object",
-        "properties" : { },
-        "x-content-type" : "application/json"
-      }
-    }
-  }
-};
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        //console.log(JSON.stringify(schema));
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-graphsIdEvaluatePost-200-schema-data').val(stringify(schema));
-                                        var result = $('#responses-graphsIdEvaluatePost-200-schema-200');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-graphsIdEvaluatePost-200-schema-data' type='hidden' value=''></input>
-                                </div>
-                            </div>
-
-                            <h3> Status: 401 - Unauthorized </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                            </div>
-
-                            <h3> Status: 404 - Not Found </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                            </div>
-
-                            <h3> Status:  - Mapping of nodes to inference results </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-graphsIdEvaluatePost--schema">Schema</a>
-                                </li>
-
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-graphsIdEvaluatePost--schema">
-                                  <div id='responses-graphsIdEvaluatePost--schema-' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "Mapping of nodes to inference results",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "type" : "object",
-        "properties" : { },
-        "x-content-type" : "application/json"
-      }
-    }
-  }
-};
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        //console.log(JSON.stringify(schema));
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-graphsIdEvaluatePost--schema-data').val(stringify(schema));
-                                        var result = $('#responses-graphsIdEvaluatePost--schema-');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-graphsIdEvaluatePost--schema-data' type='hidden' value=''></input>
-                                </div>
-                            </div>
-
-                        </article>
-                      </div>
-                      <hr>
-                  </section>
                 <section id="api-EvidenceFormulas">
                   <h1>EvidenceFormulas</h1>
                     <div id="api-EvidenceFormulas-evidenceFormulasGet">
@@ -2242,6 +1451,373 @@ except ApiException as e:
                             </div>
 
                             <h3> Status: 401 - Access token is missing or invalid. </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 404 - No evidence-formula with the given name found. </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-EvidenceFormulas-evidenceFormulasNameEvaluatePost">
+                      <article id="api-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0" data-group="User" data-name="evidenceFormulasNameEvaluatePost" data-version="0">
+                        <div class="pull-left">
+                          <h1>evidenceFormulasNameEvaluatePost</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Evaluates the evidence-formula with the given name and values. Values that are used but not given have a default value. The given value parameters are just examples the list is not complete.</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/evidence-formulas/{name}/evaluate</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "//evidence-formulas/{name}/evaluate"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.EvidenceFormulasApi;
+
+import java.io.File;
+import java.util.*;
+
+public class EvidenceFormulasApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        EvidenceFormulasApi apiInstance = new EvidenceFormulasApi();
+        String name = name_example; // String | The name of the evidence formula
+        Object body = ; // Object | 
+        try {
+            'Boolean' result = apiInstance.evidenceFormulasNameEvaluatePost(name, body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling EvidenceFormulasApi#evidenceFormulasNameEvaluatePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.EvidenceFormulasApi;
+
+public class EvidenceFormulasApiExample {
+
+    public static void main(String[] args) {
+        EvidenceFormulasApi apiInstance = new EvidenceFormulasApi();
+        String name = name_example; // String | The name of the evidence formula
+        Object body = ; // Object | 
+        try {
+            'Boolean' result = apiInstance.evidenceFormulasNameEvaluatePost(name, body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling EvidenceFormulasApi#evidenceFormulasNameEvaluatePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+String *name = name_example; // The name of the evidence formula
+Object *body = ; //  (optional)
+
+EvidenceFormulasApi *apiInstance = [[EvidenceFormulasApi alloc] init];
+
+[apiInstance evidenceFormulasNameEvaluatePostWith:name
+    body:body
+              completionHandler: ^('Boolean' output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var DecisionCriticalBayesianNetworks = require('decision_critical_bayesian_networks');
+var defaultClient = DecisionCriticalBayesianNetworks.ApiClient.instance;
+
+
+var api = new DecisionCriticalBayesianNetworks.EvidenceFormulasApi()
+var name = name_example; // {{String}} The name of the evidence formula
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.evidenceFormulasNameEvaluatePost(name, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class evidenceFormulasNameEvaluatePostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new EvidenceFormulasApi();
+            var name = name_example;  // String | The name of the evidence formula
+            var body = new Object(); // Object |  (optional) 
+
+            try
+            {
+                'Boolean' result = apiInstance.evidenceFormulasNameEvaluatePost(name, body);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling EvidenceFormulasApi.evidenceFormulasNameEvaluatePost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiEvidenceFormulasApi();
+$name = name_example; // String | The name of the evidence formula
+$body = ; // Object | 
+
+try {
+    $result = $api_instance->evidenceFormulasNameEvaluatePost($name, $body);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling EvidenceFormulasApi->evidenceFormulasNameEvaluatePost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::EvidenceFormulasApi;
+
+
+my $api_instance = WWW::SwaggerClient::EvidenceFormulasApi->new();
+my $name = name_example; # String | The name of the evidence formula
+my $body = WWW::SwaggerClient::Object::Object->new(); # Object | 
+
+eval { 
+    my $result = $api_instance->evidenceFormulasNameEvaluatePost(name => $name, body => $body);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling EvidenceFormulasApi->evidenceFormulasNameEvaluatePost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-EvidenceFormulas-evidenceFormulasNameEvaluatePost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.EvidenceFormulasApi()
+name = name_example # String | The name of the evidence formula
+body =  # Object |  (optional)
+
+try: 
+    api_response = api_instance.evidence_formulas_name_evaluate_post(name, body=body)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling EvidenceFormulasApi->evidenceFormulasNameEvaluatePost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">name*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_evidenceFormulasNameEvaluatePost_name">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      String
+                                                  </span>
+                                  
+                                                      <div class="inner description">
+                                                          The name of the evidence formula
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body </td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "object"
+      }
+    }
+  }
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_evidenceFormulasNameEvaluatePost_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_evidenceFormulasNameEvaluatePost_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - The result. </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-evidenceFormulasNameEvaluatePost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-evidenceFormulasNameEvaluatePost-200-schema">
+                                  <div id='responses-evidenceFormulasNameEvaluatePost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "The result.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "boolean",
+        "x-content-type" : "application/json"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-evidenceFormulasNameEvaluatePost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-evidenceFormulasNameEvaluatePost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-evidenceFormulasNameEvaluatePost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 401 - Unauthorized </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>
@@ -3849,6 +3425,376 @@ except ApiException as e:
                             </div>
 
                             <h3> Status: 404 - Graph Not Found. </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Graphs-graphsIdEvaluatePost">
+                      <article id="api-Graphs-graphsIdEvaluatePost-0" data-group="User" data-name="graphsIdEvaluatePost" data-version="0">
+                        <div class="pull-left">
+                          <h1>graphsIdEvaluatePost</h1>
+                          <p></p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Run inference on the graph with the submitted vitrual evidences.</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/graphs/{id}/evaluate</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Graphs-graphsIdEvaluatePost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Graphs-graphsIdEvaluatePost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Graphs-graphsIdEvaluatePost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Graphs-graphsIdEvaluatePost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Graphs-graphsIdEvaluatePost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Graphs-graphsIdEvaluatePost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Graphs-graphsIdEvaluatePost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Graphs-graphsIdEvaluatePost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Graphs-graphsIdEvaluatePost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Graphs-graphsIdEvaluatePost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Graphs-graphsIdEvaluatePost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Graphs-graphsIdEvaluatePost-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "//graphs/{id}/evaluate"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Graphs-graphsIdEvaluatePost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.GraphsApi;
+
+import java.io.File;
+import java.util.*;
+
+public class GraphsApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        GraphsApi apiInstance = new GraphsApi();
+        Integer id = 56; // Integer | The graph id
+        Object body = ; // Object | Mapping of nodes to viritual evidences
+        try {
+            Object result = apiInstance.graphsIdEvaluatePost(id, body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling GraphsApi#graphsIdEvaluatePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Graphs-graphsIdEvaluatePost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.GraphsApi;
+
+public class GraphsApiExample {
+
+    public static void main(String[] args) {
+        GraphsApi apiInstance = new GraphsApi();
+        Integer id = 56; // Integer | The graph id
+        Object body = ; // Object | Mapping of nodes to viritual evidences
+        try {
+            Object result = apiInstance.graphsIdEvaluatePost(id, body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling GraphsApi#graphsIdEvaluatePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Graphs-graphsIdEvaluatePost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Graphs-graphsIdEvaluatePost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+Integer *id = 56; // The graph id
+Object *body = ; // Mapping of nodes to viritual evidences (optional)
+
+GraphsApi *apiInstance = [[GraphsApi alloc] init];
+
+[apiInstance graphsIdEvaluatePostWith:id
+    body:body
+              completionHandler: ^(Object output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Graphs-graphsIdEvaluatePost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var DecisionCriticalBayesianNetworks = require('decision_critical_bayesian_networks');
+var defaultClient = DecisionCriticalBayesianNetworks.ApiClient.instance;
+
+
+var api = new DecisionCriticalBayesianNetworks.GraphsApi()
+var id = 56; // {{Integer}} The graph id
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.graphsIdEvaluatePost(id, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Graphs-graphsIdEvaluatePost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Graphs-graphsIdEvaluatePost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class graphsIdEvaluatePostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new GraphsApi();
+            var id = 56;  // Integer | The graph id
+            var body = new Object(); // Object | Mapping of nodes to viritual evidences (optional) 
+
+            try
+            {
+                Object result = apiInstance.graphsIdEvaluatePost(id, body);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling GraphsApi.graphsIdEvaluatePost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Graphs-graphsIdEvaluatePost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiGraphsApi();
+$id = 56; // Integer | The graph id
+$body = ; // Object | Mapping of nodes to viritual evidences
+
+try {
+    $result = $api_instance->graphsIdEvaluatePost($id, $body);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling GraphsApi->graphsIdEvaluatePost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Graphs-graphsIdEvaluatePost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::GraphsApi;
+
+
+my $api_instance = WWW::SwaggerClient::GraphsApi->new();
+my $id = 56; # Integer | The graph id
+my $body = WWW::SwaggerClient::Object::Object->new(); # Object | Mapping of nodes to viritual evidences
+
+eval { 
+    my $result = $api_instance->graphsIdEvaluatePost(id => $id, body => $body);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling GraphsApi->graphsIdEvaluatePost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Graphs-graphsIdEvaluatePost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.GraphsApi()
+id = 56 # Integer | The graph id
+body =  # Object | Mapping of nodes to viritual evidences (optional)
+
+try: 
+    api_response = api_instance.graphs_id_evaluate_post(id, body=body)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling GraphsApi->graphsIdEvaluatePost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_graphsIdEvaluatePost_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Integer
+                                                  </span>
+                                  
+                                                      <div class="inner description">
+                                                          The graph id
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body </td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "description" : "Mapping of nodes to viritual evidences",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "object",
+        "properties" : { }
+      }
+    }
+  }
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_graphsIdEvaluatePost_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_graphsIdEvaluatePost_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Mapping of nodes to inference results </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-graphsIdEvaluatePost-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-graphsIdEvaluatePost-200-schema">
+                                  <div id='responses-graphsIdEvaluatePost-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Mapping of nodes to inference results",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "object",
+        "properties" : { },
+        "x-content-type" : "application/json"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-graphsIdEvaluatePost-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-graphsIdEvaluatePost-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-graphsIdEvaluatePost-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 401 - Unauthorized </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 404 - Not Found </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>

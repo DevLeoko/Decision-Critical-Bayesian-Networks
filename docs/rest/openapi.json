@@ -779,23 +779,6 @@
         "tags": ["graphs"],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "": {
             "content": {
               "application/json": {
                 "schema": {
@@ -805,6 +788,12 @@
               }
             },
             "description": "Mapping of nodes to inference results"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
           }
         },
         "description": "Run inference on the graph with the submitted vitrual evidences.",
