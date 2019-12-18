@@ -717,6 +717,7 @@
     },
     "/evidence-formulas/{name}/evaluate": {
       "post": {
+        "tags": ["evidence-formulas"],
         "summary": "",
         "operationId": "",
         "responses": {
@@ -775,8 +776,7 @@
         }
       ],
       "post": {
-        "summary": "",
-        "operationId": "",
+        "tags": ["graphs"],
         "responses": {
           "200": {
             "description": "OK",
