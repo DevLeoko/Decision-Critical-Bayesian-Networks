@@ -69,6 +69,10 @@ public class EvidenceFormulaController {
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Void> updateEvidenceFormulaByName(@PathVariable String name,
       @Valid @RequestBody EvidenceFormula evidenceFormula) {
+    if (repository.existsByName(evidenceFormula.getName())) {
+      return ResponseEntity.badRequest().build();
+    }
+    
     Optional<EvidenceFormula> optional = repository.findById(name);
     if (!optional.isPresent()) {
       return ResponseEntity.notFound().build();
