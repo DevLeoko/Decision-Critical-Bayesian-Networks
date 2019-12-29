@@ -1,7 +1,7 @@
-package io.dcbn.backend.login.controllers;
+package io.dcbn.backend.authentication.controllers;
 
-import io.dcbn.backend.login.models.DcbnUser;
-import io.dcbn.backend.login.repositories.DcbnUserRepository;
+import io.dcbn.backend.authentication.models.DcbnUser;
+import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

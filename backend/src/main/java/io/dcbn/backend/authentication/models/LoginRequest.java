@@ -1,4 +1,4 @@
-package io.dcbn.backend.login.models;
+package io.dcbn.backend.authentication.models;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package io.dcbn.backend.login.filters;
+package io.dcbn.backend.authentication.filters;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

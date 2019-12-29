@@ -1,8 +1,8 @@
-package io.dcbn.backend.login.filters;
+package io.dcbn.backend.authentication.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import io.dcbn.backend.login.models.LoginRequest;
+import io.dcbn.backend.authentication.models.LoginRequest;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;

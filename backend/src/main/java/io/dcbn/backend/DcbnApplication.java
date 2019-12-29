@@ -1,9 +1,9 @@
 package io.dcbn.backend;
 
-import io.dcbn.backend.login.models.DcbnUser;
-import io.dcbn.backend.login.models.Role;
-import io.dcbn.backend.login.repositories.DcbnUserRepository;
-import io.dcbn.backend.login.services.DcbnUserDetailsService;
+import io.dcbn.backend.authentication.models.DcbnUser;
+import io.dcbn.backend.authentication.models.Role;
+import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
+import io.dcbn.backend.authentication.services.DcbnUserDetailsService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

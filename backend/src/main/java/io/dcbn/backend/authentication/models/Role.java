@@ -1,4 +1,4 @@
-package io.dcbn.backend.login.models;
+package io.dcbn.backend.authentication.models;
 
 public enum Role {
   MODERATOR("ROLE_MODERATOR"), ADMIN("ROLE_ADMIN"), SUPERADMIN("ROLE_SUPERADMIN");

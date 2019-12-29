@@ -1,4 +1,4 @@
-package io.dcbn.backend.login.models;
+package io.dcbn.backend.authentication.models;
 
 import java.util.Collections;
 import javax.persistence.Entity;

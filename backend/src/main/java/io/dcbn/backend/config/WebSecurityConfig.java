@@ -1,7 +1,7 @@
 package io.dcbn.backend.config;
 
-import io.dcbn.backend.login.filters.JwtAuthorizationFilter;
-import io.dcbn.backend.login.filters.JwtGenerationFilter;
+import io.dcbn.backend.authentication.filters.JwtAuthorizationFilter;
+import io.dcbn.backend.authentication.filters.JwtGenerationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
