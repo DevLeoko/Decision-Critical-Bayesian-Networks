@@ -13,13 +13,24 @@ public class Graph {
     @OneToMany
     private Node[] nodes;
 
+    public Graph() {
+        //TODO make constructor
+    }
+
+    public Graph(String name, int timeSlices, Node[] nodes) {
+        this.name = name;
+        this.timeSlices = timeSlices;
+        this.nodes = nodes;
+    }
+
     //Getters
     public Node[] getNodes() {
-        return nodes;
+        return this.nodes;
     }
 
     /**
      * Returns the node with the given name
+     *
      * @param name the name of the node to find
      * @return the node with the given name
      */

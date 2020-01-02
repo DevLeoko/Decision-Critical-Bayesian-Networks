@@ -47,7 +47,8 @@ public class AmidstGraphAdapter {
             }
             //Time T-1
             for (Node parentNode : node.getTimeTDependency().getParentsTm1()) {
-                Variable parentVariableInterface = getVariableByName(parentNode.getName()).getInterfaceVariable();
+                Variable parentVariable = getVariableByName(parentNode.getName());
+                Variable parentVariableInterface = parentVariable.getInterfaceVariable();
                 variableParentSetT.addParent(parentVariableInterface);
             }
         }
@@ -92,5 +93,11 @@ public class AmidstGraphAdapter {
         }
         return null;
     }
+
+    //Getters
+    public DynamicBayesianNetwork getDbn() {
+        return dbn;
+    }
+
 
 }

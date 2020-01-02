@@ -8,14 +8,22 @@ public class NodeDependency {
 
     @OneToMany
     private Node[] parents;
-
     @OneToMany
     private Node[] parentsTm1;
     @OneToMany
     private double[][] probabilities;
 
-    //Getters
+    public NodeDependency() {
+        //TODO make constructor
+    }
 
+    public NodeDependency(Node[] parents, Node[] parentsTm1, double[][] probabilities) {
+        this.parents = parents;
+        this.parentsTm1 = parentsTm1;
+        this.probabilities = probabilities;
+    }
+
+    //Getters
     public Node[] getParents() {
         return this.parents;
     }
@@ -25,7 +33,7 @@ public class NodeDependency {
     }
 
     public Node[] getParentsTm1() {
-        return parentsTm1;
+        return this.parentsTm1;
     }
 
 
