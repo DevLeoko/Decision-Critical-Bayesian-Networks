@@ -1,15 +1,19 @@
 package io.dcbn.backend.graph;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum StateType {
 
-    BOOLEAN(new String[]{"true", "false"});
+    BOOLEAN(Arrays.asList("true", "false"));
 
-    private final String[] state;
-    StateType(String[] state) {
+    private final List<String> state;
+
+    StateType(List<String> state) {
         this.state = state;
     }
 
-    public String[] getState() {
+    public List<String> getState() {
         return state;
     }
 }

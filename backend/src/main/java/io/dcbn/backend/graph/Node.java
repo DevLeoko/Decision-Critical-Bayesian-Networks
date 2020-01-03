@@ -1,18 +1,28 @@
 package io.dcbn.backend.graph;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
 public class Node {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @OneToOne
     private NodeDependency timeZeroDependency;
 
+    @OneToOne
     private NodeDependency timeTDependency;
-    private String name;
-    private String evidenceName;
+
     //rgb color in Hexadecimal
     private String color;
+    private String name;
+    private String evidenceName;
+
     private StateType stateType;
+
+    @ManyToOne
     private Position position;
 
     public Node() {
@@ -51,7 +61,6 @@ public class Node {
     public void setTimeTDependency(NodeDependency timeTDependency) {
         this.timeTDependency = timeTDependency;
     }
-
 
 
 }

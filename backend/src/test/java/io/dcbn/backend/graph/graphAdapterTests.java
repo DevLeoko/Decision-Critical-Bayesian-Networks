@@ -8,10 +8,17 @@ import eu.amidst.core.variables.Variable;
 import eu.amidst.dynamic.models.DynamicBayesianNetwork;
 import eu.amidst.dynamic.models.DynamicDAG;
 import eu.amidst.dynamic.variables.DynamicVariables;
+import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This class is testing the AmidstGraphAdapter.
+ */
 public class graphAdapterTests {
 
     private static Node a;
@@ -22,26 +29,34 @@ public class graphAdapterTests {
     private static DynamicBayesianNetwork correctDBN;
 
 
+    /**
+     * Creating the graph object and the DynamicBayesianNetwork object
+     */
     @BeforeAll
     public static void setUp() {
-        NodeDependency nodeATimeZeroDependency = new NodeDependency(new Node[]{}, new Node[]{}, new double[][]{{0.3, 0.7}});
-        NodeDependency nodeATimeTDependency = new NodeDependency(new Node[]{}, new Node[]{}, new double[][]{{0.5, 0.5}});
+        NodeDependency nodeATimeZeroDependency = new NodeDependency(new ArrayList<>(), new ArrayList<>(), new double[][]{{0.3, 0.7}});
+        NodeDependency nodeATimeTDependency = new NodeDependency(new ArrayList<>(), new ArrayList<>(), new double[][]{{0.5, 0.5}});
         a = new Node("A", nodeATimeZeroDependency, nodeATimeTDependency, StateType.BOOLEAN, "", "",
                 new Position(0.0, 0.0));
-        NodeDependency nodeBTimeZeroDependency = new NodeDependency(new Node[]{}, new Node[]{}, new double[][]{{0.2, 0.8}});
-        NodeDependency nodeBTimeTDependency = new NodeDependency(new Node[]{}, new Node[]{}, new double[][]{{0.5, 0.5}});
+        NodeDependency nodeBTimeZeroDependency = new NodeDependency(new ArrayList<>(), new ArrayList<>(), new double[][]{{0.2, 0.8}});
+        NodeDependency nodeBTimeTDependency = new NodeDependency(new ArrayList<>(), new ArrayList<>(), new double[][]{{0.5, 0.5}});
         b = new Node("B", nodeBTimeZeroDependency, nodeBTimeTDependency, StateType.BOOLEAN, "",
                 "", new Position(0.0, 0.0));
-        NodeDependency nodeCTimeZeroDependency = new NodeDependency(new Node[]{a, b}, new Node[]{},
+
+        NodeDependency nodeCTimeZeroDependency = new NodeDependency((List<Node>) (List<?>) Arrays.asList(new Node[]{a, b}), new ArrayList<>(),
                 new double[][]{{0.999, 0.001}, {0.6, 0.4}, {0.8, 0.2}, {0.2, 0.8}});
 
         c = new Node("C", nodeCTimeZeroDependency, null, StateType.BOOLEAN, "",
                 "", new Position(0.0, 0.0));
-        NodeDependency nodeCTimeTDependency = new NodeDependency(new Node[]{a, b}, new Node[]{c}, new double[][]{{0.1, 0.9},
+        NodeDependency nodeCTimeTDependency = new NodeDependency((List<Node>) (List<?>) Arrays.asList(new Node[]{a, b}), (List<Node>) (List<?>) Arrays.asList(new Node[]{c}), new double[][]{{0.1, 0.9},
                 {0.2, 0.8}, {0.3, 0.7}, {0.4, 0.6}, {0.5, 0.5}, {0.6, 0.4}, {0.7, 0.3}, {0.8, 0.2}});
         c.setTimeTDependency(nodeCTimeTDependency);
-        Node[] nodes = {a, b, c};
-        testGraph = new Graph("testGraph", 10, nodes);
+        Node[] nodes = new Node[]{a, b, c};
+        List<Node> nodeList = new ArrayList<>();
+        nodeList.add(a);
+        nodeList.add(b);
+        nodeList.add(c);
+        testGraph = new Graph("testGraph", 10, nodeList);
         AmidstGraphAdapter amidstGraphAdapter = new AmidstGraphAdapter(testGraph);
         generatedDBN = amidstGraphAdapter.getDbn();
         //----------------generating correct DBN--------------------
@@ -92,11 +107,14 @@ public class graphAdapterTests {
         correctDBN = dbn;
     }
 
+    /**
+     * Comparing the structure and data of both DynamicBayesianNetwork
+     */
     @Test
     public void testDBNAdapter() {
-        System.out.println(correctDBN.toString());
-        System.out.println("---------------------------------------------------------------");
-        System.out.println(generatedDBN.toString());
+//        System.out.println(correctDBN.toString());
+//        System.out.println("---------------------------------------------------------------");
+//        System.out.println(generatedDBN.toString());
         Assertions.assertEquals(correctDBN.toString(), generatedDBN.toString());
     }
 }

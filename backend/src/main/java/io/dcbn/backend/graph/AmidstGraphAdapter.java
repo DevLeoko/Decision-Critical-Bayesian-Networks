@@ -10,6 +10,9 @@ import eu.amidst.dynamic.variables.DynamicVariables;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents the adapter from Graph to DynamicBayesianNetwork
+ */
 public class AmidstGraphAdapter {
 
     private DynamicBayesianNetwork dbn;
@@ -17,13 +20,20 @@ public class AmidstGraphAdapter {
 
     private ArrayList<Variable> variables;
 
+    /**
+     * The constructor takes as input a (@link Graph) and adapt it to an amidst @link DynamicBayesianNetwork
+     * with all the data inside(TODO link)
+     *
+     * @param graph the input graph to adapt
+     */
     public AmidstGraphAdapter(Graph graph) {
         this.graphDcbn = graph;
         DynamicVariables dynamicVariables = new DynamicVariables();
         variables = new ArrayList<>();
 
+        //---------------------------------Creating all the variables------------------------------------------
         for (Node node : graphDcbn.getNodes()) {
-            Variable variable = dynamicVariables.newMultinomialDynamicVariable(node.getName(), node.getStateType().getState().length);
+            Variable variable = dynamicVariables.newMultinomialDynamicVariable(node.getName(), node.getStateType().getState());
             variables.add(variable);
         }
 
@@ -85,6 +95,12 @@ public class AmidstGraphAdapter {
 
     }
 
+    /**
+     * Returns the variable with the given name
+     *
+     * @param name the name of the variable
+     * @return the variable with the given name
+     */
     public Variable getVariableByName(String name) {
         for (Variable variable : this.variables) {
             if (variable.getName().equals(name)) {
