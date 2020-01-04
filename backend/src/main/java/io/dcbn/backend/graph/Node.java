@@ -1,5 +1,8 @@
 package io.dcbn.backend.graph;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,16 +13,21 @@ public class Node {
     private long id;
 
     @OneToOne
+    @Getter
     private NodeDependency timeZeroDependency;
 
     @OneToOne
+    @Getter
+    @Setter
     private NodeDependency timeTDependency;
 
     //rgb color in Hexadecimal
     private String color;
+    @Getter
     private String name;
-    private String evidenceName;
+    private String evidenceFormulaName;
 
+    @Getter
     private StateType stateType;
 
     @ManyToOne
@@ -33,34 +41,10 @@ public class Node {
         this.name = name;
         this.timeZeroDependency = timeZeroDependency;
         this.timeTDependency = timeTDependency;
-        this.evidenceName = evidenceName;
+        this.evidenceFormulaName = evidenceName;
         this.color = color;
         this.position = position;
         this.stateType = stateType;
     }
-
-    //Getters
-    public String getName() {
-        return name;
-    }
-
-    public StateType getStateType() {
-        return stateType;
-    }
-
-    public NodeDependency getTimeZeroDependency() {
-        return timeZeroDependency;
-    }
-
-    public NodeDependency getTimeTDependency() {
-        return timeTDependency;
-    }
-
-    //Setters
-
-    public void setTimeTDependency(NodeDependency timeTDependency) {
-        this.timeTDependency = timeTDependency;
-    }
-
 
 }

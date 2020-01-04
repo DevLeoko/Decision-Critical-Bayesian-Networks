@@ -7,6 +7,7 @@ import eu.amidst.core.variables.Variable;
 import eu.amidst.dynamic.models.DynamicBayesianNetwork;
 import eu.amidst.dynamic.models.DynamicDAG;
 import eu.amidst.dynamic.variables.DynamicVariables;
+import lombok.Getter;
 
 import java.util.ArrayList;
 
@@ -15,8 +16,8 @@ import java.util.ArrayList;
  */
 public class AmidstGraphAdapter {
 
+    @Getter
     private DynamicBayesianNetwork dbn;
-    private Graph graphDcbn;
 
     private ArrayList<Variable> variables;
 
@@ -27,7 +28,7 @@ public class AmidstGraphAdapter {
      * @param graph the input graph to adapt
      */
     public AmidstGraphAdapter(Graph graph) {
-        this.graphDcbn = graph;
+        Graph graphDcbn = graph;
         DynamicVariables dynamicVariables = new DynamicVariables();
         variables = new ArrayList<>();
 
@@ -64,7 +65,7 @@ public class AmidstGraphAdapter {
         }
         this.dbn = new DynamicBayesianNetwork(dynamicDAG);
         //----------------------------------------Setting probabilities-------------------------------------------
-        for (Node node : this.graphDcbn.getNodes()) {
+        for (Node node : graphDcbn.getNodes()) {
             Variable variable = getVariableByName(node.getName());
             //If node has parents, use Multinomial_MultinomialParents
             //else, use Multinomial
@@ -109,11 +110,5 @@ public class AmidstGraphAdapter {
         }
         return null;
     }
-
-    //Getters
-    public DynamicBayesianNetwork getDbn() {
-        return dbn;
-    }
-
 
 }

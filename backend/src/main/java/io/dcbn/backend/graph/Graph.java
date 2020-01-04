@@ -1,5 +1,7 @@
 package io.dcbn.backend.graph;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
@@ -16,6 +18,7 @@ public class Graph {
     private int timeSlices;
 
     @OneToMany
+    @Getter
     private List<Node> nodes;
 
     public Graph() {
@@ -26,11 +29,6 @@ public class Graph {
         this.name = name;
         this.timeSlices = timeSlices;
         this.nodes = nodes;
-    }
-
-    //Getters
-    public List<Node> getNodes() {
-        return this.nodes;
     }
 
     /**

@@ -15,7 +15,8 @@ public class Position {
     private double y;
 
     public Position() {
-        //TODO make constructor
+        this.x = 0;
+        this.y = 0;
     }
 
     public Position(double x, double y) {

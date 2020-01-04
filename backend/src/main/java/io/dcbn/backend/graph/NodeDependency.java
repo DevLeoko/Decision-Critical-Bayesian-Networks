@@ -1,5 +1,7 @@
 package io.dcbn.backend.graph;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,10 +13,15 @@ public class NodeDependency {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
     @OneToMany
+    @Getter
     private List<Node> parents;
+
     @OneToMany
+    @Getter
     private List<Node> parentsTm1;
+
     private String probabilities;
 
     public NodeDependency() {
