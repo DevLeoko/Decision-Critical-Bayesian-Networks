@@ -1,11 +1,15 @@
 package io.dcbn.backend.graph;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class NodeDependency {
 

@@ -20,6 +20,9 @@ public class Node {
     @GeneratedValue
     private long id;
 
+    @NotEmpty
+    private String name;
+
     @OneToOne
     private NodeDependency timeZeroDependency;
 
@@ -29,9 +32,6 @@ public class Node {
     //rgb color in Hexadecimal
     @MatchesPattern("#[a-fA-F0-9]{6}")
     private String color;
-
-    @NotEmpty
-    private String name;
 
     @ManyToOne
     private EvidenceFormula evidenceFormulaName;
