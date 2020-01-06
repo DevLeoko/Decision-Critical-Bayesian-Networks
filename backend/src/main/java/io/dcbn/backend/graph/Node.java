@@ -1,50 +1,45 @@
 package io.dcbn.backend.graph;
 
-import lombok.Getter;
-import lombok.Setter;
+import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.annotation.MatchesPattern;
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
+@Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Node {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private long id;
 
     @OneToOne
-    @Getter
     private NodeDependency timeZeroDependency;
 
     @OneToOne
-    @Getter
-    @Setter
     private NodeDependency timeTDependency;
 
     //rgb color in Hexadecimal
+    @MatchesPattern("#[a-fA-F0-9]{6}")
     private String color;
-    @Getter
-    private String name;
-    private String evidenceFormulaName;
 
-    @Getter
-    private StateType stateType;
+    @NotEmpty
+    private String name;
 
     @ManyToOne
+    private EvidenceFormula evidenceFormulaName;
+
+    @NotNull
+    private StateType stateType;
+
+    @Embedded
+    @NotNull
     private Position position;
-
-    public Node() {
-        //TODO make constructor
-    }
-
-    public Node(String name, NodeDependency timeZeroDependency, NodeDependency timeTDependency, StateType stateType, String evidenceName, String color, Position position) {
-        this.name = name;
-        this.timeZeroDependency = timeZeroDependency;
-        this.timeTDependency = timeTDependency;
-        this.evidenceFormulaName = evidenceName;
-        this.color = color;
-        this.position = position;
-        this.stateType = stateType;
-    }
-
 }

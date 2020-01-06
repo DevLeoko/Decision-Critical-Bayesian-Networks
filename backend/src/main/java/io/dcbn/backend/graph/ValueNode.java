@@ -1,7 +1,9 @@
 package io.dcbn.backend.graph;
 
 
-public class ValueNode extends Node {
+import lombok.Getter;
 
+public class ValueNode extends Node {
+    @Getter
     private double[] value;
 }

@@ -2,18 +2,16 @@ package io.dcbn.backend.graph;
 
 import lombok.Getter;
 
-import java.util.Arrays;
-import java.util.List;
-
 
 public enum StateType {
 
-    BOOLEAN(Arrays.asList("true", "false"));
+    BOOLEAN("true", "false");
 
     @Getter
-    private final List<String> state;
+    private final String[] states;
 
-    StateType(List<String> state) {
-        this.state = state;
+
+    StateType(String... states) {
+        this.states = states;
     }
 }

@@ -1,5 +1,6 @@
 package io.dcbn.backend.graph;
 
+import lombok.Data;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -7,10 +8,11 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Entity
+@Data
 public class Graph {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private long id;
 
     @NotEmpty
@@ -20,16 +22,6 @@ public class Graph {
     @OneToMany
     @Getter
     private List<Node> nodes;
-
-    public Graph() {
-        //TODO make constructor
-    }
-
-    public Graph(String name, int timeSlices, List<Node> nodes) {
-        this.name = name;
-        this.timeSlices = timeSlices;
-        this.nodes = nodes;
-    }
 
     /**
      * Returns the node with the given name

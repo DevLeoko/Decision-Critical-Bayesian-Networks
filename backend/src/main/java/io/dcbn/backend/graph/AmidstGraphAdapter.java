@@ -10,6 +10,8 @@ import eu.amidst.dynamic.variables.DynamicVariables;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class represents the adapter from Graph to DynamicBayesianNetwork
@@ -34,7 +36,8 @@ public class AmidstGraphAdapter {
 
         //---------------------------------Creating all the variables------------------------------------------
         for (Node node : graphDcbn.getNodes()) {
-            Variable variable = dynamicVariables.newMultinomialDynamicVariable(node.getName(), node.getStateType().getState());
+            List<String> states = Arrays.asList(node.getStateType().getStates());
+            Variable variable = dynamicVariables.newMultinomialDynamicVariable(node.getName(), states);
             variables.add(variable);
         }
 
