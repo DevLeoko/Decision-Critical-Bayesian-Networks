@@ -8,47 +8,50 @@ import eu.amidst.core.variables.Variable;
 import eu.amidst.dynamic.models.DynamicBayesianNetwork;
 import eu.amidst.dynamic.models.DynamicDAG;
 import eu.amidst.dynamic.variables.DynamicVariables;
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * This class is testing the AmidstGraphAdapter.
  */
-public class graphAdapterTests {
+public class GraphAdapterTests {
 
-    private static Node a;
-    private static Node b;
-    private static Node c;
-    private static Graph testGraph;
-    private static DynamicBayesianNetwork generatedDBN;
-    private static DynamicBayesianNetwork correctDBN;
+    private Node a;
+    private Node b;
+    private Node c;
+    private Graph testGraph;
+    private DynamicBayesianNetwork generatedDBN;
+    private DynamicBayesianNetwork correctDBN;
+    private final Position ZERO_POSITION = new Position(0, 0);
 
 
     /**
      * Creating the graph object and the DynamicBayesianNetwork object
      */
-    @BeforeAll
-    public static void setUp() {
+    @BeforeEach
+    public void setUp() {
         NodeDependency nodeATimeZeroDependency = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(), new double[][]{{0.3, 0.7}});
         NodeDependency nodeATimeTDependency = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(), new double[][]{{0.5, 0.5}});
         a = new Node(0, "A", nodeATimeZeroDependency, nodeATimeTDependency, null, null, StateType.BOOLEAN,
-                new Position(0.0, 0.0));
+                ZERO_POSITION);
         NodeDependency nodeBTimeZeroDependency = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(), new double[][]{{0.2, 0.8}});
         NodeDependency nodeBTimeTDependency = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(), new double[][]{{0.5, 0.5}});
         b = new Node(0, "B", nodeBTimeZeroDependency, nodeBTimeTDependency, null, null, StateType.BOOLEAN,
-                new Position(0.0, 0.0));
+                ZERO_POSITION);
 
-        NodeDependency nodeCTimeZeroDependency = new NodeDependency(0, (List<Node>) (List<?>) Arrays.asList(new Node[]{a, b}), new ArrayList<>(),
+        NodeDependency nodeCTimeZeroDependency = new NodeDependency(0, Arrays.asList(a, b), new ArrayList<>(),
                 new double[][]{{0.999, 0.001}, {0.6, 0.4}, {0.8, 0.2}, {0.2, 0.8}});
 
         c = new Node(0, "C", nodeCTimeZeroDependency, null, null, null, StateType.BOOLEAN,
-                new Position(0.0, 0.0));
-        NodeDependency nodeCTimeTDependency = new NodeDependency(0, (List<Node>) (List<?>) Arrays.asList(new Node[]{a, b}), (List<Node>) (List<?>) Arrays.asList(new Node[]{c}), new double[][]{{0.1, 0.9},
+                ZERO_POSITION);
+        NodeDependency nodeCTimeTDependency = new NodeDependency(0, Arrays.asList(a, b), Collections.singletonList(c), new double[][]{{0.1, 0.9},
                 {0.2, 0.8}, {0.3, 0.7}, {0.4, 0.6}, {0.5, 0.5}, {0.6, 0.4}, {0.7, 0.3}, {0.8, 0.2}});
         c.setTimeTDependency(nodeCTimeTDependency);
         Node[] nodes = new Node[]{a, b, c};

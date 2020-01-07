@@ -34,7 +34,7 @@ public class Node {
     private String color;
 
     @ManyToOne
-    private EvidenceFormula evidenceFormulaName;
+    private EvidenceFormula evidenceFormula;
 
     @NotNull
     private StateType stateType;

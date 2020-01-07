@@ -21,6 +21,7 @@ public class Graph {
 
     @NotEmpty
     private String name;
+
     private int timeSlices;
 
     @OneToMany
