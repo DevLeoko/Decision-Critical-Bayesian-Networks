@@ -24,18 +24,17 @@ public class AmidstGraphAdapter {
     private ArrayList<Variable> variables;
 
     /**
-     * The constructor takes as input a (@link Graph) and adapt it to an amidst @link DynamicBayesianNetwork
-     * with all the data inside(TODO link)
+     * The constructor takes as input a {@link Graph} and adapt it to an amidst {@link DynamicBayesianNetwork}
+     * with all the data inside
      *
      * @param graph the input graph to adapt
      */
     public AmidstGraphAdapter(Graph graph) {
-        Graph graphDcbn = graph;
         DynamicVariables dynamicVariables = new DynamicVariables();
         variables = new ArrayList<>();
 
         //---------------------------------Creating all the variables------------------------------------------
-        for (Node node : graphDcbn.getNodes()) {
+        for (Node node : graph.getNodes()) {
             List<String> states = Arrays.asList(node.getStateType().getStates());
             Variable variable = dynamicVariables.newMultinomialDynamicVariable(node.getName(), states);
             variables.add(variable);
@@ -47,7 +46,7 @@ public class AmidstGraphAdapter {
         for (Variable variable : variables) {
             //--------TIME 0-------------
             ParentSet variableParentSet0 = dynamicDAG.getParentSetTime0(variable);
-            Node node = graphDcbn.getNodeByName(variable.getName());
+            Node node = graph.getNodeByName(variable.getName());
             for (Node parentNode : node.getTimeZeroDependency().getParents()) {
                 Variable parentVariable = getVariableByName(parentNode.getName());
                 variableParentSet0.addParent(parentVariable);
@@ -68,7 +67,7 @@ public class AmidstGraphAdapter {
         }
         this.dbn = new DynamicBayesianNetwork(dynamicDAG);
         //----------------------------------------Setting probabilities-------------------------------------------
-        for (Node node : graphDcbn.getNodes()) {
+        for (Node node : graph.getNodes()) {
             Variable variable = getVariableByName(node.getName());
             //If node has parents, use Multinomial_MultinomialParents
             //else, use Multinomial
