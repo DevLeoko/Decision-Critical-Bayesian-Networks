@@ -68,7 +68,7 @@
           "200": {
             "description": "The current users authentication token.",
             "content": {
-              "application/json": {
+              "text/plain": {
                 "schema": {
                   "type": "string",
                   "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
@@ -146,7 +146,7 @@
           "400": {
             "description": "Invalid password format."
           },
-          "401": {
+          "403": {
             "description": "Reset token is invalid or missing."
           }
         }
@@ -192,7 +192,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "409": {
@@ -228,7 +228,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           }
         }
@@ -261,7 +261,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "404": {
@@ -288,7 +288,7 @@
           "204": {
             "description": "User was deleted."
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "404": {
@@ -345,7 +345,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "404": {
@@ -397,7 +397,7 @@
           "400": {
             "description": "Invalid graph."
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           }
         }
@@ -429,7 +429,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           }
         }
@@ -462,7 +462,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "404": {
@@ -489,7 +489,7 @@
           "204": {
             "description": "Graph deleted successfully."
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "404": {
@@ -523,7 +523,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "404": {
@@ -563,7 +563,7 @@
           "400": {
             "description": "Invalid evidence-formula."
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "409": {
@@ -590,7 +590,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           }
         }
@@ -623,7 +623,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "404": {
@@ -650,7 +650,7 @@
           "204": {
             "description": "Evidence-formula was deleted."
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "404": {
@@ -706,7 +706,7 @@
           "400": {
             "description": "Invalid evidence-formula formula."
           },
-          "401": {
+          "403": {
             "$ref": "#/components/responses/UnauthorizedError"
           },
           "404": {
@@ -731,7 +731,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "description": "Unauthorized"
           },
           "404": {
@@ -789,7 +789,7 @@
             },
             "description": "Mapping of nodes to inference results"
           },
-          "401": {
+          "403": {
             "description": "Unauthorized"
           },
           "404": {
