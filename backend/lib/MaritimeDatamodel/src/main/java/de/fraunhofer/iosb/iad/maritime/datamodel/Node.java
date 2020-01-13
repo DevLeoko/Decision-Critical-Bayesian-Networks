@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Node {
 	private String uuid;
-	private List<Node> children;
+	private List<Node> parents;
 	private List<State> states;
 
 	public Node(String uuid) {
