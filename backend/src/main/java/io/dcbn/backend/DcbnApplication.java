@@ -8,6 +8,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +29,14 @@ public class DcbnApplication {
   @Bean
   public UserDetailsService userDetailsService(DcbnUserRepository dcbnUserRepository) {
     return new DcbnUserDetailsService(dcbnUserRepository);
+  }
+
+  @Bean
+  public MailSender mailSender() {
+    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    mailSender.setHost("127.0.0.1");
+    mailSender.setPort(25);
+    return mailSender;
   }
 
   @Bean

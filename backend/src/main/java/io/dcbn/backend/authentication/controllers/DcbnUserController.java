@@ -2,6 +2,8 @@ package io.dcbn.backend.authentication.controllers;
 
 import io.dcbn.backend.authentication.models.DcbnUser;
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
+import io.dcbn.backend.passwordReset.models.MailType;
+import io.dcbn.backend.passwordReset.services.MailService;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DcbnUserController {
 
+  private final MailService mailService;
   private final DcbnUserRepository dcbnUserRepository;
   private final PasswordEncoder passwordEncoder;
 
   @Autowired
-  public DcbnUserController(DcbnUserRepository dcbnUserRepository,
+  public DcbnUserController(MailService mailService,
+      DcbnUserRepository dcbnUserRepository,
       PasswordEncoder passwordEncoder) {
+    this.mailService = mailService;
     this.dcbnUserRepository = dcbnUserRepository;
     this.passwordEncoder = passwordEncoder;
   }
@@ -42,12 +47,22 @@ public class DcbnUserController {
     return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
+  private String generatePassword() {
+    return "TEST";
+  }
+
   @PostMapping("/users")
   @PreAuthorize("hasRole('SUPERADMIN')")
   public ResponseEntity<Void> createUser(@Valid @RequestBody DcbnUser user) {
     if (dcbnUserRepository.existsByUsernameOrEmail(user.getUsername(), user.getEmail())) {
       return ResponseEntity.badRequest().build();
     }
+
+    String password = generatePassword();
+    user.setPassword(password);
+
+    mailService.sendMail(user.getEmail(), MailType.PASSWORD_RESET);
+
     dcbnUserRepository.save(user.withEncryptedPassword(passwordEncoder));
     return ResponseEntity.noContent().build();
   }

@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.FilterChain;
@@ -22,6 +23,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 public class JwtGenerationFilter extends UsernamePasswordAuthenticationFilter {
+
+  private static final int TOKEN_DURATION_MINUTES = 180;
 
   private final AuthenticationManager authenticationManager;
   private final String secret;
@@ -55,11 +58,14 @@ public class JwtGenerationFilter extends UsernamePasswordAuthenticationFilter {
         .map(GrantedAuthority::getAuthority)
         .collect(Collectors.toList());
 
-    byte[] key = secret.getBytes();
+    Calendar now = Calendar.getInstance();
+    now.add(Calendar.MINUTE, TOKEN_DURATION_MINUTES);
+
     String accessToken = Jwts.builder().setSubject(user.getUsername())
         .setHeaderParam("typ", "jwt")
-        .signWith(Keys.hmacShaKeyFor(key), SignatureAlgorithm.HS512)
+        .signWith(Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS512)
         .claim("rol", roles)
+        .setExpiration(now.getTime())
         .compact();
 
     response.setContentType("text/plain");
