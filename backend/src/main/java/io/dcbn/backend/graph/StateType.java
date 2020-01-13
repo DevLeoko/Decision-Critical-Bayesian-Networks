@@ -1,17 +1,20 @@
 package io.dcbn.backend.graph;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 
 public enum StateType {
 
-    BOOLEAN("true", "false");
+  BOOLEAN("true", "false");
 
-    @Getter
-    private final String[] states;
+  @Getter
+  @JsonValue
+  private final String[] states;
 
 
-    StateType(String... states) {
-        this.states = states;
-    }
+  StateType(String... states) {
+    this.states = states;
+  }
+
 }
