@@ -33,10 +33,7 @@ public class DcbnApplication {
 
   @Bean
   public MailSender mailSender() {
-    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-    mailSender.setHost("127.0.0.1");
-    mailSender.setPort(25);
-    return mailSender;
+    return new JavaMailSenderImpl();
   }
 
   @Bean

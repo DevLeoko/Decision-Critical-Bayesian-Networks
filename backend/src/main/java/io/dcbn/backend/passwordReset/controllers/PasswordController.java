@@ -40,7 +40,9 @@ public class PasswordController {
 
   @PostMapping("/request-password")
   public void requestPassword(@RequestBody String email) {
-    mailService.sendMail(email, MailType.PASSWORD_RESET);
+    DcbnUser user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    mailService.sendMail(user, MailType.PASSWORD_RESET);
   }
 
   @PostMapping("/reset-password")
