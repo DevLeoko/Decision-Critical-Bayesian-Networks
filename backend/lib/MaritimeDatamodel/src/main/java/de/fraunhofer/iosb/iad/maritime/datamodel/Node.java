@@ -10,7 +10,7 @@ public class Node {
 
 	public Node(String uuid) {
 		this.uuid = uuid;
-		this.children = new ArrayList<>();
+		this.parents = new ArrayList<>();
 		this.states = new ArrayList<>();
 	}
 
@@ -22,8 +22,8 @@ public class Node {
 		this.uuid = uuid;
 	}
 
-	public List<Node> getChildren() {
-		return children;
+	public List<Node> getParents() {
+		return parents;
 	}
 
 	public List<State> getStates() {
