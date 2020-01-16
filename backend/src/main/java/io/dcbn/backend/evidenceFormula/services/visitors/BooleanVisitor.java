@@ -7,13 +7,36 @@ import io.dcbn.backend.evidenceFormulas.FormulaParser.BooleanComparisonExpressio
 import io.dcbn.backend.evidenceFormulas.FormulaParser.BooleanLiteralExpressionContext;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.BooleanNotExpressionContext;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.BooleanParenthesisExpressionContext;
+import io.dcbn.backend.evidenceFormulas.FormulaParser.FormulaContext;
+import java.util.Map;
 
 public class BooleanVisitor extends FormulaBaseVisitor<Boolean> {
+
+  private Map<String, Object> variables;
+  private Map<String, FunctionWrapper> functions;
+
+  public BooleanVisitor(Map<String, Object> variables,
+      Map<String, FunctionWrapper> functions) {
+    this.variables = variables;
+    this.functions = functions;
+  }
+
+  @Override
+  public Boolean visitFormula(FormulaContext ctx) {
+    return visit(ctx.booleanExpression());
+  }
 
   @Override
   public Boolean visitBooleanAmbiguousLiteralExpression(
       BooleanAmbiguousLiteralExpressionContext ctx) {
-    throw new UnsupportedOperationException();
+    AmbiguityVisitor visitor = new AmbiguityVisitor(variables, functions);
+    Object result = visitor.visit(ctx.ambiguousLiteral());
+
+    if (result instanceof Boolean) {
+      return (Boolean) result;
+    } else {
+      throw new IllegalArgumentException(ctx.ambiguousLiteral().getText() + " did't evaluate to boolean!");
+    }
   }
 
   @Override
@@ -41,7 +64,7 @@ public class BooleanVisitor extends FormulaBaseVisitor<Boolean> {
 
   @Override
   public Boolean visitBooleanComparisonExpression(BooleanComparisonExpressionContext ctx) {
-    NumberVisitor visitor = new NumberVisitor();
+    NumberVisitor visitor = new NumberVisitor(variables, functions);
     double left = visitor.visit(ctx.comparisonExpression().left);
     double right = visitor.visit(ctx.comparisonExpression().right);
 

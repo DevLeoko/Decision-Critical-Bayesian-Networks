@@ -1,5 +1,8 @@
 grammar Formula;
 
+formula
+  : booleanExpression EOF;
+
 booleanExpression
   : booleanLiteral #booleanLiteralExpression
   | ambiguousLiteral #booleanAmbiguousLiteralExpression
@@ -13,8 +16,8 @@ booleanLiteral
   : 'true' | 'false';
 
 ambiguousLiteral
-  : IDENTIFIER
-  | functionCall;
+  : IDENTIFIER #ambiguousIdentifierLiteral
+  | functionCall #ambiguousFunctionCallLiteral;
 
 comparisonExpression
   : left = numberExpression COMPARISON_OPERATOR right = numberExpression;
@@ -33,7 +36,8 @@ functionCall:
   IDENTIFIER '(' (expression (',' expression)*)? ')';
 
 expression
-  : booleanExpression
+  : ambiguousLiteral
+  | booleanExpression
   | numberExpression;
 
 IDENTIFIER: [a-zA-Z][a-zA-Z_]*;

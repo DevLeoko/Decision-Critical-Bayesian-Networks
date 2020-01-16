@@ -5,12 +5,29 @@ import io.dcbn.backend.evidenceFormulas.FormulaParser.NumberAmbiguousExpressionC
 import io.dcbn.backend.evidenceFormulas.FormulaParser.NumberBinaryExpressionContext;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.NumberLiteralExpressionContext;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.NumberParenthesisExpressionContext;
+import java.util.Map;
 
 public class NumberVisitor extends FormulaBaseVisitor<Double> {
 
+  private Map<String, Object> variables;
+  private Map<String, FunctionWrapper> functions;
+
+  public NumberVisitor(Map<String, Object> variables,
+      Map<String, FunctionWrapper> functions) {
+    this.variables = variables;
+    this.functions = functions;
+  }
+
   @Override
   public Double visitNumberAmbiguousExpression(NumberAmbiguousExpressionContext ctx) {
-    throw new UnsupportedOperationException();
+    AmbiguityVisitor visitor = new AmbiguityVisitor(variables, functions);
+    Object result = visitor.visit(ctx.ambiguousLiteral());
+
+    if (result instanceof Double) {
+      return (Double) result;
+    } else {
+      throw new IllegalArgumentException(ctx.ambiguousLiteral().getText() + " didn't evaluate to a double!");
+    }
   }
 
   @Override
