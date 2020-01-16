@@ -48,55 +48,69 @@ public class AmidstGraphAdapter {
             Variable variable = entry.getKey();
             Node node = entry.getValue();
 
-            //--------TIME 0-------------
-            ParentSet variableParentSet0 = dynamicDAG.getParentSetTime0(variable);
+            if (!node.isValueNode()) {
+                //--------TIME 0-------------
+                ParentSet variableParentSet0 = dynamicDAG.getParentSetTime0(variable);
 
-            node.getTimeZeroDependency().getParents().stream()
-                    .map(Node::getName)
-                    .map(this::getVariableByName)
-                    .forEach(variableParentSet0::addParent);
+                node.getTimeZeroDependency().getParents().stream()
+                        .map(Node::getName)
+                        .map(this::getVariableByName)
+                        .forEach(variableParentSet0::addParent);
 
-            //--------TIME T-------------
-            ParentSet variableParentSetT = dynamicDAG.getParentSetTimeT(variable);
-            //Time T
-            node.getTimeTDependency().getParents().stream()
-                    .map(Node::getName)
-                    .map(this::getVariableByName)
-                    .forEach(variableParentSetT::addParent);
+                //--------TIME T-------------
+                ParentSet variableParentSetT = dynamicDAG.getParentSetTimeT(variable);
+                //Time T
+                node.getTimeTDependency().getParents().stream()
+                        .map(Node::getName)
+                        .map(this::getVariableByName)
+                        .forEach(variableParentSetT::addParent);
 
 
-            //Time T-1
-            node.getTimeTDependency().getParentsTm1().stream()
-                    .map(Node::getName)
-                    .map(this::getVariableByName)
-                    .map(Variable::getInterfaceVariable)
-                    .forEach(variableParentSetT::addParent);
+                //Time T-1
+                node.getTimeTDependency().getParentsTm1().stream()
+                        .map(Node::getName)
+                        .map(this::getVariableByName)
+                        .map(Variable::getInterfaceVariable)
+                        .forEach(variableParentSetT::addParent);
+            }
         }
 
         dbn = new DynamicBayesianNetwork(dynamicDAG);
         //----------------------------------------Setting probabilities-------------------------------------------
         for (Node node : graph.getNodes()) {
-            Variable variable = getVariableByName(node.getName());
-            //If node has parents, use Multinomial_MultinomialParents
-            //else, use Multinomial
+            Variable variable = getVariableByName(node.getName());// TODO optional (#HannesDieserGott)?
+            if (variable == null) {
+                continue;
+            }
             //-------Time 0--------
-            double[][] probabilitiesT0 = node.getTimeZeroDependency().getProbabilities();
-            if (dbn.getDynamicDAG().getParentSetTime0(variable).getParents().isEmpty()) {
+
+            boolean parentsT0Empty = dbn.getDynamicDAG().getParentSetTime0(variable).getParents().isEmpty();
+            if (parentsT0Empty && !node.isValueNode()) {
+                double[][] probabilitiesT0 = node.getTimeZeroDependency().getProbabilities();
                 Multinomial variableMultinomial0 = dbn.getConditionalDistributionTime0(variable);
                 variableMultinomial0.setProbabilities(probabilitiesT0[0]);
+            } else if (parentsT0Empty && node.isValueNode()) {
+                Multinomial variableMultinomial0 = dbn.getConditionalDistributionTime0(variable);
+                variableMultinomial0.setProbabilities(((ValueNode) node).getValue());
             } else {
+                double[][] probabilitiesT0 = node.getTimeZeroDependency().getProbabilities();
                 Multinomial_MultinomialParents multinomialParents = dbn.getConditionalDistributionTime0(variable);
                 for (int i = 0; i < probabilitiesT0.length; i++) {
                     multinomialParents.getMultinomial(i).setProbabilities(probabilitiesT0[i]);
                 }
             }
-
             //-------Time T--------
-            double[][] probabilitiesT = node.getTimeTDependency().getProbabilities();
-            if (dbn.getDynamicDAG().getParentSetTimeT(variable).getParents().isEmpty()) {
+
+            boolean parentsTEmpty = dbn.getDynamicDAG().getParentSetTimeT(variable).getParents().isEmpty();
+            if (parentsTEmpty && !node.isValueNode()) {
+                double[][] probabilitiesT = node.getTimeTDependency().getProbabilities();
                 Multinomial variableMultinomialT = dbn.getConditionalDistributionTimeT(variable);
                 variableMultinomialT.setProbabilities(probabilitiesT[0]);
+            } else if (parentsTEmpty && node.isValueNode()) {
+                Multinomial variableMultinomialT = dbn.getConditionalDistributionTimeT(variable);
+                variableMultinomialT.setProbabilities(((ValueNode) node).getValue());
             } else {
+                double[][] probabilitiesT = node.getTimeTDependency().getProbabilities();
                 Multinomial_MultinomialParents multinomialParents = dbn.getConditionalDistributionTimeT(variable);
                 for (int i = 0; i < probabilitiesT.length; i++) {
                     multinomialParents.getMultinomial(i).setProbabilities(probabilitiesT[i]);
