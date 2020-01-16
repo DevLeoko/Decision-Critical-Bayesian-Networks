@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Visitor responsible for evaluating any expressions whose type cannot be determined while parsing (i.e. function calls and variables).
+ * The methods in this class are responsible for visiting the corresponding rules in the grammar.
+ * They will not be documented in more detail.
+ */
 public class AmbiguityVisitor extends FormulaBaseVisitor<Object> {
 
   private Map<String, Object> variables;

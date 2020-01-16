@@ -1,7 +1,11 @@
 package io.dcbn.backend.evidenceFormula.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
+import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +24,14 @@ import org.springframework.web.server.ResponseStatusException;
 public class EvidenceFormulaController {
 
   private final EvidenceFormulaRepository repository;
+  private final EvidenceFormulaEvaluator evaluator;
 
   @Autowired
-  public EvidenceFormulaController(EvidenceFormulaRepository repository) {
+  public EvidenceFormulaController(
+      EvidenceFormulaRepository repository,
+      EvidenceFormulaEvaluator evaluator) {
     this.repository = repository;
+    this.evaluator = evaluator;
   }
 
   @GetMapping("/evidence-formulas")
@@ -79,6 +87,13 @@ public class EvidenceFormulaController {
   @PreAuthorize("hasRole('ADMIN')")
   public boolean evaluateEvidenceFormulaByName(@PathVariable String name,
       HttpServletRequest request) {
-    throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+    EvidenceFormula evidenceFormula = repository.findByName(name).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    ObjectMapper mapper = new JsonMapper();
+    try {
+      JsonNode node = mapper.readValue(request.getReader(), JsonNode.class);
+      return evaluator.evaluate(node, evidenceFormula);
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
   }
 }

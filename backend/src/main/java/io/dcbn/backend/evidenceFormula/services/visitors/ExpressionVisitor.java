@@ -4,6 +4,11 @@ import io.dcbn.backend.evidenceFormulas.FormulaBaseVisitor;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.ExpressionContext;
 import java.util.Map;
 
+/**
+ * Visitor responsible for evaluating generic expressions (i.e. as function parameters).
+ * The methods in this class are responsible for visiting the corresponding rules in the grammar.
+ * They will not be documented in more detail.
+ */
 public class ExpressionVisitor extends FormulaBaseVisitor<Object> {
 
   private Map<String, Object> variables;

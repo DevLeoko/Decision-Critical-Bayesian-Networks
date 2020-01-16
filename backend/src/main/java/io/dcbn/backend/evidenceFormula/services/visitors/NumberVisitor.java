@@ -7,6 +7,11 @@ import io.dcbn.backend.evidenceFormulas.FormulaParser.NumberLiteralExpressionCon
 import io.dcbn.backend.evidenceFormulas.FormulaParser.NumberParenthesisExpressionContext;
 import java.util.Map;
 
+/**
+ * Visitor responsible for evaluating number expressions.
+ * The methods in this class are responsible for visiting the corresponding rules in the grammar.
+ * They will not be documented in more detail.
+ */
 public class NumberVisitor extends FormulaBaseVisitor<Double> {
 
   private Map<String, Object> variables;
