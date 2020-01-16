@@ -7,39 +7,41 @@ import eu.amidst.core.variables.Variable;
 import eu.amidst.dynamic.models.DynamicBayesianNetwork;
 import eu.amidst.dynamic.models.DynamicDAG;
 import eu.amidst.dynamic.variables.DynamicVariables;
+import io.dcbn.backend.utils.Pair;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import lombok.Getter;
 
 /**
  * This class represents the adapter from Graph to DynamicBayesianNetwork
  */
 public class AmidstGraphAdapter {
 
-  @Getter
-  private DynamicBayesianNetwork dbn;
+    @Getter
+    private DynamicBayesianNetwork dbn;
 
-  private ArrayList<Variable> variables;
+    private List<Pair<Variable, Node>> variables;
 
-  /**
-   * The constructor takes as input a {@link Graph} and adapt it to an amidst {@link
-   * DynamicBayesianNetwork} with all the data inside
-   *
-   * @param graph the input graph to adapt
-   */
-  public AmidstGraphAdapter(Graph graph) {
-    DynamicVariables dynamicVariables = new DynamicVariables();
-    variables = new ArrayList<>();
+    /**
+     * The constructor takes as input a {@link Graph} and adapt it to an amidst {@link DynamicBayesianNetwork}
+     * with all the data inside
+     *
+     * @param graph the input graph to adapt
+     */
+    public AmidstGraphAdapter(Graph graph) {
+        DynamicVariables dynamicVariables = new DynamicVariables();
+        variables = new ArrayList<>();
 
-    //---------------------------------Creating all the variables------------------------------------------
-    for (Node node : graph.getNodes()) {
-      List<String> states = Arrays.asList(node.getStateType().getStates());
-      Variable variable = dynamicVariables.newMultinomialDynamicVariable(node.getName(), states);
-      variables.add(variable);
-    }
+        // Creating all the variables
+        for (Node node : graph.getNodes()) {
+            List<String> states = Arrays.asList(node.getStateType().getStates());
+            Variable variable = dynamicVariables.newMultinomialDynamicVariable(node.getName(), states);
+            variables.add(new Pair<>(variable, node));
+        }
 
-    DynamicDAG dynamicDAG = new DynamicDAG(dynamicVariables);
+        DynamicDAG dynamicDAG = new DynamicDAG(dynamicVariables);
 
         // Setting parents for each variable (Creating structure of DBN)
         for (Pair<Variable, Node> entry : variables) {
@@ -72,9 +74,6 @@ public class AmidstGraphAdapter {
                         .forEach(variableParentSetT::addParent);
             }
         }
-      } else {
-        Multinomial variableMultinomial0 = this.dbn.getConditionalDistributionTime0(variable);
-        variableMultinomial0.setProbabilities(node.getTimeZeroDependency().getProbabilities()[0]);
 
         dbn = new DynamicBayesianNetwork(dynamicDAG);
         //----------------------------------------Setting probabilities-------------------------------------------
@@ -118,28 +117,21 @@ public class AmidstGraphAdapter {
                 }
             }
         }
-      } else {
-        Multinomial variableMultinomialT = this.dbn.getConditionalDistributionTimeT(variable);
-        variableMultinomialT.setProbabilities(node.getTimeTDependency().getProbabilities()[0]);
-      }
+
+
     }
 
-
-  }
-
-  /**
-   * Returns the variable with the given name
-   *
-   * @param name the name of the variable
-   * @return the variable with the given name
-   */
-  public Variable getVariableByName(String name) {
-    for (Variable variable : this.variables) {
-      if (variable.getName().equals(name)) {
-        return variable;
-      }
+    /**
+     * Returns the variable with the given name
+     *
+     * @param name the name of the variable
+     * @return the variable with the given name
+     */
+    public Variable getVariableByName(String name) {
+        return variables.stream()
+                .map(Pair::getKey)
+                .filter(var -> var.getName().equals(name))
+                .findAny().orElse(null);
     }
-    return null;
-  }
 
 }
