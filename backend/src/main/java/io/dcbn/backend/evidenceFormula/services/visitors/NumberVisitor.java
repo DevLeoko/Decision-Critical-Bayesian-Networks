@@ -45,7 +45,7 @@ public class NumberVisitor extends FormulaBaseVisitor<Double> {
       case "-": return left - right;
       case "*": return left * right;
       case "/": return left / right;
-      default: throw new IllegalArgumentException("Unknown operator: " + ctx.operator.getText());
+      default: throw new IllegalArgumentException("Unknown operator: " + ctx.operator.getText()); // Should never happen.
     }
   }
 

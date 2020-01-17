@@ -41,7 +41,7 @@ expression
   | numberExpression;
 
 IDENTIFIER: [a-zA-Z][a-zA-Z_]*;
-NUMBER: [0-9]+ ('.' [0-9]+)? ([eE] PLUS_MINUS [0-9]+)?;
+NUMBER: PLUS_MINUS? [0-9]+ ('.' [0-9]+)? ([eE] PLUS_MINUS [0-9]+)?;
 
 COMPARISON_OPERATOR: '=' | '!=' | '<' | '<=' | '>' | '>=';
 MUL_DIV: '*' | '/';

@@ -10,10 +10,10 @@ import io.dcbn.backend.evidenceFormula.services.visitors.BooleanVisitor;
 import io.dcbn.backend.evidenceFormula.services.visitors.FunctionWrapper;
 import io.dcbn.backend.evidenceFormulas.FormulaLexer;
 import io.dcbn.backend.evidenceFormulas.FormulaParser;
-import java.util.HashMap;
 import java.util.Map;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,7 +22,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class EvidenceFormulaEvaluator {
 
-  private Map<String, FunctionWrapper> functions = new HashMap<>();
+  private final Map<String, FunctionWrapper> functions;
+
+  @Autowired
+  public EvidenceFormulaEvaluator(
+      Map<String, FunctionWrapper> functions) {
+    this.functions = functions;
+  }
 
   /**
    * Evaluates the given EvidenceFormula with the variables contained in the JsonNode.
@@ -31,7 +37,9 @@ public class EvidenceFormulaEvaluator {
    * @return the boolean value of the evaluated formula.
    */
   public boolean evaluate(JsonNode json, EvidenceFormula evidenceFormula) {
-    return evaluateInternal(json, evidenceFormula);
+    ObjectMapper mapper = new JsonMapper();
+    Vessel vessel = mapper.convertValue(json, Vessel.class);
+    return evaluateInternal(vessel, evidenceFormula);
   }
 
   /**

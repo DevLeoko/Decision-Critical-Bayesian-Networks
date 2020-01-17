@@ -57,31 +57,31 @@ public class BooleanVisitor extends FormulaBaseVisitor<Boolean> {
 
   @Override
   public Boolean visitBooleanBinaryExpression(BooleanBinaryExpressionContext ctx) {
-    boolean left = visit(ctx.left);
-    boolean right = visit(ctx.right);
+    Boolean left = visit(ctx.left);
+    Boolean right = visit(ctx.right);
 
     switch (ctx.operator.getText()) {
       case "&": return left && right;
       case "|": return left || right;
-      default: throw new IllegalArgumentException("Unknown operator: " + ctx.operator.getText());
+      default: throw new IllegalArgumentException("Unknown operator: " + ctx.operator.getText()); // Should never happen.
     }
   }
 
   @Override
   public Boolean visitBooleanComparisonExpression(BooleanComparisonExpressionContext ctx) {
     NumberVisitor visitor = new NumberVisitor(variables, functions);
-    double left = visitor.visit(ctx.comparisonExpression().left);
-    double right = visitor.visit(ctx.comparisonExpression().right);
+    Double left = visitor.visit(ctx.comparisonExpression().left);
+    Double right = visitor.visit(ctx.comparisonExpression().right);
 
     String operator = ctx.comparisonExpression().COMPARISON_OPERATOR().getText();
     switch (operator) {
-      case "=": return left == right;
-      case "!=": return left != right;
+      case "=": return left.equals(right);
+      case "!=": return !left.equals(right);
       case "<": return left < right;
       case "<=": return left <= right;
       case ">": return left > right;
       case ">=": return left >= right;
-      default: throw new IllegalArgumentException("Unknown operator: " + operator);
+      default: throw new IllegalArgumentException("Unknown operator: " + operator); // Should never happen.
     }
   }
 
