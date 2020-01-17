@@ -16,6 +16,6 @@ public class VesselHandler {
     }
 
     public void handleVessel(Vessel vessel){
-        vesselCache.insert();
+        vesselCache.insert(vessel);
     }
 }

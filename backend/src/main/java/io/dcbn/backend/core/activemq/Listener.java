@@ -1,7 +1,8 @@
-package io.dcbn.backend.core;
+package io.dcbn.backend.core.activemq;
 
+import io.dcbn.backend.core.AoiHandler;
+import io.dcbn.backend.core.VesselHandler;
 import io.dcbn.backend.maritimedatamodel.JsonMapper;
-import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
@@ -9,13 +10,13 @@ import org.springframework.stereotype.Component;
 import javax.jms.*;
 
 @Component
-public class ActivemqListener {
+public class Listener {
 
     private final AoiHandler aoiHandler;
     private final VesselHandler vesselHandler;
 
     @Autowired
-    public ActivemqListener(AoiHandler aoiHandler, VesselHandler vesselHandler){
+    public Listener(AoiHandler aoiHandler, VesselHandler vesselHandler){
         this.aoiHandler = aoiHandler;
         this.vesselHandler = vesselHandler;
     }

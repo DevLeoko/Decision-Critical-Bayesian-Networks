@@ -16,7 +16,7 @@ public class AoiCache {
 
     public void insert(String name, AreaOfInterest aoi){
         if(aoiCache.containsKey(name)) {
-            // Exception werfen?
+            throw new IllegalArgumentException("Area of interest with the given name already exists!");
         }
         else {aoiCache.put(name, aoi);}
     }
