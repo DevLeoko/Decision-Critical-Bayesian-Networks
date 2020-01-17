@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -12,7 +13,7 @@ import java.util.Map;
 public class AoiCache {
 
     @Getter
-    private Map<String, AreaOfInterest> aoiCache;
+    private Map<String, AreaOfInterest> aoiCache = new HashMap<String, AreaOfInterest>();
 
     public void insert(String name, AreaOfInterest aoi){
         if(aoiCache.containsKey(name)) {
