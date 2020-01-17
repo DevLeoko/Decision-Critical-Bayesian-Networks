@@ -1,8 +1,8 @@
 package io.dcbn.backend.core.activemq;
 
-import io.dcbn.backend.maritimedatamodel.JsonMapper;
-import io.dcbn.backend.maritimedatamodel.Network;
-import io.dcbn.backend.maritimedatamodel.Outcome;
+
+import de.fraunhofer.iosb.iad.maritime.datamodel.JsonMapper;
+import de.fraunhofer.iosb.iad.maritime.datamodel.Outcome;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 

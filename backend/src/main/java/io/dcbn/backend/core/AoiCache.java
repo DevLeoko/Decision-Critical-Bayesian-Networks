@@ -1,6 +1,6 @@
 package io.dcbn.backend.core;
 
-import io.dcbn.backend.maritimedatamodel.AreaOfInterest;
+import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;

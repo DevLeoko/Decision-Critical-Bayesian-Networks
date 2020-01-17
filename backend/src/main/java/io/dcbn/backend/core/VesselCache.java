@@ -1,8 +1,8 @@
 package io.dcbn.backend.core;
 
+import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
+import de.fraunhofer.iosb.iad.maritime.datamodel.VesselType;
 import io.dcbn.backend.config.DcbnConfig;
-import io.dcbn.backend.maritimedatamodel.Vessel;
-import io.dcbn.backend.maritimedatamodel.VesselType;
 import lombok.Getter;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

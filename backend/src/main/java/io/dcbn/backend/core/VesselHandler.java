@@ -1,6 +1,6 @@
 package io.dcbn.backend.core;
 
-import io.dcbn.backend.maritimedatamodel.Vessel;
+import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
