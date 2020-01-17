@@ -37,8 +37,8 @@ public class NumberVisitor extends FormulaBaseVisitor<Double> {
 
   @Override
   public Double visitNumberBinaryExpression(NumberBinaryExpressionContext ctx) {
-    double left = visit(ctx.left);
-    double right = visit(ctx.right);
+    Double left = visit(ctx.left);
+    Double right = visit(ctx.right);
 
     switch (ctx.operator.getText()) {
       case "+": return left + right;

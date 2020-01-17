@@ -54,7 +54,6 @@ public class EvidenceFormulaEvaluator {
 
   // Converts an object to Map<String, Object> and passes it to the evaluator.
   private boolean evaluateInternal(Object object, EvidenceFormula evidenceFormula) {
-    // FIXME: Wenn im JSON Objekt Ganzzahlen übergeben werden, gibt es einen Fehler, da Jackson diese zu Integers deserialisiert.
     ObjectMapper mapper = new JsonMapper();
     Map<String, Object> variables = mapper.convertValue(object,
         new TypeReference<Map<String, Object>>() {});
