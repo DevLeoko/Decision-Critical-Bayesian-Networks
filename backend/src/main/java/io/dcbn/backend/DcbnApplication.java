@@ -88,7 +88,7 @@ public class DcbnApplication {
   }
 
   @Bean
-  public Map<String, FunctionWrapper> variablesBean() {
+  public Map<String, FunctionWrapper> functionsBean() {
     return new HashMap<>();
   }
 
