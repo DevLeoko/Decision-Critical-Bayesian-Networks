@@ -127,6 +127,28 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  void testNegationOfNumberExpressions() {
+    EvidenceFormula formula = new EvidenceFormula();
+
+    formula.setFormula("-sum(2, 1) = -3");
+    assertTrue(evaluator.evaluate(vessel, formula));
+
+    formula.setFormula("-speed = -5");
+    assertTrue(evaluator.evaluate(vessel, formula));
+  }
+
+  @Test
+  void testScientificNotation() {
+    EvidenceFormula formula = new EvidenceFormula();
+
+    formula.setFormula("2e2 = 200");
+    assertTrue(evaluator.evaluate(vessel, formula));
+
+    formula.setFormula("2e-2 = 0.02");
+    assertTrue(evaluator.evaluate(vessel, formula));
+  }
+
+  @Test
   void testOtherOperators() {
     EvidenceFormula formula = new EvidenceFormula();
 

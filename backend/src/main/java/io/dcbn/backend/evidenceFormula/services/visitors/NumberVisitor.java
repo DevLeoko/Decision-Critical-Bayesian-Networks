@@ -29,7 +29,11 @@ public class NumberVisitor extends FormulaBaseVisitor<Double> {
     Object result = visitor.visit(ctx.ambiguousLiteral());
 
     if (result instanceof Double) {
-      return (Double) result;
+      if (ctx.PLUS_MINUS() != null) {
+        return "-".equals(ctx.PLUS_MINUS().getText()) ? - (double) result : (double) result;
+      } else {
+        return (double) result;
+      }
     } else {
       throw new IllegalArgumentException(ctx.ambiguousLiteral().getText() + " didn't evaluate to a double!");
     }

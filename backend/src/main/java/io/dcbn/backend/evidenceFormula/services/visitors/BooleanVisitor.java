@@ -67,6 +67,11 @@ public class BooleanVisitor extends FormulaBaseVisitor<Boolean> {
     }
   }
 
+  private boolean fuzzyEquals(double a, double b) {
+    double epsilon = 1e-6;
+    return Math.abs(a - b) <= epsilon;
+  }
+
   @Override
   public Boolean visitBooleanComparisonExpression(BooleanComparisonExpressionContext ctx) {
     NumberVisitor visitor = new NumberVisitor(variables, functions);
@@ -75,8 +80,8 @@ public class BooleanVisitor extends FormulaBaseVisitor<Boolean> {
 
     String operator = ctx.comparisonExpression().COMPARISON_OPERATOR().getText();
     switch (operator) {
-      case "=": return left.equals(right);
-      case "!=": return !left.equals(right);
+      case "=": return fuzzyEquals(left, right);
+      case "!=": return !fuzzyEquals(left, right);
       case "<": return left < right;
       case "<=": return left <= right;
       case ">": return left > right;
