@@ -35,11 +35,12 @@
             :loading="loading"
             color="primary"
             class="mt-2 ml-2"
-            >Sign in</v-btn
           >
-          <v-btn color="primary" class="mt-2 ml-4" text to="forgotpassword"
-            >Forgot your password?</v-btn
-          >
+            Sign in
+          </v-btn>
+          <v-btn color="primary" class="mt-2 ml-4" text to="forgotpassword">
+            Forgot your password?
+          </v-btn>
         </v-form>
       </v-flex>
     </v-layout>

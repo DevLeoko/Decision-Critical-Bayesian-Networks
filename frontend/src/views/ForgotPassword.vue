@@ -31,8 +31,9 @@
         :loading="loading"
         color="primary"
         class="mt-2 ml-2"
-        >reset password</v-btn
       >
+        Reset password
+      </v-btn>
 
       <v-btn color="primary" depressed class="ml-4 mt-2" dark to="login">
         Back to login
