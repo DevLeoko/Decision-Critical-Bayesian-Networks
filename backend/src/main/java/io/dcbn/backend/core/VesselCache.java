@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -50,5 +52,23 @@ public class VesselCache {
             entry.getValue()[0] = entry.getValue()[1].clone();
             entry.getValue()[0].setFiller(true);
         }
+    }
+
+    // Checks if there are vessels in the cache which have not been updated
+    // within the last time steps and removes them from the cache
+    @Scheduled(fixedRateString = "${cache.refresh.time}")
+    private void refreshCache() {
+        List<String> toDelete = new ArrayList<String>();
+        for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
+            for(int i = 0; i < entry.getValue().length; i++) {
+                if (!entry.getValue()[i].isFiller()) {
+                    break;
+                } else if(i == entry.getValue().length - 1) {
+                    toDelete.add(entry.getKey());
+                }
+            }
+        }
+
+        vesselCache.keySet().removeAll(toDelete);
     }
 }

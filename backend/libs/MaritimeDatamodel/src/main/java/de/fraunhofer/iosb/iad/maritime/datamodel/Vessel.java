@@ -7,9 +7,9 @@ import lombok.SneakyThrows;
 @Data
 public class Vessel implements Cloneable {
 
-	private boolean isFiller;
-
 	private final long timestamp;
+
+	private boolean isFiller;
 
 	// estimate time of arrival
 	private long eta;
