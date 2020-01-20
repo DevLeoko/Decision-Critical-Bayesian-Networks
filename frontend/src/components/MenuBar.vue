@@ -3,7 +3,7 @@
     <img src="@/assets/logo.svg" height="70%" />
 
     <!-- Logged out -->
-    <template v-if="!$store.state.isUserLoggedIn && false">
+    <template v-if="!$store.state.isUserLoggedIn">
       <v-spacer></v-spacer>
 
       <language-selector />
@@ -14,6 +14,12 @@
       <v-spacer></v-spacer>
 
       <language-selector />
+      <v-btn
+        class="ml-4"
+        :to="{ name: graphView ? 'EvidenceFormulaBase' : 'GraphBase' }"
+      >
+        {{ graphView ? "Evidence-Formulas" : "Grpahview" }}
+      </v-btn>
       <v-btn class="ml-4 px-3" @click="logout" dark color="grey darken-3">
         Logout
       </v-btn>
@@ -30,8 +36,13 @@ export default Vue.extend({
     logout: function() {
       this.$store.dispatch("logout");
       this.$router.push({
-        name: "login"
+        name: "Login"
       });
+    }
+  },
+  computed: {
+    graphView(): boolean {
+      return (this.$route.fullPath as string).startsWith("/graph");
     }
   }
 });

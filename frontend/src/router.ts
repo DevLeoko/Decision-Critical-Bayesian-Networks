@@ -22,16 +22,19 @@ export default new Router({
     {
       name: "Login",
       path: "/login",
+      meta: { unauthorized: true },
       component: () => import("./views/Login.vue")
     },
     {
       name: "ResetPassword",
       path: "/reset-password",
+      meta: { unauthorized: true },
       component: () => import("./views/ResetPassword.vue")
     },
     {
       name: "ForgotPassword",
       path: "/forgot-password",
+      meta: { unauthorized: true },
       component: () => import("./views/ForgotPassword.vue")
     },
     {

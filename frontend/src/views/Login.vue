@@ -38,7 +38,12 @@
           >
             Sign in
           </v-btn>
-          <v-btn color="primary" class="mt-2 ml-4" text to="forgotpassword">
+          <v-btn
+            color="primary"
+            class="mt-2 ml-4"
+            text
+            :to="{ name: 'ForgotPassword' }"
+          >
             Forgot your password?
           </v-btn>
         </v-form>
