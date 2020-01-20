@@ -21,6 +21,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,8 +45,12 @@ public class DcbnApplication {
   }
 
   @Bean
-  public CommandLineRunner commandLineRunner(DcbnUserRepository dcbnUserRepository,
-      GraphRepository graphRepository) {
+  public MailSender mailSender() {
+    return new JavaMailSenderImpl();
+  }
+
+  @Bean
+  public CommandLineRunner commandLineRunner(DcbnUserRepository dcbnUserRepository, GraphRepository graphRepository) {
     return args -> {
       dcbnUserRepository.save(
           new DcbnUser("admin", "admin@dcbn.io", passwordEncoder().encode("admin"), Role.ADMIN));
