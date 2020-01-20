@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/DevLeoko/Decision-Critical-Bayesian-Networks/master/frontend/src/assets/LogoDark.svg?sanitize=true" width="40%"/>
+
 # Decision Critical Bayesian Networks
 
 > Application for the identification of decision-critical situations through dynamic bayesian networks.
