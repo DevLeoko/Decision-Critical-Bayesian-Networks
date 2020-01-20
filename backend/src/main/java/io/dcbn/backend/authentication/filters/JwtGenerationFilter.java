@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +25,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 public class JwtGenerationFilter extends UsernamePasswordAuthenticationFilter {
 
-  private static final int TOKEN_DURATION_MINUTES = 180;
+  @Value("${jwt.access.duration}")
+  private int tokenDurationInMinutes;
 
   private final AuthenticationManager authenticationManager;
   private final String secret;
@@ -59,7 +61,7 @@ public class JwtGenerationFilter extends UsernamePasswordAuthenticationFilter {
         .collect(Collectors.toList());
 
     Calendar now = Calendar.getInstance();
-    now.add(Calendar.MINUTE, TOKEN_DURATION_MINUTES);
+    now.add(Calendar.MINUTE, tokenDurationInMinutes);
 
     String accessToken = Jwts.builder().setSubject(user.getUsername())
         .setHeaderParam("typ", "jwt")

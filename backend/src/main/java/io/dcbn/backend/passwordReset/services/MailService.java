@@ -17,9 +17,6 @@ public class MailService {
   @Value("${reset.address}")
   private String fromAddress;
 
-  @Value("${jwt.secret}")
-  private String secret;
-
   @Autowired
   public MailService(MailSender sender) {
     this.sender = sender;
@@ -29,7 +26,7 @@ public class MailService {
     SimpleMailMessage message = new SimpleMailMessage();
     message.setFrom(fromAddress);
     message.setTo(user.getEmail());
-    message.setText(type.generateMailBody(user, secret));
+    message.setText(type.generateMailBody(user));
 
     sender.send(message);
   }
