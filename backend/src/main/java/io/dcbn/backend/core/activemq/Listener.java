@@ -5,6 +5,7 @@ import io.dcbn.backend.core.AoiHandler;
 import io.dcbn.backend.core.VesselHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import javax.jms.*;
@@ -22,12 +23,12 @@ public class Listener {
     }
 
     @JmsListener(destination = "aoi.queue")
-    public void receiveAoi(final String json) throws JMSException {
+    public void receiveAoi(@Payload final String json) throws JMSException {
         aoiHandler.handleAoi(JsonMapper.fromJsonToAreaOfInterest(json));
     }
 
     @JmsListener(destination = "vessel.queue")
-    public void receiveVessel(final String json) throws JMSException {
+    public void receiveVessel(@Payload final String json) throws JMSException {
         vesselHandler.handleVessel(JsonMapper.fromJsonToVessel(json));
     }
 }
