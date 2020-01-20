@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import io.dcbn.backend.evidenceFormula.services.visitors.FunctionWrapper;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -82,6 +85,11 @@ public class DcbnApplication {
       List<Node> nodeList = Arrays.asList(a, b, c);
       graphRepository.save(new Graph(0, "testGraph", 10, nodeList));
     };
+  }
+
+  @Bean
+  public Map<String, FunctionWrapper> functionsBean() {
+    return new HashMap<>();
   }
 
 }

@@ -32,7 +32,10 @@ public class Vessel {
 	private Double longitude;
 	private Double altitude;
 
-	public Vessel(String uuid, long timestamp) {
+  public Vessel() {
+  }
+
+  public Vessel(String uuid, long timestamp) {
 		this.uuid = uuid;
 		this.timestamp = timestamp;
 	}
