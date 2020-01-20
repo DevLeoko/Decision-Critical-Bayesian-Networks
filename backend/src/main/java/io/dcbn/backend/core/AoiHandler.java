@@ -3,9 +3,9 @@ package io.dcbn.backend.core;
 import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import io.dcbn.backend.core.activemq.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class AoiHandler {
 
     private final AoiCache aoiCache;

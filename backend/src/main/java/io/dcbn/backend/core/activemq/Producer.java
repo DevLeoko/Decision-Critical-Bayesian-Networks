@@ -4,9 +4,9 @@ package io.dcbn.backend.core.activemq;
 import de.fraunhofer.iosb.iad.maritime.datamodel.JsonMapper;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Outcome;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class Producer {
 
     @SendTo("outcome.queue")

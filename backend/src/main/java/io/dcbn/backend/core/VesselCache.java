@@ -2,16 +2,19 @@ package io.dcbn.backend.core;
 
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import de.fraunhofer.iosb.iad.maritime.datamodel.VesselType;
-import io.dcbn.backend.config.DcbnConfig;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
+@Service
 public class VesselCache {
+
+    @Value("${time.steps}")
+    private int timeSteps;
 
     @Getter
     private Map<VesselType, Map<String, Vessel[]>> vesselCache;
@@ -29,7 +32,7 @@ public class VesselCache {
         }
         // Insert vessel if its not currently in the cache map
         if (!vesselCache.get(vesselType).containsKey(uuid)) {
-            vesselCache.get(vesselType).put(uuid, new Vessel[DcbnConfig.TIME_STEPS]);
+            vesselCache.get(vesselType).put(uuid, new Vessel[timeSteps]);
         }
 
         vesselCache.get(vesselType).get(uuid)[0] = vessel;
@@ -39,7 +42,7 @@ public class VesselCache {
     Shift every Vessel instance of each vessel in the time-slice-array one to the right
     and write null to the current time slice (position 0 in the array)
      */
-    @Scheduled(fixedRate = DcbnConfig.TIME_STEP_LENGTH)
+    @Scheduled(fixedRateString = "${time.step.length}")
     private void updateCache() {
         for (Map.Entry<VesselType, Map<String, Vessel[]>> entry : vesselCache.entrySet()) {
             for (Map.Entry<String, Vessel[]> vesselMap : entry.getValue().entrySet()){

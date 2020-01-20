@@ -3,12 +3,12 @@ package io.dcbn.backend.core;
 import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
+@Service
 @NoArgsConstructor
 public class AoiCache {
 

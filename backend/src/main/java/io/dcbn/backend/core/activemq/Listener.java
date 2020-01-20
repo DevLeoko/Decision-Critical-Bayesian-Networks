@@ -5,11 +5,11 @@ import io.dcbn.backend.core.AoiHandler;
 import io.dcbn.backend.core.VesselHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.jms.*;
 
-@Component
+@Service
 public class Listener {
 
     private final AoiHandler aoiHandler;
