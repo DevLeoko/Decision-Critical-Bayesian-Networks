@@ -1,10 +1,8 @@
 package io.dcbn.backend.authentication.filters;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import java.io.IOException;
 import java.util.List;
@@ -52,14 +50,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
       Authentication authentication = new UsernamePasswordAuthenticationToken(username, null,
           authorities);
       SecurityContextHolder.getContext().setAuthentication(authentication);
-    } catch (ExpiredJwtException exception) {
-      logger.warn("Request to parse expired JWT", exception);
-    } catch (UnsupportedJwtException exception) {
-      logger.warn("Request to parse unsupported JWT", exception);
-    } catch (MalformedJwtException exception) {
-      logger.warn("Request to parse invalid JWT", exception);
-    } catch (IllegalArgumentException exception) {
-      logger.warn("Request to parse empty or null JWT", exception);
+    } catch (JwtException exception) {
+      // ignored
     }
 
     filterChain.doFilter(httpServletRequest, httpServletResponse);
