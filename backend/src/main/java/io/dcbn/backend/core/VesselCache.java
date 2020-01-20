@@ -1,7 +1,6 @@
 package io.dcbn.backend.core;
 
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
-import de.fraunhofer.iosb.iad.maritime.datamodel.VesselType;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,25 +16,25 @@ public class VesselCache {
     private int timeSteps;
 
     @Getter
-    private Map<VesselType, Map<String, Vessel[]>> vesselCache;
+    private Map<String, Vessel[]> vesselCache;
 
     public VesselCache() {
-        vesselCache = new HashMap<VesselType, Map<String, Vessel[]>>();
+        vesselCache = new HashMap<String, Vessel[]>();
+    }
+
+    public Vessel[] getVesselsByUuid(String uuid) throws IllegalArgumentException {
+        return vesselCache.get(uuid);
     }
 
     public void insert(Vessel vessel){
-        VesselType vesselType = vessel.getVesselType();
         String uuid = vessel.getUuid();
-        // Insert vesselType if its not currently in the cache map
-        if (!vesselCache.containsKey(vesselType)) {
-            vesselCache.put(vesselType, new HashMap<String, Vessel[]>());
-        }
+
         // Insert vessel if its not currently in the cache map
-        if (!vesselCache.get(vesselType).containsKey(uuid)) {
-            vesselCache.get(vesselType).put(uuid, new Vessel[timeSteps]);
+        if (!vesselCache.containsKey(uuid)) {
+            vesselCache.put(uuid, new Vessel[timeSteps]);
         }
 
-        vesselCache.get(vesselType).get(uuid)[0] = vessel;
+        vesselCache.get(uuid)[0] = vessel;
     }
 
     /*
@@ -44,13 +43,12 @@ public class VesselCache {
      */
     @Scheduled(fixedRateString = "${time.step.length}")
     private void updateCache() {
-        for (Map.Entry<VesselType, Map<String, Vessel[]>> entry : vesselCache.entrySet()) {
-            for (Map.Entry<String, Vessel[]> vesselMap : entry.getValue().entrySet()){
-                for (int i = vesselMap.getValue().length - 1; i > 0; i--) {
-                    vesselMap.getValue()[i] = vesselMap.getValue()[i - 1];
-                }
-                vesselMap.getValue()[0] = null;
+        for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
+            for (int i = entry.getValue().length - 1; i > 0; i--) {
+                entry.getValue()[i] = entry.getValue()[i - 1];
             }
+            entry.getValue()[0] = entry.getValue()[1].clone();
+            entry.getValue()[0].setFiller(true);
         }
     }
 }
