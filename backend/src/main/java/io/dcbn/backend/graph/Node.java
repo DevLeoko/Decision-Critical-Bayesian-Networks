@@ -61,4 +61,15 @@ public class Node {
     public boolean isValueNode() {
         return false;
     }
+
+  public int getIndexOfSate(String state) {
+    String[] states = this.stateType.getStates();
+    for (int i = 0; i < states.length; i++) {
+      if (state.equals(states[i])) {
+        return i;
+      }
+    }
+    //TODO solve (maybe return -1 ant catch exception
+    return null;
+  }
 }

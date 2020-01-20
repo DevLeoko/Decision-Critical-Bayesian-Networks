@@ -4,10 +4,10 @@ package io.dcbn.backend.graph;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import javax.swing.plaf.nimbus.State;
-
 @AllArgsConstructor
 public class ValueNode extends Node {
+
+    //TODO 2D Array because results for each time-step.
     @Getter
     private double[] value;
 

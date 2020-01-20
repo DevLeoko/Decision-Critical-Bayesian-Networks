@@ -21,6 +21,8 @@ public class AmidstGraphAdapter {
 
     @Getter
     private DynamicBayesianNetwork dbn;
+    @Getter
+    private Graph adaptedGraph;
 
     private List<Pair<Variable, Node>> variables;
 
@@ -31,6 +33,7 @@ public class AmidstGraphAdapter {
      * @param graph the input graph to adapt
      */
     public AmidstGraphAdapter(Graph graph) {
+        this.adaptedGraph = graph;
         DynamicVariables dynamicVariables = new DynamicVariables();
         variables = new ArrayList<>();
 

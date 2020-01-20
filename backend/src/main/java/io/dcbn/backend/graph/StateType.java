@@ -6,15 +6,15 @@ import lombok.Getter;
 
 public enum StateType {
 
-  BOOLEAN("true", "false");
+    BOOLEAN("true", "false");
 
-  @Getter
-  @JsonValue
-  private final String[] states;
+    @Getter
+    @JsonValue
+    private final String[] states;
 
 
-  StateType(String... states) {
-    this.states = states;
-  }
+    StateType(String... states) {
+        this.states = states;
+    }
 
 }
