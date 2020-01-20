@@ -3,7 +3,7 @@
     <v-flex xs5>
       <v-layout row wrap fill-height align-content-center>
         <v-flex xs12>
-          <img src="@/assets/logo.svg" />
+          <img src="@/assets/LogoDark.svg" />
         </v-flex>
       </v-layout>
     </v-flex>
