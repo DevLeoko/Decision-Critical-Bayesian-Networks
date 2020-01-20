@@ -49,7 +49,16 @@ public class Node {
   @NotNull
   private StateType stateType;
 
-  @Embedded
-  @NotNull
-  private Position position;
+    @Embedded
+    @NotNull
+    private Position position;
+
+    /**
+     * Method to indicate whether the node holds values.
+     *
+     * @return false because no values.
+     */
+    public boolean isValueNode() {
+        return false;
+    }
 }

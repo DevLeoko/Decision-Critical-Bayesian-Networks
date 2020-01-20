@@ -9,7 +9,6 @@ import eu.amidst.dynamic.models.DynamicBayesianNetwork;
 import eu.amidst.dynamic.models.DynamicDAG;
 import eu.amidst.dynamic.variables.DynamicVariables;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -118,6 +117,52 @@ public class GraphAdapterTests {
 //        System.out.println(correctDBN.toString());
 //        System.out.println("---------------------------------------------------------------");
 //        System.out.println(generatedDBN.toString());
-        Assertions.assertEquals(correctDBN.toString(), generatedDBN.toString());
+        Assertions.assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
+    }
+
+    /**
+     * Testing basic virtual evidence insertion.
+     */
+    @Test
+    public void testVirtualEvidence() {
+        ValueNode newA = new ValueNode("A", " ", StateType.BOOLEAN, ZERO_POSITION, new double[]{0.4, 0.6});
+        List<Node> nodeList = new ArrayList<>();
+        nodeList.add(newA);
+        nodeList.add(b);
+        nodeList.add(c);
+        testGraph = new Graph(0, "testGraph", 10, nodeList);
+        AmidstGraphAdapter amidstGraphAdapter = new AmidstGraphAdapter(testGraph);
+        generatedDBN = amidstGraphAdapter.getDbn();
+        Multinomial multinomialAT0 = correctDBN.getConditionalDistributionTime0(amidstGraphAdapter.getVariableByName(newA.getName()));
+        multinomialAT0.setProbabilities(newA.getValue());
+        Multinomial multinomialAT = correctDBN.getConditionalDistributionTimeT(amidstGraphAdapter.getVariableByName(newA.getName()));
+        multinomialAT.setProbabilities(newA.getValue());
+
+//        System.out.println(correctDBN.toString());
+//        System.out.println("---------------------------------------------------------------");
+//        System.out.println(generatedDBN.toString());
+        Assertions.assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
+    }
+
+    /**
+     * Testing insertion of a virtual evidence on a node with parent-dependencies
+     */
+    @Test
+    public void testRemovedChildInsertVirEvi() {
+        ValueNode newC = new ValueNode("C", "", StateType.BOOLEAN, ZERO_POSITION, new double[]{0.18, 0.82});
+        List<Node> nodeList = new ArrayList<>();
+        nodeList.add(newC);
+        testGraph = new Graph(0, "testGraph", 10, nodeList);
+        AmidstGraphAdapter amidstGraphAdapter = new AmidstGraphAdapter(testGraph);
+        generatedDBN = amidstGraphAdapter.getDbn();
+        DynamicVariables dynamicVariables = new DynamicVariables();
+        Variable c = dynamicVariables.newMultinomialDynamicVariable("C", 2);
+        DynamicDAG dynamicDAG = new DynamicDAG(dynamicVariables);
+        correctDBN = new DynamicBayesianNetwork(dynamicDAG);
+        Multinomial multinomialCT0 = correctDBN.getConditionalDistributionTime0(correctDBN.getDynamicVariables().getVariableByName("C"));
+        multinomialCT0.setProbabilities(newC.getValue());
+        Multinomial multinomialCT = correctDBN.getConditionalDistributionTimeT(correctDBN.getDynamicVariables().getVariableByName("C"));
+        multinomialCT.setProbabilities(newC.getValue());
+        Assertions.assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
     }
 }
