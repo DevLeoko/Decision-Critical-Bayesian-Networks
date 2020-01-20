@@ -48,3 +48,5 @@ MUL_DIV: '*' | '/';
 PLUS_MINUS: '+' | '-';
 
 WS: [ \t\r\n]+ -> skip;
+
+UNRECOGNIZED: .;

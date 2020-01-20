@@ -8,6 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
+import io.dcbn.backend.evidenceFormula.services.exceptions.ParameterSizeMismatchException;
+import io.dcbn.backend.evidenceFormula.services.exceptions.ParseException;
+import io.dcbn.backend.evidenceFormula.services.exceptions.SymbolNotFoundException;
+import io.dcbn.backend.evidenceFormula.services.exceptions.TypeMismatchException;
 import io.dcbn.backend.evidenceFormula.services.visitors.FunctionWrapper;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,7 +24,6 @@ import org.junit.jupiter.api.Test;
 class EvidenceFormulaEvaluatorTest {
 
   private EvidenceFormulaEvaluator evaluator;
-  private ObjectMapper mapper;
 
   private static Vessel vessel;
   private static Map<String, FunctionWrapper> testFunctions;
@@ -40,12 +43,11 @@ class EvidenceFormulaEvaluatorTest {
   @BeforeEach
   void setUp() {
     evaluator = new EvidenceFormulaEvaluator(testFunctions);
-    mapper = new JsonMapper();
   }
 
   @Test
   void testEvaluateWithJson() throws JsonProcessingException {
-    JsonNode node = mapper.readTree("{\"speed\": 5, \"longitude\": 12}");
+    JsonNode node = new JsonMapper().readTree("{\"speed\": 5, \"longitude\": 12}");
     EvidenceFormula formula = new EvidenceFormula();
 
     formula.setFormula("speed >= 5 & longitude = 2 + 2 * 5");
@@ -69,17 +71,23 @@ class EvidenceFormulaEvaluatorTest {
   @Test
   void testUnknownFunctionThrowsException() {
     EvidenceFormula formula = new EvidenceFormula();
-    formula.setFormula("unknownFunction()");
+    formula.setFormula("true & unknownFunction()");
 
-    assertThrows(IllegalArgumentException.class, () -> evaluator.evaluate(vessel, formula));
+    SymbolNotFoundException ex = assertThrows(SymbolNotFoundException.class, () -> evaluator.evaluate(vessel, formula));
+    assertEquals("unknownFunction", ex.getSymbolName());
+    assertEquals(1, ex.getLine());
+    assertEquals(7, ex.getCol());
   }
 
   @Test
   void testUnknownVariableThrowsException() {
     EvidenceFormula formula = new EvidenceFormula();
-    formula.setFormula("unknownVariable > 5");
+    formula.setFormula("true & unknownVariable > 5");
 
-    assertThrows(IllegalArgumentException.class, () -> evaluator.evaluate(vessel, formula));
+    TypeMismatchException ex = assertThrows(TypeMismatchException.class, () -> evaluator.evaluate(vessel, formula));
+    assertEquals(Double.class, ex.getExpectedType());
+    assertEquals(1, ex.getLine());
+    assertEquals(7, ex.getCol());
   }
 
   @Test
@@ -87,15 +95,26 @@ class EvidenceFormulaEvaluatorTest {
     EvidenceFormula formula = new EvidenceFormula();
     formula.setFormula("inArea(TEST_AREA, 2)");
 
-    assertThrows(IllegalArgumentException.class, () -> evaluator.evaluate(vessel, formula));
+    ParameterSizeMismatchException ex = assertThrows(
+        ParameterSizeMismatchException.class, () -> evaluator.evaluate(vessel, formula));
+
+    assertEquals("inArea", ex.getFunctionName());
+    assertEquals(1, ex.getLine());
+    assertEquals(0, ex.getCol());
+    assertEquals(1, ex.getExpectedParameterSize());
+    assertEquals(2, ex.getActualParameterSize());
   }
 
   @Test
   void testCallingFunctionWithWrongParameterTypeThrowsException() {
     EvidenceFormula formula = new EvidenceFormula();
-    formula.setFormula("inArea(2)");
+    formula.setFormula("2 > 1 &  inArea(2)");
 
-    assertThrows(IllegalArgumentException.class, () -> evaluator.evaluate(vessel, formula));
+    TypeMismatchException ex = assertThrows(TypeMismatchException.class, () -> evaluator.evaluate(vessel, formula));
+    assertEquals(String.class, ex.getExpectedType());
+    assertEquals(Double.class, ex.getActualType());
+    assertEquals(1, ex.getLine());
+    assertEquals(9, ex.getCol());
   }
 
   @Test
@@ -183,6 +202,38 @@ class EvidenceFormulaEvaluatorTest {
     assertFalse(evaluator.evaluate(vessel, formula));
 
     formula.setFormula("true & sum(2, 1)");
-    assertThrows(IllegalArgumentException.class, () -> evaluator.evaluate(vessel, formula));
+    TypeMismatchException ex = assertThrows(TypeMismatchException.class, () -> evaluator.evaluate(vessel, formula));
+    assertEquals(Boolean.class, ex.getExpectedType());
+    assertEquals(Double.class, ex.getActualType());
+    assertEquals(1, ex.getLine());
+    assertEquals(7, ex.getCol());
+  }
+
+  @Test
+  void testParseException() {
+    EvidenceFormula formula = new EvidenceFormula();
+
+    formula.setFormula("true & _Test");
+    ParseException ex = assertThrows(ParseException.class, () -> evaluator.evaluate(vessel, formula));
+    assertEquals("_", ex.getOffendingText());
+    assertEquals(1, ex.getLine());
+    assertEquals(7, ex.getCol());
+
+    formula.setFormula("true & ()");
+    ex = assertThrows(ParseException.class, () -> evaluator.evaluate(vessel, formula));
+    assertEquals(")", ex.getOffendingText());
+    assertEquals(1, ex.getLine());
+    assertEquals(8, ex.getCol());
+
+    formula.setFormula("true && ()");
+    ex = assertThrows(ParseException.class, () -> evaluator.evaluate(vessel, formula));
+    assertEquals("&", ex.getOffendingText());
+    assertEquals(1, ex.getLine());
+
+    formula.setFormula("true &");
+    ex = assertThrows(ParseException.class, () -> evaluator.evaluate(vessel, formula));
+    assertEquals("<EOF>", ex.getOffendingText());
+    assertEquals(1, ex.getLine());
+    assertEquals(6, ex.getCol());
   }
 }

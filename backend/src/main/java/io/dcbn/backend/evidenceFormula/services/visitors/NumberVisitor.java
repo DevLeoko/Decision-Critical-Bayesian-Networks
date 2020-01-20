@@ -1,5 +1,6 @@
 package io.dcbn.backend.evidenceFormula.services.visitors;
 
+import io.dcbn.backend.evidenceFormula.services.exceptions.TypeMismatchException;
 import io.dcbn.backend.evidenceFormulas.FormulaBaseVisitor;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.NumberAmbiguousExpressionContext;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.NumberBinaryExpressionContext;
@@ -35,7 +36,7 @@ public class NumberVisitor extends FormulaBaseVisitor<Double> {
         return (double) result;
       }
     } else {
-      throw new IllegalArgumentException(ctx.ambiguousLiteral().getText() + " didn't evaluate to a double!");
+      throw new TypeMismatchException(Double.class, result.getClass(), ctx.start.getLine(), ctx.start.getCharPositionInLine());
     }
   }
 
