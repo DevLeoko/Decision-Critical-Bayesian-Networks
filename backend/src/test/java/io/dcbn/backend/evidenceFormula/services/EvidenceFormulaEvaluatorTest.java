@@ -30,7 +30,7 @@ class EvidenceFormulaEvaluatorTest {
 
   @BeforeAll
   static void beforeAll() {
-    vessel = new Vessel();
+    vessel = new Vessel(null, 0);
     vessel.setSpeed(5.0);
     vessel.setLongitude(12.0);
 

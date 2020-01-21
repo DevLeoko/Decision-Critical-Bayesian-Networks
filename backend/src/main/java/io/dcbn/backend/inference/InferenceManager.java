@@ -1,5 +1,6 @@
 package io.dcbn.backend.inference;
 
+import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import eu.amidst.core.datastream.DataStream;
 import eu.amidst.core.inference.InferenceAlgorithm;
 import eu.amidst.core.variables.Variable;
@@ -7,12 +8,17 @@ import eu.amidst.dynamic.datastream.DynamicDataInstance;
 import eu.amidst.dynamic.inference.FactoredFrontierForDBN;
 import eu.amidst.dynamic.inference.InferenceEngineForDBN;
 import eu.amidst.dynamic.utils.DynamicBayesianNetworkSampler;
+import io.dcbn.backend.core.VesselCache;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
+import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
 import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.Node;
 import io.dcbn.backend.graph.ValueNode;
+import io.dcbn.backend.graph.repositories.GraphRepository;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,16 +26,33 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @Data
+@Service
 public class InferenceManager {
 
+    private VesselCache vesselCache;
+    private GraphRepository graphRepository;
+    private EvidenceFormulaEvaluator evidenceFormulaEvaluator;
+
+    @Autowired
+    public InferenceManager(VesselCache vesselCache, GraphRepository graphRepository, EvidenceFormulaEvaluator evidenceFormulaEvaluator) {
+        this.vesselCache = vesselCache;
+        this.graphRepository = graphRepository;
+        this.evidenceFormulaEvaluator = evidenceFormulaEvaluator;
+    }
+
     public List<Graph> calculateInference(String vesselUuid) {
-        //TODO take vessels from cache
+        Vessel[] vessels = vesselCache.getVesselsByUuid(vesselUuid);
+        List<Graph> outputGraphs = new ArrayList<>();
 
-
-
-        calculateInference(null, (i, formula) -> {
-            return null;
-        }, null);
+        //Iterating over all graphs
+        for (Graph graph : graphRepository.findAll()) {
+            AmidstGraphAdapter adaptedGraph = new AmidstGraphAdapter(graph);
+            outputGraphs.add(calculateInference(adaptedGraph, (i, formula) -> {
+                Vessel vessel = vessels[i];
+                return evidenceFormulaEvaluator.evaluate(vessel, formula) ? "true" : "false";
+            } , Algorithm.IMPORTANCE_SAMPLING)); //TODO BRUH ALGO
+        }
+        return outputGraphs;
     }
 
     public Graph calculateInference(AmidstGraphAdapter adaptedGraph, BiFunction<Integer, EvidenceFormula, String> formulaResolver, Algorithm algorithm) {
@@ -38,7 +61,7 @@ public class InferenceManager {
         List<Node> nodesToEvaluate = nodes.stream()
                 .filter(var -> !var.isValueNode() && var.getEvidenceFormula() == null)
                 .collect(Collectors.toList());
-        //Hiding the variables we want to evaluate during inference calculations TODO Bad english?
+        //Hiding the variables we want to evaluate during inference calculations
         nodesToEvaluate.stream()
                 .map(Node::getName)
                 .map(adaptedGraph::getVariableByName)
@@ -58,6 +81,8 @@ public class InferenceManager {
                     });
             i++;
         }
+
+        //TODO make better
 
         //Running inference
         InferenceAlgorithm inferenceAlgorithm = algorithm.getAlgorithm();
