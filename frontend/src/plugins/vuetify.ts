@@ -5,14 +5,17 @@ import colors from "vuetify/lib/util/colors";
 
 Vue.use(Vuetify);
 
+const primary = colors.blue.darken4;
+// const primary = colors.blueGrey.darken2;
+
 export default new Vuetify({
   theme: {
     themes: {
       light: {
-        primary: colors.lightBlue.base
+        primary
       },
       dark: {
-        primary: colors.lightBlue.base
+        primary
       }
     }
   }
