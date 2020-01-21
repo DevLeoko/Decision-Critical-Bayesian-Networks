@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.evidenceFormula.services.exceptions.ParseException;
@@ -11,15 +12,18 @@ import io.dcbn.backend.evidenceFormula.services.visitors.BooleanVisitor;
 import io.dcbn.backend.evidenceFormula.services.visitors.FunctionWrapper;
 import io.dcbn.backend.evidenceFormulas.FormulaLexer;
 import io.dcbn.backend.evidenceFormulas.FormulaParser;
-import java.util.Map;
+
+import java.util.*;
+
+import lombok.Getter;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,6 +31,24 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EvidenceFormulaEvaluator {
+
+  @Getter
+  private List<Vessel> correlatedVessels = new ArrayList<>();
+  @Getter
+  private List<AreaOfInterest> correlatedAois = new ArrayList<>();
+
+  private int currentTimeSlice;
+
+  private Object distanceToNearest(List<Object> ignored) {
+    return 1.0 * currentTimeSlice;
+  }
+
+  @Bean
+  public Map<String, FunctionWrapper> functions() {
+    Map<String, FunctionWrapper> functions = new HashMap<>();
+    functions.put("distanceToNearest", new FunctionWrapper(Collections.emptyList(), this::distanceToNearest));
+    return functions;
+  }
 
   private static class ThrowingErrorListener extends BaseErrorListener {
     @Override
@@ -51,10 +73,19 @@ public class EvidenceFormulaEvaluator {
    * @param evidenceFormula the evidence formula to evaluate.
    * @return the boolean value of the evaluated formula.
    */
-  public boolean evaluate(JsonNode json, EvidenceFormula evidenceFormula) {
+  public boolean evaluate(int currentTimeSlice, JsonNode json, EvidenceFormula evidenceFormula) {
+    this.currentTimeSlice = currentTimeSlice;
     ObjectMapper mapper = new JsonMapper();
     Vessel vessel = mapper.convertValue(json, Vessel.class);
     return evaluateInternal(vessel, evidenceFormula);
+  }
+
+  public boolean evaluate(JsonNode json, EvidenceFormula evidenceFormula) {
+    return evaluate(0, json, evidenceFormula);
+  }
+
+  public boolean evaluate(Vessel vessel, EvidenceFormula evidenceFormula) {
+    return evaluate(0, vessel, evidenceFormula);
   }
 
   /**
@@ -63,7 +94,8 @@ public class EvidenceFormulaEvaluator {
    * @param evidenceFormula the evidence formula to evaluate.
    * @return the boolean value of the evaluated formula.
    */
-  public boolean evaluate(Vessel vessel, EvidenceFormula evidenceFormula) {
+  public boolean evaluate(int currentTimeSlice, Vessel vessel, EvidenceFormula evidenceFormula) {
+    this.currentTimeSlice = currentTimeSlice;
     return evaluateInternal(vessel, evidenceFormula);
   }
 

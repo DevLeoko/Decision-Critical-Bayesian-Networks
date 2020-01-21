@@ -36,6 +36,17 @@
 			<version>2.10.1</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.dcbn.backend</groupId>
+			<artifactId>dcbn</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.5.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>

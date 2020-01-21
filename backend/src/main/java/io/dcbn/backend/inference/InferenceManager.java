@@ -1,5 +1,7 @@
 package io.dcbn.backend.inference;
 
+import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
+import de.fraunhofer.iosb.iad.maritime.datamodel.Outcome;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import eu.amidst.core.datastream.DataStream;
 import eu.amidst.core.inference.InferenceAlgorithm;
@@ -8,6 +10,7 @@ import eu.amidst.dynamic.datastream.DynamicDataInstance;
 import eu.amidst.dynamic.inference.FactoredFrontierForDBN;
 import eu.amidst.dynamic.inference.InferenceEngineForDBN;
 import eu.amidst.dynamic.utils.DynamicBayesianNetworkSampler;
+import io.dcbn.backend.core.AoiCache;
 import io.dcbn.backend.core.VesselCache;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -30,6 +34,8 @@ import java.util.stream.Collectors;
 public class InferenceManager {
 
     private VesselCache vesselCache;
+    private AoiCache aoiCache;
+
     private GraphRepository graphRepository;
     private EvidenceFormulaEvaluator evidenceFormulaEvaluator;
 
@@ -40,19 +46,22 @@ public class InferenceManager {
         this.evidenceFormulaEvaluator = evidenceFormulaEvaluator;
     }
 
-    public List<Graph> calculateInference(String vesselUuid) {
+    public List<Outcome> calculateInference(String vesselUuid) {
         Vessel[] vessels = vesselCache.getVesselsByUuid(vesselUuid);
-        List<Graph> outputGraphs = new ArrayList<>();
+        List<Outcome> outcomes = new ArrayList<>();
 
         //Iterating over all graphs
         for (Graph graph : graphRepository.findAll()) {
             AmidstGraphAdapter adaptedGraph = new AmidstGraphAdapter(graph);
-            outputGraphs.add(calculateInference(adaptedGraph, (i, formula) -> {
+            Graph calculatedGraph = calculateInference(adaptedGraph, (i, formula) -> {
                 Vessel vessel = vessels[i];
-                return evidenceFormulaEvaluator.evaluate(vessel, formula) ? "true" : "false";
-            } , Algorithm.IMPORTANCE_SAMPLING)); //TODO BRUH ALGO
+
+                return evidenceFormulaEvaluator.evaluate(i, vessel, formula) ? "true" : "false";
+            } , Algorithm.IMPORTANCE_SAMPLING);
+            Outcome outcome = new Outcome(UUID.randomUUID().toString(), System.currentTimeMillis(), calculatedGraph, evidenceFormulaEvaluator.getCorrelatedVessels(), evidenceFormulaEvaluator.getCorrelatedAois());
+            outcomes.add(outcome);
         }
-        return outputGraphs;
+        return outcomes;
     }
 
     public Graph calculateInference(AmidstGraphAdapter adaptedGraph, BiFunction<Integer, EvidenceFormula, String> formulaResolver, Algorithm algorithm) {

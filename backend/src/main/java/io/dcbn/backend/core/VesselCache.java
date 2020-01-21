@@ -1,7 +1,6 @@
 package io.dcbn.backend.core;
 
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,11 +16,10 @@ public class VesselCache {
     @Value("${time.steps}")
     private int timeSteps;
 
-    @Getter
     private Map<String, Vessel[]> vesselCache;
 
     public VesselCache() {
-        vesselCache = new HashMap<String, Vessel[]>();
+        vesselCache = new HashMap<>();
     }
 
     public Vessel[] getVesselsByUuid(String uuid) throws IllegalArgumentException {
@@ -58,7 +56,7 @@ public class VesselCache {
     // within the last time steps and removes them from the cache
     @Scheduled(fixedRateString = "${cache.refresh.time}")
     private void refreshCache() {
-        List<String> toDelete = new ArrayList<String>();
+        List<String> toDelete = new ArrayList<>();
         for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
             for(int i = 0; i < entry.getValue().length; i++) {
                 if (!entry.getValue()[i].isFiller()) {
