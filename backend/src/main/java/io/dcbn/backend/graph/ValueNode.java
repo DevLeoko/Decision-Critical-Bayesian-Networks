@@ -3,19 +3,31 @@ package io.dcbn.backend.graph;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
 public class ValueNode extends Node {
 
-    //TODO 2D Array because results for each time-step.
     @Getter
-    private double[] value;
+    @Setter
+    private double[][] value;
 
-    public ValueNode(String name, String color, StateType stateType, Position position, double[] value) {
+    public ValueNode(String name, String color, StateType stateType, Position position, double[][] value) {
         super.setName(name);
         super.setColor(color);
         super.setStateType(stateType);
         super.setPosition(position);
+        this.value = value;
+    }
+
+    public ValueNode(Node node, double[][] value) {
+        super.setName(node.getName());
+        super.setColor(node.getColor());
+        super.setStateType(node.getStateType());
+        super.setPosition(node.getPosition());
+        super.setTimeZeroDependency(node.getTimeZeroDependency());
+        super.setTimeTDependency(node.getTimeTDependency());
+        super.setEvidenceFormula(node.getEvidenceFormula());
         this.value = value;
     }
 

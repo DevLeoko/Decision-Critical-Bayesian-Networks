@@ -17,4 +17,15 @@ public enum StateType {
         this.states = states;
     }
 
+    public int getIndexOfSate(String state) {
+        String[] states = this.states;
+        for (int i = 0; i < states.length; i++) {
+            if (state.equals(states[i])) {
+                return i;
+            }
+        }
+        //TODO solve (maybe return -1 ant catch exception)
+        return -1;
+    }
+
 }

@@ -5,18 +5,13 @@ import eu.amidst.core.inference.ImportanceSamplingRobust;
 import eu.amidst.core.inference.InferenceAlgorithm;
 import lombok.Getter;
 
-public enum Algorithm {;
+public enum Algorithm {
+
+    IMPORTANCE_SAMPLING(new ImportanceSampling()),
+    IMPORTANCE_SAMPLING_ROBUST(new ImportanceSamplingRobust());
 
     @Getter
     private final InferenceAlgorithm algorithm;
-
-    ImportanceSampling IMPORTANCE_SAMPLING() {
-        return new ImportanceSampling();
-    };
-
-    ImportanceSamplingRobust IMPORTANCE_SAMPLING_ROBUST() {
-        return new ImportanceSamplingRobust();
-    };
 
 
     Algorithm(InferenceAlgorithm algorithm) {

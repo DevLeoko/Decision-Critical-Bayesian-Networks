@@ -1,8 +1,8 @@
 package io.dcbn.backend.inference;
 
 import eu.amidst.core.datastream.DataStream;
-import eu.amidst.core.distribution.UnivariateDistribution;
 import eu.amidst.core.inference.InferenceAlgorithm;
+import eu.amidst.core.variables.Variable;
 import eu.amidst.dynamic.datastream.DynamicDataInstance;
 import eu.amidst.dynamic.inference.FactoredFrontierForDBN;
 import eu.amidst.dynamic.inference.InferenceEngineForDBN;
@@ -11,8 +11,10 @@ import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.Node;
+import io.dcbn.backend.graph.ValueNode;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -20,17 +22,17 @@ import java.util.stream.Collectors;
 @Data
 public class InferenceManager {
 
-//    public List<Graph> calculateInference(String vesselUuid) {
-//        //TODO take vessels from cache
-//
-//        vArraz
-//        calculateInference(null, (i, formula) -> {
-//            return nll
-//        }, null);
-//    }
+    public List<Graph> calculateInference(String vesselUuid) {
+        //TODO take vessels from cache
+
+
+
+        calculateInference(null, (i, formula) -> {
+            return null;
+        }, null);
+    }
 
     public Graph calculateInference(AmidstGraphAdapter adaptedGraph, BiFunction<Integer, EvidenceFormula, String> formulaResolver, Algorithm algorithm) {
-        //Setting the results of the evidences
         DynamicBayesianNetworkSampler dynamicSampler = new DynamicBayesianNetworkSampler(adaptedGraph.getDbn());
         List<Node> nodes = adaptedGraph.getAdaptedGraph().getNodes();
         List<Node> nodesToEvaluate = nodes.stream()
@@ -49,8 +51,11 @@ public class InferenceManager {
             int finalI = i;
             nodes.stream()
                     .filter(var -> !var.isValueNode() && var.getEvidenceFormula() != null)
-                    .forEach(var -> instance.setValue(adaptedGraph.getVariableByName(var.getName())
-                            , var.getIndexOfSate(formulaResolver.apply(finalI, var.getEvidenceFormula()))));
+                    .forEach(var -> {
+                        Variable variable = adaptedGraph.getVariableByName(var.getName());
+                        int sate = var.getStateType().getIndexOfSate(formulaResolver.apply(finalI, var.getEvidenceFormula()));
+                        instance.setValue(variable, sate);
+                    });
             i++;
         }
 
@@ -61,33 +66,34 @@ public class InferenceManager {
         InferenceEngineForDBN.setInferenceAlgorithmForDBN(FFalgorithm);
         InferenceEngineForDBN.setModel(adaptedGraph.getDbn());
 
+        //Creating the output graph
+        List<Node> returnedNodes = new ArrayList<>();
+        nodes.forEach(var -> returnedNodes.add(new
 
-        //TODO create output graph
+                ValueNode(var, new double[adaptedGraph.getAdaptedGraph().
+
+                getTimeSlices()][2])));
+
         int time = 0;
-        UnivariateDistribution posterior = null;
-        for (DynamicDataInstance instance : dataPredict) {
+        for (
+                DynamicDataInstance instance : dataPredict) {
             //The InferenceEngineForDBN must be reset at the beginning of each Sequence.
-            if (instance.getTimeID() == 0 && posterior != null) {
-                InferenceEngineForDBN.reset();
-                time = 0;
-            }
             //We also set the evidence.
             InferenceEngineForDBN.addDynamicEvidence(instance);
             //Then we run inference
             InferenceEngineForDBN.runInference();
 
-            //TODO create Copy of all nodes and set the
-//            posterior = InferenceEngineForDBN.getFilteredPosterior(c);
+            //Setting the values calculated by the inference engine
+            for (Node node : returnedNodes) {
+                for (i = 0; i < node.getStateType().getStates().length; i++) {
+                    ((ValueNode) node).getValue()[time][i] = InferenceEngineForDBN.getFilteredPosterior(adaptedGraph.getVariableByName(node.getName())).getProbability(i);
+                }
+            }
 
-
-            //We show the output
-//            System.out.println("P(C|e[0:" + (time) + "]) = " + posterior);
-//            System.out.println("P(A|e[0:" + (time++) + "]) = " + InferenceEngineForDBN.getFilteredPosterior(a));
         }
-        return null; //TODO remove
-    }
+        return new
 
-    private void assignEvaluatedEvidence(EvidenceFormula evidenceFormula) {
-
+                Graph(adaptedGraph.getAdaptedGraph().getId(), adaptedGraph.getAdaptedGraph().getName(), adaptedGraph.
+                getAdaptedGraph().getTimeSlices(), returnedNodes);
     }
 }
