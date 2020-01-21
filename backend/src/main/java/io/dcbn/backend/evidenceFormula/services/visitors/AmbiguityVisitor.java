@@ -1,5 +1,8 @@
 package io.dcbn.backend.evidenceFormula.services.visitors;
 
+import io.dcbn.backend.evidenceFormula.services.exceptions.ParameterSizeMismatchException;
+import io.dcbn.backend.evidenceFormula.services.exceptions.SymbolNotFoundException;
+import io.dcbn.backend.evidenceFormula.services.exceptions.TypeMismatchException;
 import io.dcbn.backend.evidenceFormulas.FormulaBaseVisitor;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.AmbiguousFunctionCallLiteralContext;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.AmbiguousIdentifierLiteralContext;
@@ -33,7 +36,7 @@ public class AmbiguityVisitor extends FormulaBaseVisitor<Object> {
   public Object visitAmbiguousFunctionCallLiteral(AmbiguousFunctionCallLiteralContext ctx) {
     String name = ctx.functionCall().IDENTIFIER().getText();
     if (!functions.containsKey(name)) {
-      throw new IllegalArgumentException("Function " + name + " doesn't exist.");
+      throw new SymbolNotFoundException(name, ctx.start.getLine(), ctx.start.getCharPositionInLine());
     }
 
     FunctionWrapper wrapper = functions.get(name);
@@ -43,7 +46,7 @@ public class AmbiguityVisitor extends FormulaBaseVisitor<Object> {
         Collectors.toList());
 
     if (parameters.size() != expectedTypes.size()) {
-      throw new IllegalArgumentException("Parameters do not match function signature!");
+      throw new ParameterSizeMismatchException(name, expectedTypes.size(), parameters.size(), ctx.start.getLine(), ctx.start.getCharPositionInLine());
     }
 
     for (int i = 0; i < parameters.size(); i++) {
@@ -51,8 +54,7 @@ public class AmbiguityVisitor extends FormulaBaseVisitor<Object> {
       Object parameter = parameters.get(i);
 
       if (!type.isInstance(parameter)) {
-        String message = (i + 1) + ". parameter type mismatch in function " + name + ". Expected: " + type + ", but got: " + parameter.getClass();
-        throw new IllegalArgumentException(message);
+        throw new TypeMismatchException(type, parameter.getClass(), ctx.start.getLine(), ctx.start.getCharPositionInLine());
       }
     }
 

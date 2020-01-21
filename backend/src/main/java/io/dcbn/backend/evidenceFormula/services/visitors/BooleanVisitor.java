@@ -1,5 +1,6 @@
 package io.dcbn.backend.evidenceFormula.services.visitors;
 
+import io.dcbn.backend.evidenceFormula.services.exceptions.TypeMismatchException;
 import io.dcbn.backend.evidenceFormulas.FormulaBaseVisitor;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.BooleanAmbiguousLiteralExpressionContext;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.BooleanBinaryExpressionContext;
@@ -40,7 +41,7 @@ public class BooleanVisitor extends FormulaBaseVisitor<Boolean> {
     if (result instanceof Boolean) {
       return (Boolean) result;
     } else {
-      throw new IllegalArgumentException(ctx.ambiguousLiteral().getText() + " did't evaluate to boolean!");
+      throw new TypeMismatchException(Boolean.class, result.getClass(), ctx.start.getLine(), ctx.start.getCharPositionInLine());
     }
   }
 

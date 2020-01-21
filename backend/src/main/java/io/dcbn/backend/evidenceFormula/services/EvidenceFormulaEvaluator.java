@@ -6,13 +6,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
+import io.dcbn.backend.evidenceFormula.services.exceptions.ParseException;
 import io.dcbn.backend.evidenceFormula.services.visitors.BooleanVisitor;
 import io.dcbn.backend.evidenceFormula.services.visitors.FunctionWrapper;
 import io.dcbn.backend.evidenceFormulas.FormulaLexer;
 import io.dcbn.backend.evidenceFormulas.FormulaParser;
 import java.util.Map;
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +27,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EvidenceFormulaEvaluator {
+
+  private static class ThrowingErrorListener extends BaseErrorListener {
+    @Override
+    public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e)
+        throws ParseException {
+      Token token = (Token) offendingSymbol;
+      throw new ParseException(token.getText(), line, charPositionInLine);
+    }
+  }
 
   private final Map<String, FunctionWrapper> functions;
 
@@ -64,6 +79,8 @@ public class EvidenceFormulaEvaluator {
   private boolean evaluateInternal(Map<String, Object> variables, EvidenceFormula evidenceFormula) {
     FormulaLexer lexer = new FormulaLexer(CharStreams.fromString(evidenceFormula.getFormula()));
     FormulaParser parser = new FormulaParser(new CommonTokenStream(lexer));
+    parser.removeErrorListeners();
+    parser.addErrorListener(new ThrowingErrorListener());
 
     FormulaParser.FormulaContext tree = parser.formula();
     return new BooleanVisitor(variables, functions).visit(tree);
