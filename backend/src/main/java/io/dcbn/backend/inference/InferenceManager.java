@@ -18,10 +18,8 @@ import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.Node;
 import io.dcbn.backend.graph.ValueNode;
 import io.dcbn.backend.graph.repositories.GraphRepository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import lombok.Data;
@@ -86,19 +84,33 @@ public class InferenceManager {
         .sampleToDataBase(1, adaptedGraph.getAdaptedGraph().getTimeSlices());
 
     //Setting the results of the evidenceFormulas for each time-step
+    List<Node> nodesToSetValues = nodes.stream()
+            .filter(var -> !var.isValueNode() && var.getEvidenceFormula() != null)
+            .collect(Collectors.toList());
+
     int i = 0;
     for (DynamicDataInstance instance : dataPredict) {
-      int finalI = i;
-      nodes.stream()
-          .filter(var -> !var.isValueNode() && var.getEvidenceFormula() != null)
-          .forEach(var -> {
-            Variable variable = adaptedGraph.getVariableByName(var.getName());
-            int sate = var.getStateType()
-                .getIndexOfSate(formulaResolver.apply(finalI, var.getEvidenceFormula()));
-            instance.setValue(variable, sate);
-          });
+      for (Node node: nodesToSetValues) {
+        Variable variable = adaptedGraph.getVariableByName(node.getName());
+        int state = node.getStateType()
+                .getIndexOfSate(formulaResolver.apply(i, node.getEvidenceFormula()));
+        instance.setValue(variable, state);
+        System.out.println(instance.getValue(variable) + " " + variable.getName());
+      }
+
       i++;
     }
+    System.out.println("------------------------------------------------------------");
+    for (DynamicDataInstance instance : dataPredict) {
+      for(Node node: nodes)  {
+        Variable variable = adaptedGraph.getVariableByName(node.getName());
+        System.out.println(instance.getValue(variable) + " " + variable.getName());
+      }
+    }
+
+
+
+
 
     //TODO make better
 
@@ -118,8 +130,7 @@ public class InferenceManager {
         getTimeSlices()][2])));
 
     int time = 0;
-    for (
-        DynamicDataInstance instance : dataPredict) {
+    for (DynamicDataInstance instance : dataPredict) {
       //The InferenceEngineForDBN must be reset at the beginning of each Sequence.
       //We also set the evidence.
       InferenceEngineForDBN.addDynamicEvidence(instance);
@@ -134,12 +145,13 @@ public class InferenceManager {
               .getProbability(i);
         }
       }
-
+      time++;
     }
-    return new
-
-        Graph(adaptedGraph.getAdaptedGraph().getId(), adaptedGraph.getAdaptedGraph().getName(),
-        adaptedGraph.
-            getAdaptedGraph().getTimeSlices(), returnedNodes);
+    for(Node node: returnedNodes) {
+      System.out.println(node.getName());
+      System.out.println(Arrays.deepToString(((ValueNode) node).getValue()));
+    }
+    return new Graph(adaptedGraph.getAdaptedGraph().getId(), adaptedGraph.getAdaptedGraph().getName()
+            , adaptedGraph.getAdaptedGraph().getTimeSlices(), returnedNodes);
   }
 }
