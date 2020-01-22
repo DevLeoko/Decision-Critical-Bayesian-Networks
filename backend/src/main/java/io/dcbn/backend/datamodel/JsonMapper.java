@@ -1,7 +1,9 @@
-package de.fraunhofer.iosb.iad.maritime.datamodel;
+package io.dcbn.backend.datamodel;
 
 import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
+import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
+import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 
 public class JsonMapper {
 	public static AreaOfInterest fromJsonToAreaOfInterest(String json) {

@@ -1,11 +1,11 @@
-package de.fraunhofer.iosb.iad.maritime.datamodel;
+package io.dcbn.backend.datamodel;
 
+import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
+import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.graph.Graph;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @AllArgsConstructor

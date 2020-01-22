@@ -1,7 +1,5 @@
 package io.dcbn.backend.inference;
 
-import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
-import de.fraunhofer.iosb.iad.maritime.datamodel.Outcome;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import eu.amidst.core.datastream.DataStream;
 import eu.amidst.core.inference.InferenceAlgorithm;
@@ -12,6 +10,7 @@ import eu.amidst.dynamic.inference.InferenceEngineForDBN;
 import eu.amidst.dynamic.utils.DynamicBayesianNetworkSampler;
 import io.dcbn.backend.core.AoiCache;
 import io.dcbn.backend.core.VesselCache;
+import io.dcbn.backend.datamodel.Outcome;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
 import io.dcbn.backend.graph.AmidstGraphAdapter;
@@ -60,6 +59,7 @@ public class InferenceManager {
             } , Algorithm.IMPORTANCE_SAMPLING);
             Outcome outcome = new Outcome(UUID.randomUUID().toString(), System.currentTimeMillis(), calculatedGraph, evidenceFormulaEvaluator.getCorrelatedVessels(), evidenceFormulaEvaluator.getCorrelatedAois());
             outcomes.add(outcome);
+            evidenceFormulaEvaluator.reset();
         }
         return outcomes;
     }
