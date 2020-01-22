@@ -3,7 +3,7 @@ package io.dcbn.backend.datamodel;
 import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.graph.Graph;
-import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -14,7 +14,7 @@ public class Outcome {
 	private long timestamp;
 	private Graph correlatedNetwork;
 
-	private List<Vessel> correlatedVessels;
-	private List<AreaOfInterest> correlatedAOIs;
+	private Set<Vessel> correlatedVessels;
+	private Set<AreaOfInterest> correlatedAOIs;
 
 }

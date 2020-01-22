@@ -9,15 +9,10 @@ import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.evidenceFormula.services.exceptions.ParseException;
 import io.dcbn.backend.evidenceFormula.services.visitors.BooleanVisitor;
-import io.dcbn.backend.evidenceFormula.services.visitors.FunctionWrapper;
 import io.dcbn.backend.evidenceFormulas.FormulaLexer;
 import io.dcbn.backend.evidenceFormulas.FormulaParser;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import lombok.Getter;
+import java.util.Set;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -25,7 +20,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 /**
@@ -111,10 +105,10 @@ public class EvidenceFormulaEvaluator {
     return new BooleanVisitor(variables, functions).visit(tree);
   }
 
-  public List<Vessel> getCorrelatedVessels() {
+  public Set<Vessel> getCorrelatedVessels() {
     return functions.getCorrelatedVessels();
   }
-  public List<AreaOfInterest> getCorrelatedAois() {
+  public Set<AreaOfInterest> getCorrelatedAois() {
     return functions.getCorrelatedAois();
   }
 

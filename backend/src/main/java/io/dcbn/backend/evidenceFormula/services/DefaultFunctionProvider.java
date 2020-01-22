@@ -7,10 +7,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class DefaultFunctionProvider extends FunctionProvider {
 
-  private Object inArea(List<Object> parameters, List<Vessel> ignored, List<AreaOfInterest> correlatedAois, int timeSlice) {
+  private Object inArea(List<Object> parameters, Set<Vessel> ignored, Set<AreaOfInterest> correlatedAois, int timeSlice) {
     correlatedAois.add(new AreaOfInterest("TEST_AREA", null));
     return "TEST_AREA".equals(parameters.get(0));
   }

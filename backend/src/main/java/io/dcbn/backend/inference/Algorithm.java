@@ -3,19 +3,22 @@ package io.dcbn.backend.inference;
 import eu.amidst.core.inference.ImportanceSampling;
 import eu.amidst.core.inference.ImportanceSamplingRobust;
 import eu.amidst.core.inference.InferenceAlgorithm;
+import java.util.function.Supplier;
 import lombok.Getter;
 
 public enum Algorithm {
 
-    IMPORTANCE_SAMPLING(new ImportanceSampling()),
-    IMPORTANCE_SAMPLING_ROBUST(new ImportanceSamplingRobust());
+    IMPORTANCE_SAMPLING(() -> new ImportanceSampling()),
+    IMPORTANCE_SAMPLING_ROBUST(() -> new ImportanceSamplingRobust());
 
-    @Getter
-    private final InferenceAlgorithm algorithm;
+    private final Supplier<InferenceAlgorithm> algorithm;
 
-
-    Algorithm(InferenceAlgorithm algorithm) {
+    Algorithm(Supplier<InferenceAlgorithm> algorithm) {
         this.algorithm = algorithm;
+    }
+
+    public InferenceAlgorithm getAlgorithm() {
+      return algorithm.get();
     }
 
 }

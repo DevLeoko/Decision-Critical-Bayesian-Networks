@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,9 +34,11 @@ class EvidenceFormulaEvaluatorTest {
   private static Vessel vessel;
   private static FunctionProvider testFunctions;
 
-  private static Object inArea(List<Object> parameters, List<AreaOfInterest> correlatedAois) {
+  private static AreaOfInterest area = new AreaOfInterest("TEST_AREA", null);
+
+  private static Object inArea(List<Object> parameters, Set<AreaOfInterest> correlatedAois) {
     if ("TEST_AREA".equals(parameters.get(0))) {
-      correlatedAois.add(new AreaOfInterest("TEST_AREA", null));
+      correlatedAois.add(area);
       return true;
     }
     return false;
@@ -270,9 +273,7 @@ class EvidenceFormulaEvaluatorTest {
     assertTrue(evaluator.evaluate(vessel, formula));
     assertEquals(1, evaluator.getCorrelatedAois().size());
 
-    AreaOfInterest aoi = evaluator.getCorrelatedAois().get(0);
-    assertEquals("TEST_AREA", aoi.getUuid());
-    assertNull(aoi.getGeometry());
+    assertTrue(evaluator.getCorrelatedAois().contains(area));
   }
 
   @Test

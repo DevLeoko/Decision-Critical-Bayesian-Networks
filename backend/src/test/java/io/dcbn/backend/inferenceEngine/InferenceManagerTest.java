@@ -2,14 +2,22 @@ package io.dcbn.backend.inferenceEngine;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.core.VesselCache;
 import io.dcbn.backend.datamodel.Outcome;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
-import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.Node;
 import io.dcbn.backend.graph.NodeDependency;
@@ -20,20 +28,18 @@ import io.dcbn.backend.inference.InferenceManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 public class InferenceManagerTest {
 
-  private final Position ZERO_POSITION = new Position(0, 0);
-  private Graph graph;
+  private static final Position ZERO_POSITION = new Position(0, 0);
+  private static final AreaOfInterest AREA = new AreaOfInterest("TEST_AREA", null);
 
-  private VesselCache mockCache;
-  private GraphRepository mockRepository;
-  private EvidenceFormulaEvaluator mockEvaluator;
   private InferenceManager inferenceManager;
 
   @BeforeEach
@@ -53,7 +59,7 @@ public class InferenceManagerTest {
     NodeDependency smuggling0Dep = new NodeDependency(0, Arrays.asList(smugglingParents),
         new ArrayList<>(), probabilities);
     NodeDependency smugglingTDep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
-        new double[][]{});
+        probabilities);
     smuggling.setTimeZeroDependency(smuggling0Dep);
     smuggling.setTimeTDependency(smugglingTDep);
 
@@ -78,64 +84,83 @@ public class InferenceManagerTest {
     isInReportedArea.setTimeZeroDependency(iIRA0Dep);
     isInReportedArea.setTimeTDependency(iIRATDep);
 
-    this.graph = new Graph(0, "testGraph", 10,
+    Graph graph = new Graph(0, "testGraph", 5,
         Arrays.asList(smuggling, nullSpeed, inTrajectoryArea, isInReportedArea));
 
     Vessel[] vessels = new Vessel[5];
     for (int i = 0; i < 5; ++i) {
-      vessels[i] = new Vessel();
+      vessels[i] = new Vessel("test", 0);
       vessels[i].setSpeed(0.0);
       vessels[i].setLongitude(1.0 * i);
     }
 
-    List<AreaOfInterest> correlatedAois = new ArrayList<>();
-
-    mockCache = Mockito.mock(VesselCache.class);
-    Mockito.when(mockCache.getVesselsByUuid(Mockito.anyString()))
+    VesselCache mockCache = mock(VesselCache.class);
+    when(mockCache.getVesselsByUuid(anyString()))
         .thenReturn(vessels);
 
-    mockRepository = Mockito.mock(GraphRepository.class);
-    Mockito.when(mockRepository.findAll())
+    GraphRepository mockRepository = mock(GraphRepository.class);
+    when(mockRepository.findAll())
         .thenReturn(Collections.singletonList(graph));
 
-    mockEvaluator = Mockito.mock(EvidenceFormulaEvaluator.class);
+    EvidenceFormulaEvaluator mockEvaluator = mock(EvidenceFormulaEvaluator.class);
     ArgumentCaptor<EvidenceFormula> evidenceFormulaCaptor = ArgumentCaptor
         .forClass(EvidenceFormula.class);
     ArgumentCaptor<Vessel> vesselCaptor = ArgumentCaptor.forClass(Vessel.class);
 
-    Mockito.when(mockEvaluator
-        .evaluate(Mockito.anyInt(), vesselCaptor.capture(), evidenceFormulaCaptor.capture()))
+    Set<AreaOfInterest> correlatedAois = new HashSet<>();
+    Set<Vessel> correlatedVessels = new HashSet<>();
+    when(mockEvaluator
+        .evaluate(anyInt(), vesselCaptor.capture(), evidenceFormulaCaptor.capture()))
         .then(invocation -> {
           EvidenceFormula formula = evidenceFormulaCaptor.getValue();
           Vessel vessel = vesselCaptor.getValue();
           switch (formula.getName()) {
             case "nullSpeed":
-              return vessel.getSpeed() > 2;
+              return vessel.getSpeed() <= 2;
             case "inArea":
-              correlatedAois.add(new AreaOfInterest("TEST_AREA", null));
+              correlatedAois.add(AREA);
               return vessel.getLongitude() <= 4 && vessel.getLongitude() >= 2;
             default:
               return false;
           }
         });
 
-    Mockito.when(mockEvaluator.getCorrelatedAois()).thenReturn(correlatedAois);
+    doAnswer(invocation -> {
+      correlatedAois.clear();
+      return null;
+    }).when(mockEvaluator).reset();
+
+    when(mockEvaluator.getCorrelatedAois()).thenReturn(correlatedAois);
+    when(mockEvaluator.getCorrelatedVessels()).thenReturn(correlatedVessels);
     inferenceManager = new InferenceManager(mockCache, mockRepository, mockEvaluator);
   }
 
   @Test
   void testInferenceManagerCorrectResult() {
     List<Outcome> outcomes = inferenceManager.calculateInference("test");
-    Mockito.verify(mockEvaluator).evaluate(Mockito.anyInt(), Mockito.any(Vessel.class),
-        Mockito.argThat(formula -> "inArea".equals(formula.getName())));
 
     assertEquals(1, outcomes.size());
+    ObjectMapper mapper = new JsonMapper();
+    try {
+      System.out.println(mapper.writeValueAsString(outcomes.iterator().next()));
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Test
+  void testCorrelatedVesselsAndAreasCorrect() {
+    List<Outcome> outcomes = inferenceManager.calculateInference("test");
     Outcome outcome = outcomes.get(0);
 
-    Mockito.verifyNoMoreInteractions(mockEvaluator);
-
-    List<AreaOfInterest> correlatedAois = outcome.getCorrelatedAOIs();
+    Set<AreaOfInterest> correlatedAois = outcome.getCorrelatedAOIs();
     assertEquals(1, correlatedAois.size());
-    assertEquals(new AreaOfInterest("TEST_AREA", null), correlatedAois.get(0));
+    assertTrue(correlatedAois.contains(AREA));
+
+    Set<Vessel> correlatedVessels = outcome.getCorrelatedVessels();
+    assertEquals(1, correlatedVessels.size());
+
+    Vessel vessel = correlatedVessels.iterator().next();
+    assertEquals("test", vessel.getUuid());
   }
 }
