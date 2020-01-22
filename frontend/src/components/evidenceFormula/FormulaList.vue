@@ -14,14 +14,11 @@
         </v-list-item>
       </div>
     </div>
-    <div class="text-center" style="margin-top: 1vh">
-      <!-- TODO make vertically centered -->
-      <div style="border-top-width: 1vh">
-        <v-btn small color="primary" @click="addFormula">
-          <v-icon color="white">add_box</v-icon>
-          New Expression
-        </v-btn>
-      </div>
+    <div class="addFormulaButton">
+      <v-btn small color="primary" @click="addFormula">
+        <v-icon color="white">add_box</v-icon>
+        New Expression
+      </v-btn>
     </div>
   </div>
 </template>
@@ -47,5 +44,10 @@ export default Vue.extend({
 .list-of-formulas {
   max-height: calc(95vh - 70px);
   overflow-y: auto;
+}
+.addFormulaButton {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 1vh;
 }
 </style>
