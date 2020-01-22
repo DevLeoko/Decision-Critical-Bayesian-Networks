@@ -1,6 +1,6 @@
 package io.dcbn.backend.core.activemq;
 
-import de.fraunhofer.iosb.iad.maritime.datamodel.JsonMapper;
+import io.dcbn.backend.datamodel.JsonMapper;
 import io.dcbn.backend.core.AoiHandler;
 import io.dcbn.backend.core.VesselHandler;
 import org.springframework.beans.factory.annotation.Autowired;

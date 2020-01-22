@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Service
 public class VesselCache {
 
@@ -24,11 +25,21 @@ public class VesselCache {
         vesselCache = new HashMap<String, Vessel[]>();
     }
 
-    public Vessel[] getVesselsByUuid(String uuid) throws IllegalArgumentException {
+    // zum testen
+    public VesselCache(int timeSteps) {
+        this.timeSteps = timeSteps;
+        vesselCache = new HashMap<>();
+    }
+
+    public Vessel[] getVesselsByUuid(String uuid) {
         return vesselCache.get(uuid);
     }
 
-    public void insert(Vessel vessel){
+    public void insert(Vessel vessel) throws IllegalArgumentException {
+        if(vessel == null) {
+            throw new IllegalArgumentException("Vessel cannot be null!");
+        }
+
         String uuid = vessel.getUuid();
 
         // Insert vessel if its not currently in the cache map
@@ -44,12 +55,12 @@ public class VesselCache {
     and write null to the current time slice (position 0 in the array)
      */
     @Scheduled(fixedRateString = "${time.step.length}")
-    private void updateCache() {
+    public void updateTimeSlices() {
         for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
             for (int i = entry.getValue().length - 1; i > 0; i--) {
                 entry.getValue()[i] = entry.getValue()[i - 1];
             }
-            entry.getValue()[0] = entry.getValue()[1].clone();
+            entry.getValue()[0] = Vessel.copy(entry.getValue()[1]);
             entry.getValue()[0].setFiller(true);
         }
     }
@@ -57,7 +68,7 @@ public class VesselCache {
     // Checks if there are vessels in the cache which have not been updated
     // within the last time steps and removes them from the cache
     @Scheduled(fixedRateString = "${cache.refresh.time}")
-    private void refreshCache() {
+    public void refreshCache() {
         List<String> toDelete = new ArrayList<String>();
         for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
             for(int i = 0; i < entry.getValue().length; i++) {

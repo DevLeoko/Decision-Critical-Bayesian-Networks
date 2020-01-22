@@ -1,6 +1,7 @@
 package io.dcbn.backend.core;
 
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
+import io.dcbn.backend.core.activemq.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,12 @@ public class VesselHandler {
     }
 
     public void handleVessel(Vessel vessel) {
-        vesselCache.insert(vessel);
+        try {
+            vesselCache.insert(vessel);
+        } catch(IllegalArgumentException e) {
+            Producer.sendErrorMessage(e.getMessage());
+        }
+
         // TODO: Add inference manager call
     }
 }

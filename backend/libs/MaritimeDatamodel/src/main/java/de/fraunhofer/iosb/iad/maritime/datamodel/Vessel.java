@@ -39,17 +39,22 @@ public class Vessel implements Cloneable {
 	private Double longitude;
 	private Double altitude;
 
-	public Vessel(String uuid, long timestamp) {
+	public Vessel() {
+		this.uuid = null;
+		this.timestamp = 0;
+		this.isFiller = false;
+	}
+
+	public Vessel(long timestamp, String uuid) {
 		this.uuid = uuid;
 		this.timestamp = timestamp;
 		this.isFiller = false;
 	}
 
 	@SneakyThrows
-	@Override
-	public Vessel clone() {
+	public static Vessel copy (Vessel toCopy) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		Vessel deepCopy = objectMapper.readValue(objectMapper.writeValueAsString(getClass()), Vessel.class);
+		Vessel deepCopy = objectMapper.readValue(objectMapper.writeValueAsString(toCopy), Vessel.class);
 		return deepCopy;
 	}
 }
