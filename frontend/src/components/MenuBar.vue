@@ -1,6 +1,10 @@
 <template>
   <v-app-bar clipped-left app class="primary">
-    <img src="@/assets/LogoSLight.svg" height="70%" />
+    <img
+      @click="$store.dispatch('setToken', 'uff')"
+      src="@/assets/LogoSLight.svg"
+      height="70%"
+    />
 
     <!-- Logged out -->
     <template v-if="!$store.state.isUserLoggedIn">
