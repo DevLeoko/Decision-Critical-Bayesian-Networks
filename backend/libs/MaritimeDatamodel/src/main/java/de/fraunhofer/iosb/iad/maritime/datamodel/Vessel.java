@@ -39,6 +39,11 @@ public class Vessel implements Cloneable {
 	private Double longitude;
 	private Double altitude;
 
+	public Vessel() {
+	  uuid = null;
+	  timestamp = -1;
+  }
+
 	public Vessel(String uuid, long timestamp) {
 		this.uuid = uuid;
 		this.timestamp = timestamp;

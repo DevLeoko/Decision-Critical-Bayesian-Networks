@@ -1,5 +1,7 @@
 package io.dcbn.backend.evidenceFormula.services.visitors;
 
+import io.dcbn.backend.evidenceFormula.services.FunctionProvider;
+import io.dcbn.backend.evidenceFormula.services.exceptions.EvaluationException;
 import io.dcbn.backend.evidenceFormula.services.exceptions.ParameterSizeMismatchException;
 import io.dcbn.backend.evidenceFormula.services.exceptions.SymbolNotFoundException;
 import io.dcbn.backend.evidenceFormula.services.exceptions.TypeMismatchException;
@@ -18,10 +20,10 @@ import java.util.stream.Collectors;
 public class AmbiguityVisitor extends FormulaBaseVisitor<Object> {
 
   private Map<String, Object> variables;
-  private Map<String, FunctionWrapper> functions;
+  private FunctionProvider functions;
 
   public AmbiguityVisitor(Map<String, Object> variables,
-      Map<String, FunctionWrapper> functions) {
+      FunctionProvider functions) {
     this.variables = variables;
     this.functions = functions;
   }
@@ -35,30 +37,18 @@ public class AmbiguityVisitor extends FormulaBaseVisitor<Object> {
   @Override
   public Object visitAmbiguousFunctionCallLiteral(AmbiguousFunctionCallLiteralContext ctx) {
     String name = ctx.functionCall().IDENTIFIER().getText();
-    if (!functions.containsKey(name)) {
-      throw new SymbolNotFoundException(name, ctx.start.getLine(), ctx.start.getCharPositionInLine());
-    }
 
-    FunctionWrapper wrapper = functions.get(name);
     ExpressionVisitor visitor = new ExpressionVisitor(variables, functions);
-    List<Class<?>> expectedTypes = wrapper.getExpectedParameterTypes();
     List<Object> parameters = ctx.functionCall().expression().stream().map(visitor::visit).collect(
         Collectors.toList());
 
-    if (parameters.size() != expectedTypes.size()) {
-      throw new ParameterSizeMismatchException(name, expectedTypes.size(), parameters.size(), ctx.start.getLine(), ctx.start.getCharPositionInLine());
+    try {
+      return functions.call(name, parameters);
+    } catch (EvaluationException ex) {
+      ex.setLine(ctx.start.getLine());
+      ex.setCol(ctx.start.getCharPositionInLine());
+      throw ex;
     }
-
-    for (int i = 0; i < parameters.size(); i++) {
-      Class<?> type = expectedTypes.get(i);
-      Object parameter = parameters.get(i);
-
-      if (!type.isInstance(parameter)) {
-        throw new TypeMismatchException(type, parameter.getClass(), ctx.start.getLine(), ctx.start.getCharPositionInLine());
-      }
-    }
-
-    return wrapper.getFunction().apply(parameters);
   }
 
 }

@@ -1,11 +1,15 @@
 package io.dcbn.backend.evidenceFormula.services;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.evidenceFormula.services.exceptions.ParameterSizeMismatchException;
@@ -16,6 +20,7 @@ import io.dcbn.backend.evidenceFormula.services.visitors.FunctionWrapper;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +31,19 @@ class EvidenceFormulaEvaluatorTest {
   private EvidenceFormulaEvaluator evaluator;
 
   private static Vessel vessel;
-  private static Map<String, FunctionWrapper> testFunctions;
+  private static FunctionProvider testFunctions;
+
+  private static Object inArea(List<Object> parameters, List<AreaOfInterest> correlatedAois) {
+    if ("TEST_AREA".equals(parameters.get(0))) {
+      correlatedAois.add(new AreaOfInterest("TEST_AREA", null));
+      return true;
+    }
+    return false;
+  }
+
+  private static Object addTimeSlice(List<Object> parameters, int timeSlice) {
+    return (double) parameters.get(0) + timeSlice;
+  }
 
   @BeforeAll
   static void beforeAll() {
@@ -34,14 +51,18 @@ class EvidenceFormulaEvaluatorTest {
     vessel.setSpeed(5.0);
     vessel.setLongitude(12.0);
 
-    testFunctions = new HashMap<>();
-    testFunctions.put("inArea", new FunctionWrapper(Collections.singletonList(String.class), params -> "TEST_AREA".equals(params.get(0))));
-    testFunctions.put("sum", new FunctionWrapper(Arrays.asList(Double.class, Double.class), params -> (double) params.get(0) + (double) params.get(1)));
-    testFunctions.put("isTrue", new FunctionWrapper(Collections.singletonList(Boolean.class), params -> params.get(0)));
+    Map<String, FunctionWrapper> functions = new HashMap<>();
+    functions.put("inArea", new FunctionWrapper(Collections.singletonList(String.class), (params, vessel, aois, timeSlice) -> inArea(params, aois)));
+    functions.put("sum", new FunctionWrapper(Arrays.asList(Double.class, Double.class), (params, vessels, aois, timeSlice) -> (double) params.get(0) + (double) params.get(1)));
+    functions.put("isTrue", new FunctionWrapper(Collections.singletonList(Boolean.class), (params, vessels, aois, timeSlice) -> params.get(0)));
+    functions.put("addTimeSlice", new FunctionWrapper(Collections.singletonList(Double.class), (params, vessel, aois, timeSlice) -> addTimeSlice(params, timeSlice)));
+
+    testFunctions = new FunctionProvider(functions);
   }
 
   @BeforeEach
   void setUp() {
+    testFunctions.reset();
     evaluator = new EvidenceFormulaEvaluator(testFunctions);
   }
 
@@ -235,5 +256,40 @@ class EvidenceFormulaEvaluatorTest {
     assertEquals("<EOF>", ex.getOffendingText());
     assertEquals(1, ex.getLine());
     assertEquals(6, ex.getCol());
+  }
+
+  @Test
+  void testAoiSet() {
+    EvidenceFormula formula = new EvidenceFormula();
+
+    formula.setFormula("inArea(TEST)");
+    assertFalse(evaluator.evaluate(vessel, formula));
+    assertTrue(evaluator.getCorrelatedAois().isEmpty());
+
+    formula.setFormula("inArea(TEST_AREA)");
+    assertTrue(evaluator.evaluate(vessel, formula));
+    assertEquals(1, evaluator.getCorrelatedAois().size());
+
+    AreaOfInterest aoi = evaluator.getCorrelatedAois().get(0);
+    assertEquals("TEST_AREA", aoi.getUuid());
+    assertNull(aoi.getGeometry());
+  }
+
+  @Test
+  void testTimeSlice() {
+    EvidenceFormula formula = new EvidenceFormula();
+
+    formula.setFormula("addTimeSlice(3) = 3");
+    assertTrue(evaluator.evaluate(vessel, formula));
+
+    formula.setFormula("addTimeSlice(3) = 4");
+    assertFalse(evaluator.evaluate(vessel, formula));
+
+    evaluator.setCurrentTimeSlice(1);
+    formula.setFormula("addTimeSlice(3) = 3");
+    assertFalse(evaluator.evaluate(vessel, formula));
+
+    formula.setFormula("addTimeSlice(3) = 4");
+    assertTrue(evaluator.evaluate(vessel, formula));
   }
 }
