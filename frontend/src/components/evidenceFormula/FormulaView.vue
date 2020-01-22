@@ -1,7 +1,5 @@
 <template>
-  <div>
-    {{ formula.name }}
-  </div>
+  <div>{{ formula.name }} + {{ formula.id }}</div>
 </template>
 
 <script lang="ts">

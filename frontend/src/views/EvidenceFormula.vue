@@ -22,15 +22,18 @@ export default Vue.extend({
       formulas: [
         {
           name: "test1",
-          id: 12
+          id: 0,
+          formula: ""
         },
         {
           name: "test2",
-          id: 13
+          id: 1,
+          formula: ""
         },
         {
           name: "test3",
-          id: 14
+          id: 2,
+          formula: ""
         }
       ],
       activeFormula: -1
