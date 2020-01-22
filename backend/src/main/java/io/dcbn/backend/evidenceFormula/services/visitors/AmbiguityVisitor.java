@@ -2,9 +2,6 @@ package io.dcbn.backend.evidenceFormula.services.visitors;
 
 import io.dcbn.backend.evidenceFormula.services.FunctionProvider;
 import io.dcbn.backend.evidenceFormula.services.exceptions.EvaluationException;
-import io.dcbn.backend.evidenceFormula.services.exceptions.ParameterSizeMismatchException;
-import io.dcbn.backend.evidenceFormula.services.exceptions.SymbolNotFoundException;
-import io.dcbn.backend.evidenceFormula.services.exceptions.TypeMismatchException;
 import io.dcbn.backend.evidenceFormulas.FormulaBaseVisitor;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.AmbiguousFunctionCallLiteralContext;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.AmbiguousIdentifierLiteralContext;

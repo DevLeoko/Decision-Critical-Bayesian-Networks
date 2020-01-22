@@ -1,7 +1,7 @@
 package io.dcbn.backend.evidenceFormula.services.visitors;
 
-import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
+import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.evidenceFormula.services.QuadFunction;
 import java.util.List;
 import lombok.Data;
