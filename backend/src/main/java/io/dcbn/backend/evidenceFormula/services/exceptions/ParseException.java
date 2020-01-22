@@ -2,13 +2,19 @@ package io.dcbn.backend.evidenceFormula.services.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
-@AllArgsConstructor
 public class ParseException extends EvaluationException {
 
+  @Getter
   private String offendingText;
-  private int line;
-  private int col;
 
+  public ParseException(String offendingText) {
+    this(offendingText, 0, 0);
+  }
+
+  public ParseException(String offendingText, int line, int col) {
+    super(line, col);
+    this.offendingText = offendingText;
+  }
 }

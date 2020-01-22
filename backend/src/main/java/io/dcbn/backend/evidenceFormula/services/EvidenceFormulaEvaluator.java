@@ -4,13 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.evidenceFormula.services.exceptions.ParseException;
 import io.dcbn.backend.evidenceFormula.services.visitors.BooleanVisitor;
-import io.dcbn.backend.evidenceFormula.services.visitors.FunctionWrapper;
 import io.dcbn.backend.evidenceFormulas.FormulaLexer;
 import io.dcbn.backend.evidenceFormulas.FormulaParser;
+import java.util.List;
 import java.util.Map;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStreams;
@@ -18,7 +19,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,25 +29,32 @@ import org.springframework.stereotype.Service;
 public class EvidenceFormulaEvaluator {
 
   private static class ThrowingErrorListener extends BaseErrorListener {
+
     @Override
-    public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e)
+    public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
+        int charPositionInLine, String msg, RecognitionException e)
         throws ParseException {
       Token token = (Token) offendingSymbol;
-      throw new ParseException(token.getText(), line, charPositionInLine);
+
+      ParseException exception = new ParseException(token.getText());
+      exception.setLine(line);
+      exception.setCol(charPositionInLine);
+      throw exception;
     }
   }
 
-  private final Map<String, FunctionWrapper> functions;
+  private final FunctionProvider functions;
 
   @Autowired
   public EvidenceFormulaEvaluator(
-      Map<String, FunctionWrapper> functions) {
+      FunctionProvider functions) {
     this.functions = functions;
   }
 
   /**
    * Evaluates the given EvidenceFormula with the variables contained in the JsonNode.
-   * @param json the json object containing the variables used during evaluation.
+   *
+   * @param json            the json object containing the variables used during evaluation.
    * @param evidenceFormula the evidence formula to evaluate.
    * @return the boolean value of the evaluated formula.
    */
@@ -59,7 +66,8 @@ public class EvidenceFormulaEvaluator {
 
   /**
    * Evaluates the given EvidenceFormula with the variables contained in the Vessel.
-   * @param vessel the vessel object containing the variables used during evaluation.
+   *
+   * @param vessel          the vessel object containing the variables used during evaluation.
    * @param evidenceFormula the evidence formula to evaluate.
    * @return the boolean value of the evaluated formula.
    */
@@ -71,7 +79,8 @@ public class EvidenceFormulaEvaluator {
   private boolean evaluateInternal(Object object, EvidenceFormula evidenceFormula) {
     ObjectMapper mapper = new JsonMapper();
     Map<String, Object> variables = mapper.convertValue(object,
-        new TypeReference<Map<String, Object>>() {});
+        new TypeReference<Map<String, Object>>() {
+        });
     return evaluateInternal(variables, evidenceFormula);
   }
 
@@ -86,4 +95,15 @@ public class EvidenceFormulaEvaluator {
     return new BooleanVisitor(variables, functions).visit(tree);
   }
 
+  public List<Vessel> getCorrelatedVessels() {
+    return functions.getCorrelatedVessels();
+  }
+
+  public List<AreaOfInterest> getCorrelatedAois() {
+    return functions.getCorrelatedAois();
+  }
+
+  public void setCurrentTimeSlice(int timeSlice) {
+    functions.setCurrentTimeSlice(timeSlice);
+  }
 }

@@ -4,6 +4,8 @@ import io.dcbn.backend.authentication.models.DcbnUser;
 import io.dcbn.backend.authentication.models.Role;
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
 import io.dcbn.backend.authentication.services.DcbnUserDetailsService;
+import io.dcbn.backend.evidenceFormula.services.DefaultFunctionProvider;
+import io.dcbn.backend.evidenceFormula.services.FunctionProvider;
 import io.dcbn.backend.evidenceFormula.services.visitors.FunctionWrapper;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.Node;
@@ -88,8 +90,8 @@ public class DcbnApplication {
   }
 
   @Bean
-  public Map<String, FunctionWrapper> functionsBean() {
-    return new HashMap<>();
+  public FunctionProvider functionsBean() {
+    return new DefaultFunctionProvider();
   }
 
 }

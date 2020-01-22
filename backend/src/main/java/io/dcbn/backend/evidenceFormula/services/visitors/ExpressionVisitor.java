@@ -1,5 +1,6 @@
 package io.dcbn.backend.evidenceFormula.services.visitors;
 
+import io.dcbn.backend.evidenceFormula.services.FunctionProvider;
 import io.dcbn.backend.evidenceFormulas.FormulaBaseVisitor;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.ExpressionContext;
 import java.util.Map;
@@ -12,10 +13,10 @@ import java.util.Map;
 public class ExpressionVisitor extends FormulaBaseVisitor<Object> {
 
   private Map<String, Object> variables;
-  private Map<String, FunctionWrapper> functions;
+  private FunctionProvider functions;
 
   public ExpressionVisitor(Map<String, Object> variables,
-      Map<String, FunctionWrapper> functions) {
+      FunctionProvider functions) {
     this.variables = variables;
     this.functions = functions;
   }

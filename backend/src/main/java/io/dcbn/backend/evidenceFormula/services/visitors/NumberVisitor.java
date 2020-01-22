@@ -1,5 +1,6 @@
 package io.dcbn.backend.evidenceFormula.services.visitors;
 
+import io.dcbn.backend.evidenceFormula.services.FunctionProvider;
 import io.dcbn.backend.evidenceFormula.services.exceptions.TypeMismatchException;
 import io.dcbn.backend.evidenceFormulas.FormulaBaseVisitor;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.NumberAmbiguousExpressionContext;
@@ -16,10 +17,10 @@ import java.util.Map;
 public class NumberVisitor extends FormulaBaseVisitor<Double> {
 
   private Map<String, Object> variables;
-  private Map<String, FunctionWrapper> functions;
+  private FunctionProvider functions;
 
   public NumberVisitor(Map<String, Object> variables,
-      Map<String, FunctionWrapper> functions) {
+      FunctionProvider functions) {
     this.variables = variables;
     this.functions = functions;
   }
