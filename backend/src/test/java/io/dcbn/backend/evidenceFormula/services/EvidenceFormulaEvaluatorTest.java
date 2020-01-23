@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class EvidenceFormulaEvaluatorTest {
@@ -70,6 +71,7 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Evaluating formula with variables from json should work.")
   void testEvaluateWithJson() throws JsonProcessingException {
     JsonNode node = new JsonMapper().readTree("{\"speed\": 5, \"longitude\": 12}");
     EvidenceFormula formula = new EvidenceFormula();
@@ -82,6 +84,7 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Evaluating formula with variables from json should work.")
   void testEvaluateWithVessel() {
     EvidenceFormula formula = new EvidenceFormula();
 
@@ -93,6 +96,7 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Evaluating formula with unknown function should throw exception.")
   void testUnknownFunctionThrowsException() {
     EvidenceFormula formula = new EvidenceFormula();
     formula.setFormula("true & unknownFunction()");
@@ -104,6 +108,7 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Evaluating formula with unknown variable should throw exception.")
   void testUnknownVariableThrowsException() {
     EvidenceFormula formula = new EvidenceFormula();
     formula.setFormula("true & unknownVariable > 5");
@@ -115,6 +120,7 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Calling function with wrong amount of arguments should throw exception.")
   void testCallingFunctionWithWrongNumberOfArgumentsThrowsException() {
     EvidenceFormula formula = new EvidenceFormula();
     formula.setFormula("inArea(TEST_AREA, 2)");
@@ -130,6 +136,7 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Calling function with parameters of the wrong type should throw exception.")
   void testCallingFunctionWithWrongParameterTypeThrowsException() {
     EvidenceFormula formula = new EvidenceFormula();
     formula.setFormula("2 > 1 &  inArea(2)");
@@ -142,6 +149,7 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Calling functions with correct parameters should return expected results.")
   void testCallingFunctionWithCorrectParametersReturnsExpectedResults() {
     EvidenceFormula formula = new EvidenceFormula();
 
@@ -153,6 +161,7 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Calling functions with complex arguments should work.")
   void testCallingFunctionWithComplexArgumentsWorks() {
     EvidenceFormula formula = new EvidenceFormula();
 
@@ -170,6 +179,7 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Negation of all number expressions should work.")
   void testNegationOfNumberExpressions() {
     EvidenceFormula formula = new EvidenceFormula();
 
@@ -181,6 +191,7 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Scientific notation should work.")
   void testScientificNotation() {
     EvidenceFormula formula = new EvidenceFormula();
 
@@ -192,6 +203,7 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Other operators should work.")
   void testOtherOperators() {
     EvidenceFormula formula = new EvidenceFormula();
 
@@ -224,8 +236,13 @@ class EvidenceFormulaEvaluatorTest {
 
     formula.setFormula("true & !(isTrue(false) | true)");
     assertFalse(evaluator.evaluate(vessel, formula));
+  }
 
-    formula.setFormula("true & sum(2, 1)");
+  @Test
+  @DisplayName("Function returning the wrong type should throw exception.")
+  void testWrongTypeException() {
+    EvidenceFormula formula = new EvidenceFormula(null, "true & sum(2, 1)");
+
     TypeMismatchException ex = assertThrows(TypeMismatchException.class, () -> evaluator.evaluate(vessel, formula));
     assertEquals(Boolean.class, ex.getExpectedType());
     assertEquals(Double.class, ex.getActualType());
@@ -234,6 +251,7 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Invalid formulas should throw parse exception.")
   void testParseException() {
     EvidenceFormula formula = new EvidenceFormula();
 
@@ -262,6 +280,7 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Evaluating formula should correctly set areas of interest.")
   void testAoiSet() {
     EvidenceFormula formula = new EvidenceFormula();
 
@@ -277,20 +296,20 @@ class EvidenceFormulaEvaluatorTest {
   }
 
   @Test
+  @DisplayName("Evaluating formula at a given timeslice works.")
   void testTimeSlice() {
     EvidenceFormula formula = new EvidenceFormula();
 
     formula.setFormula("addTimeSlice(3) = 3");
-    assertTrue(evaluator.evaluate(vessel, formula));
+    assertTrue(evaluator.evaluate(0, vessel, formula));
 
     formula.setFormula("addTimeSlice(3) = 4");
-    assertFalse(evaluator.evaluate(vessel, formula));
+    assertFalse(evaluator.evaluate(0, vessel, formula));
 
-    evaluator.setCurrentTimeSlice(1);
     formula.setFormula("addTimeSlice(3) = 3");
-    assertFalse(evaluator.evaluate(vessel, formula));
+    assertFalse(evaluator.evaluate(1, vessel, formula));
 
     formula.setFormula("addTimeSlice(3) = 4");
-    assertTrue(evaluator.evaluate(vessel, formula));
+    assertTrue(evaluator.evaluate(1, vessel, formula));
   }
 }

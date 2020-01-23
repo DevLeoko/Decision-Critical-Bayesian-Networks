@@ -1,7 +1,5 @@
 package io.dcbn.backend.evidenceFormula.services.exceptions;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 public class TypeMismatchException extends EvaluationException {

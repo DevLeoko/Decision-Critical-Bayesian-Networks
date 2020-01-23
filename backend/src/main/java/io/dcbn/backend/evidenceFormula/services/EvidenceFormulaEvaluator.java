@@ -51,22 +51,22 @@ public class EvidenceFormulaEvaluator {
     this.functions = functions;
   }
 
+  public boolean evaluate(JsonNode json, EvidenceFormula evidenceFormula) {
+    return evaluate(0, json, evidenceFormula);
+  }
+
   /**
    * Evaluates the given EvidenceFormula with the variables contained in the JsonNode.
    *
+   * @param timeSlice       the current time slice.
    * @param json            the json object containing the variables used during evaluation.
    * @param evidenceFormula the evidence formula to evaluate.
    * @return the boolean value of the evaluated formula.
    */
-  public boolean evaluate(int currentTimeSlice, JsonNode json, EvidenceFormula evidenceFormula) {
-    functions.setCurrentTimeSlice(currentTimeSlice);
+  public boolean evaluate(int timeSlice, JsonNode json, EvidenceFormula evidenceFormula) {
     ObjectMapper mapper = new JsonMapper();
     Vessel vessel = mapper.convertValue(json, Vessel.class);
-    return evaluateInternal(vessel, evidenceFormula);
-  }
-
-  public boolean evaluate(JsonNode json, EvidenceFormula evidenceFormula) {
-    return evaluate(0, json, evidenceFormula);
+    return evaluateInternal(timeSlice, vessel, evidenceFormula);
   }
 
   public boolean evaluate(Vessel vessel, EvidenceFormula evidenceFormula) {
@@ -76,17 +76,18 @@ public class EvidenceFormulaEvaluator {
   /**
    * Evaluates the given EvidenceFormula with the variables contained in the Vessel.
    *
+   * @param timeSlice       the current time slice.
    * @param vessel          the vessel object containing the variables used during evaluation.
    * @param evidenceFormula the evidence formula to evaluate.
    * @return the boolean value of the evaluated formula.
    */
-  public boolean evaluate(int currentTimeSlice, Vessel vessel, EvidenceFormula evidenceFormula) {
-    functions.setCurrentTimeSlice(currentTimeSlice);
-    return evaluateInternal(vessel, evidenceFormula);
+  public boolean evaluate(int timeSlice, Vessel vessel, EvidenceFormula evidenceFormula) {
+    return evaluateInternal(timeSlice, vessel, evidenceFormula);
   }
 
   // Converts an object to Map<String, Object> and passes it to the evaluator.
-  private boolean evaluateInternal(Object object, EvidenceFormula evidenceFormula) {
+  private boolean evaluateInternal(int timeSlice, Object object, EvidenceFormula evidenceFormula) {
+    functions.setCurrentTimeSlice(timeSlice);
     ObjectMapper mapper = new JsonMapper();
     Map<String, Object> variables = mapper.convertValue(object,
         new TypeReference<Map<String, Object>>() {
@@ -110,10 +111,6 @@ public class EvidenceFormulaEvaluator {
   }
   public Set<AreaOfInterest> getCorrelatedAois() {
     return functions.getCorrelatedAois();
-  }
-
-  public void setCurrentTimeSlice(int timeSlice) {
-    functions.setCurrentTimeSlice(timeSlice);
   }
 
   public void reset() {

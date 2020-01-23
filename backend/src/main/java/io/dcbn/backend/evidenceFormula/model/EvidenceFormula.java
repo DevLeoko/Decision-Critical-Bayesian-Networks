@@ -28,5 +28,5 @@ public class EvidenceFormula {
     this.name = name;
     this.formula = formula;
   }
-
+  
 }
