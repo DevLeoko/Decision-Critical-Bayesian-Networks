@@ -1,13 +1,17 @@
 <template>
   <v-layout row wrap>
     <v-flex xs3>
-      <v-navigation-drawer permanent width="100%">
-        <formula-list :formulas="formulas" v-on:open-formula="openFormula" />
-      </v-navigation-drawer>
+      <formula-list :formulas="formulas" />
     </v-flex>
     <v-flex xs9 pa-3>
-      <h1>Evidence formula {{ $route.params.id }}</h1>
-      <formula-view :formula="formulas[this.activeFormula]" />
+      <formula-view v-if="currentFormula" :formula="currentFormula" />
+      <v-layout v-else row wrap>
+        <v-flex xs6 offset-xs3>
+          <v-alert type="info" :value="true">
+            Please select an evidence formula or create a new one!
+          </v-alert>
+        </v-flex>
+      </v-layout>
     </v-flex>
   </v-layout>
 </template>
@@ -43,13 +47,9 @@ export default Vue.extend({
     FormulaList,
     FormulaView
   },
-  methods: {
-    openFormula(id: number) {
-      for (var i = 0; i < this.formulas.length; i++) {
-        if (this.formulas[i].id === id) {
-          this.activeFormula = i;
-        }
-      }
+  computed: {
+    currentFormula(): any {
+      return this.formulas[Number.parseInt(this.$route.params.id)];
     }
   }
 });

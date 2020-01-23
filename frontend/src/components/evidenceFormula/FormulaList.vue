@@ -1,26 +1,32 @@
 <template>
-  <div>
-    <div class="list-of-formulas" id="container">
-      <div :key="formula.id" v-for="formula in formulas">
-        <v-list-item>
-          <v-list-item-content @click="$emit('open-formula', formula.id)">
-            <v-list-item-title>{{ formula.name }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action @click="deleteFormula(formula.id)">
-            <v-btn icon>
-              <v-icon color="black">delete</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-      </div>
-    </div>
-    <div class="addFormulaButton">
-      <v-btn small color="primary" @click="addFormula">
-        <v-icon color="white">add_box</v-icon>
-        New Expression
-      </v-btn>
-    </div>
-  </div>
+  <v-navigation-drawer permanent width="100%">
+    <v-list style=" max-height: 80vh; overflow: auto">
+      <v-list-item
+        :key="formula.id"
+        v-for="formula in formulas"
+        link
+        @click="selectFormula(formula.id)"
+      >
+        <v-list-item-content>
+          <v-list-item-title>{{ formula.name }}</v-list-item-title>
+        </v-list-item-content>
+        <v-list-item-action @click="deleteFormula(formula.id)">
+          <v-btn icon>
+            <v-icon color="black">delete</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
+
+    <template v-slot:append>
+      <v-flex class="pa-4" style="text-align: center">
+        <v-btn small color="primary" @click="addFormula">
+          <v-icon color="white">add_box</v-icon>
+          New Expression
+        </v-btn>
+      </v-flex>
+    </template>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts">
@@ -28,6 +34,14 @@ import Vue from "vue";
 export default Vue.extend({
   props: ["formulas"],
   methods: {
+    selectFormula(id: string) {
+      this.$router.push({
+        name: "EvidenceFormula",
+        params: {
+          id
+        }
+      });
+    },
     addFormula() {
       var newFormula = {
         name: "newFormula",
@@ -46,15 +60,3 @@ export default Vue.extend({
   }
 });
 </script>
-
-<style scoped>
-.list-of-formulas {
-  max-height: calc(95vh - 70px);
-  overflow-y: auto;
-}
-.addFormulaButton {
-  position: absolute;
-  bottom: 0;
-  margin-bottom: 1vh;
-}
-</style>
