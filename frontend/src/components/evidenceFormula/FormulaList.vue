@@ -6,7 +6,7 @@
           <v-list-item-content @click="$emit('open-formula', formula.id)">
             <v-list-item-title>{{ formula.name }}</v-list-item-title>
           </v-list-item-content>
-          <v-list-item-action>
+          <v-list-item-action @click="deleteFormula(formula.id)">
             <v-btn icon>
               <v-icon color="black">delete</v-icon>
             </v-btn>
@@ -35,6 +35,13 @@ export default Vue.extend({
         formula: ""
       };
       this.formulas.push(newFormula);
+    },
+    deleteFormula(id: number) {
+      for (var i = 0; i < this.formulas.length; i++) {
+        if (id === this.formulas[i].id) {
+          this.formulas.splice(i, 1);
+        }
+      }
     }
   }
 });
