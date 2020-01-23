@@ -111,7 +111,7 @@ public class InferenceManager {
       for (Node node: nodesToSetValues) {
         Variable variable = adaptedGraph.getVariableByName(node.getName());
         int state = node.getStateType()
-                .getIndexOfSate(formulaResolver.apply(time, node.getEvidenceFormula()));
+                .getIndexOfState(formulaResolver.apply(time, node.getEvidenceFormula()));
         instance.setValue(variable, state);
       }
 

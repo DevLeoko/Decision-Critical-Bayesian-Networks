@@ -66,14 +66,14 @@ public class DcbnApplication {
           new ArrayList<>(), new double[][]{{0.3, 0.7}});
       NodeDependency nodeATimeTDependency = new NodeDependency(0, new ArrayList<>(),
           new ArrayList<>(), new double[][]{{0.5, 0.5}});
-      Node a = new Node(0, "A", nodeATimeZeroDependency, nodeATimeTDependency, null, null,
+      Node a = new Node(0, "A", nodeATimeZeroDependency, nodeATimeTDependency, "#ffffff", null,
           StateType.BOOLEAN,
           ZERO_POSITION);
       NodeDependency nodeBTimeZeroDependency = new NodeDependency(0, new ArrayList<>(),
           new ArrayList<>(), new double[][]{{0.2, 0.8}});
       NodeDependency nodeBTimeTDependency = new NodeDependency(0, new ArrayList<>(),
           new ArrayList<>(), new double[][]{{0.5, 0.5}});
-      Node b = new Node(0, "B", nodeBTimeZeroDependency, nodeBTimeTDependency, null, null,
+      Node b = new Node(0, "B", nodeBTimeZeroDependency, nodeBTimeTDependency, "#ffffff", null,
           StateType.BOOLEAN,
           ZERO_POSITION);
 
@@ -81,7 +81,7 @@ public class DcbnApplication {
           new ArrayList<>(),
           new double[][]{{0.999, 0.001}, {0.6, 0.4}, {0.8, 0.2}, {0.2, 0.8}});
 
-      Node c = new Node(0, "C", nodeCTimeZeroDependency, null, null, null, StateType.BOOLEAN,
+      Node c = new Node(0, "C", nodeCTimeZeroDependency, null, "#ffffff", null, StateType.BOOLEAN,
           ZERO_POSITION);
       NodeDependency nodeCTimeTDependency = new NodeDependency(0, Arrays.asList(a, b),
           Collections.singletonList(c), new double[][]{{0.1, 0.9},
