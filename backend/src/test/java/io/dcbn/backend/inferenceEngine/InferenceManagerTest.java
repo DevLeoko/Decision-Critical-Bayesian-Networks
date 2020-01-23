@@ -1,6 +1,7 @@
 package io.dcbn.backend.inferenceEngine;
 
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.anyInt;
@@ -9,9 +10,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.core.VesselCache;
@@ -23,6 +21,7 @@ import io.dcbn.backend.graph.Node;
 import io.dcbn.backend.graph.NodeDependency;
 import io.dcbn.backend.graph.Position;
 import io.dcbn.backend.graph.StateType;
+import io.dcbn.backend.graph.ValueNode;
 import io.dcbn.backend.graph.repositories.GraphRepository;
 import io.dcbn.backend.inference.InferenceManager;
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -39,6 +39,8 @@ public class InferenceManagerTest {
 
   private static final Position ZERO_POSITION = new Position(0, 0);
   private static final AreaOfInterest AREA = new AreaOfInterest("TEST_AREA", null);
+
+  private static final int NUM_TIME_SLICES = 5;
 
   private InferenceManager inferenceManager;
 
@@ -53,11 +55,7 @@ public class InferenceManagerTest {
     Node isInReportedArea = new Node(0, "isInReportedArea", null, null, "",
         new EvidenceFormula("inArea", null), StateType.BOOLEAN, ZERO_POSITION);
 
-    Node[] smugglingParents = new Node[]{nullSpeed, inTrajectoryArea, isInReportedArea};
-    List<Node> smugglingParentsList = new ArrayList<>();
-    smugglingParentsList.add(isInReportedArea);
-    smugglingParentsList.add(inTrajectoryArea);
-    smugglingParentsList.add(nullSpeed);
+    List<Node> smugglingParentsList = Arrays.asList(isInReportedArea, inTrajectoryArea, nullSpeed);
     double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}, {0.4, 0.6}, {0.4, 0.6}, {0.2, 0.8},
         {0.2, 0.8}, {0.001, 0.999}, {0.001, 0.999}};
     NodeDependency smuggling0Dep = new NodeDependency(0, smugglingParentsList,
@@ -88,13 +86,13 @@ public class InferenceManagerTest {
     isInReportedArea.setTimeZeroDependency(iIRA0Dep);
     isInReportedArea.setTimeTDependency(iIRATDep);
 
-    Graph graph = new Graph(0, "testGraph", 5,
+    Graph graph = new Graph(0, "testGraph", NUM_TIME_SLICES,
         Arrays.asList(smuggling, nullSpeed, inTrajectoryArea, isInReportedArea));
 
-    Vessel[] vessels = new Vessel[5];
-    for (int i = 0; i < 5; ++i) {
+    Vessel[] vessels = new Vessel[NUM_TIME_SLICES];
+    for (int i = 0; i < vessels.length; ++i) {
       vessels[i] = new Vessel("test", 0);
-      vessels[i].setSpeed(0.0);
+      vessels[i].setSpeed(i < 2 ? 0.0 : 3.0);
       vessels[i].setLongitude(1.0 * i);
     }
 
@@ -131,6 +129,7 @@ public class InferenceManagerTest {
 
     doAnswer(invocation -> {
       correlatedAois.clear();
+      correlatedVessels.clear();
       return null;
     }).when(mockEvaluator).reset();
 
@@ -140,19 +139,33 @@ public class InferenceManagerTest {
   }
 
   @Test
+  @DisplayName("InferenceManager produces correct output graph.")
   void testInferenceManagerCorrectResult() {
     List<Outcome> outcomes = inferenceManager.calculateInference("test");
 
     assertEquals(1, outcomes.size());
-    ObjectMapper mapper = new JsonMapper();
-    try {
-      System.out.println(mapper.writeValueAsString(outcomes.iterator().next()));
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
+    Outcome outcome = outcomes.get(0);
+
+    double[][][] expectedValues = new double[][][] {
+        {{0.4, 0.6}, {0.4, 0.6}, {0.001, 0.999}, {0.001, 0.999}, {0.001, 0.999}},
+        {{1.0, 0.0}, {1.0, 0.0}, {0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}},
+        {{0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}},
+        {{0.0, 1.0}, {0.0, 1.0}, {1.0, 0.0}, {1.0, 0.0}, {1.0, 0.0}},
+    };
+
+    Graph graph = outcome.getCorrelatedNetwork();
+    for (int nodeIndex = 0; nodeIndex < expectedValues.length; nodeIndex++) {
+      Node node = graph.getNodes().get(nodeIndex);
+      assertTrue(node.isValueNode());
+      ValueNode valueNode = (ValueNode) node;
+      for (int timeSlice = 0; timeSlice < NUM_TIME_SLICES; timeSlice++) {
+        assertArrayEquals(expectedValues[nodeIndex][timeSlice], valueNode.getValue()[timeSlice], 1e-2);
+      }
     }
   }
 
   @Test
+  @DisplayName("InferenceManager set correlated vessels and areas of interest.")
   void testCorrelatedVesselsAndAreasCorrect() {
     List<Outcome> outcomes = inferenceManager.calculateInference("test");
     Outcome outcome = outcomes.get(0);
