@@ -25,6 +25,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Value("${jwt.secret}")
   private String secret;
 
+  @Value("${jwt.access.duration}")
+  private int tokenDurationInMinutes;
+
   private final UserDetailsService userDetailsService;
   private final PasswordEncoder passwordEncoder;
 
@@ -44,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         .anyRequest().authenticated()
         .and()
-        .addFilter(new JwtGenerationFilter(authenticationManager(), secret))
+        .addFilter(new JwtGenerationFilter(authenticationManager(), secret, tokenDurationInMinutes))
         .addFilterAfter(new JwtAuthorizationFilter(secret),
             UsernamePasswordAuthenticationFilter.class)
         .sessionManagement()

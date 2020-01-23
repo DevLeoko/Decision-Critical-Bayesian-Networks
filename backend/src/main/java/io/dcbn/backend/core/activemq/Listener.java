@@ -3,12 +3,11 @@ package io.dcbn.backend.core.activemq;
 import io.dcbn.backend.core.AoiHandler;
 import io.dcbn.backend.core.VesselHandler;
 import io.dcbn.backend.datamodel.JsonMapper;
+import javax.jms.JMSException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-
-import javax.jms.*;
 
 @Service
 public class Listener {

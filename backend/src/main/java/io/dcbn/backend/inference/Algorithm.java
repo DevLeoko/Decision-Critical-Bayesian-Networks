@@ -4,7 +4,6 @@ import eu.amidst.core.inference.ImportanceSampling;
 import eu.amidst.core.inference.ImportanceSamplingRobust;
 import eu.amidst.core.inference.InferenceAlgorithm;
 import java.util.function.Supplier;
-import lombok.Getter;
 
 public enum Algorithm {
 

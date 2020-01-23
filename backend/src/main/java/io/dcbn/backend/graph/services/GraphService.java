@@ -1,11 +1,10 @@
 package io.dcbn.backend.graph.services;
 
 import io.dcbn.backend.graph.Graph;
-import lombok.Getter;
-import org.springframework.scheduling.annotation.Scheduled;
-
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
+import org.springframework.scheduling.annotation.Scheduled;
 
 public class GraphService {
 
