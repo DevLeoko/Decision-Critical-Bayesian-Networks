@@ -54,11 +54,15 @@ public class InferenceManagerTest {
         new EvidenceFormula("inArea", null), StateType.BOOLEAN, ZERO_POSITION);
 
     Node[] smugglingParents = new Node[]{nullSpeed, inTrajectoryArea, isInReportedArea};
+    List<Node> smugglingParentsList = new ArrayList<>();
+    smugglingParentsList.add(isInReportedArea);
+    smugglingParentsList.add(inTrajectoryArea);
+    smugglingParentsList.add(nullSpeed);
     double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}, {0.4, 0.6}, {0.4, 0.6}, {0.2, 0.8},
         {0.2, 0.8}, {0.001, 0.999}, {0.001, 0.999}};
-    NodeDependency smuggling0Dep = new NodeDependency(0, Arrays.asList(smugglingParents),
+    NodeDependency smuggling0Dep = new NodeDependency(0, smugglingParentsList,
         new ArrayList<>(), probabilities);
-    NodeDependency smugglingTDep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+    NodeDependency smugglingTDep = new NodeDependency(0, smugglingParentsList, new ArrayList<>(),
         probabilities);
     smuggling.setTimeZeroDependency(smuggling0Dep);
     smuggling.setTimeTDependency(smugglingTDep);
