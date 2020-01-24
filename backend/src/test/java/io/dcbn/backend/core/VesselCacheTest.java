@@ -3,6 +3,9 @@ package io.dcbn.backend.core;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class VesselCacheTest {
@@ -11,11 +14,26 @@ public class VesselCacheTest {
 
     VesselCache vesselCache;
     Vessel vessel;
+    Vessel vesselTwo;
 
     @BeforeEach
     public void setUp() {
         vesselCache = new VesselCache(timeSteps);
         vessel = new Vessel(System.currentTimeMillis(), "Vessel1");
+        vesselTwo = new Vessel(System.currentTimeMillis(), "Vessel2");
+    }
+
+    @Test void getAllUuidsWithEmptyCacheTest() {
+        assert(vesselCache.getAllVesselUuids().size() == 0);
+    }
+
+    @Test void getAllUuidsTest() {
+        vesselCache.insert(vessel);
+        vesselCache.insert(vesselTwo);
+        Set<String> uuids = vesselCache.getAllVesselUuids();
+        assert(uuids.contains(vessel.getUuid()));
+        assert(uuids.contains(vesselTwo.getUuid()));
+        assert(uuids.size() == 2);
     }
 
     @Test
@@ -49,8 +67,10 @@ public class VesselCacheTest {
         for (int i = 0; i < vesselCache.getVesselsByUuid(vessel.getUuid()).length; i++) {
             if(i == 0) {
                 assert(vesselCache.getVesselsByUuid(vessel.getUuid())[0].getSpeed() == 1.0);
+                assertFalse(vesselCache.getVesselsByUuid(vessel.getUuid())[0].isFiller());
             } else {
-                assertNull(vesselCache.getVesselsByUuid(vessel.getUuid())[i]);
+                assert(vesselCache.getVesselsByUuid(vessel.getUuid())[i].getSpeed() == 0.0);
+                assertTrue(vesselCache.getVesselsByUuid(vessel.getUuid())[i].isFiller());
             }
         }
     }
@@ -137,7 +157,7 @@ public class VesselCacheTest {
         vesselCache.updateTimeSlices();
         vesselCache.refreshCache();
 
-        assertNull(vesselCache.getVesselsByUuid(vessel.getUuid())[2]);
+        assertTrue(vesselCache.getVesselsByUuid(vessel.getUuid())[2].isFiller());
         assertFalse(vesselCache.getVesselsByUuid(vessel.getUuid())[1].isFiller());
         assertTrue(vesselCache.getVesselsByUuid(vessel.getUuid())[0].isFiller());
     }
