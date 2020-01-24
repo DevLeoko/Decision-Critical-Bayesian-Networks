@@ -1,12 +1,15 @@
 package io.dcbn.backend.graph.controllers;
 
-import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.repositories.GraphRepository;
+
+import java.security.Principal;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.validation.Valid;
+
+import io.dcbn.backend.graph.services.GraphService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,10 +28,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class GraphController {
 
   private final GraphRepository repository;
+  private final GraphService graphService;
 
   @Autowired
-  public GraphController(GraphRepository repository) {
+  public GraphController(GraphRepository repository, GraphService graphService) {
     this.repository = repository;
+    this.graphService = graphService;
   }
 
   @GetMapping("/graphs")
@@ -47,30 +52,45 @@ public class GraphController {
   }
 
   @PostMapping("/graphs")
-  public void createGraph(@Valid @RequestBody Graph graph) {
-    // throw exception if graph has cycles
-    AmidstGraphAdapter graphAdapter = new AmidstGraphAdapter(graph);
-    if(graphAdapter.getDbn().getDynamicDAG().containCycles()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+  public void createGraph(@Valid @RequestBody Graph graph, Principal principal) {
+    try{
+      graphService.updateLock(graph.getId(), principal.getName());
+    } catch(IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    if(graphService.hasCycles(graph)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Graph has cycles!");
     }
 
     repository.save(graph);
   }
 
   @DeleteMapping("/graphs/{id}")
-  public void deleteById(@PathVariable long id) {
+  public void deleteById(@PathVariable long id, Principal principal) {
     if (!repository.existsById(id)) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
+
+    try{
+      graphService.updateLock(id, principal.getName());
+    } catch(IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
     repository.deleteById(id);
   }
 
   @PutMapping("/graphs/{id}")
-  public void updateGraphById(@PathVariable long id, @Valid @RequestBody Graph graph) {
-    // throw exception if graph has cycles
-    AmidstGraphAdapter graphAdapter = new AmidstGraphAdapter(graph);
-    if(graphAdapter.getDbn().getDynamicDAG().containCycles()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+  public void updateGraphById(@PathVariable long id, @Valid @RequestBody Graph graph, Principal principal) {
+    try{
+      graphService.updateLock(graph.getId(), principal.getName());
+    } catch(IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    if(graphService.hasCycles(graph)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Graph has cycles!");
     }
 
     Graph oldGraph = repository.findById(id)
@@ -79,5 +99,14 @@ public class GraphController {
     oldGraph.setName(graph.getName());
     oldGraph.setTimeSlices(graph.getTimeSlices());
     repository.save(oldGraph);
+  }
+
+  @PutMapping("/graphs/{id}/lock")
+  public void updateGraphLockById(@PathVariable long id, Principal principal) {
+    try{
+      graphService.updateLock(id, principal.getName());
+    } catch(IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
   }
 }

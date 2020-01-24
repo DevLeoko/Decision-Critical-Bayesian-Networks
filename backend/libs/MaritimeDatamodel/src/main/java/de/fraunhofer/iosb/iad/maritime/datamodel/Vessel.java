@@ -50,11 +50,8 @@ public class Vessel implements Cloneable {
 		this.isFiller = false;
 	}
 
-	@SneakyThrows
-	@Override
+	//just a stub
 	public Vessel clone() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		Vessel deepCopy = objectMapper.readValue(objectMapper.writeValueAsString(getClass()), Vessel.class);
-		return deepCopy;
+		return null;
 	}
 }

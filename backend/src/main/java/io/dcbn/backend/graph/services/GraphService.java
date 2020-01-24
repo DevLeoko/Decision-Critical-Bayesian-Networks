@@ -1,59 +1,45 @@
 package io.dcbn.backend.graph.services;
 
+import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
+import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.Getter;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class GraphService {
 
-    @Getter
     private Map<Long, GraphLock> lock;
+    private final DcbnUserRepository dcbnUserRepository;
 
-
-    public GraphService() {
+    @Autowired
+    public GraphService(DcbnUserRepository dcbnUserRepository) {
+        this.dcbnUserRepository = dcbnUserRepository;
         this.lock = new HashMap<>();
     }
 
-    //checks if Graph is a DAG //TODO: Implement CycleSearch
-    public boolean validate(Graph graph){
-        return false;
+    //checks if Graph has cycles
+    public boolean hasCycles(Graph graph) {
+        AmidstGraphAdapter graphAdapter = new AmidstGraphAdapter(graph);
+        return graphAdapter.getDbn().getDynamicDAG().containCycles();
     }
 
-    //locks Graph if possible
-    public void lockGraph(long graphId, long userId){
-        if(lock.containsKey(graphId)){
-            throw new IllegalArgumentException("Graph is being edited by another User");
+    public void updateLock(long graphId, String userName) throws IllegalArgumentException {
+        if(!dcbnUserRepository.existsByUsernameOrEmail(userName, null)) {
+            throw new IllegalArgumentException("Username does not exist!");
         }
-        else{
-            //check and remove all existing locks from thee user
-            for(Map.Entry<Long,GraphLock> entry : lock.entrySet()){
-                if(entry.getValue().getUserId() == userId){
-                    lock.remove(entry.getKey());
-                }
-            }
-            lock.put(graphId,new GraphLock(userId));
-        }
-    }
+        long userId = dcbnUserRepository.findByUsernameOrEmail(userName, null).get().getId();
 
-    //unlocks the locked Graph
-    public void unlockGraph(long graphId, long userId){
-        if(lock.containsKey(graphId)){
-            lock.remove(graphId);
-        }
-        else{
-            throw new IllegalArgumentException("Graph not found");
-        }
-    }
-
-    //checks if any locks have timed out and removes such locks
-    @Scheduled(fixedRateString = "$graphlock.refresh.time")
-    public void refreshLocks(){
-        for(Map.Entry<Long,GraphLock> entry : lock.entrySet()){
-            if(entry.getValue().getExpireTime() < System.currentTimeMillis()){
-                lock.remove(entry.getKey());
-            }
+        if (!lock.containsKey(graphId)) {
+            lock.put(graphId, new GraphLock(userId));
+        } else if (lock.get(graphId).getUserId() == userId) {
+            lock.put(graphId, new GraphLock(userId));
+        } else if (lock.get(graphId).getUserId() != userId && lock.get(graphId).isExpired()) {
+            lock.put(graphId, new GraphLock(userId));
+        } else {
+            throw new IllegalArgumentException("Graph already locked by another user!");
         }
     }
 }

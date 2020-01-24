@@ -4,18 +4,21 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 
 public class GraphLock {
-    @Getter
-    private long userId;
-    @Getter
-    private long expireTime;
 
     @Value("${graph.lock.expire.time}")
-    private long sessionLimit;
+    private long timeToExpire;
 
+    @Getter
+    private long userId;
+    private long expireTime;
 
-    public GraphLock(long user) {
-            this.userId=user;
-            this.expireTime=System.currentTimeMillis()+sessionLimit;
+    public GraphLock(long userId) {
+            this.userId = userId;
+            this.expireTime = System.currentTimeMillis() + timeToExpire;
+    }
+
+    public boolean isExpired() {
+        return System.currentTimeMillis() > expireTime;
     }
 }
 
