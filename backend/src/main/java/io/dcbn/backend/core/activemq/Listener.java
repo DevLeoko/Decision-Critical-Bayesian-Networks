@@ -22,12 +22,12 @@ public class Listener {
         this.vesselHandler = vesselHandler;
     }
 
-    @JmsListener(destination = "aoi.queue")
+    @JmsListener(destination = "aoi.queue", containerFactory = "listenerContainerFactory")
     public void receiveAoi(@Payload final String json) throws JMSException {
         aoiHandler.handleAoi(JsonMapper.fromJsonToAreaOfInterest(json));
     }
 
-    @JmsListener(destination = "vessel.queue")
+    @JmsListener(destination = "vessel.queue", containerFactory = "listenerContainerFactory")
     public void receiveVessel(@Payload final String json) throws JMSException {
         vesselHandler.handleVessel(JsonMapper.fromJsonToVessel(json));
     }
