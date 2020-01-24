@@ -14,7 +14,6 @@ import io.dcbn.backend.graph.StateType;
 import io.dcbn.backend.graph.repositories.GraphRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -62,33 +61,47 @@ public class DcbnApplication {
 
       Position ZERO_POSITION = new Position(0.0, 0.0);
 
-      NodeDependency nodeATimeZeroDependency = new NodeDependency(0, new ArrayList<>(),
-          new ArrayList<>(), new double[][]{{0.3, 0.7}});
-      NodeDependency nodeATimeTDependency = new NodeDependency(0, new ArrayList<>(),
-          new ArrayList<>(), new double[][]{{0.5, 0.5}});
-      Node a = new Node(0, "A", nodeATimeZeroDependency, nodeATimeTDependency, "#ffffff", null,
-          StateType.BOOLEAN,
-          ZERO_POSITION);
-      NodeDependency nodeBTimeZeroDependency = new NodeDependency(0, new ArrayList<>(),
-          new ArrayList<>(), new double[][]{{0.2, 0.8}});
-      NodeDependency nodeBTimeTDependency = new NodeDependency(0, new ArrayList<>(),
-          new ArrayList<>(), new double[][]{{0.5, 0.5}});
-      Node b = new Node(0, "B", nodeBTimeZeroDependency, nodeBTimeTDependency, "#ffffff", null,
-          StateType.BOOLEAN,
-          ZERO_POSITION);
 
-      NodeDependency nodeCTimeZeroDependency = new NodeDependency(0, Arrays.asList(a, b),
-          new ArrayList<>(),
-          new double[][]{{0.999, 0.001}, {0.6, 0.4}, {0.8, 0.2}, {0.2, 0.8}});
-
-      Node c = new Node(0, "C", nodeCTimeZeroDependency, null, "#ffffff", null, StateType.BOOLEAN,
+      Node smuggling = new Node(0, "smuggling", null, null, "#ffffff", null, StateType.BOOLEAN,
           ZERO_POSITION);
-      NodeDependency nodeCTimeTDependency = new NodeDependency(0, Arrays.asList(a, b),
-          Collections.singletonList(c), new double[][]{{0.1, 0.9},
-          {0.2, 0.8}, {0.3, 0.7}, {0.4, 0.6}, {0.5, 0.5}, {0.6, 0.4}, {0.7, 0.3}, {0.8, 0.2}});
-      c.setTimeTDependency(nodeCTimeTDependency);
-      List<Node> nodeList = Arrays.asList(a, b, c);
-      graphRepository.save(new Graph(0, "testGraph", 10, nodeList));
+      Node nullSpeed = new Node(0, "nullSpeed", null, null, "#ffffff",
+          "nullSpeed", StateType.BOOLEAN, ZERO_POSITION);
+      Node inTrajectoryArea = new Node(0, "inTrajectoryArea", null, null, "#ffffff",
+          "inTrajectory", StateType.BOOLEAN, ZERO_POSITION);
+      Node isInReportedArea = new Node(0, "isInReportedArea", null, null, "#ffffff",
+          "inArea", StateType.BOOLEAN, ZERO_POSITION);
+
+      List<Node> smugglingParentsList = Arrays.asList(isInReportedArea, inTrajectoryArea, nullSpeed);
+      double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}, {0.4, 0.6}, {0.4, 0.6}, {0.2, 0.8},
+          {0.2, 0.8}, {0.001, 0.999}, {0.001, 0.999}};
+      NodeDependency smuggling0Dep = new NodeDependency(0, smugglingParentsList,
+          new ArrayList<>(), probabilities);
+      NodeDependency smugglingTDep = new NodeDependency(0, smugglingParentsList, new ArrayList<>(),
+          probabilities);
+      smuggling.setTimeZeroDependency(smuggling0Dep);
+      smuggling.setTimeTDependency(smugglingTDep);
+
+      NodeDependency nS0Dep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+          new double[][]{{0.7, 0.3}});
+      NodeDependency nSTDep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+          new double[][]{{0.7, 0.3}});
+      nullSpeed.setTimeZeroDependency(nS0Dep);
+      nullSpeed.setTimeTDependency(nSTDep);
+
+      NodeDependency iTA0Dep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+          new double[][]{{0.8, 0.2}});
+      NodeDependency iTATDep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+          new double[][]{{0.8, 0.2}});
+      inTrajectoryArea.setTimeZeroDependency(iTA0Dep);
+      inTrajectoryArea.setTimeTDependency(iTATDep);
+
+      NodeDependency iIRA0Dep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+          new double[][]{{0.8, 0.2}});
+      NodeDependency iIRATDep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+          new double[][]{{0.8, 0.2}});
+      isInReportedArea.setTimeZeroDependency(iIRA0Dep);
+      isInReportedArea.setTimeTDependency(iIRATDep);
+      graphRepository.save(new Graph(0, "testGraph", 5, Arrays.asList(nullSpeed, inTrajectoryArea, isInReportedArea, smuggling)));
     };
   }
 

@@ -1,6 +1,7 @@
 package io.dcbn.backend.graph;
 
 
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +30,7 @@ public class ValueNode extends Node {
         super.setPosition(node.getPosition());
         super.setTimeZeroDependency(node.getTimeZeroDependency());
         super.setTimeTDependency(node.getTimeTDependency());
-        super.setEvidenceFormula(node.getEvidenceFormula());
+        super.setEvidenceFormulaName(node.getEvidenceFormulaName());
         this.value = value;
     }
 
