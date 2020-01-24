@@ -9,16 +9,13 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 @Documented
-@Constraint(validatedBy = EvidenceFormulaValidator.class)
-@Target(ElementType.TYPE)
+@Constraint(validatedBy = EvidenceFormulaExistsValidator.class)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FormulaConstraint {
+public @interface EvidenceFormulaExistsConstraint {
 
-  String message() default "Invalid Formula";
-
+  String message() default "Non existent evidence formula.";
   Class<?>[] groups() default {};
-
   Class<? extends Payload>[] payload() default {};
 
 }
-

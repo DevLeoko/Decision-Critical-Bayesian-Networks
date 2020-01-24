@@ -1,5 +1,7 @@
 package io.dcbn.backend.evidenceFormula.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -7,11 +9,15 @@ import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
 import io.dcbn.backend.evidenceFormula.services.exceptions.EvaluationException;
+import java.util.Map;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -89,7 +95,8 @@ public class EvidenceFormulaController {
   @PreAuthorize("hasRole('ADMIN')")
   public boolean evaluateEvidenceFormulaByName(@PathVariable String name,
       HttpServletRequest request) {
-    EvidenceFormula evidenceFormula = repository.findByName(name).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    EvidenceFormula evidenceFormula = repository.findByName(name)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     ObjectMapper mapper = new JsonMapper();
     try {
       JsonNode node = mapper.readValue(request.getReader(), JsonNode.class);
@@ -104,6 +111,15 @@ public class EvidenceFormulaController {
   @ExceptionHandler(EvaluationException.class)
   public EvaluationException handleException(EvaluationException ex) {
     return ex;
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<Map<String, Object>> handleConstraintViolationException(MethodArgumentNotValidException ex)
+      throws JsonProcessingException {
+    Map<String, Object> map = new JsonMapper().readValue(
+        Objects.requireNonNull(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage()),
+        new TypeReference<Map<String, Object>>(){});
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
   }
 
 }

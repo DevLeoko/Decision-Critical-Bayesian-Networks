@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
+@FormulaConstraint
 public class EvidenceFormula {
 
   @Id
@@ -21,7 +22,6 @@ public class EvidenceFormula {
   @Column(unique = true)
   private String name;
 
-  @FormulaConstraint
   private String formula;
 
   public EvidenceFormula(String name, String formula) {
