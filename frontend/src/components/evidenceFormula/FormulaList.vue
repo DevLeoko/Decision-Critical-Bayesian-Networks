@@ -1,21 +1,23 @@
 <template>
   <v-navigation-drawer permanent width="100%">
     <v-list style=" max-height: 80vh; overflow: auto">
-      <v-list-item
-        :key="formula.id"
-        v-for="formula in formulas"
-        link
-        @click="selectFormula(formula.id)"
-      >
-        <v-list-item-content>
-          <v-list-item-title>{{ formula.name }}</v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-action @click="deleteFormula(formula.id)">
-          <v-btn icon>
-            <v-icon color="black">delete</v-icon>
-          </v-btn>
-        </v-list-item-action>
-      </v-list-item>
+      <v-list-item-group color="primary">
+        <v-list-item
+          :key="formula.id"
+          v-for="formula in formulas"
+          link
+          @click="selectFormula(formula.id)"
+        >
+          <v-list-item-content>
+            <v-list-item-title>{{ formula.name }}</v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action @click="deleteFormula(formula.id)">
+            <v-btn icon>
+              <v-icon color="black">delete</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list-item-group>
     </v-list>
 
     <template v-slot:append>
