@@ -28,6 +28,9 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * This class handles all the calculations with Dynamic Bayesian Networks (DBN).
+ */
 @Data
 @Service
 public class InferenceManager {
@@ -46,6 +49,11 @@ public class InferenceManager {
     this.evidenceFormulaEvaluator = evidenceFormulaEvaluator;
   }
 
+  /**
+   * This method is used to evaluate all graphs on the given {@link Vessel}
+   * @param vesselUuid the uuid of the {@link Vessel}.
+   * @return TODO Complete
+   */
   public List<Outcome> calculateInference(String vesselUuid) {
     Vessel[] vessels = vesselCache.getVesselsByUuid(vesselUuid);
     List<Outcome> outcomes = new ArrayList<>();
@@ -69,6 +77,14 @@ public class InferenceManager {
     return outcomes;
   }
 
+  /**
+   * This method set the given values to the adapted Graph {@link AmidstGraphAdapter}
+   * and run the  {@link InferenceEngineForDBN} to return a new {@link Graph} with the calculated values.
+   * @param adaptedGraph the adapted {@link Graph}
+   * @param formulaResolver evaluates the given {@link EvidenceFormula} for the given time-step.
+   * @param algorithm The algorithm used by the {@link InferenceEngineForDBN}
+   * @return a new graph with the calculated values.
+   */
   public Graph calculateInference(AmidstGraphAdapter adaptedGraph,
       BiFunction<Integer, EvidenceFormula, String> formulaResolver, Algorithm algorithm) {
     DynamicBayesianNetworkSampler dynamicSampler = new DynamicBayesianNetworkSampler(
