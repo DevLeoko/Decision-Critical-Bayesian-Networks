@@ -21,7 +21,7 @@
     <template v-slot:append>
       <v-flex class="pa-4" style="text-align: center">
         <v-btn small color="primary" @click="addFormula">
-          <v-icon color="white">add_box</v-icon>
+          <v-icon class="mr-1" color="white">add_box</v-icon>
           New Expression
         </v-btn>
       </v-flex>

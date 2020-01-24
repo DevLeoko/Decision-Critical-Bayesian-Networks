@@ -27,17 +27,17 @@ export default Vue.extend({
         {
           name: "test1",
           id: 0,
-          formula: ""
+          formula: "true"
         },
         {
           name: "test2",
           id: 1,
-          formula: ""
+          formula: "false"
         },
         {
           name: "test3",
           id: 2,
-          formula: ""
+          formula: "bruh"
         }
       ],
       activeFormula: -1
