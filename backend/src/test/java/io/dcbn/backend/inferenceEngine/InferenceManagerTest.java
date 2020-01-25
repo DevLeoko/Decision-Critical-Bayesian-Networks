@@ -15,6 +15,7 @@ import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.core.VesselCache;
 import io.dcbn.backend.datamodel.Outcome;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
+import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.Node;
@@ -29,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,11 +51,11 @@ public class InferenceManagerTest {
     Node smuggling = new Node(0, "smuggling", null, null, "", null, StateType.BOOLEAN,
         ZERO_POSITION);
     Node nullSpeed = new Node(0, "nullSpeed", null, null, "",
-        new EvidenceFormula("nullSpeed", null), StateType.BOOLEAN, ZERO_POSITION);
+        "nullSpeed", StateType.BOOLEAN, ZERO_POSITION);
     Node inTrajectoryArea = new Node(0, "inTrajectoryArea", null, null, "",
-        new EvidenceFormula("inTrajectory", null), StateType.BOOLEAN, ZERO_POSITION);
+        "inTrajectory", StateType.BOOLEAN, ZERO_POSITION);
     Node isInReportedArea = new Node(0, "isInReportedArea", null, null, "",
-        new EvidenceFormula("inArea", null), StateType.BOOLEAN, ZERO_POSITION);
+        "inArea", StateType.BOOLEAN, ZERO_POSITION);
 
     List<Node> smugglingParentsList = Arrays.asList(isInReportedArea, inTrajectoryArea, nullSpeed);
     double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}, {0.4, 0.6}, {0.4, 0.6}, {0.2, 0.8},
@@ -135,7 +137,13 @@ public class InferenceManagerTest {
 
     when(mockEvaluator.getCorrelatedAois()).thenReturn(correlatedAois);
     when(mockEvaluator.getCorrelatedVessels()).thenReturn(correlatedVessels);
-    inferenceManager = new InferenceManager(mockCache, mockRepository, mockEvaluator);
+
+    EvidenceFormulaRepository mockFormulaRepository = mock(EvidenceFormulaRepository.class);
+    ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
+    when(mockFormulaRepository.findByName(nameCaptor.capture())).then(invocation -> Optional.of((new EvidenceFormula(nameCaptor.getValue(), null))));
+
+    inferenceManager = new InferenceManager(mockCache, mockRepository, mockFormulaRepository,
+        mockEvaluator);
   }
 
   @Test

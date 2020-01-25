@@ -1,11 +1,17 @@
 package io.dcbn.backend.graph.controllers;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.repositories.GraphRepository;
+import io.dcbn.backend.graph.services.GraphService;
+import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,10 +31,13 @@ import org.springframework.web.server.ResponseStatusException;
 public class GraphController {
 
   private final GraphRepository repository;
+  private final GraphService service;
 
   @Autowired
-  public GraphController(GraphRepository repository) {
+  public GraphController(GraphRepository repository,
+      GraphService service) {
     this.repository = repository;
+    this.service = service;
   }
 
   @GetMapping("/graphs")
@@ -79,5 +88,18 @@ public class GraphController {
     oldGraph.setName(graph.getName());
     oldGraph.setTimeSlices(graph.getTimeSlices());
     repository.save(oldGraph);
+  }
+
+  @PostMapping("/graphs/{id}/evaluate")
+  public Graph evaluateGraphById(@PathVariable long id, HttpServletRequest request) {
+    Graph graph = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    try {
+      Map<String, double[][]> values = new ObjectMapper().readValue(request.getReader(),
+          new TypeReference<Map<String, double[][]>>(){});
+
+      return service.evaluateGraph(graph, values);
+    } catch (IOException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
   }
 }

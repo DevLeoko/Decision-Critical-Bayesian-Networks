@@ -32,7 +32,7 @@ public class ValueNode extends Node {
         super.setPosition(node.getPosition());
         super.setTimeZeroDependency(node.getTimeZeroDependency());
         super.setTimeTDependency(node.getTimeTDependency());
-        super.setEvidenceFormula(node.getEvidenceFormula());
+        super.setEvidenceFormulaName(node.getEvidenceFormulaName());
         this.value = value;
     }
 

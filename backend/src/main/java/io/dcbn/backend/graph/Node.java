@@ -5,14 +5,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
+import io.dcbn.backend.evidenceFormula.model.EvidenceFormulaExistsConstraint;
 import javax.annotation.MatchesPattern;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -55,8 +54,8 @@ public class Node {
   @NotBlank
   private String color;
 
-  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
-  private EvidenceFormula evidenceFormula;
+  @EvidenceFormulaExistsConstraint
+  private String evidenceFormulaName;
 
   @NotNull
   private StateType stateType;

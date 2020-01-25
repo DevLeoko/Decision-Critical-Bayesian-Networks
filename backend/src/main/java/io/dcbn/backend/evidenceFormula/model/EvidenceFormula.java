@@ -6,14 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@FormulaConstraint
 public class EvidenceFormula {
 
   @Id
@@ -24,12 +23,11 @@ public class EvidenceFormula {
   @Column(unique = true)
   private String name;
 
-  @FormulaConstraint
   private String formula;
 
   public EvidenceFormula(String name, String formula) {
     this.name = name;
     this.formula = formula;
   }
-  
+
 }
