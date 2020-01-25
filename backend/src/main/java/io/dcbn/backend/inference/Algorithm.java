@@ -3,6 +3,7 @@ package io.dcbn.backend.inference;
 import eu.amidst.core.inference.ImportanceSampling;
 import eu.amidst.core.inference.ImportanceSamplingRobust;
 import eu.amidst.core.inference.InferenceAlgorithm;
+
 import java.util.function.Supplier;
 
 /**
@@ -20,7 +21,7 @@ public enum Algorithm {
     }
 
     public InferenceAlgorithm getAlgorithm() {
-      return algorithm.get();
+        return algorithm.get();
     }
 
 }

@@ -7,6 +7,7 @@ import io.dcbn.backend.evidenceFormulas.FormulaParser.NumberAmbiguousExpressionC
 import io.dcbn.backend.evidenceFormulas.FormulaParser.NumberBinaryExpressionContext;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.NumberLiteralExpressionContext;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.NumberParenthesisExpressionContext;
+
 import java.util.Map;
 
 /**
@@ -16,52 +17,57 @@ import java.util.Map;
  */
 public class NumberVisitor extends FormulaBaseVisitor<Double> {
 
-  private Map<String, Object> variables;
-  private FunctionProvider functions;
+    private Map<String, Object> variables;
+    private FunctionProvider functions;
 
-  public NumberVisitor(Map<String, Object> variables,
-      FunctionProvider functions) {
-    this.variables = variables;
-    this.functions = functions;
-  }
-
-  @Override
-  public Double visitNumberAmbiguousExpression(NumberAmbiguousExpressionContext ctx) {
-    AmbiguityVisitor visitor = new AmbiguityVisitor(variables, functions);
-    Object result = visitor.visit(ctx.ambiguousLiteral());
-
-    if (result instanceof Double) {
-      if (ctx.PLUS_MINUS() != null) {
-        return "-".equals(ctx.PLUS_MINUS().getText()) ? - (double) result : (double) result;
-      } else {
-        return (double) result;
-      }
-    } else {
-      throw new TypeMismatchException(Double.class, result.getClass(), ctx.start.getLine(), ctx.start.getCharPositionInLine());
+    public NumberVisitor(Map<String, Object> variables,
+                         FunctionProvider functions) {
+        this.variables = variables;
+        this.functions = functions;
     }
-  }
 
-  @Override
-  public Double visitNumberBinaryExpression(NumberBinaryExpressionContext ctx) {
-    Double left = visit(ctx.left);
-    Double right = visit(ctx.right);
+    @Override
+    public Double visitNumberAmbiguousExpression(NumberAmbiguousExpressionContext ctx) {
+        AmbiguityVisitor visitor = new AmbiguityVisitor(variables, functions);
+        Object result = visitor.visit(ctx.ambiguousLiteral());
 
-    switch (ctx.operator.getText()) {
-      case "+": return left + right;
-      case "-": return left - right;
-      case "*": return left * right;
-      case "/": return left / right;
-      default: throw new IllegalArgumentException("Unknown operator: " + ctx.operator.getText()); // Should never happen.
+        if (result instanceof Double) {
+            if (ctx.PLUS_MINUS() != null) {
+                return "-".equals(ctx.PLUS_MINUS().getText()) ? -(double) result : (double) result;
+            } else {
+                return (double) result;
+            }
+        } else {
+            throw new TypeMismatchException(Double.class, result.getClass(), ctx.start.getLine(), ctx.start.getCharPositionInLine());
+        }
     }
-  }
 
-  @Override
-  public Double visitNumberLiteralExpression(NumberLiteralExpressionContext ctx) {
-    return Double.parseDouble(ctx.numberLiteral().NUMBER().getText());
-  }
+    @Override
+    public Double visitNumberBinaryExpression(NumberBinaryExpressionContext ctx) {
+        Double left = visit(ctx.left);
+        Double right = visit(ctx.right);
 
-  @Override
-  public Double visitNumberParenthesisExpression(NumberParenthesisExpressionContext ctx) {
-    return visit(ctx.numberExpression());
-  }
+        switch (ctx.operator.getText()) {
+            case "+":
+                return left + right;
+            case "-":
+                return left - right;
+            case "*":
+                return left * right;
+            case "/":
+                return left / right;
+            default:
+                throw new IllegalArgumentException("Unknown operator: " + ctx.operator.getText()); // Should never happen.
+        }
+    }
+
+    @Override
+    public Double visitNumberLiteralExpression(NumberLiteralExpressionContext ctx) {
+        return Double.parseDouble(ctx.numberLiteral().NUMBER().getText());
+    }
+
+    @Override
+    public Double visitNumberParenthesisExpression(NumberParenthesisExpressionContext ctx) {
+        return visit(ctx.numberExpression());
+    }
 }

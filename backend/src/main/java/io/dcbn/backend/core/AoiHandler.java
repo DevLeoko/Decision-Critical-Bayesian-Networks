@@ -11,14 +11,14 @@ public class AoiHandler {
     private final AoiCache aoiCache;
 
     @Autowired
-    public AoiHandler(AoiCache aoiCache){
+    public AoiHandler(AoiCache aoiCache) {
         this.aoiCache = aoiCache;
     }
 
     public void handleAoi(AreaOfInterest aoi) {
         try {
             aoiCache.insert(aoi.getName(), aoi);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Producer.sendErrorMessage(e.getMessage());
         }
     }

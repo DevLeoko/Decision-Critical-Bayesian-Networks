@@ -33,10 +33,10 @@ public class GraphServiceTest {
         repository = mock(DcbnUserRepository.class);
 
         when(repository.findByUsername("user1")).thenReturn(Optional.of(dcbnUser1));
-        when(dcbnUser1.getId()).thenReturn((long)0);
+        when(dcbnUser1.getId()).thenReturn((long) 0);
 
         when(repository.findByUsername("user2")).thenReturn(Optional.of(dcbnUser2));
-        when(dcbnUser2.getId()).thenReturn((long)1);
+        when(dcbnUser2.getId()).thenReturn((long) 1);
     }
 
     @BeforeEach
