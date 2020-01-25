@@ -6,15 +6,18 @@ import org.springframework.beans.factory.annotation.Value;
 public class GraphLock {
 
     @Value("${graph.lock.expire.time}")
-    private long timeToExpire;
+    private long timeToExpireInMillis;
 
     @Getter
     private long userId;
     private long expireTime;
 
     public GraphLock(long userId) {
-            this.userId = userId;
-            this.expireTime = System.currentTimeMillis() + timeToExpire;
+        this.timeToExpireInMillis = 1000;
+
+        this.userId = userId;
+        this.expireTime = System.currentTimeMillis() + timeToExpireInMillis;
+
     }
 
     public boolean isExpired() {
