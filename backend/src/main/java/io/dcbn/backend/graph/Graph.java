@@ -15,6 +15,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
+/**
+ * This class represents a Dynamic Bayesian Network (DBN)
+ */
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,19 +40,4 @@ public class Graph {
   @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
   @Valid
   private List<Node> nodes;
-
-  /**
-   * Returns the node with the given name
-   *
-   * @param name the name of the node to find
-   * @return the node with the given name
-   */
-  public Node getNodeByName(String name) {
-    for (Node node : nodes) {
-      if (node.getName().equals(name)) {
-        return node;
-      }
-    }
-    return null;
-  }
 }

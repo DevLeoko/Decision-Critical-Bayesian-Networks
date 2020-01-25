@@ -9,7 +9,9 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.util.Arrays;
 import lombok.Getter;
 
-
+/**
+ * This enum contains all state types (The possible states a node can have with the given {@link StateType} value.
+ */
 public enum StateType {
 
   BOOLEAN("true", "false");
@@ -29,7 +31,7 @@ public enum StateType {
         return i;
       }
     }
-    //TODO solve (maybe return -1 ant catch exception)
+    //TODO catch if -1 is returned (maybe return -1 ant catch exception)
     return -1;
   }
 

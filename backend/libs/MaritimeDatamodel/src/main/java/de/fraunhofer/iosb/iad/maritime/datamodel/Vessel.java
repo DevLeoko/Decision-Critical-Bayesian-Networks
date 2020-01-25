@@ -13,7 +13,6 @@ public class Vessel implements Cloneable {
 
 	// estimate time of arrival
 	private long eta;
-
 	private final String uuid;
 
 	private Long imo;
@@ -51,10 +50,9 @@ public class Vessel implements Cloneable {
 	}
 
 	@SneakyThrows
-	@Override
-	public Vessel clone() {
+	public static Vessel copy (Vessel toCopy) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		Vessel deepCopy = objectMapper.readValue(objectMapper.writeValueAsString(getClass()), Vessel.class);
+		Vessel deepCopy = objectMapper.readValue(objectMapper.writeValueAsString(toCopy), Vessel.class);
 		return deepCopy;
 	}
 }

@@ -20,6 +20,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+/**
+ * This class represents a node of a Dynamic Bayesian Network (DBN)
+ */
 @Data
 @Entity
 @NoArgsConstructor

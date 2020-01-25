@@ -14,7 +14,7 @@ import java.util.List;
 import lombok.Getter;
 
 /**
- * This class represents the adapter from Graph to DynamicBayesianNetwork
+ * This class represents the adapter from Graph to Dynamic Bayesian Network (DBN)
  */
 public class AmidstGraphAdapter {
 
