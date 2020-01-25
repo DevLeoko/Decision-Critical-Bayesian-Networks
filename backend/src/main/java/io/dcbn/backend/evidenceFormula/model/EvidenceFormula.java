@@ -27,4 +27,9 @@ public class EvidenceFormula {
   @FormulaConstraint
   private String formula;
 
+  public EvidenceFormula(String name, String formula) {
+    this.name = name;
+    this.formula = formula;
+  }
+  
 }

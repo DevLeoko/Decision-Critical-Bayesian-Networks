@@ -6,12 +6,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
+/**
+ * This class represents a Dynamic Bayesian Network (DBN)
+ */
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,24 +32,12 @@ public class Graph {
   @NotEmpty
   private String name;
 
+  @Min(1)
+  @Max(1000)
   private int timeSlices;
 
-  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
   @Getter
+  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
+  @Valid
   private List<Node> nodes;
-
-  /**
-   * Returns the node with the given name
-   *
-   * @param name the name of the node to find
-   * @return the node with the given name
-   */
-  public Node getNodeByName(String name) {
-    for (Node node : nodes) {
-      if (node.getName().equals(name)) {
-        return node;
-      }
-    }
-    return null;
-  }
 }

@@ -1,5 +1,6 @@
 package io.dcbn.backend.evidenceFormula.model;
 
+import com.google.common.base.Strings;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -8,7 +9,7 @@ public class EvidenceFormulaValidator implements ConstraintValidator<FormulaCons
   @Override
   public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
     // TODO: This is just an example implementation.
-    return s != null && s.contains("ship");
+    return !Strings.isNullOrEmpty(s);
   }
 
 }

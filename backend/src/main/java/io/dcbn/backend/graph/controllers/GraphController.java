@@ -1,5 +1,6 @@
 package io.dcbn.backend.graph.controllers;
 
+import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.repositories.GraphRepository;
 import java.util.Collections;
@@ -47,6 +48,12 @@ public class GraphController {
 
   @PostMapping("/graphs")
   public void createGraph(@Valid @RequestBody Graph graph) {
+    // throw exception if graph has cycles
+    AmidstGraphAdapter graphAdapter = new AmidstGraphAdapter(graph);
+    if(graphAdapter.getDbn().getDynamicDAG().containCycles()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+
     repository.save(graph);
   }
 
@@ -60,6 +67,12 @@ public class GraphController {
 
   @PutMapping("/graphs/{id}")
   public void updateGraphById(@PathVariable long id, @Valid @RequestBody Graph graph) {
+    // throw exception if graph has cycles
+    AmidstGraphAdapter graphAdapter = new AmidstGraphAdapter(graph);
+    if(graphAdapter.getDbn().getDynamicDAG().containCycles()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+
     Graph oldGraph = repository.findById(id)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     oldGraph.setNodes(graph.getNodes());

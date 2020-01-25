@@ -8,19 +8,20 @@ import eu.amidst.dynamic.models.DynamicBayesianNetwork;
 import eu.amidst.dynamic.models.DynamicDAG;
 import eu.amidst.dynamic.variables.DynamicVariables;
 import io.dcbn.backend.utils.Pair;
-import lombok.Getter;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import lombok.Getter;
 
 /**
- * This class represents the adapter from Graph to DynamicBayesianNetwork
+ * This class represents the adapter from Graph to Dynamic Bayesian Network (DBN)
  */
 public class AmidstGraphAdapter {
 
     @Getter
     private DynamicBayesianNetwork dbn;
+    @Getter
+    private Graph adaptedGraph;
 
     private List<Pair<Variable, Node>> variables;
 
@@ -31,6 +32,7 @@ public class AmidstGraphAdapter {
      * @param graph the input graph to adapt
      */
     public AmidstGraphAdapter(Graph graph) {
+        this.adaptedGraph = graph;
         DynamicVariables dynamicVariables = new DynamicVariables();
         variables = new ArrayList<>();
 
@@ -91,7 +93,7 @@ public class AmidstGraphAdapter {
                 variableMultinomial0.setProbabilities(probabilitiesT0[0]);
             } else if (parentsT0Empty && node.isValueNode()) {
                 Multinomial variableMultinomial0 = dbn.getConditionalDistributionTime0(variable);
-                variableMultinomial0.setProbabilities(((ValueNode) node).getValue());
+                variableMultinomial0.setProbabilities(((ValueNode) node).getValue()[0]);
             } else {
                 double[][] probabilitiesT0 = node.getTimeZeroDependency().getProbabilities();
                 Multinomial_MultinomialParents multinomialParents = dbn.getConditionalDistributionTime0(variable);
@@ -108,7 +110,7 @@ public class AmidstGraphAdapter {
                 variableMultinomialT.setProbabilities(probabilitiesT[0]);
             } else if (parentsTEmpty && node.isValueNode()) {
                 Multinomial variableMultinomialT = dbn.getConditionalDistributionTimeT(variable);
-                variableMultinomialT.setProbabilities(((ValueNode) node).getValue());
+                variableMultinomialT.setProbabilities(((ValueNode) node).getValue()[0]);
             } else {
                 double[][] probabilitiesT = node.getTimeTDependency().getProbabilities();
                 Multinomial_MultinomialParents multinomialParents = dbn.getConditionalDistributionTimeT(variable);

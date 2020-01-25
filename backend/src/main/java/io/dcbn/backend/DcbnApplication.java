@@ -4,6 +4,8 @@ import io.dcbn.backend.authentication.models.DcbnUser;
 import io.dcbn.backend.authentication.models.Role;
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
 import io.dcbn.backend.authentication.services.DcbnUserDetailsService;
+import io.dcbn.backend.evidenceFormula.services.DefaultFunctionProvider;
+import io.dcbn.backend.evidenceFormula.services.FunctionProvider;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.Node;
 import io.dcbn.backend.graph.NodeDependency;
@@ -64,14 +66,14 @@ public class DcbnApplication {
           new ArrayList<>(), new double[][]{{0.3, 0.7}});
       NodeDependency nodeATimeTDependency = new NodeDependency(0, new ArrayList<>(),
           new ArrayList<>(), new double[][]{{0.5, 0.5}});
-      Node a = new Node(0, "A", nodeATimeZeroDependency, nodeATimeTDependency, null, null,
+      Node a = new Node(0, "A", nodeATimeZeroDependency, nodeATimeTDependency, "#ffffff", null,
           StateType.BOOLEAN,
           ZERO_POSITION);
       NodeDependency nodeBTimeZeroDependency = new NodeDependency(0, new ArrayList<>(),
           new ArrayList<>(), new double[][]{{0.2, 0.8}});
       NodeDependency nodeBTimeTDependency = new NodeDependency(0, new ArrayList<>(),
           new ArrayList<>(), new double[][]{{0.5, 0.5}});
-      Node b = new Node(0, "B", nodeBTimeZeroDependency, nodeBTimeTDependency, null, null,
+      Node b = new Node(0, "B", nodeBTimeZeroDependency, nodeBTimeTDependency, "#ffffff", null,
           StateType.BOOLEAN,
           ZERO_POSITION);
 
@@ -79,7 +81,7 @@ public class DcbnApplication {
           new ArrayList<>(),
           new double[][]{{0.999, 0.001}, {0.6, 0.4}, {0.8, 0.2}, {0.2, 0.8}});
 
-      Node c = new Node(0, "C", nodeCTimeZeroDependency, null, null, null, StateType.BOOLEAN,
+      Node c = new Node(0, "C", nodeCTimeZeroDependency, null, "#ffffff", null, StateType.BOOLEAN,
           ZERO_POSITION);
       NodeDependency nodeCTimeTDependency = new NodeDependency(0, Arrays.asList(a, b),
           Collections.singletonList(c), new double[][]{{0.1, 0.9},
@@ -88,6 +90,11 @@ public class DcbnApplication {
       List<Node> nodeList = Arrays.asList(a, b, c);
       graphRepository.save(new Graph(0, "testGraph", 10, nodeList));
     };
+  }
+
+  @Bean
+  public FunctionProvider functionsBean() {
+    return new DefaultFunctionProvider();
   }
 
 }
