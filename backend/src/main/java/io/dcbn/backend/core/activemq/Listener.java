@@ -1,14 +1,14 @@
 package io.dcbn.backend.core.activemq;
 
-import io.dcbn.backend.datamodel.JsonMapper;
 import io.dcbn.backend.core.AoiHandler;
 import io.dcbn.backend.core.VesselHandler;
+import io.dcbn.backend.datamodel.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-import javax.jms.*;
+import javax.jms.JMSException;
 
 @Service
 public class Listener {
@@ -17,7 +17,7 @@ public class Listener {
     private final VesselHandler vesselHandler;
 
     @Autowired
-    public Listener(AoiHandler aoiHandler, VesselHandler vesselHandler){
+    public Listener(AoiHandler aoiHandler, VesselHandler vesselHandler) {
         this.aoiHandler = aoiHandler;
         this.vesselHandler = vesselHandler;
     }

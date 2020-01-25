@@ -32,13 +32,11 @@ public class GraphServiceTest {
     public static void beforeAll() {
         repository = mock(DcbnUserRepository.class);
 
-        when(repository.existsByUsernameOrEmail("user1", null)).thenReturn(true);
-        when(repository.findByUsernameOrEmail("user1", null)).thenReturn(Optional.of(dcbnUser1));
-        when(dcbnUser1.getId()).thenReturn((long)0);
+        when(repository.findByUsername("user1")).thenReturn(Optional.of(dcbnUser1));
+        when(dcbnUser1.getId()).thenReturn((long) 0);
 
-        when(repository.existsByUsernameOrEmail("user2", null)).thenReturn(true);
-        when(repository.findByUsernameOrEmail("user2", null)).thenReturn(Optional.of(dcbnUser2));
-        when(dcbnUser2.getId()).thenReturn((long)1);
+        when(repository.findByUsername("user2")).thenReturn(Optional.of(dcbnUser2));
+        when(dcbnUser2.getId()).thenReturn((long) 1);
     }
 
     @BeforeEach

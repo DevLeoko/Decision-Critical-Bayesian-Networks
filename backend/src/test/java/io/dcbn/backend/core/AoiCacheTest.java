@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import static org.mockito.Mockito.mock;
 
 public class AoiCacheTest {
@@ -28,8 +27,8 @@ public class AoiCacheTest {
     public void insertTest() {
         cache.insert("aoi1", aoiOne);
         cache.insert("aoi2", aoiTwo);
-        assertTrue(cache.getAoi("aoi1").equals(aoiOne));
-        assertTrue(cache.getAoi("aoi2").equals(aoiTwo));
+        assertEquals(cache.getAoi("aoi1"), aoiOne);
+        assertEquals(cache.getAoi("aoi2"), aoiTwo);
     }
 
     @Test

@@ -1,13 +1,11 @@
 package io.dcbn.backend.core;
 
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 public class VesselCache {
@@ -31,12 +29,12 @@ public class VesselCache {
         return vesselCache.get(uuid);
     }
 
-    public Set<String> getAllVesselUuids(){
+    public Set<String> getAllVesselUuids() {
         return vesselCache.keySet();
     }
 
     public void insert(Vessel vessel) throws IllegalArgumentException {
-        if(vessel == null) {
+        if (vessel == null) {
             throw new IllegalArgumentException("Vessel cannot be null!");
         }
 
@@ -47,7 +45,7 @@ public class VesselCache {
             vesselCache.put(uuid, new Vessel[timeSteps]);
             // Fill all time slices of the cache with the given ship
             for (int i = 0; i < vesselCache.get(uuid).length; i++) {
-                if(i == 0){
+                if (i == 0) {
                     vesselCache.get(uuid)[0] = vessel;
                 } else {
                     vesselCache.get(uuid)[i] = Vessel.copy(vessel);
@@ -79,10 +77,10 @@ public class VesselCache {
     public void refreshCache() {
         List<String> toDelete = new ArrayList<>();
         for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
-            for(int i = 0; i < entry.getValue().length; i++) {
+            for (int i = 0; i < entry.getValue().length; i++) {
                 if (!entry.getValue()[i].isFiller()) {
                     break;
-                } else if(i == entry.getValue().length - 1) {
+                } else if (i == entry.getValue().length - 1) {
                     toDelete.add(entry.getKey());
                 }
             }

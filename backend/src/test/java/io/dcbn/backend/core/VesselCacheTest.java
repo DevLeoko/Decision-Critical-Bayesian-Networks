@@ -19,27 +19,29 @@ public class VesselCacheTest {
     @BeforeEach
     public void setUp() {
         vesselCache = new VesselCache(timeSteps);
-        vessel = new Vessel(System.currentTimeMillis(), "Vessel1");
-        vesselTwo = new Vessel(System.currentTimeMillis(), "Vessel2");
+        vessel = new Vessel("Vessel1", System.currentTimeMillis());
+        vesselTwo = new Vessel("Vessel2", System.currentTimeMillis());
     }
 
-    @Test void getAllUuidsWithEmptyCacheTest() {
-        assert(vesselCache.getAllVesselUuids().size() == 0);
+    @Test
+    void getAllUuidsWithEmptyCacheTest() {
+        assert (vesselCache.getAllVesselUuids().size() == 0);
     }
 
-    @Test void getAllUuidsTest() {
+    @Test
+    void getAllUuidsTest() {
         vesselCache.insert(vessel);
         vesselCache.insert(vesselTwo);
         Set<String> uuids = vesselCache.getAllVesselUuids();
-        assert(uuids.contains(vessel.getUuid()));
-        assert(uuids.contains(vesselTwo.getUuid()));
-        assert(uuids.size() == 2);
+        assert (uuids.contains(vessel.getUuid()));
+        assert (uuids.contains(vesselTwo.getUuid()));
+        assert (uuids.size() == 2);
     }
 
     @Test
     public void insertOneVesselTest() {
         vesselCache.insert(vessel);
-        assert(vesselCache.getVesselsByUuid(vessel.getUuid())[0].getUuid().equals("Vessel1"));
+        assert (vesselCache.getVesselsByUuid(vessel.getUuid())[0].getUuid().equals("Vessel1"));
     }
 
     @Test
@@ -53,7 +55,7 @@ public class VesselCacheTest {
         vessel.setSpeed(0.5);
         vesselCache.insert(vessel);
 
-        assert(vesselCache.getVesselsByUuid(vessel.getUuid())[0].getSpeed() == 0.5);
+        assert (vesselCache.getVesselsByUuid(vessel.getUuid())[0].getSpeed() == 0.5);
     }
 
     @Test
@@ -65,11 +67,11 @@ public class VesselCacheTest {
         vesselCache.insert(vessel);
 
         for (int i = 0; i < vesselCache.getVesselsByUuid(vessel.getUuid()).length; i++) {
-            if(i == 0) {
-                assert(vesselCache.getVesselsByUuid(vessel.getUuid())[0].getSpeed() == 1.0);
+            if (i == 0) {
+                assert (vesselCache.getVesselsByUuid(vessel.getUuid())[0].getSpeed() == 1.0);
                 assertFalse(vesselCache.getVesselsByUuid(vessel.getUuid())[0].isFiller());
             } else {
-                assert(vesselCache.getVesselsByUuid(vessel.getUuid())[i].getSpeed() == 0.0);
+                assert (vesselCache.getVesselsByUuid(vessel.getUuid())[i].getSpeed() == 0.0);
                 assertTrue(vesselCache.getVesselsByUuid(vessel.getUuid())[i].isFiller());
             }
         }
@@ -78,7 +80,7 @@ public class VesselCacheTest {
     @Test
     public void numberOfTimeStepsTest() {
         vesselCache.insert(vessel);
-        assert(vesselCache.getVesselsByUuid(vessel.getUuid()).length == timeSteps);
+        assert (vesselCache.getVesselsByUuid(vessel.getUuid()).length == timeSteps);
     }
 
     @Test
@@ -113,15 +115,15 @@ public class VesselCacheTest {
         vesselCache.insert(vessel);
 
         for (int i = 0; i < vesselCache.getVesselsByUuid(vessel.getUuid()).length; i++) {
-            assert(vesselCache.getVesselsByUuid(vessel.getUuid())[i].getSpeed() == (double) i);
+            assert (vesselCache.getVesselsByUuid(vessel.getUuid())[i].getSpeed() == (double) i);
         }
 
         vesselCache.updateTimeSlices();
         vessel = Vessel.copy(vessel);
         vessel.setSpeed(10.0);
         vesselCache.insert(vessel);
-        assert(vesselCache.getVesselsByUuid(vessel.getUuid())[0].getSpeed() == 10.0);
-        assert(vesselCache.getVesselsByUuid(vessel.getUuid())[timeSteps - 1].getSpeed() == 3.0);
+        assert (vesselCache.getVesselsByUuid(vessel.getUuid())[0].getSpeed() == 10.0);
+        assert (vesselCache.getVesselsByUuid(vessel.getUuid())[timeSteps - 1].getSpeed() == 3.0);
     }
 
     @Test
@@ -142,9 +144,9 @@ public class VesselCacheTest {
         vessel.setSpeed(1.0);
         vesselCache.insert(vessel);
         vesselCache.updateTimeSlices();
-        assert(vesselCache.getVesselsByUuid(vessel.getUuid())[1].getSpeed() == 1.0);
+        assert (vesselCache.getVesselsByUuid(vessel.getUuid())[1].getSpeed() == 1.0);
         assertFalse(vesselCache.getVesselsByUuid(vessel.getUuid())[1].isFiller());
-        assert(vesselCache.getVesselsByUuid(vessel.getUuid())[0].getSpeed() == 1.0);
+        assert (vesselCache.getVesselsByUuid(vessel.getUuid())[0].getSpeed() == 1.0);
         assertTrue(vesselCache.getVesselsByUuid(vessel.getUuid())[0].isFiller());
     }
 
