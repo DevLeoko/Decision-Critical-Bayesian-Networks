@@ -1,3 +1,3 @@
 <template>
-  <h1>Test graph</h1>
+  <h1>Test graph {{ $route.params.id }}</h1>
 </template>

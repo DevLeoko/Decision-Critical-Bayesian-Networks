@@ -1,42 +1,122 @@
 <template>
   <!-- $route.params.id  -->
-  <v-layout row wrap>
-    <v-flex xs3>
-      <v-navigation-drawer permanent width="100%">
-        <v-text-field
-          v-model="search"
-          label="Search for graph"
-          solo
-          class="ma-3"
-          hide-details
-          clearable
-          clear-icon="clear"
-        ></v-text-field>
-        <v-treeview
-          :items="treeItems"
-          :search="search"
-          @update:active="arr => selectGraph(arr[0])"
-          activatable
-          open-on-click
-        >
-          <template v-slot:prepend="{ item, open }">
-            <v-icon v-if="item.children.length > 0">
-              {{ open ? "folder_open" : "folder" }}
-            </v-icon>
-            <v-icon v-else>device_hub</v-icon>
-          </template>
-          <template v-slot:append="{ item }">
-            <v-icon v-if="!item.children.length">
-              more_vert
-            </v-icon>
-          </template>
-        </v-treeview>
-      </v-navigation-drawer>
-    </v-flex>
-    <v-flex xs9>
+  <v-row style="height: 100%">
+    <v-slide-y-transition>
+      <v-btn
+        v-if="!menu"
+        fixed
+        bottom
+        icon
+        large
+        elevation="4"
+        class="ml-3"
+        @click="menu = true"
+        ><v-icon>chevron_right</v-icon>
+      </v-btn>
+    </v-slide-y-transition>
+
+    <v-navigation-drawer app fixed clipped width="20vw" v-model="menu">
+      <template v-slot:prepend>
+        <v-row align="center" no-gutters>
+          <v-col class="flex-grow-0 ml-3">
+            <v-btn icon elevation="4" large @click="menu = false">
+              <v-icon>chevron_left</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-text-field
+              v-model="search"
+              label="Search for graph"
+              solo
+              class="ma-3"
+              hide-details
+              clearable
+              clear-icon="clear"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-divider></v-divider>
+      </template>
+      <v-treeview
+        :items="treeItems"
+        :search="search"
+        @update:active="arr => selectGraph(arr[0])"
+        activatable
+        open-on-click
+      >
+        <template v-slot:prepend="{ item, open }">
+          <v-icon v-if="item.children.length > 0">
+            {{ open ? "folder_open" : "folder" }}
+          </v-icon>
+          <v-icon v-else>device_hub</v-icon>
+        </template>
+        <template v-slot:append="{ item }">
+          <v-menu offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn v-on.stop="on" @click.stop icon>
+                <v-icon v-if="!item.children.length">
+                  more_vert
+                </v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item @click="() => duplicateGraph(item.id)">
+                <v-list-item-title>
+                  <v-icon class="mr-2">file_copy</v-icon> Duplicate
+                </v-list-item-title>
+              </v-list-item>
+
+              <v-list-item @click="() => moveGraph(item.id)">
+                <v-list-item-title>
+                  <v-icon class="mr-2">text_fields</v-icon> Rename
+                </v-list-item-title>
+              </v-list-item>
+
+              <v-list-item @click="() => moveGraph(item.id)">
+                <v-list-item-title>
+                  <v-icon class="mr-2">double_arrow</v-icon> Move
+                </v-list-item-title>
+              </v-list-item>
+
+              <v-list-item @click="() => deleteGraph(item.id)">
+                <v-list-item-title>
+                  <v-icon class="mr-2">delete</v-icon> Delete
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </template>
+      </v-treeview>
+      <template v-slot:append>
+        <v-divider></v-divider>
+        <v-row justify="center">
+          <v-col class="flex-grow-0 my-4">
+            <v-btn
+              color="primary"
+              @click="graphs.push({ name: 'TestGraph' + i++, id: 10 + i })"
+            >
+              <v-icon>add</v-icon> Add new graph
+            </v-btn>
+          </v-col>
+        </v-row>
+      </template>
+    </v-navigation-drawer>
+    <v-col cols="12">
       <router-view></router-view>
-    </v-flex>
-  </v-layout>
+
+      <v-row
+        v-if="$route.params.id === undefined"
+        style="height: 100%"
+        align="center"
+      >
+        <v-col cols="6" offset="3">
+          <v-alert type="info" color="grey darken-1" :value="true">
+            Please select a graph or create a new one!
+          </v-alert>
+        </v-col>
+      </v-row>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
@@ -51,6 +131,8 @@ export default Vue.extend({
   data() {
     return {
       search: null,
+      menu: true,
+      i: 100,
       graphs: [
         { name: "TestGraph", id: 10 },
         { name: "testFolder/Graph1", id: 11 },
@@ -68,7 +150,7 @@ export default Vue.extend({
       let targetRoute = this.$route.name;
 
       if (grpahId) {
-        if (targetRoute == "GraphBase") targetRoute = "Graph";
+        if (targetRoute == "GraphBase") targetRoute = "Test Graph";
       } else {
         targetRoute = "GraphBase";
       }
