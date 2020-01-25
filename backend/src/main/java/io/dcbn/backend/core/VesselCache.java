@@ -21,32 +21,54 @@ public class VesselCache {
         vesselCache = new HashMap<>();
     }
 
-    public Vessel[] getVesselsByUuid(String uuid) throws IllegalArgumentException {
+    // for testing
+    public VesselCache(int timeSteps) {
+        this.timeSteps = timeSteps;
+        vesselCache = new HashMap<>();
+    }
+
+    public Vessel[] getVesselsByUuid(String uuid) {
         return vesselCache.get(uuid);
     }
 
-    public void insert(Vessel vessel){
+    public Set<String> getAllVesselUuids(){
+        return vesselCache.keySet();
+    }
+
+    public void insert(Vessel vessel) throws IllegalArgumentException {
+        if(vessel == null) {
+            throw new IllegalArgumentException("Vessel cannot be null!");
+        }
+
         String uuid = vessel.getUuid();
 
         // Insert vessel if its not currently in the cache map
         if (!vesselCache.containsKey(uuid)) {
             vesselCache.put(uuid, new Vessel[timeSteps]);
+            // Fill all time slices of the cache with the given ship
+            for (int i = 0; i < vesselCache.get(uuid).length; i++) {
+                if(i == 0){
+                    vesselCache.get(uuid)[0] = vessel;
+                } else {
+                    vesselCache.get(uuid)[i] = Vessel.copy(vessel);
+                    vesselCache.get(uuid)[i].setFiller(true);
+                }
+            }
+            return;
         }
 
         vesselCache.get(uuid)[0] = vessel;
     }
 
-    /*
-    Shift every Vessel instance of each vessel in the time-slice-array one to the right
-    and write null to the current time slice (position 0 in the array)
-     */
+    // Shift every Vessel instance of each vessel in the time-slice-array one to the right
+    // and write null to the current time slice (position 0 in the array)
     @Scheduled(fixedRateString = "${time.step.length}")
-    private void updateCache() {
+    public void updateTimeSlices() {
         for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
             for (int i = entry.getValue().length - 1; i > 0; i--) {
                 entry.getValue()[i] = entry.getValue()[i - 1];
             }
-            entry.getValue()[0] = entry.getValue()[1].clone();
+            entry.getValue()[0] = Vessel.copy(entry.getValue()[1]);
             entry.getValue()[0].setFiller(true);
         }
     }
@@ -54,7 +76,7 @@ public class VesselCache {
     // Checks if there are vessels in the cache which have not been updated
     // within the last time steps and removes them from the cache
     @Scheduled(fixedRateString = "${cache.refresh.time}")
-    private void refreshCache() {
+    public void refreshCache() {
         List<String> toDelete = new ArrayList<>();
         for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
             for(int i = 0; i < entry.getValue().length; i++) {
