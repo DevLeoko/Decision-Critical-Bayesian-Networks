@@ -16,5 +16,4 @@ public class Outcome {
 
 	private Set<Vessel> correlatedVessels;
 	private Set<AreaOfInterest> correlatedAOIs;
-
 }

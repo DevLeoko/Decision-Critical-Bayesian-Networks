@@ -6,9 +6,14 @@ import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.inference.Algorithm;
 import io.dcbn.backend.inference.InferenceManager;
 import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 @Service
 public class GraphService {

@@ -48,7 +48,8 @@ public class DcbnApplication {
   }
 
   @Bean
-  public CommandLineRunner commandLineRunner(DcbnUserRepository dcbnUserRepository, GraphRepository graphRepository) {
+  public CommandLineRunner commandLineRunner(DcbnUserRepository dcbnUserRepository,
+      GraphRepository graphRepository) {
     return args -> {
       dcbnUserRepository.save(
           new DcbnUser("admin", "admin@dcbn.io", passwordEncoder().encode("admin"), Role.ADMIN));
@@ -61,7 +62,6 @@ public class DcbnApplication {
 
       Position ZERO_POSITION = new Position(0.0, 0.0);
 
-
       Node smuggling = new Node(0, "smuggling", null, null, "#ffffff", null, StateType.BOOLEAN,
           ZERO_POSITION);
       Node nullSpeed = new Node(0, "nullSpeed", null, null, "#ffffff",
@@ -71,7 +71,8 @@ public class DcbnApplication {
       Node isInReportedArea = new Node(0, "isInReportedArea", null, null, "#ffffff",
           "inArea", StateType.BOOLEAN, ZERO_POSITION);
 
-      List<Node> smugglingParentsList = Arrays.asList(isInReportedArea, inTrajectoryArea, nullSpeed);
+      List<Node> smugglingParentsList = Arrays
+          .asList(isInReportedArea, inTrajectoryArea, nullSpeed);
       double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}, {0.4, 0.6}, {0.4, 0.6}, {0.2, 0.8},
           {0.2, 0.8}, {0.001, 0.999}, {0.001, 0.999}};
       NodeDependency smuggling0Dep = new NodeDependency(0, smugglingParentsList,
@@ -101,7 +102,8 @@ public class DcbnApplication {
           new double[][]{{0.8, 0.2}});
       isInReportedArea.setTimeZeroDependency(iIRA0Dep);
       isInReportedArea.setTimeTDependency(iIRATDep);
-      graphRepository.save(new Graph(0, "testGraph", 5, Arrays.asList(nullSpeed, inTrajectoryArea, isInReportedArea, smuggling)));
+      graphRepository.save(new Graph(0, "testGraph", 5,
+          Arrays.asList(nullSpeed, inTrajectoryArea, isInReportedArea, smuggling)));
     };
   }
 

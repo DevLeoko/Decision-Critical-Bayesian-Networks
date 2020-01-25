@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * This class represents the position of the node in the frontend graph-view.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

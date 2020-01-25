@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import io.dcbn.backend.evidenceFormula.model.EvidenceFormulaExistsConstraint;
 import javax.annotation.MatchesPattern;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -19,6 +20,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+/**
+ * This class represents a node of a Dynamic Bayesian Network (DBN)
+ */
 @Data
 @Entity
 @NoArgsConstructor
@@ -49,6 +54,7 @@ public class Node {
   @NotBlank
   private String color;
 
+  @EvidenceFormulaExistsConstraint
   private String evidenceFormulaName;
 
   @NotNull

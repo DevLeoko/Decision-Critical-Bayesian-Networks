@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * This extension of a node represents a node with a evidence (Input) of with calculated values (Output).
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 public class ValueNode extends Node {
@@ -34,6 +37,11 @@ public class ValueNode extends Node {
         this.value = value;
     }
 
+    /**
+     * Method to indicate whether the node holds values.
+     *
+     * @return true because has values.
+     */
     @Override
     public boolean isValueNode() {
         return true;

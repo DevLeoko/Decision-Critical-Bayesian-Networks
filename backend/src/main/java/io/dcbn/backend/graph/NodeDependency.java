@@ -15,6 +15,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * This class represents the dependencies of a node :Parents at same Time, at Time - 1 and the probabilities
+ * in the same order required by amidst.
+ */
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
