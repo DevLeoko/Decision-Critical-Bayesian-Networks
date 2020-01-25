@@ -1,77 +1,126 @@
 package io.dcbn.backend.graph.services;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Random;
+import io.dcbn.backend.authentication.models.DcbnUser;
+import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
+import io.dcbn.backend.graph.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class GraphServiceTest {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
-  GraphService service;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-  long user1 = new Random().nextLong();
-  long user2 = new Random().nextLong();
-  long user3 = new Random().nextLong();
-  long user4 = new Random().nextLong();
-  long user5 = new Random().nextLong();
-  long graph1 = new Random().nextLong();
-  long graph2 = new Random().nextLong();
-  long graph3 = new Random().nextLong();
-  long graph4 = new Random().nextLong();
-  long graph5 = new Random().nextLong();
+public class GraphServiceTest {
 
-  @BeforeEach
-  void setUp() {
-    service = new GraphService(null);
-  }
+    private GraphService service;
+    private static DcbnUserRepository repository;
 
-  @Test
-//Test simple lockGraph
-  void testLockGraph() {
-    service.lockGraph(graph1, user1);
-    service.lockGraph(graph2, user2);
-    service.lockGraph(graph3, user3);
-    service.lockGraph(graph4, user4);
-    service.lockGraph(graph5, user5);
-    //all five locks should be set
-    assertTrue(service.getLock().containsKey(graph1) & service.getLock().containsKey(graph2) &
-        service.getLock().containsKey(graph3) & service.getLock().containsKey(graph4) &
-        service.getLock().containsKey(graph5));
-  }
+    private static DcbnUser dcbnUser1 = mock(DcbnUser.class);
 
-  @Test
-//Test simple unlockGraph
-  void testUnlockGraph() {
-    service.lockGraph(graph1, user1);
-    service.lockGraph(graph2, user2);
-    service.lockGraph(graph3, user3);
-    service.lockGraph(graph4, user4);
-    service.lockGraph(graph5, user5);
+    private static DcbnUser dcbnUser2 = mock(DcbnUser.class);
 
-    service.unlockGraph(graph2, user2);
-    service.unlockGraph(graph4, user4);
-    //Graph 2 and Graph 4 should not be locked
-    assertTrue(service.getLock().containsKey(graph1) & !(service.getLock().containsKey(graph2)) &
-        service.getLock().containsKey(graph3) & !(service.getLock().containsKey(graph4)) &
-        service.getLock().containsKey(graph5));
-  }
+    private static final Position ZERO_POSITION = new Position(0, 0);
+    private static final int NUM_TIME_SLICES = 5;
 
-  @Test
-    //Same user trying to lock 2 Graphs
-  void testDoubleLock() {
-    service.lockGraph(graph1, user1);
-    service.lockGraph(graph2, user1);
-    //Only graph2 should be locked
-    assertTrue(!service.getLock().containsKey(graph1) & service.getLock().containsKey(graph2));
-  }
+    @BeforeAll
+    public static void beforeAll() {
+        repository = mock(DcbnUserRepository.class);
 
-  @Test
-  void testExpectedException() {
-    service.lockGraph(graph1, user1);
+        when(repository.existsByUsernameOrEmail("user1", null)).thenReturn(true);
+        when(repository.findByUsernameOrEmail("user1", null)).thenReturn(Optional.of(dcbnUser1));
+        when(dcbnUser1.getId()).thenReturn((long)0);
 
-    assertThrows(IllegalArgumentException.class, () -> service.lockGraph(graph1, user2));
+        when(repository.existsByUsernameOrEmail("user2", null)).thenReturn(true);
+        when(repository.findByUsernameOrEmail("user2", null)).thenReturn(Optional.of(dcbnUser2));
+        when(dcbnUser2.getId()).thenReturn((long)1);
+    }
 
-  }
+    @BeforeEach
+    public void setUp() {
+        service = new GraphService(repository, null);
+    }
+
+    @Test
+    public void graphAlreadyLockedTest() {
+        service.updateLock(1, "user1");
+        assertThrows(IllegalArgumentException.class, () -> service.updateLock(1, "user2"));
+    }
+
+    @Test
+    public void extendLock() {
+        service.updateLock(1, "user1");
+        assertThrows(IllegalArgumentException.class, () -> service.updateLock(1, "user2"));
+        service.updateLock(1, "user1");
+        assertThrows(IllegalArgumentException.class, () -> service.updateLock(1, "user2"));
+    }
+
+    @Test
+    public void hasCyclesTest() {
+        Node nodeOne = new Node(0, "nodeOne", null, null, "", null,
+                StateType.BOOLEAN, ZERO_POSITION);
+        Node nodeTwo = new Node(0, "nodeTwo", null, null, "", null,
+                StateType.BOOLEAN, ZERO_POSITION);
+
+        List<Node> nodeOneParentsList = new ArrayList<>();
+        nodeOneParentsList.add(nodeTwo);
+        double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}};
+        NodeDependency nodeOne0Dep = new NodeDependency(0, nodeOneParentsList,
+                new ArrayList<>(), probabilities);
+        NodeDependency nodeOneTDep = new NodeDependency(0, nodeOneParentsList, new ArrayList<>(),
+                probabilities);
+        nodeOne.setTimeZeroDependency(nodeOne0Dep);
+        nodeOne.setTimeTDependency(nodeOneTDep);
+
+        List<Node> nodeTwoParentsList = new ArrayList<>();
+        nodeTwoParentsList.add(nodeOne);
+        double[][] probabilitiesNodeTwo = {{0.8, 0.2}, {0.6, 0.4}};
+        NodeDependency nodeTwo0Dep = new NodeDependency(0, nodeTwoParentsList,
+                new ArrayList<>(), probabilitiesNodeTwo);
+        NodeDependency nodeTwoTDep = new NodeDependency(0, nodeTwoParentsList, new ArrayList<>(),
+                probabilitiesNodeTwo);
+        nodeTwo.setTimeZeroDependency(nodeTwo0Dep);
+        nodeTwo.setTimeTDependency(nodeTwoTDep);
+
+        Graph graph = new Graph(0, "testGraph", NUM_TIME_SLICES,
+                Arrays.asList(nodeOne, nodeTwo));
+
+        assertTrue(service.hasCycles(graph));
+    }
+
+    @Test
+    public void hasNoCyclesTest() {
+        Node nodeOne = new Node(0, "nodeOne", null, null, "", null,
+                StateType.BOOLEAN, ZERO_POSITION);
+        Node nodeTwo = new Node(0, "nodeTwo", null, null, "", null,
+                StateType.BOOLEAN, ZERO_POSITION);
+
+        List<Node> nodeOneParentsList = new ArrayList<>();
+        nodeOneParentsList.add(nodeTwo);
+        double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}};
+        NodeDependency nodeOne0Dep = new NodeDependency(0, nodeOneParentsList,
+                new ArrayList<>(), probabilities);
+        NodeDependency nodeOneTDep = new NodeDependency(0, nodeOneParentsList, new ArrayList<>(),
+                probabilities);
+        nodeOne.setTimeZeroDependency(nodeOne0Dep);
+        nodeOne.setTimeTDependency(nodeOneTDep);
+
+        double[][] probabilitiesNodeTwo = {{0.8, 0.2}, {0.6, 0.4}};
+        NodeDependency nodeTwo0Dep = new NodeDependency(0, new ArrayList<>(),
+                new ArrayList<>(), probabilitiesNodeTwo);
+        NodeDependency nodeTwoTDep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+                probabilitiesNodeTwo);
+        nodeTwo.setTimeZeroDependency(nodeTwo0Dep);
+        nodeTwo.setTimeTDependency(nodeTwoTDep);
+
+        Graph graph = new Graph(0, "testGraph", NUM_TIME_SLICES,
+                Arrays.asList(nodeOne, nodeTwo));
+
+        assertFalse(service.hasCycles(graph));
+    }
 }
