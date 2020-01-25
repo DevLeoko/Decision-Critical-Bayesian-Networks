@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
 public class GraphServiceTest {
 
     private GraphService service;
@@ -44,7 +43,7 @@ public class GraphServiceTest {
 
     @BeforeEach
     public void setUp() {
-        service = new GraphService(repository);
+        service = new GraphService(repository, null);
     }
 
     @Test

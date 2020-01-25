@@ -12,6 +12,7 @@ import io.dcbn.backend.core.AoiCache;
 import io.dcbn.backend.core.VesselCache;
 import io.dcbn.backend.datamodel.Outcome;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
+import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
 import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
@@ -24,11 +25,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Data
 @Service
 public class InferenceManager {
 
@@ -36,13 +35,16 @@ public class InferenceManager {
   private AoiCache aoiCache;
 
   private GraphRepository graphRepository;
+  private EvidenceFormulaRepository evidenceFormulaRepository;
   private EvidenceFormulaEvaluator evidenceFormulaEvaluator;
 
   @Autowired
   public InferenceManager(VesselCache vesselCache, GraphRepository graphRepository,
+      EvidenceFormulaRepository evidenceFormulaRepository,
       EvidenceFormulaEvaluator evidenceFormulaEvaluator) {
     this.vesselCache = vesselCache;
     this.graphRepository = graphRepository;
+    this.evidenceFormulaRepository = evidenceFormulaRepository;
     this.evidenceFormulaEvaluator = evidenceFormulaEvaluator;
   }
 
@@ -75,7 +77,7 @@ public class InferenceManager {
         adaptedGraph.getDbn());
     List<Node> nodes = adaptedGraph.getAdaptedGraph().getNodes();
     List<Node> nodesToEvaluate = nodes.stream()
-        .filter(var -> !var.isValueNode() && var.getEvidenceFormula() == null)
+        .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() == null)
         .collect(Collectors.toList());
     //Hiding the variables we want to evaluate during inference calculations
     nodesToEvaluate.stream()
@@ -87,8 +89,8 @@ public class InferenceManager {
 
     //Setting the results of the evidenceFormulas for each time-step
     List<Node> nodesToSetValues = nodes.stream()
-            .filter(var -> !var.isValueNode() && var.getEvidenceFormula() != null)
-            .collect(Collectors.toList());
+        .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() != null)
+        .collect(Collectors.toList());
 
     //Running inference
     InferenceAlgorithm inferenceAlgorithm = algorithm.getAlgorithm();
@@ -99,19 +101,18 @@ public class InferenceManager {
 
     //Creating the output graph
     List<Node> returnedNodes = new ArrayList<>();
-    nodes.forEach(var -> returnedNodes.add(new
-
-        ValueNode(var, new double[adaptedGraph.getAdaptedGraph().
-
-        getTimeSlices()][2])));
+    nodes.forEach(var -> returnedNodes
+        .add(new ValueNode(var, new double[adaptedGraph.getAdaptedGraph().getTimeSlices()][2])));
 
     int time = 0;
     for (DynamicDataInstance instance : dataPredict) {
       //Setting the results of the evidence formulas
-      for (Node node: nodesToSetValues) {
+      for (Node node : nodesToSetValues) {
         Variable variable = adaptedGraph.getVariableByName(node.getName());
+        EvidenceFormula formula = evidenceFormulaRepository
+            .findByName(node.getEvidenceFormulaName()).orElse(null);
         int state = node.getStateType()
-                .getIndexOfState(formulaResolver.apply(time, node.getEvidenceFormula()));
+            .getIndexOfState(formulaResolver.apply(time, formula));
         instance.setValue(variable, state);
       }
 
@@ -131,7 +132,8 @@ public class InferenceManager {
       }
       time++;
     }
-    return new Graph(adaptedGraph.getAdaptedGraph().getId(), adaptedGraph.getAdaptedGraph().getName()
-            , adaptedGraph.getAdaptedGraph().getTimeSlices(), returnedNodes);
+    return new Graph(adaptedGraph.getAdaptedGraph().getId(),
+        adaptedGraph.getAdaptedGraph().getName()
+        , adaptedGraph.getAdaptedGraph().getTimeSlices(), returnedNodes);
   }
 }

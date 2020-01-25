@@ -3,20 +3,23 @@ package io.dcbn.backend.graph.services;
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
 import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
+import io.dcbn.backend.inference.Algorithm;
+import io.dcbn.backend.inference.InferenceManager;
+import org.springframework.stereotype.Service;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class GraphService {
 
     private Map<Long, GraphLock> lock;
     private final DcbnUserRepository dcbnUserRepository;
+    private InferenceManager manager;
 
-    @Autowired
-    public GraphService(DcbnUserRepository dcbnUserRepository) {
+    public GraphService(DcbnUserRepository dcbnUserRepository, InferenceManager manager) {
         this.dcbnUserRepository = dcbnUserRepository;
+        this.manager = manager;
         this.lock = new HashMap<>();
     }
 
@@ -27,10 +30,8 @@ public class GraphService {
     }
 
     public void updateLock(long graphId, String userName) throws IllegalArgumentException {
-        if(!dcbnUserRepository.existsByUsernameOrEmail(userName, null)) {
-            throw new IllegalArgumentException("Username does not exist!");
-        }
-        long userId = dcbnUserRepository.findByUsernameOrEmail(userName, null).get().getId();
+        long userId = dcbnUserRepository.findByUsername(userName)
+                .orElseThrow(() -> new IllegalArgumentException("User does not exist!")).getId();
 
         if (!lock.containsKey(graphId)) {
             lock.put(graphId, new GraphLock(userId));
@@ -41,5 +42,11 @@ public class GraphService {
         } else {
             throw new IllegalArgumentException("Graph already locked by another user!");
         }
+    }
+
+    public Graph evaluateGraph(Graph graph) {
+        AmidstGraphAdapter adaptedGraph = new AmidstGraphAdapter(graph);
+        return manager
+                .calculateInference(adaptedGraph, (i, formula) -> "false", Algorithm.IMPORTANCE_SAMPLING);
     }
 }

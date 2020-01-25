@@ -1,6 +1,7 @@
 package io.dcbn.backend.graph;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -30,9 +31,11 @@ public class NodeDependency {
   private long id;
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+  @JsonIdentityReference(alwaysAsId = true)
   private List<Node> parents;
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+  @JsonIdentityReference(alwaysAsId = true)
   private List<Node> parentsTm1;
 
   @Convert(converter = ProbabilityConverter.class)
