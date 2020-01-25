@@ -7,11 +7,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +24,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 public class JwtGenerationFilter extends UsernamePasswordAuthenticationFilter {
+
+  @Value("${jwt.access.duration}")
+  private int tokenDurationInMinutes;
 
   private final AuthenticationManager authenticationManager;
   private final String secret;
@@ -55,11 +60,14 @@ public class JwtGenerationFilter extends UsernamePasswordAuthenticationFilter {
         .map(GrantedAuthority::getAuthority)
         .collect(Collectors.toList());
 
-    byte[] key = secret.getBytes();
+    Calendar now = Calendar.getInstance();
+    now.add(Calendar.MINUTE, tokenDurationInMinutes);
+
     String accessToken = Jwts.builder().setSubject(user.getUsername())
         .setHeaderParam("typ", "jwt")
-        .signWith(Keys.hmacShaKeyFor(key), SignatureAlgorithm.HS512)
+        .signWith(Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS512)
         .claim("rol", roles)
+        .setExpiration(now.getTime())
         .compact();
 
     response.setContentType("text/plain");

@@ -13,7 +13,6 @@ public class Vessel implements Cloneable {
 
 	// estimate time of arrival
 	private long eta;
-
 	private final String uuid;
 
 	private Long imo;
