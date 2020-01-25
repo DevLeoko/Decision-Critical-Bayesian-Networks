@@ -1,6 +1,8 @@
 package io.dcbn.backend.core;
 
 import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;

@@ -19,8 +19,8 @@ public class VesselCacheTest {
     @BeforeEach
     public void setUp() {
         vesselCache = new VesselCache(timeSteps);
-        vessel = new Vessel(System.currentTimeMillis(), "Vessel1");
-        vesselTwo = new Vessel(System.currentTimeMillis(), "Vessel2");
+        vessel = new Vessel("Vessel1", System.currentTimeMillis());
+        vesselTwo = new Vessel("Vessel2", System.currentTimeMillis());
     }
 
     @Test void getAllUuidsWithEmptyCacheTest() {
