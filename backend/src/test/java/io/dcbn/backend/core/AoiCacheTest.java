@@ -12,9 +12,9 @@ import static org.mockito.Mockito.mock;
 
 public class AoiCacheTest {
 
-    AoiCache cache;
-    AreaOfInterest aoiOne;
-    AreaOfInterest aoiTwo;
+    private AoiCache cache;
+    private AreaOfInterest aoiOne;
+    private AreaOfInterest aoiTwo;
 
     @BeforeEach
     public void setUp() {

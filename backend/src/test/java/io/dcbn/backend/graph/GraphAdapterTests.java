@@ -8,7 +8,6 @@ import eu.amidst.core.variables.Variable;
 import eu.amidst.dynamic.models.DynamicBayesianNetwork;
 import eu.amidst.dynamic.models.DynamicDAG;
 import eu.amidst.dynamic.variables.DynamicVariables;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This class is testing the AmidstGraphAdapter.
@@ -114,10 +115,7 @@ public class GraphAdapterTests {
      */
     @Test
     public void testDBNAdapter() {
-//        System.out.println(correctDBN.toString());
-//        System.out.println("---------------------------------------------------------------");
-//        System.out.println(generatedDBN.toString());
-        Assertions.assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
+        assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
     }
 
     /**
@@ -138,10 +136,7 @@ public class GraphAdapterTests {
         Multinomial multinomialAT = correctDBN.getConditionalDistributionTimeT(amidstGraphAdapter.getVariableByName(newA.getName()));
         multinomialAT.setProbabilities(newA.getValue()[0]);
 
-//        System.out.println(correctDBN.toString());
-//        System.out.println("---------------------------------------------------------------");
-//        System.out.println(generatedDBN.toString());
-        Assertions.assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
+        assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
     }
 
     /**
@@ -163,6 +158,6 @@ public class GraphAdapterTests {
         multinomialCT0.setProbabilities(newC.getValue()[0]);
         Multinomial multinomialCT = correctDBN.getConditionalDistributionTimeT(correctDBN.getDynamicVariables().getVariableByName("C"));
         multinomialCT.setProbabilities(newC.getValue()[0]);
-        Assertions.assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
+        assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
     }
 }
