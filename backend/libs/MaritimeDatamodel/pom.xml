@@ -24,6 +24,18 @@
 			<artifactId>json-io</artifactId>
 			<version>4.11.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.10</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.10.1</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 </project>

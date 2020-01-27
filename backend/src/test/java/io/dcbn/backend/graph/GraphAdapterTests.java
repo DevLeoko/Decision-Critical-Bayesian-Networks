@@ -8,7 +8,6 @@ import eu.amidst.core.variables.Variable;
 import eu.amidst.dynamic.models.DynamicBayesianNetwork;
 import eu.amidst.dynamic.models.DynamicDAG;
 import eu.amidst.dynamic.variables.DynamicVariables;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This class is testing the AmidstGraphAdapter.
@@ -114,10 +115,7 @@ public class GraphAdapterTests {
      */
     @Test
     public void testDBNAdapter() {
-//        System.out.println(correctDBN.toString());
-//        System.out.println("---------------------------------------------------------------");
-//        System.out.println(generatedDBN.toString());
-        Assertions.assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
+        assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
     }
 
     /**
@@ -125,7 +123,7 @@ public class GraphAdapterTests {
      */
     @Test
     public void testVirtualEvidence() {
-        ValueNode newA = new ValueNode("A", " ", StateType.BOOLEAN, ZERO_POSITION, new double[]{0.4, 0.6});
+        ValueNode newA = new ValueNode("A", " ", StateType.BOOLEAN, ZERO_POSITION, new double[][]{{0.4, 0.6}});
         List<Node> nodeList = new ArrayList<>();
         nodeList.add(newA);
         nodeList.add(b);
@@ -134,14 +132,11 @@ public class GraphAdapterTests {
         AmidstGraphAdapter amidstGraphAdapter = new AmidstGraphAdapter(testGraph);
         generatedDBN = amidstGraphAdapter.getDbn();
         Multinomial multinomialAT0 = correctDBN.getConditionalDistributionTime0(amidstGraphAdapter.getVariableByName(newA.getName()));
-        multinomialAT0.setProbabilities(newA.getValue());
+        multinomialAT0.setProbabilities(newA.getValue()[0]);
         Multinomial multinomialAT = correctDBN.getConditionalDistributionTimeT(amidstGraphAdapter.getVariableByName(newA.getName()));
-        multinomialAT.setProbabilities(newA.getValue());
+        multinomialAT.setProbabilities(newA.getValue()[0]);
 
-//        System.out.println(correctDBN.toString());
-//        System.out.println("---------------------------------------------------------------");
-//        System.out.println(generatedDBN.toString());
-        Assertions.assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
+        assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
     }
 
     /**
@@ -149,7 +144,7 @@ public class GraphAdapterTests {
      */
     @Test
     public void testRemovedChildInsertVirEvi() {
-        ValueNode newC = new ValueNode("C", "", StateType.BOOLEAN, ZERO_POSITION, new double[]{0.18, 0.82});
+        ValueNode newC = new ValueNode("C", "", StateType.BOOLEAN, ZERO_POSITION, new double[][]{{0.18, 0.82}});
         List<Node> nodeList = new ArrayList<>();
         nodeList.add(newC);
         testGraph = new Graph(0, "testGraph", 10, nodeList);
@@ -160,9 +155,9 @@ public class GraphAdapterTests {
         DynamicDAG dynamicDAG = new DynamicDAG(dynamicVariables);
         correctDBN = new DynamicBayesianNetwork(dynamicDAG);
         Multinomial multinomialCT0 = correctDBN.getConditionalDistributionTime0(correctDBN.getDynamicVariables().getVariableByName("C"));
-        multinomialCT0.setProbabilities(newC.getValue());
+        multinomialCT0.setProbabilities(newC.getValue()[0]);
         Multinomial multinomialCT = correctDBN.getConditionalDistributionTimeT(correctDBN.getDynamicVariables().getVariableByName("C"));
-        multinomialCT.setProbabilities(newC.getValue());
-        Assertions.assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
+        multinomialCT.setProbabilities(newC.getValue()[0]);
+        assertTrue(correctDBN.equalDBNs(generatedDBN, 0));
     }
 }

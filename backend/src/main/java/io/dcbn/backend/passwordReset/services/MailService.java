@@ -12,22 +12,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class MailService {
 
-  private final MailSender sender;
+    private final MailSender sender;
 
-  @Value("${reset.address}")
-  private String fromAddress;
+    @Value("${reset.address}")
+    private String fromAddress;
 
-  @Autowired
-  public MailService(MailSender sender) {
-    this.sender = sender;
-  }
+    @Autowired
+    public MailService(MailSender sender) {
+        this.sender = sender;
+    }
 
-  public void sendMail(DcbnUser user, MailType type) throws MailException {
-    SimpleMailMessage message = new SimpleMailMessage();
-    message.setFrom(fromAddress);
-    message.setTo(user.getEmail());
-    message.setText(type.generateMailBody(user));
+    public void sendMail(DcbnUser user, MailType type) throws MailException {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromAddress);
+        message.setTo(user.getEmail());
+        message.setText(type.generateMailBody(user));
 
-    sender.send(message);
-  }
+        sender.send(message);
+    }
 }
