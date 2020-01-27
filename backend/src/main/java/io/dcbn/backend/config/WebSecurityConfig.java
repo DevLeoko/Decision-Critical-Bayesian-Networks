@@ -2,6 +2,7 @@ package io.dcbn.backend.config;
 
 import io.dcbn.backend.authentication.filters.JwtAuthorizationFilter;
 import io.dcbn.backend.authentication.filters.JwtGenerationFilter;
+import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,10 +32,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private int tokenDurationInMinutes;
 
     private final UserDetailsService userDetailsService;
+    private final DcbnUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public WebSecurityConfig(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    public WebSecurityConfig(UserDetailsService userDetailsService, DcbnUserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -59,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new JwtGenerationFilter(authenticationManager(), secret, tokenDurationInMinutes))
+                .addFilter(new JwtGenerationFilter(authenticationManager(), userRepository, secret, tokenDurationInMinutes))
                 .addFilterAfter(new JwtAuthorizationFilter(secret),
                         UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
