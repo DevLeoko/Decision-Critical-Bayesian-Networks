@@ -93,6 +93,13 @@ public class GraphController {
         repository.save(oldGraph);
     }
 
+    @PostMapping("/graphs/{id}/name")
+    public void renameGraphById(@PathVariable long id, @RequestBody String name) {
+        Graph graph = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        graph.setName(name);
+        repository.save(graph);
+    }
+
     @PostMapping("/graphs/evaluate")
     public Graph evaluateGraphById(@Valid @RequestBody Graph graph) {
         return graphService.evaluateGraph(graph);
