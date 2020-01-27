@@ -63,7 +63,7 @@
     <v-dialog v-model="moveOpen" max-width="400">
       <v-card>
         <v-card-title>
-          <v-icon class="mr-2">text_fields</v-icon> Move to
+          <v-icon class="mr-2">folder</v-icon> Move to
         </v-card-title>
         <v-card-text class="pb-3" style="max-height: 700px; overflow: auto">
           <v-list shaped>
@@ -91,7 +91,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { TreeItem } from "./GraphFolderView.vue";
+import { TreeItem } from "./FolderView.vue";
 export default Vue.extend({
   props: ["folders"],
   data() {

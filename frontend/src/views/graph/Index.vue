@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import FolderView from "@/components/graph/GraphFolderView.vue";
+import FolderView from "@/components/graph/FolderView.vue";
 
 import Vue from "vue";
 export default Vue.extend({
