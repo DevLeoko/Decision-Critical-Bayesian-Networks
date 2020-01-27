@@ -13,7 +13,7 @@
         <v-btn color="primary" @click="dialogOpen = true">
           <v-icon class="mr-1">info</v-icon>Info</v-btn
         >
-        <info-dialog :open="dialogOpen" />
+        <info-dialog :open.sync="dialogOpen" />
       </v-flex>
     </v-layout>
     <v-layout row wrap pa-3>

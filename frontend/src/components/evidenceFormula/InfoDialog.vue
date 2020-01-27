@@ -24,5 +24,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-export default Vue.extend({ props: ["open"] });
+export default Vue.extend({
+  props: ["open"],
+  watch: {
+    open(value) {
+      this.$emit("update:open", value);
+    }
+  }
+});
 </script>
