@@ -51,34 +51,34 @@
           <v-icon v-else>device_hub</v-icon>
         </template>
         <template v-slot:append="{ item }">
-          <v-menu offset-y>
+          <v-menu offset-y v-if="!item.children.length">
             <template v-slot:activator="{ on }">
               <v-btn v-on.stop="on" @click.stop icon>
-                <v-icon v-if="!item.children.length">
+                <v-icon>
                   more_vert
                 </v-icon>
               </v-btn>
             </template>
             <v-list>
-              <v-list-item @click="() => duplicateGraph(item.id)">
+              <v-list-item @click="() => $refs.actions.duplicateGraph(item)">
                 <v-list-item-title>
                   <v-icon class="mr-2">file_copy</v-icon> Duplicate
                 </v-list-item-title>
               </v-list-item>
 
-              <v-list-item @click="() => moveGraph(item.id)">
+              <v-list-item @click="() => $refs.actions.renameGraph(item)">
                 <v-list-item-title>
                   <v-icon class="mr-2">text_fields</v-icon> Rename
                 </v-list-item-title>
               </v-list-item>
 
-              <v-list-item @click="() => moveGraph(item.id)">
+              <v-list-item @click="() => $refs.actions.moveGraph(item)">
                 <v-list-item-title>
                   <v-icon class="mr-2">double_arrow</v-icon> Move
                 </v-list-item-title>
               </v-list-item>
 
-              <v-list-item @click="() => deleteGraph(item.id)">
+              <v-list-item @click="() => $refs.actions.deleteGraph(item)">
                 <v-list-item-title>
                   <v-icon class="mr-2">delete</v-icon> Delete
                 </v-list-item-title>
@@ -101,23 +101,37 @@
         </v-row>
       </template>
     </v-navigation-drawer>
+    <folder-actions
+      ref="actions"
+      :folders="
+        graphs
+          .map(graph =>
+            graph.name.substring(0, graph.name.lastIndexOf('/') + 1)
+          )
+          .filter((graph, index, self) => self.indexOf(graph) == index)
+          .sort()
+      "
+      @rename="({ name, graph }) => (graph.name = name)"
+    ></folder-actions>
   </div>
 </template>
 
 <script lang="ts">
-interface TreeItem {
+export interface TreeItem {
   name: string;
   id: string | number;
-  active?: boolean;
+  fullPath?: string;
   children: TreeItem[];
 }
 
 import Vue from "vue";
+import FolderActions from "@/components/graph/FolderViewActions.vue";
 export default Vue.extend({
   props: {
-    graphs: Array as () => Array<{ name: String; id: number }>
+    graphs: Array as () => Array<{ name: string; id: number }>
   },
 
+  components: { FolderActions },
   data() {
     return {
       search: null,
@@ -128,10 +142,10 @@ export default Vue.extend({
 
   methods: {
     // graphId is actually an int ._.
-    selectGraph(grpahId: string) {
+    selectGraph(id: string) {
       let targetRoute = this.$route.name;
 
-      if (grpahId) {
+      if (id) {
         if (targetRoute == "GraphBase") targetRoute = "Test Graph";
       } else {
         targetRoute = "GraphBase";
@@ -139,7 +153,7 @@ export default Vue.extend({
 
       this.$router.push({
         name: targetRoute,
-        params: { id: grpahId }
+        params: { id }
       });
     }
   },
@@ -180,7 +194,7 @@ export default Vue.extend({
           name: graphName,
           id: entry.id,
           children: [],
-          active: entry.id == 13
+          fullPath: entry.name
         });
       });
 

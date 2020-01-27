@@ -2,7 +2,6 @@
   <!-- $route.params.id  -->
   <v-row style="height: 100%">
     <folder-view :graphs="graphs"></folder-view>
-    <v-col><router-view></router-view></v-col>
     <v-col
       v-if="$route.params.id === undefined"
       cols="6"
@@ -13,6 +12,7 @@
         Please select a graph or create a new one!
       </v-alert>
     </v-col>
+    <v-col v-else><router-view></router-view></v-col>
   </v-row>
 </template>
 
