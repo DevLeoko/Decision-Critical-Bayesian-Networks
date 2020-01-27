@@ -94,10 +94,12 @@ public class InferenceManager {
                                     BiFunction<Integer, EvidenceFormula, String> formulaResolver, Algorithm algorithm) {
         DynamicBayesianNetworkSampler dynamicSampler = new DynamicBayesianNetworkSampler(
                 adaptedGraph.getDbn());
+
         List<Node> nodes = adaptedGraph.getAdaptedGraph().getNodes();
         List<Node> nodesToEvaluate = nodes.stream()
                 .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() == null)
                 .collect(Collectors.toList());
+
         //Hiding the variables we want to evaluate during inference calculations
         nodesToEvaluate.stream()
                 .map(Node::getName)
@@ -106,9 +108,12 @@ public class InferenceManager {
         DataStream<DynamicDataInstance> dataPredict = dynamicSampler
                 .sampleToDataBase(1, adaptedGraph.getAdaptedGraph().getTimeSlices());
 
-        //Setting the results of the evidenceFormulas for each time-step
         List<Node> nodesToSetValues = nodes.stream()
                 .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() != null)
+                .collect(Collectors.toList());
+        List<Node> nodesToSetValuesFromValueNode = nodes.stream()
+                .filter(var -> var.isValueNode())
+                .filter(var -> ((ValueNode) var).checkValuesAreStates())
                 .collect(Collectors.toList());
 
         //Running inference
@@ -135,8 +140,13 @@ public class InferenceManager {
                 instance.setValue(variable, state);
             }
 
-            //The InferenceEngineForDBN must be reset at the beginning of each Sequence.
-            //We also set the evidence.
+            for(Node node : nodesToSetValuesFromValueNode) {
+                int state = ((ValueNode) node).getIndexOfState(time);
+                Variable variable = adaptedGraph.getVariableByName(node.getName());
+                instance.setValue(variable, state);
+            }
+
+            //We set the evidence.
             InferenceEngineForDBN.addDynamicEvidence(instance);
             //Then we run inference
             InferenceEngineForDBN.runInference();

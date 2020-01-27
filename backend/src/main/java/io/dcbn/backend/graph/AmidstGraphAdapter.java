@@ -51,7 +51,7 @@ public class AmidstGraphAdapter {
             Variable variable = entry.getKey();
             Node node = entry.getValue();
 
-            if (!node.isValueNode()) {
+            if (!node.isValueNode() || ((ValueNode) node).getValue().length > 1) {
                 //--------TIME 0-------------
                 ParentSet variableParentSet0 = dynamicDAG.getParentSetTime0(variable);
 
@@ -88,11 +88,11 @@ public class AmidstGraphAdapter {
             //-------Time 0--------
 
             boolean parentsT0Empty = dbn.getDynamicDAG().getParentSetTime0(variable).getParents().isEmpty();
-            if (parentsT0Empty && !node.isValueNode()) {
+            if ((parentsT0Empty && !node.isValueNode()) || (node.isValueNode() && ((ValueNode) node).getValue().length > 1)) {
                 double[][] probabilitiesT0 = node.getTimeZeroDependency().getProbabilities();
                 Multinomial variableMultinomial0 = dbn.getConditionalDistributionTime0(variable);
                 variableMultinomial0.setProbabilities(probabilitiesT0[0]);
-            } else if (parentsT0Empty && node.isValueNode()) {
+            } else if (parentsT0Empty && node.isValueNode() && ((ValueNode) node).getValue().length == 1) {
                 Multinomial variableMultinomial0 = dbn.getConditionalDistributionTime0(variable);
                 variableMultinomial0.setProbabilities(((ValueNode) node).getValue()[0]);
             } else {
@@ -105,11 +105,11 @@ public class AmidstGraphAdapter {
             //-------Time T--------
 
             boolean parentsTEmpty = dbn.getDynamicDAG().getParentSetTimeT(variable).getParents().isEmpty();
-            if (parentsTEmpty && !node.isValueNode()) {
+            if ((parentsTEmpty && !node.isValueNode()) || (node.isValueNode() && ((ValueNode) node).getValue().length > 1)) {
                 double[][] probabilitiesT = node.getTimeTDependency().getProbabilities();
                 Multinomial variableMultinomialT = dbn.getConditionalDistributionTimeT(variable);
                 variableMultinomialT.setProbabilities(probabilitiesT[0]);
-            } else if (parentsTEmpty && node.isValueNode()) {
+            } else if (parentsTEmpty && node.isValueNode() && ((ValueNode) node).getValue().length == 1) {
                 Multinomial variableMultinomialT = dbn.getConditionalDistributionTimeT(variable);
                 variableMultinomialT.setProbabilities(((ValueNode) node).getValue()[0]);
             } else {
