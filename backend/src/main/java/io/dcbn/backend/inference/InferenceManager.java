@@ -96,12 +96,19 @@ public class InferenceManager {
                 adaptedGraph.getDbn());
 
         List<Node> nodes = adaptedGraph.getAdaptedGraph().getNodes();
-        List<Node> nodesToEvaluate = nodes.stream()
+        List<Node> nodesWithFormula = nodes.stream()
                 .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() == null)
                 .collect(Collectors.toList());
+        List<Node> nodesWithVirEvi = nodes.stream()
+                .filter(var -> var.isValueNode() && ((ValueNode) var).getValue().length == 1).collect(Collectors.toList());
 
         //Hiding the variables we want to evaluate during inference calculations
-        nodesToEvaluate.stream()
+
+        nodesWithVirEvi.stream()
+                .map(Node::getName)
+                .map(adaptedGraph::getVariableByName)
+                .forEach(dynamicSampler::setHiddenVar);
+        nodesWithFormula.stream()
                 .map(Node::getName)
                 .map(adaptedGraph::getVariableByName)
                 .forEach(dynamicSampler::setHiddenVar);
