@@ -98,7 +98,7 @@ export default Vue.extend({
 
       this.axios
         .post("/login", {
-          email: this.email,
+          username: this.email,
           password: this.password
         })
         .then(res => {
