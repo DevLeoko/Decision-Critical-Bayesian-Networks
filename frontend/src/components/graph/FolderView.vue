@@ -60,7 +60,7 @@
               </v-btn>
             </template>
             <v-list>
-              <v-list-item @click="() => $refs.actions.duplicateGraph(item)">
+              <v-list-item @click="duplicateGraph(item.graph)">
                 <v-list-item-title>
                   <v-icon class="mr-2">file_copy</v-icon> Duplicate
                 </v-list-item-title>
@@ -111,16 +111,22 @@
           .filter((graph, index, self) => self.indexOf(graph) == index)
           .sort()
       "
-      @rename="({ name, graph }) => (graph.name = name)"
+      @rename="renameGraph"
+      @delete="deleteGraph"
     ></folder-actions>
   </div>
 </template>
 
 <script lang="ts">
+interface DenseGraph {
+  name: string;
+  id: number;
+}
+
 export interface TreeItem {
   name: string;
   id: string | number;
-  fullPath?: string;
+  graph?: DenseGraph;
   children: TreeItem[];
 }
 
@@ -128,7 +134,7 @@ import Vue from "vue";
 import FolderActions from "@/components/graph/FolderViewActions.vue";
 export default Vue.extend({
   props: {
-    graphs: Array as () => Array<{ name: string; id: number }>
+    graphs: Array as () => Array<DenseGraph>
   },
 
   components: { FolderActions },
@@ -141,6 +147,27 @@ export default Vue.extend({
   },
 
   methods: {
+    duplicateGraph(graph: DenseGraph) {
+      let copy = JSON.parse(JSON.stringify(graph));
+
+      copy.name += "_COPY";
+      copy.id *= 21 + this.graphs.length;
+
+      this.graphs.push(copy);
+      // TDOD send /create request
+    },
+
+    renameGraph({ graph, name }: { graph: DenseGraph; name: string }) {
+      graph.name = name;
+      // TDOD send /rename request
+    },
+
+    deleteGraph({ graph }: { graph: DenseGraph }) {
+      this.graphs.splice(this.graphs.indexOf(graph), 1);
+
+      // TDOD send /delete request
+    },
+
     // graphId is actually an int ._.
     selectGraph(id: string) {
       let targetRoute = this.$route.name;
@@ -166,37 +193,49 @@ export default Vue.extend({
         children: []
       };
 
-      this.graphs.forEach(entry => {
-        const splitName = entry.name.split("/");
-        let currentFolder = result.children;
+      this.graphs
+        .slice(0)
+        .sort((a, b) => {
+          const nameA = a.name.split("/");
+          const nameB = b.name.split("/");
 
-        // resolve folders step by step
-        for (let i = 0; i < splitName.length - 1; i++) {
-          const element = splitName[i];
+          const diff = nameA.length - nameB.length;
 
-          // check whether the next subfolder alrady exists
-          const targetFolder: TreeItem = currentFolder.find(
-            subFolder => subFolder.name == element
-          ) || { name: element, id: -1, children: [] };
+          if (diff != 0) return diff;
 
-          // if not, add it to the current folder
-          if (targetFolder.id == -1) {
-            currentFolder.push(targetFolder);
-            targetFolder.id = `${entry.id} - ${element}`;
+          return nameA[nameA.length - 1].localeCompare(nameB[nameA.length - 1]);
+        })
+        .forEach(entry => {
+          const splitName = entry.name.split("/");
+          let currentFolder = result.children;
+
+          // resolve folders step by step
+          for (let i = 0; i < splitName.length - 1; i++) {
+            const element = splitName[i];
+
+            // check whether the next subfolder alrady exists
+            const targetFolder: TreeItem = currentFolder.find(
+              subFolder => subFolder.name == element
+            ) || { name: element, id: -1, children: [] };
+
+            // if not, add it to the current folder
+            if (targetFolder.id == -1) {
+              currentFolder.push(targetFolder);
+              targetFolder.id = `${entry.id} - ${element}`;
+            }
+
+            currentFolder = targetFolder.children;
           }
 
-          currentFolder = targetFolder.children;
-        }
-
-        const graphName = splitName[splitName.length - 1];
-        // add actual graph to the "lowest" subfolder
-        currentFolder.push({
-          name: graphName,
-          id: entry.id,
-          children: [],
-          fullPath: entry.name
+          const graphName = splitName[splitName.length - 1];
+          // add actual graph to the "lowest" subfolder
+          currentFolder.push({
+            name: graphName,
+            id: entry.id,
+            children: [],
+            graph: entry
+          });
         });
-      });
 
       return result.children;
     }

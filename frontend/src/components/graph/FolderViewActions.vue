@@ -17,7 +17,14 @@
             Cancel
           </v-btn>
 
-          <v-btn color="red" outlined @click="$emit('delete', currentGraph)">
+          <v-btn
+            color="red"
+            outlined
+            @click="
+              deleteOpen = false;
+              $emit('delete', currentGraph);
+            "
+          >
             Delete
           </v-btn>
         </v-card-actions>
@@ -44,14 +51,15 @@
             color="primary"
             outlined
             @click="
+              renameOpen = false;
               $emit('rename', {
                 name:
-                  currentGraph.fullPath.substring(
+                  currentGraph.graph.name.substring(
                     0,
-                    currentGraph.fullPath.lastIndexOf('/') + 1
+                    currentGraph.graph.name.lastIndexOf('/') + 1
                   ) + newName,
-                graph: currentGraph
-              })
+                graph: currentGraph.graph
+              });
             "
           >
             Rename
@@ -71,16 +79,46 @@
               v-for="folder in folders"
               class="grey lighten-4 mb-2"
               @click="
+                moveOpen = false;
                 $emit('rename', {
                   name: folder + currentGraph.name,
-                  graph: currentGraph
-                })
+                  graph: currentGraph.graph
+                });
               "
               :key="folder"
             >
               <v-list-item-title class="grey--text text--darken-1">
                 {{ folder || "/" }}
               </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item class="grey lighten-4 mb-2 pr-5">
+              <v-btn
+                @click="
+                  moveOpen = false;
+                  $emit('rename', {
+                    name:
+                      newFolder +
+                      (newFolder.endsWith('/') ? '' : '/') +
+                      currentGraph.name,
+                    graph: currentGraph.graph
+                  });
+                "
+                :disabled="!newFolder"
+                color="primary"
+                outlined
+                icon
+                small
+                class="mr-2"
+              >
+                <v-icon small>create_new_folder</v-icon>
+              </v-btn>
+              <v-text-field
+                hide-details
+                v-model="newFolder"
+                placeholder="New folder"
+                dense
+              ></v-text-field>
             </v-list-item>
           </v-list>
         </v-card-text>
@@ -101,6 +139,7 @@ export default Vue.extend({
       renameOpen: false,
       duplicateOpen: false,
       newName: "",
+      newFolder: "",
       currentGraph: { name: "", id: -1, children: [] } as TreeItem
     };
   },
@@ -129,6 +168,7 @@ export default Vue.extend({
     moveGraph(graph: TreeItem) {
       this.closeAll();
       this.currentGraph = graph;
+      this.newFolder = "";
       this.moveOpen = true;
     }
   }
