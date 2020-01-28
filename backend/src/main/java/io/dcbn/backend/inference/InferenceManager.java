@@ -102,6 +102,11 @@ public class InferenceManager {
         List<Node> nodesWithVirEvi = nodes.stream()
                 .filter(var -> var.isValueNode() && ((ValueNode) var).getValue().length == 1).collect(Collectors.toList());
 
+        //finding all the temporary child nodes fot the
+        List<Variable> tempChildVariables = adaptedGraph.getDbn().getDynamicVariables().getListOfDynamicVariables().stream()
+                .filter(var -> var.getName().substring(0, 9).equals("tempChild"))
+                .collect(Collectors.toList());
+
         //Hiding the variables we want to evaluate during inference calculations
 
         nodesWithVirEvi.stream()
@@ -151,6 +156,11 @@ public class InferenceManager {
                 int state = ((ValueNode) node).getIndexOfState(time);
                 Variable variable = adaptedGraph.getVariableByName(node.getName());
                 instance.setValue(variable, state);
+            }
+
+            //Setting state 0 for every
+            for (Variable variable : tempChildVariables) {
+                instance.setValue(variable, 0);
             }
 
             //We set the evidence.

@@ -1,23 +1,31 @@
 package io.dcbn.backend.graph;
 
+import eu.amidst.core.datastream.DataStream;
 import eu.amidst.core.distribution.Multinomial;
 import eu.amidst.core.distribution.Multinomial_MultinomialParents;
+import eu.amidst.core.inference.InferenceAlgorithm;
 import eu.amidst.core.models.ParentSet;
 import eu.amidst.core.variables.Variable;
+import eu.amidst.dynamic.datastream.DynamicDataInstance;
+import eu.amidst.dynamic.inference.FactoredFrontierForDBN;
+import eu.amidst.dynamic.inference.InferenceEngineForDBN;
 import eu.amidst.dynamic.models.DynamicBayesianNetwork;
 import eu.amidst.dynamic.models.DynamicDAG;
+import eu.amidst.dynamic.utils.DynamicBayesianNetworkSampler;
 import eu.amidst.dynamic.variables.DynamicVariables;
+import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
+import io.dcbn.backend.inference.Algorithm;
 import io.dcbn.backend.utils.Pair;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class represents the adapter from Graph to Dynamic Bayesian Network (DBN)
  */
 public class AmidstGraphAdapter {
+
+    private final String TEMP_CHILD = "tempChild";
 
     @Getter
     private DynamicBayesianNetwork dbn;
@@ -25,6 +33,9 @@ public class AmidstGraphAdapter {
     private Graph adaptedGraph;
 
     private List<Pair<Variable, Node>> variables;
+
+    @Getter
+    private List<Variable> tempChildVariables;
 
     /**
      * The constructor takes as input a {@link Graph} and adapt it to an amidst {@link DynamicBayesianNetwork}
@@ -37,12 +48,17 @@ public class AmidstGraphAdapter {
         DynamicVariables dynamicVariables = new DynamicVariables();
         variables = new ArrayList<>();
 
-        // Creating all the variables
+        //---------------------------------Creating all the variables------------------------------
         for (Node node : graph.getNodes()) {
             List<String> states = Arrays.asList(node.getStateType().getStates());
             Variable variable = dynamicVariables.newMultinomialDynamicVariable(node.getName(), states);
             variables.add(new Pair<>(variable, node));
+            if (node.isValueNode() && ((ValueNode) node).getValue().length == 1) {
+             dynamicVariables.newMultinomialDynamicVariable(TEMP_CHILD + node.getName(), states);
+            }
         }
+
+        tempChildVariables = new ArrayList<>();
 
         DynamicDAG dynamicDAG = new DynamicDAG(dynamicVariables);
 
@@ -51,14 +67,12 @@ public class AmidstGraphAdapter {
             Variable variable = entry.getKey();
             Node node = entry.getValue();
 
-            if (!node.isValueNode() || ((ValueNode) node).getValue().length > 1) {
                 //--------TIME 0-------------
                 ParentSet variableParentSet0 = dynamicDAG.getParentSetTime0(variable);
-
-                node.getTimeZeroDependency().getParents().stream()
-                        .map(Node::getName)
-                        .map(this::getVariableByName)
-                        .forEach(variableParentSet0::addParent);
+                    node.getTimeZeroDependency().getParents().stream()
+                            .map(Node::getName)
+                            .map(this::getVariableByName)
+                            .forEach(variableParentSet0::addParent);
 
                 //--------TIME T-------------
                 ParentSet variableParentSetT = dynamicDAG.getParentSetTimeT(variable);
@@ -67,15 +81,19 @@ public class AmidstGraphAdapter {
                         .map(Node::getName)
                         .map(this::getVariableByName)
                         .forEach(variableParentSetT::addParent);
-
-
-                //Time T-1
+                //--------Time T-1------------
                 node.getTimeTDependency().getParentsTm1().stream()
                         .map(Node::getName)
                         .map(this::getVariableByName)
                         .map(Variable::getInterfaceVariable)
                         .forEach(variableParentSetT::addParent);
-            }
+                // case it is has a virtual Evidence
+                if (node.isValueNode() && ((ValueNode) node).getValue().length == 1) {
+                    Variable tempChild  = dynamicVariables.getVariableByName(TEMP_CHILD + node.getName());
+                    dynamicDAG.getParentSetTime0(tempChild).addParent(variable);
+                    dynamicDAG.getParentSetTimeT(tempChild).addParent(variable);
+                    tempChildVariables.add(tempChild);
+                }
         }
 
         dbn = new DynamicBayesianNetwork(dynamicDAG);
@@ -88,14 +106,13 @@ public class AmidstGraphAdapter {
             //-------Time 0--------
 
             boolean parentsT0Empty = dbn.getDynamicDAG().getParentSetTime0(variable).getParents().isEmpty();
-            if ((parentsT0Empty && !node.isValueNode()) || (node.isValueNode() && ((ValueNode) node).getValue().length > 1)) {
+            if (parentsT0Empty) {
+                // case no parents
                 double[][] probabilitiesT0 = node.getTimeZeroDependency().getProbabilities();
                 Multinomial variableMultinomial0 = dbn.getConditionalDistributionTime0(variable);
                 variableMultinomial0.setProbabilities(probabilitiesT0[0]);
-            } else if (parentsT0Empty && node.isValueNode() && ((ValueNode) node).getValue().length == 1) {
-                Multinomial variableMultinomial0 = dbn.getConditionalDistributionTime0(variable);
-                variableMultinomial0.setProbabilities(((ValueNode) node).getValue()[0]);
             } else {
+                //case has parents
                 double[][] probabilitiesT0 = node.getTimeZeroDependency().getProbabilities();
                 Multinomial_MultinomialParents multinomialParents = dbn.getConditionalDistributionTime0(variable);
                 for (int i = 0; i < probabilitiesT0.length; i++) {
@@ -105,20 +122,29 @@ public class AmidstGraphAdapter {
             //-------Time T--------
 
             boolean parentsTEmpty = dbn.getDynamicDAG().getParentSetTimeT(variable).getParents().isEmpty();
-            if ((parentsTEmpty && !node.isValueNode()) || (node.isValueNode() && ((ValueNode) node).getValue().length > 1)) {
+            if (parentsTEmpty) {
+                // case no parents
                 double[][] probabilitiesT = node.getTimeTDependency().getProbabilities();
                 Multinomial variableMultinomialT = dbn.getConditionalDistributionTimeT(variable);
                 variableMultinomialT.setProbabilities(probabilitiesT[0]);
-            } else if (parentsTEmpty && node.isValueNode() && ((ValueNode) node).getValue().length == 1) {
-                Multinomial variableMultinomialT = dbn.getConditionalDistributionTimeT(variable);
-                variableMultinomialT.setProbabilities(((ValueNode) node).getValue()[0]);
             } else {
+                //case has parents
                 double[][] probabilitiesT = node.getTimeTDependency().getProbabilities();
                 Multinomial_MultinomialParents multinomialParents = dbn.getConditionalDistributionTimeT(variable);
                 for (int i = 0; i < probabilitiesT.length; i++) {
                     multinomialParents.getMultinomial(i).setProbabilities(probabilitiesT[i]);
                 }
             }
+        }
+
+        for(Variable variable : tempChildVariables) {
+            ValueNode node = (ValueNode) graph.findNodeByName(variable.getName().replace(TEMP_CHILD, ""));
+            Multinomial_MultinomialParents multinomialParentsT0 = dbn.getConditionalDistributionTime0(variable);
+            Multinomial_MultinomialParents multinomialParentsTT = dbn.getConditionalDistributionTimeT(variable);
+            multinomialParentsT0.getMultinomial(0).setProbabilities(new double[] {node.getValue()[0][0], node.getValue()[0][1]});
+            multinomialParentsT0.getMultinomial(1).setProbabilities(new double[] {node.getValue()[0][1], node.getValue()[0][0]});
+            multinomialParentsTT.getMultinomial(0).setProbabilities(new double[] {node.getValue()[0][0], node.getValue()[0][1]});
+            multinomialParentsTT.getMultinomial(1).setProbabilities(new double[] {node.getValue()[0][1], node.getValue()[0][0]});
         }
 
 
@@ -136,5 +162,4 @@ public class AmidstGraphAdapter {
                 .filter(var -> var.getName().equals(name))
                 .findAny().orElse(null);
     }
-
 }
