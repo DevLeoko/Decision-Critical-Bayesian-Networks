@@ -7,44 +7,66 @@
         </v-card-title>
 
         <v-card-text>
+          <v-snackbar color="error" timeout="3000" v-model="hasError">
+            {{ this.error }}
+            <v-btn icon @click="resetError()">
+              <v-icon>clear</v-icon>
+            </v-btn>
+          </v-snackbar>
+
           <v-container>
-            <v-row>
-              <v-col>
-                <v-text-field
-                  v-model="editedUser.username"
-                  label="Username"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field
-                  v-model="editedUser.email"
-                  label="Email"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-select
-                  :items="roles"
-                  v-model="editedUser.role"
-                  label="Role"
-                />
-              </v-col>
-            </v-row>
+            <v-form
+              ref="userForm"
+              v-model="valid"
+              @submit="saveUser(editedUser)"
+            >
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    v-model="editedUser.username"
+                    label="Username"
+                    :rules="nameValidation"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    v-model="editedUser.email"
+                    label="Email"
+                    :rules="mailValidation"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-select
+                    :items="roles"
+                    v-model="editedUser.role"
+                    label="Role"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-spacer />
+                <v-btn color="error" text @click="stopEditing()">
+                  Cancel
+                </v-btn>
+                <v-btn
+                  :disabled="!valid"
+                  color="primary"
+                  type="submit"
+                  class="ml-2"
+                >
+                  Save
+                </v-btn>
+              </v-row>
+            </v-form>
           </v-container>
         </v-card-text>
-
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="error" text @click="stopEditing()">
-            Cancel
-          </v-btn>
-          <v-btn color="primary" text @click="saveUser(editedUser)">Save</v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-row>
       <v-col>
         <v-text-field
@@ -102,6 +124,7 @@
 <script lang="ts">
 import Vue from "vue";
 import axios from "axios";
+import { mailValidation, nameValidation } from "@/utils/validation.ts";
 
 interface User {
   id: number;
@@ -113,11 +136,16 @@ interface User {
 export default Vue.extend({
   data() {
     return {
+      mailValidation,
+      nameValidation,
       users: [] as User[],
       search: "",
       editedUser: {} as User,
       editing: false,
-      roles: ["MODERATOR", "ADMIN"] as String[]
+      roles: ["MODERATOR", "ADMIN"] as String[],
+      valid: false,
+      hasError: false,
+      error: "" as String
     };
   },
 
@@ -153,6 +181,18 @@ export default Vue.extend({
     stopEditing() {
       this.editing = false;
       this.editedUser = this.defaultUser();
+      this.resetError();
+      (this.$refs.userForm as any).reset();
+    },
+
+    loginError(error: String) {
+      this.hasError = true;
+      this.error = "Failed to create user!";
+    },
+
+    resetError() {
+      this.hasError = false;
+      this.error = "";
     },
 
     saveUser(user: User) {
@@ -163,7 +203,7 @@ export default Vue.extend({
             this.updateUserList();
             this.stopEditing();
           })
-          .catch(err => console.log(err.response));
+          .catch(err => this.loginError(err.response.message));
       } else {
         this.axios
           .put(`/users/${user.id}`, user)
@@ -171,7 +211,7 @@ export default Vue.extend({
             this.updateUserList();
             this.stopEditing();
           })
-          .catch(err => console.log(err.response));
+          .catch(err => this.loginError(err.response.message));
       }
     },
 
