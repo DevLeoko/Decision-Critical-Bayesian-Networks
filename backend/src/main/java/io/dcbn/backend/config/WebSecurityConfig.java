@@ -2,6 +2,7 @@ package io.dcbn.backend.config;
 
 import io.dcbn.backend.authentication.filters.JwtAuthorizationFilter;
 import io.dcbn.backend.authentication.filters.JwtGenerationFilter;
+import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -29,11 +32,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private int tokenDurationInMinutes;
 
     private final UserDetailsService userDetailsService;
+    private final DcbnUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public WebSecurityConfig(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    public WebSecurityConfig(UserDetailsService userDetailsService, DcbnUserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS").allowedOrigins("http://localhost:8080");
+            }
+        };
     }
 
     @Override
@@ -47,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new JwtGenerationFilter(authenticationManager(), secret, tokenDurationInMinutes))
+                .addFilter(new JwtGenerationFilter(authenticationManager(), userRepository, secret, tokenDurationInMinutes))
                 .addFilterAfter(new JwtAuthorizationFilter(secret),
                         UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
