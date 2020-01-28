@@ -25,6 +25,9 @@ import java.util.Objects;
 @RestController
 public class EvidenceFormulaController {
 
+    private static final String NOT_FOUND = "No evidence formula found with this name!";
+    private static final String ALREADY_EXISTS = "Evidence formula with this name exists already!";
+
     private final EvidenceFormulaRepository repository;
     private final EvidenceFormulaEvaluator evaluator;
 
@@ -54,7 +57,7 @@ public class EvidenceFormulaController {
     public void createEvidenceFormula(
             @Valid @RequestBody EvidenceFormula evidenceFormula) {
         if (repository.existsByName(evidenceFormula.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ALREADY_EXISTS);
         }
         repository.save(evidenceFormula);
     }
@@ -63,7 +66,7 @@ public class EvidenceFormulaController {
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteEvidenceFormulaByName(@PathVariable String name) {
         if (!repository.existsByName(name)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND);
         }
         repository.deleteByName(name);
     }
@@ -73,11 +76,11 @@ public class EvidenceFormulaController {
     public void updateEvidenceFormulaByName(@PathVariable String name,
                                             @Valid @RequestBody EvidenceFormula evidenceFormula) {
         EvidenceFormula oldEvidenceFormula = repository.findByName(name)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND));
 
         if (!name.equals(evidenceFormula.getName())) {
             if (repository.existsByName(evidenceFormula.getName())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ALREADY_EXISTS);
             }
         }
 
@@ -90,7 +93,7 @@ public class EvidenceFormulaController {
     public boolean evaluateEvidenceFormulaByName(@PathVariable String name,
                                                  HttpServletRequest request) {
         EvidenceFormula evidenceFormula = repository.findByName(name)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND));
         ObjectMapper mapper = new JsonMapper();
         try {
             JsonNode node = mapper.readValue(request.getReader(), JsonNode.class);
