@@ -58,15 +58,20 @@ export default new Router({
       component: () => import("./views/graph/Index.vue"),
       children: [
         {
+          name: "Test Graph",
+          path: "",
+          component: () => import("./views/graph/Test.vue")
+        },
+        {
           name: "Edit Graph",
           path: "edit",
           component: () => import("./views/graph/Edit.vue")
-        },
-        {
-          name: "Test Graph",
-          path: "test",
-          component: () => import("./views/graph/Test.vue")
         }
+        // {
+        //   name: "Test Graph",
+        //   path: "test",
+        //   component: () => import("./views/graph/Test.vue")
+        // }
       ]
     }
   ]
