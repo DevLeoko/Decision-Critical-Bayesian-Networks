@@ -1,5 +1,7 @@
 package io.dcbn.backend.authentication.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.checkerframework.common.aliasing.qual.Unique;
@@ -33,7 +35,7 @@ public class DcbnUser {
     @NotEmpty
     private String email;
 
-    @NotEmpty
+    @JsonIgnore
     private String password;
 
     @NotNull
