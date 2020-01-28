@@ -11,7 +11,7 @@
             <v-row>
               <v-col>
                 <v-text-field
-                  v-model="editedUser.name"
+                  v-model="editedUser.username"
                   label="Username"
                 ></v-text-field>
               </v-col>
@@ -41,7 +41,7 @@
           <v-btn color="error" text @click="stopEditing()">
             Cancel
           </v-btn>
-          <v-btn color="primary" text @click="saveUser()">Save</v-btn>
+          <v-btn color="primary" text @click="saveUser(editedUser)">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -57,16 +57,20 @@
           label="Search users"
           hide-details
         />
-        <v-list elevation="4">
+        <v-list elevation="4" class="py-0">
           <v-subheader class="headline">
             Users
             <v-spacer />
           </v-subheader>
           <v-divider />
 
+          <v-list-item v-if="filteredUsers.length === 0">
+            <v-list-item-title>No users found!</v-list-item-title>
+          </v-list-item>
+
           <v-list-item
-            :key="user.name + user.email + user.role"
-            v-for="(user, index) in filteredUsers"
+            :key="user.username + user.email + user.role"
+            v-for="user in filteredUsers"
           >
             <v-list-item-avatar>
               <v-icon large>
@@ -75,14 +79,14 @@
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title class="headline">
-                {{ user.name }}
+                {{ user.username }}
               </v-list-item-title>
               <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-btn icon @click="editUser(user)">
               <v-icon>edit</v-icon>
             </v-btn>
-            <v-btn icon @click="deleteUser(index)">
+            <v-btn icon @click="deleteUser(user)">
               <v-icon>delete</v-icon>
             </v-btn>
           </v-list-item>
@@ -101,7 +105,7 @@ import axios from "axios";
 
 interface User {
   id: number;
-  name: String;
+  username: String;
   email: String;
   role: String;
 }
@@ -109,29 +113,19 @@ interface User {
 export default Vue.extend({
   data() {
     return {
-      users: [
-        {
-          id: 0,
-          name: "moderator",
-          email: "moderator@dcbn.io",
-          role: "MODERATOR"
-        },
-        { id: 0, name: "admin", email: "admin@dcbn.io", role: "ADMIN" },
-        {
-          id: 0,
-          name: "superadmin",
-          email: "superadmin@dcbn.io",
-          role: "SUPERADMIN"
-        },
-        { id: 0, name: "fabio", email: "fabio@dcbn.io", role: "MODERATOR" }
-      ] as User[],
+      users: [] as User[],
       search: "",
       editedUser: {} as User,
-      editedUserIndex: 0,
       editing: false,
       roles: ["MODERATOR", "ADMIN"] as String[]
     };
   },
+
+  mounted() {
+    this.updateUserList();
+    this.editedUser = this.defaultUser();
+  },
+
   methods: {
     iconFromRole(role: String) {
       switch (role) {
@@ -143,22 +137,53 @@ export default Vue.extend({
           return "verified_user";
       }
     },
+
     deleteUser(user: User) {
-      axios;
+      this.axios
+        .delete(`/users/${user.id}`)
+        .then(_ => this.updateUserList())
+        .catch(err => console.log(err.response));
     },
-    editUser(user: User, index: number) {
+
+    editUser(user: User) {
       this.editing = true;
-      this.editedUserIndex = index;
       Object.assign(this.editedUser, user);
     },
+
     stopEditing() {
       this.editing = false;
       this.editedUser = this.defaultUser();
-      this.editedUserIndex = -1;
     },
-    saveUser() {},
+
+    saveUser(user: User) {
+      if (user.id === -1) {
+        this.axios
+          .post("/users", user)
+          .then(_ => {
+            this.updateUserList();
+            this.stopEditing();
+          })
+          .catch(err => console.log(err.response));
+      } else {
+        this.axios
+          .put(`/users/${user.id}`, user)
+          .then(_ => {
+            this.updateUserList();
+            this.stopEditing();
+          })
+          .catch(err => console.log(err.response));
+      }
+    },
+
+    updateUserList() {
+      this.axios
+        .get("/users")
+        .then(resp => (this.users = resp.data))
+        .catch(err => console.log(err.response));
+    },
+
     defaultUser(): User {
-      return { id: -1, name: "", email: "", role: "MODERATOR" };
+      return { id: -1, username: "", email: "", role: "MODERATOR" };
     }
   },
   computed: {
@@ -173,7 +198,7 @@ export default Vue.extend({
             return true;
           }
           return (
-            user.name.toLowerCase().includes(search.toLowerCase()) ||
+            user.username.toLowerCase().includes(search.toLowerCase()) ||
             user.email.toLowerCase().includes(search.toLowerCase()) ||
             user.role.toLowerCase().includes(search.toLowerCase())
           );
