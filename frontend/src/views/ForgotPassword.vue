@@ -77,7 +77,9 @@ export default Vue.extend({
       this.loading = true;
 
       this.axios
-        .post("/request-reset", { email: this.email })
+        .post("/request-password", this.email, {
+          headers: { "Content-Type": "text/plain" }
+        })
         .then(() => {
           this.success = "All done! Check your emails for the reset-link.";
         })

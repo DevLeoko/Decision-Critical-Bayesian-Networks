@@ -41,6 +41,7 @@ public class PasswordController {
 
     @PostMapping("/request-password")
     public void requestPassword(@RequestBody String email) {
+        System.out.println(email);
         DcbnUser user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         mailService.sendMail(user, MailType.PASSWORD_RESET);
@@ -58,8 +59,8 @@ public class PasswordController {
             DcbnUser user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
                     HttpStatus.NOT_FOUND));
 
-            user.setPassword(resetRequest.getPassword());
-            userRepository.save(user.withEncryptedPassword(passwordEncoder));
+            user.setPassword(passwordEncoder.encode(resetRequest.getPassword()));
+            userRepository.save(user);
 
         } catch (JwtException e) {
             e.printStackTrace();
