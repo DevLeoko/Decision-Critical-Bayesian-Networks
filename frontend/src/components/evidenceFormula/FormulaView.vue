@@ -102,7 +102,45 @@ export default Vue.extend({
         { name: "y", type: "number", value: 10 },
         { name: "heading", type: "number", value: 10 },
         { name: "filler", type: "boolean", value: false },
-        { name: "type", type: ["Type1", "Type2"], value: "Type2" }
+        {
+          name: "type",
+          type: [
+            "FISHING",
+            "TOWING",
+            "DIVING",
+            "MILITARY",
+            "SAILING",
+            "PLEASURE",
+            "PILOT",
+            "SEARCH_AND_RESCUE",
+            "TUG",
+            "PORT_TENDER",
+            "ANTI_POLLUTION",
+            "LAW",
+            "MEDICAL",
+            "RR_18",
+            "WIG",
+            "HIGH_SPEED",
+            "PASSENGER",
+            "CARGO",
+            "TANKER",
+            "NON_SPECIFIED",
+            "FISHING_VESSEL",
+            "PASSENGER_SHIP",
+            "VESSEL",
+            "SPECIAL_PURPOSE_SHIP",
+            "GENERAL_CARGO_SHIP",
+            "OTHER",
+            "BULK_CARRIER",
+            "HIGH_SPEED_CRAFT",
+            "SPARE",
+            "MOBILE_OFF_SHORE_DRILLING_UNIT",
+            "OIL_TANKER",
+            "UNDERWATERNUCLEAR_SHIP",
+            "NUCLEAR_SHIP"
+          ],
+          value: "FISHING"
+        }
       ],
       dialogOpen: false
     };

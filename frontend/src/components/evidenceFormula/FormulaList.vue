@@ -37,6 +37,7 @@ export default Vue.extend({
   props: ["formulas"],
   methods: {
     selectFormula(id: string) {
+      console.log(id);
       this.$router.push({
         name: "EvidenceFormula",
         params: {
@@ -45,12 +46,21 @@ export default Vue.extend({
       });
     },
     addFormula() {
-      var newFormula = {
-        name: "newFormula",
-        id: this.formulas.length,
-        formula: ""
-      };
-      this.formulas.push(newFormula);
+      var name = "lol5"; //TODO make unique default name
+      this.axios
+        .post("/evidence-formulas", {
+          name: name,
+          formula: "true"
+        })
+        .then(res => {
+          this.axios.get("/evidence-formulas/" + name).then(res => {
+            this.formulas.push({
+              id: res.data.id,
+              name: res.data.name,
+              formula: res.data.formula
+            });
+          });
+        });
     },
     deleteFormula(id: number) {
       for (var i = 0; i < this.formulas.length; i++) {
@@ -59,6 +69,24 @@ export default Vue.extend({
         }
       }
     }
+  },
+  created() {
+    //clearing the formulas array to avoid doubled formulas
+    var length = this.formulas.length;
+    console.log(length);
+    for (var i = 0; i < length; i++) {
+      this.formulas.pop();
+    }
+    //Requesting and pushing the formulas to the list
+    this.axios.get("/evidence-formulas").then(res => {
+      for (var i = 0; i < res.data.length; i++) {
+        this.formulas.push({
+          id: res.data[i].id,
+          name: res.data[i].name,
+          formula: res.data[i].formula
+        });
+      }
+    });
   }
 });
 </script>

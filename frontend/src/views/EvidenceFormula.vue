@@ -23,24 +23,7 @@ import Vue from "vue";
 export default Vue.extend({
   data() {
     return {
-      formulas: [
-        {
-          name: "test1",
-          id: 0,
-          formula: "true"
-        },
-        {
-          name: "test2",
-          id: 1,
-          formula: "false"
-        },
-        {
-          name: "test3",
-          id: 2,
-          formula: "bruh"
-        }
-      ],
-      activeFormula: -1
+      formulas: []
     };
   },
   components: {
@@ -49,7 +32,12 @@ export default Vue.extend({
   },
   computed: {
     currentFormula(): any {
-      return this.formulas[Number.parseInt(this.$route.params.id)];
+      for (var i = 0; i < this.formulas.length; i++) {
+        if (this.formulas[i].id == this.$route.params.id) {
+          return this.formulas[i];
+        }
+      }
+      return null;
     }
   }
 });

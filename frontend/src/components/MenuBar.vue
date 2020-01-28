@@ -1,7 +1,12 @@
 <template>
   <v-app-bar clipped-left app class="primary">
     <img
-      @click="$store.dispatch('setToken', 'uff')"
+      @click="
+        $store.dispatch(
+          'setToken',
+          'eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTU4MDE1NDcwMiwicm9sIjpbIlJPTEVfQURNSU4iXX0.npFqL5UYvfbtYAZzWFD162zpMjpaKLMCzvv66Fv-v1H5pkHsVfqA_mUioQBOrlBpzSBpXK5ljddegr_2X-ua8Q'
+        )
+      "
       src="@/assets/LogoSLight.svg"
       height="70%"
     />
