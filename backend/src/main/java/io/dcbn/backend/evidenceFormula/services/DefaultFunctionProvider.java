@@ -32,12 +32,12 @@ public class DefaultFunctionProvider extends FunctionProvider {
 
     private Object distanceToNearest(List<Object> parameters, Set<Vessel> correlatedVessel, Set<AreaOfInterest> correlatedAois, int timeSlice) {
         Set<Vessel> allVessels = vesselCache.getAllVesselsInTimeSlice(timeSlice);
-        return distance(currentVessel, allVessels);
+        return distance(currentVessel, allVessels, correlatedVessel);
     }
 
     public Object distanceToNearestType(List<Object> parameters, Set<Vessel> correlatedVessel, Set<AreaOfInterest> correlatedAois, int timeSlice) {
         Set<Vessel> allVesselsByType = vesselCache.getAllVesselsInTimeSliceByType(timeSlice, (VesselType) parameters.get(0));
-        return distance(currentVessel, allVesselsByType);
+        return distance(currentVessel, allVesselsByType, correlatedVessel);
     }
 
     private Point createPoint(Vessel vessel) {
@@ -47,9 +47,10 @@ public class DefaultFunctionProvider extends FunctionProvider {
         return new Point(coordsSequence, new GeometryFactory());
     }
 
-    private double distance(Vessel vessel, Set<Vessel> vesselSet) {
+    private double distance(Vessel vessel, Set<Vessel> vesselSet, Set<Vessel> correlatedVessel) {
         Point vesselPoint = createPoint(vessel);
         double distance = Double.POSITIVE_INFINITY;
+        Vessel currentCorrelatedVessel = null;
         for (Vessel entry : vesselSet) {
             if(vessel.getUuid().equals(entry.getUuid())) {
                 continue;
@@ -58,8 +59,12 @@ public class DefaultFunctionProvider extends FunctionProvider {
             double currentDistance = vesselPoint.distance(entryVesselPoint);
 
             if(distance > currentDistance) {
+                currentCorrelatedVessel = entry;
                 distance = currentDistance;
             }
+        }
+        if (currentCorrelatedVessel != null) {
+            correlatedVessel.add(currentCorrelatedVessel);
         }
         return distance;
     }
