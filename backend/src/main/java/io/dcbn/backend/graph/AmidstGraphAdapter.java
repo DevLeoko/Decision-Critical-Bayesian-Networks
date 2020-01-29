@@ -55,6 +55,7 @@ public class AmidstGraphAdapter {
                 //--------TIME 0-------------
                 ParentSet variableParentSet0 = dynamicDAG.getParentSetTime0(variable);
 
+//                System.out.println(node.getTimeZeroDependency());
                 node.getTimeZeroDependency().getParents().stream()
                         .map(Node::getName)
                         .map(this::getVariableByName)

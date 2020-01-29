@@ -1,0 +1,976 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- This network was created in GeNIe Academic, which can be used for educational and research purposes only -->
+<smile version="1.0" id="Network1" numsamples="10000" discsamples="10000">
+	<nodes>
+		<cpt id="prohibited_to_idle_area" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<probabilities>0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="far_away_from_buoy" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<probabilities>0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="near_wreckage" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<probabilities>0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="favourable_vessel_location" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>near_wreckage prohibited_to_idle_area far_away_from_buoy</parents>
+			<probabilities>1 0 0.75 0.25 0.25 0.75 0.075 0.925 0.7 0.3 0.4 0.6 0.125 0.875 0 1</probabilities>
+		</cpt>
+		<cpt id="favourable_duration" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<probabilities>0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="null_speed" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<probabilities>0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="favourable_vessel_kinematic_conditiones" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>null_speed favourable_duration</parents>
+			<probabilities>0.925 0.07499999999999996 0.775 0.225 0.925 0.07499999999999996 0.05 0.95</probabilities>
+		</cpt>
+		<cpt id="no_ais" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<probabilities>0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="favourable_tide_conditiones" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<probabilities>0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="favourable_sea_state" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<probabilities>0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="favourable_visibility" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<probabilities>0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="favourable_environmental_conditiones" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>favourable_visibility favourable_sea_state favourable_tide_conditiones</parents>
+			<probabilities>1 0 0.675 0.325 0.675 0.325 0.15 0.85 1 0 0.5 0.5 0.35 0.65 0 1</probabilities>
+		</cpt>
+		<cpt id="Main_Situation" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>favourable_environmental_conditiones favourable_vessel_location no_ais favourable_vessel_kinematic_conditiones</parents>
+			<probabilities>1 0 0.825 0.175 0.5 0.5 0.3 0.7 0.8 0.2 0.5 0.5 0.45 0.55 0.125 0.875 0.925 0.075 0.85 0.15 0.5 0.5 0.175 0.825 0.8 0.2 0.275 0.725 0.15 0.85 0 1</probabilities>
+		</cpt>
+		<cpt id="Source_H1" dynamic="plate">
+			<state id="x1_Operators_flagging_Ship_blacklisted_for_IUU_fishing" />
+			<state id="x2_Operators_flagging__Ship_blacklisted_for_smuggling_of_goods" />
+			<state id="x3_Operators_flagging_Track_compatible_with_ship_engaged_in_fishing" />
+			<state id="x4_Operators_flagging_Speed_compatible_with_ship_engaged_in_fishing" />
+			<state id="x5_Operators_flagging_Numerous_persons_on_board__based_on_imagery" />
+			<state id="x6_Operators_flagging_Numerous_persons_on_board__based_on_reports_of_witnesses" />
+			<state id="x7_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x8_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x9_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x10_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x11_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x12_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x13_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x14_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x19_Operators_flagging_Vessel_type_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x20_Operators_flagging_Vessel_size_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x23_Operators_flagging_Ship_position_in_restricted_area" />
+			<state id="x24__Operators_flagging_Ship_position_in_restricted_area__based_on_report_of_witness" />
+			<state id="x25_Operators_flagging_Duration_of_loitering_conditions_compatible_with_a_specific_activity" />
+			<state id="x26_Operators_flagging_Ship_position_near_a_wreckage" />
+			<state id="x27__Operators_flagging_Ship_position_near_a_wreckage__based_on_report_of_a_witness" />
+			<state id="x28_Operators_flagging_Ship_position_near_a_buoy" />
+			<state id="x29_Fusion_service_reporting_on_Compatible_tide_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x30_Fusion_service_reporting_on_Compatible_sea_state_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x31_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity_based_on_forecasts" />
+			<state id="x32_Fusion_service_generating_alert_on__Ship_blacklisted_for_IUU_fishing" />
+			<state id="x33_Fusion_service_generating_alert_on_Vessels_approaching" />
+			<state id="x34_Fusion_service_generating_alert_on_Heading_towards_coastal_area" />
+			<state id="x35_Fusion_service_generating_alert_on_Heading_towards_shore" />
+			<state id="x36_Fusion_service_generating_alert_on__Contact_with_no_AIS" />
+			<state id="x37_Fusion_service_generating_alert_on_Drifting_kinematic_conditions" />
+			<state id="x38_Fusion_service_generating_alert_on_Abrupt_change_of_speed" />
+			<state id="x39_Fusion_service_generating_alert_on_Abrupt_change_of_course" />
+			<state id="x40_Fusion_service_generating_alert_on_Ship_reaching_its_speed_limit" />
+			<state id="x41_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_radar" />
+			<state id="x42_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_AIS" />
+			<state id="x43_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_AIS" />
+			<state id="x44_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_radar" />
+			<state id="x45_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_charts" />
+			<state id="x46_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_charts" />
+			<state id="x47_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_AToN_message" />
+			<state id="x48_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_AToN_message" />
+			<state id="x49_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x50_Radar_tracker_data_on_speed" />
+			<state id="x51_AIS_data_on_vessel_type" />
+			<state id="x52_AIS_data_on_vessel_size" />
+			<state id="x53_AIS_data_on_speed" />
+			<probabilities>0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085</probabilities>
+		</cpt>
+		<cpt id="Rel_H1" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Source_H1</parents>
+			<probabilities>1 0 1 0 0.675 0.325 0.725 0.275 0.875 0.125 0.825 0.175 0.1 0.9 0.1 0.9 0 1 0 1 0.1 0.9 0.1 0.9 0.05 0.95 0.05 0.95 0.575 0.425 0.45 0.55 0.725 0.275 0.675 0.325 0.775 0.225 0.575 0.425 0.525 0.475 0.725 0.275 0.625 0.375 0.625 0.375 0.625 0.375 0.675 0.325 0.725 0.275 0.725 0.275 0.675 0.325 0.825 0.175 0.825 0.175 0.725 0.275 0.725 0.275 0.625 0.375 0.825 0.175 0.925 0.07499999999999996 0.975 0.02500000000000002 0.725 0.275 0.725 0.275 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 1 0 0.975 0.02500000000000002 0.975 0.02500000000000002</probabilities>
+		</cpt>
+		<cpt id="Rep_H1" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Rel_H1 near_wreckage</parents>
+			<probabilities>1 0 0 1 0.5 0.5 0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="Source_H2" dynamic="plate">
+			<state id="x1_Operators_flagging_Ship_blacklisted_for_IUU_fishing" />
+			<state id="x2_Operators_flagging__Ship_blacklisted_for_smuggling_of_goods" />
+			<state id="x3_Operators_flagging_Track_compatible_with_ship_engaged_in_fishing" />
+			<state id="x4_Operators_flagging_Speed_compatible_with_ship_engaged_in_fishing" />
+			<state id="x5_Operators_flagging_Numerous_persons_on_board__based_on_imagery" />
+			<state id="x6_Operators_flagging_Numerous_persons_on_board__based_on_reports_of_witnesses" />
+			<state id="x7_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x8_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x9_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x10_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x11_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x12_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x13_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x14_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x19_Operators_flagging_Vessel_type_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x20_Operators_flagging_Vessel_size_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x23_Operators_flagging_Ship_position_in_restricted_area" />
+			<state id="x24__Operators_flagging_Ship_position_in_restricted_area__based_on_report_of_witness" />
+			<state id="x25_Operators_flagging_Duration_of_loitering_conditions_compatible_with_a_specific_activity" />
+			<state id="x26_Operators_flagging_Ship_position_near_a_wreckage" />
+			<state id="x27__Operators_flagging_Ship_position_near_a_wreckage__based_on_report_of_a_witness" />
+			<state id="x28_Operators_flagging_Ship_position_near_a_buoy" />
+			<state id="x29_Fusion_service_reporting_on_Compatible_tide_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x30_Fusion_service_reporting_on_Compatible_sea_state_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x31_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity_based_on_forecasts" />
+			<state id="x32_Fusion_service_generating_alert_on__Ship_blacklisted_for_IUU_fishing" />
+			<state id="x33_Fusion_service_generating_alert_on_Vessels_approaching" />
+			<state id="x34_Fusion_service_generating_alert_on_Heading_towards_coastal_area" />
+			<state id="x35_Fusion_service_generating_alert_on_Heading_towards_shore" />
+			<state id="x36_Fusion_service_generating_alert_on__Contact_with_no_AIS" />
+			<state id="x37_Fusion_service_generating_alert_on_Drifting_kinematic_conditions" />
+			<state id="x38_Fusion_service_generating_alert_on_Abrupt_change_of_speed" />
+			<state id="x39_Fusion_service_generating_alert_on_Abrupt_change_of_course" />
+			<state id="x40_Fusion_service_generating_alert_on_Ship_reaching_its_speed_limit" />
+			<state id="x41_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_radar" />
+			<state id="x42_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_AIS" />
+			<state id="x43_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_AIS" />
+			<state id="x44_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_radar" />
+			<state id="x45_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_charts" />
+			<state id="x46_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_charts" />
+			<state id="x47_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_AToN_message" />
+			<state id="x48_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_AToN_message" />
+			<state id="x49_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x50_Radar_tracker_data_on_speed" />
+			<state id="x51_AIS_data_on_vessel_type" />
+			<state id="x52_AIS_data_on_vessel_size" />
+			<state id="x53_AIS_data_on_speed" />
+			<probabilities>0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085</probabilities>
+		</cpt>
+		<cpt id="Rel_H2" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Source_H2</parents>
+			<probabilities>1 0 1 0 0.675 0.325 0.725 0.275 0.875 0.125 0.825 0.175 0.1 0.9 0.1 0.9 0 1 0 1 0.1 0.9 0.1 0.9 0.05 0.95 0.05 0.95 0.575 0.425 0.45 0.55 0.725 0.275 0.675 0.325 0.775 0.225 0.575 0.425 0.525 0.475 0.725 0.275 0.625 0.375 0.625 0.375 0.625 0.375 0.675 0.325 0.725 0.275 0.725 0.275 0.675 0.325 0.825 0.175 0.825 0.175 0.725 0.275 0.725 0.275 0.625 0.375 0.825 0.175 0.925 0.07499999999999996 0.975 0.02500000000000002 0.725 0.275 0.725 0.275 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 1 0 0.975 0.02500000000000002 0.975 0.02500000000000002</probabilities>
+		</cpt>
+		<cpt id="Rep_H2" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Rel_H2 prohibited_to_idle_area</parents>
+			<probabilities>1 0 0 1 0.5 0.5 0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="Source_H6" dynamic="plate">
+			<state id="x1_Operators_flagging_Ship_blacklisted_for_IUU_fishing" />
+			<state id="x2_Operators_flagging__Ship_blacklisted_for_smuggling_of_goods" />
+			<state id="x3_Operators_flagging_Track_compatible_with_ship_engaged_in_fishing" />
+			<state id="x4_Operators_flagging_Speed_compatible_with_ship_engaged_in_fishing" />
+			<state id="x5_Operators_flagging_Numerous_persons_on_board__based_on_imagery" />
+			<state id="x6_Operators_flagging_Numerous_persons_on_board__based_on_reports_of_witnesses" />
+			<state id="x7_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x8_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x9_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x10_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x11_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x12_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x13_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x14_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x19_Operators_flagging_Vessel_type_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x20_Operators_flagging_Vessel_size_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x23_Operators_flagging_Ship_position_in_restricted_area" />
+			<state id="x24__Operators_flagging_Ship_position_in_restricted_area__based_on_report_of_witness" />
+			<state id="x25_Operators_flagging_Duration_of_loitering_conditions_compatible_with_a_specific_activity" />
+			<state id="x26_Operators_flagging_Ship_position_near_a_wreckage" />
+			<state id="x27__Operators_flagging_Ship_position_near_a_wreckage__based_on_report_of_a_witness" />
+			<state id="x28_Operators_flagging_Ship_position_near_a_buoy" />
+			<state id="x29_Fusion_service_reporting_on_Compatible_tide_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x30_Fusion_service_reporting_on_Compatible_sea_state_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x31_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity_based_on_forecasts" />
+			<state id="x32_Fusion_service_generating_alert_on__Ship_blacklisted_for_IUU_fishing" />
+			<state id="x33_Fusion_service_generating_alert_on_Vessels_approaching" />
+			<state id="x34_Fusion_service_generating_alert_on_Heading_towards_coastal_area" />
+			<state id="x35_Fusion_service_generating_alert_on_Heading_towards_shore" />
+			<state id="x36_Fusion_service_generating_alert_on__Contact_with_no_AIS" />
+			<state id="x37_Fusion_service_generating_alert_on_Drifting_kinematic_conditions" />
+			<state id="x38_Fusion_service_generating_alert_on_Abrupt_change_of_speed" />
+			<state id="x39_Fusion_service_generating_alert_on_Abrupt_change_of_course" />
+			<state id="x40_Fusion_service_generating_alert_on_Ship_reaching_its_speed_limit" />
+			<state id="x41_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_radar" />
+			<state id="x42_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_AIS" />
+			<state id="x43_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_AIS" />
+			<state id="x44_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_radar" />
+			<state id="x45_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_charts" />
+			<state id="x46_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_charts" />
+			<state id="x47_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_AToN_message" />
+			<state id="x48_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_AToN_message" />
+			<state id="x49_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x50_Radar_tracker_data_on_speed" />
+			<state id="x51_AIS_data_on_vessel_type" />
+			<state id="x52_AIS_data_on_vessel_size" />
+			<state id="x53_AIS_data_on_speed" />
+			<probabilities>0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085</probabilities>
+		</cpt>
+		<cpt id="Rel_H6" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Source_H6</parents>
+			<probabilities>1 0 1 0 0.675 0.325 0.725 0.275 0.875 0.125 0.825 0.175 0.1 0.9 0.1 0.9 0 1 0 1 0.1 0.9 0.1 0.9 0.05 0.95 0.05 0.95 0.575 0.425 0.45 0.55 0.725 0.275 0.675 0.325 0.775 0.225 0.575 0.425 0.525 0.475 0.725 0.275 0.625 0.375 0.625 0.375 0.625 0.375 0.675 0.325 0.725 0.275 0.725 0.275 0.675 0.325 0.825 0.175 0.825 0.175 0.725 0.275 0.725 0.275 0.625 0.375 0.825 0.175 0.925 0.07499999999999996 0.975 0.02500000000000002 0.725 0.275 0.725 0.275 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 1 0 0.975 0.02500000000000002 0.975 0.02500000000000002</probabilities>
+		</cpt>
+		<cpt id="Rep_H6" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Rel_H6 no_ais</parents>
+			<probabilities>1 0 0 1 0.5 0.5 0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="Source_H3" dynamic="plate">
+			<state id="x1_Operators_flagging_Ship_blacklisted_for_IUU_fishing" />
+			<state id="x2_Operators_flagging__Ship_blacklisted_for_smuggling_of_goods" />
+			<state id="x3_Operators_flagging_Track_compatible_with_ship_engaged_in_fishing" />
+			<state id="x4_Operators_flagging_Speed_compatible_with_ship_engaged_in_fishing" />
+			<state id="x5_Operators_flagging_Numerous_persons_on_board__based_on_imagery" />
+			<state id="x6_Operators_flagging_Numerous_persons_on_board__based_on_reports_of_witnesses" />
+			<state id="x7_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x8_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x9_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x10_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x11_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x12_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x13_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x14_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x19_Operators_flagging_Vessel_type_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x20_Operators_flagging_Vessel_size_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x23_Operators_flagging_Ship_position_in_restricted_area" />
+			<state id="x24__Operators_flagging_Ship_position_in_restricted_area__based_on_report_of_witness" />
+			<state id="x25_Operators_flagging_Duration_of_loitering_conditions_compatible_with_a_specific_activity" />
+			<state id="x26_Operators_flagging_Ship_position_near_a_wreckage" />
+			<state id="x27__Operators_flagging_Ship_position_near_a_wreckage__based_on_report_of_a_witness" />
+			<state id="x28_Operators_flagging_Ship_position_near_a_buoy" />
+			<state id="x29_Fusion_service_reporting_on_Compatible_tide_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x30_Fusion_service_reporting_on_Compatible_sea_state_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x31_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity_based_on_forecasts" />
+			<state id="x32_Fusion_service_generating_alert_on__Ship_blacklisted_for_IUU_fishing" />
+			<state id="x33_Fusion_service_generating_alert_on_Vessels_approaching" />
+			<state id="x34_Fusion_service_generating_alert_on_Heading_towards_coastal_area" />
+			<state id="x35_Fusion_service_generating_alert_on_Heading_towards_shore" />
+			<state id="x36_Fusion_service_generating_alert_on__Contact_with_no_AIS" />
+			<state id="x37_Fusion_service_generating_alert_on_Drifting_kinematic_conditions" />
+			<state id="x38_Fusion_service_generating_alert_on_Abrupt_change_of_speed" />
+			<state id="x39_Fusion_service_generating_alert_on_Abrupt_change_of_course" />
+			<state id="x40_Fusion_service_generating_alert_on_Ship_reaching_its_speed_limit" />
+			<state id="x41_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_radar" />
+			<state id="x42_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_AIS" />
+			<state id="x43_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_AIS" />
+			<state id="x44_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_radar" />
+			<state id="x45_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_charts" />
+			<state id="x46_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_charts" />
+			<state id="x47_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_AToN_message" />
+			<state id="x48_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_AToN_message" />
+			<state id="x49_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x50_Radar_tracker_data_on_speed" />
+			<state id="x51_AIS_data_on_vessel_type" />
+			<state id="x52_AIS_data_on_vessel_size" />
+			<state id="x53_AIS_data_on_speed" />
+			<probabilities>0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085</probabilities>
+		</cpt>
+		<cpt id="Rel_H3" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Source_H3</parents>
+			<probabilities>1 0 1 0 0.675 0.325 0.725 0.275 0.875 0.125 0.825 0.175 0.1 0.9 0.1 0.9 0 1 0 1 0.1 0.9 0.1 0.9 0.05 0.95 0.05 0.95 0.575 0.425 0.45 0.55 0.725 0.275 0.675 0.325 0.775 0.225 0.575 0.425 0.525 0.475 0.725 0.275 0.625 0.375 0.625 0.375 0.625 0.375 0.675 0.325 0.725 0.275 0.725 0.275 0.675 0.325 0.825 0.175 0.825 0.175 0.725 0.275 0.725 0.275 0.625 0.375 0.825 0.175 0.925 0.07499999999999996 0.975 0.02500000000000002 0.725 0.275 0.725 0.275 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 1 0 0.975 0.02500000000000002 0.975 0.02500000000000002</probabilities>
+		</cpt>
+		<cpt id="Rep_H3" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Rel_H3 far_away_from_buoy</parents>
+			<probabilities>1 0 0 1 0.5 0.5 0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="Source_H4" dynamic="plate">
+			<state id="x1_Operators_flagging_Ship_blacklisted_for_IUU_fishing" />
+			<state id="x2_Operators_flagging__Ship_blacklisted_for_smuggling_of_goods" />
+			<state id="x3_Operators_flagging_Track_compatible_with_ship_engaged_in_fishing" />
+			<state id="x4_Operators_flagging_Speed_compatible_with_ship_engaged_in_fishing" />
+			<state id="x5_Operators_flagging_Numerous_persons_on_board__based_on_imagery" />
+			<state id="x6_Operators_flagging_Numerous_persons_on_board__based_on_reports_of_witnesses" />
+			<state id="x7_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x8_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x9_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x10_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x11_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x12_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x13_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x14_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x19_Operators_flagging_Vessel_type_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x20_Operators_flagging_Vessel_size_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x23_Operators_flagging_Ship_position_in_restricted_area" />
+			<state id="x24__Operators_flagging_Ship_position_in_restricted_area__based_on_report_of_witness" />
+			<state id="x25_Operators_flagging_Duration_of_loitering_conditions_compatible_with_a_specific_activity" />
+			<state id="x26_Operators_flagging_Ship_position_near_a_wreckage" />
+			<state id="x27__Operators_flagging_Ship_position_near_a_wreckage__based_on_report_of_a_witness" />
+			<state id="x28_Operators_flagging_Ship_position_near_a_buoy" />
+			<state id="x29_Fusion_service_reporting_on_Compatible_tide_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x30_Fusion_service_reporting_on_Compatible_sea_state_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x31_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity_based_on_forecasts" />
+			<state id="x32_Fusion_service_generating_alert_on__Ship_blacklisted_for_IUU_fishing" />
+			<state id="x33_Fusion_service_generating_alert_on_Vessels_approaching" />
+			<state id="x34_Fusion_service_generating_alert_on_Heading_towards_coastal_area" />
+			<state id="x35_Fusion_service_generating_alert_on_Heading_towards_shore" />
+			<state id="x36_Fusion_service_generating_alert_on__Contact_with_no_AIS" />
+			<state id="x37_Fusion_service_generating_alert_on_Drifting_kinematic_conditions" />
+			<state id="x38_Fusion_service_generating_alert_on_Abrupt_change_of_speed" />
+			<state id="x39_Fusion_service_generating_alert_on_Abrupt_change_of_course" />
+			<state id="x40_Fusion_service_generating_alert_on_Ship_reaching_its_speed_limit" />
+			<state id="x41_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_radar" />
+			<state id="x42_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_AIS" />
+			<state id="x43_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_AIS" />
+			<state id="x44_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_radar" />
+			<state id="x45_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_charts" />
+			<state id="x46_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_charts" />
+			<state id="x47_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_AToN_message" />
+			<state id="x48_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_AToN_message" />
+			<state id="x49_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x50_Radar_tracker_data_on_speed" />
+			<state id="x51_AIS_data_on_vessel_type" />
+			<state id="x52_AIS_data_on_vessel_size" />
+			<state id="x53_AIS_data_on_speed" />
+			<probabilities>0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085</probabilities>
+		</cpt>
+		<cpt id="Rel_H4" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Source_H4</parents>
+			<probabilities>1 0 1 0 0.675 0.325 0.725 0.275 0.875 0.125 0.825 0.175 0.1 0.9 0.1 0.9 0 1 0 1 0.1 0.9 0.1 0.9 0.05 0.95 0.05 0.95 0.575 0.425 0.45 0.55 0.725 0.275 0.675 0.325 0.775 0.225 0.575 0.425 0.525 0.475 0.725 0.275 0.625 0.375 0.625 0.375 0.625 0.375 0.675 0.325 0.725 0.275 0.725 0.275 0.675 0.325 0.825 0.175 0.825 0.175 0.725 0.275 0.725 0.275 0.625 0.375 0.825 0.175 0.925 0.07499999999999996 0.975 0.02500000000000002 0.725 0.275 0.725 0.275 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 1 0 0.975 0.02500000000000002 0.975 0.02500000000000002</probabilities>
+		</cpt>
+		<cpt id="Rep_H4" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Rel_H4 null_speed</parents>
+			<probabilities>1 0 0 1 0.5 0.5 0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="Source_H5" dynamic="plate">
+			<state id="x1_Operators_flagging_Ship_blacklisted_for_IUU_fishing" />
+			<state id="x2_Operators_flagging__Ship_blacklisted_for_smuggling_of_goods" />
+			<state id="x3_Operators_flagging_Track_compatible_with_ship_engaged_in_fishing" />
+			<state id="x4_Operators_flagging_Speed_compatible_with_ship_engaged_in_fishing" />
+			<state id="x5_Operators_flagging_Numerous_persons_on_board__based_on_imagery" />
+			<state id="x6_Operators_flagging_Numerous_persons_on_board__based_on_reports_of_witnesses" />
+			<state id="x7_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x8_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x9_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x10_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x11_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x12_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x13_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x14_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x19_Operators_flagging_Vessel_type_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x20_Operators_flagging_Vessel_size_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x23_Operators_flagging_Ship_position_in_restricted_area" />
+			<state id="x24__Operators_flagging_Ship_position_in_restricted_area__based_on_report_of_witness" />
+			<state id="x25_Operators_flagging_Duration_of_loitering_conditions_compatible_with_a_specific_activity" />
+			<state id="x26_Operators_flagging_Ship_position_near_a_wreckage" />
+			<state id="x27__Operators_flagging_Ship_position_near_a_wreckage__based_on_report_of_a_witness" />
+			<state id="x28_Operators_flagging_Ship_position_near_a_buoy" />
+			<state id="x29_Fusion_service_reporting_on_Compatible_tide_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x30_Fusion_service_reporting_on_Compatible_sea_state_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x31_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity_based_on_forecasts" />
+			<state id="x32_Fusion_service_generating_alert_on__Ship_blacklisted_for_IUU_fishing" />
+			<state id="x33_Fusion_service_generating_alert_on_Vessels_approaching" />
+			<state id="x34_Fusion_service_generating_alert_on_Heading_towards_coastal_area" />
+			<state id="x35_Fusion_service_generating_alert_on_Heading_towards_shore" />
+			<state id="x36_Fusion_service_generating_alert_on__Contact_with_no_AIS" />
+			<state id="x37_Fusion_service_generating_alert_on_Drifting_kinematic_conditions" />
+			<state id="x38_Fusion_service_generating_alert_on_Abrupt_change_of_speed" />
+			<state id="x39_Fusion_service_generating_alert_on_Abrupt_change_of_course" />
+			<state id="x40_Fusion_service_generating_alert_on_Ship_reaching_its_speed_limit" />
+			<state id="x41_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_radar" />
+			<state id="x42_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_AIS" />
+			<state id="x43_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_AIS" />
+			<state id="x44_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_radar" />
+			<state id="x45_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_charts" />
+			<state id="x46_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_charts" />
+			<state id="x47_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_AToN_message" />
+			<state id="x48_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_AToN_message" />
+			<state id="x49_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x50_Radar_tracker_data_on_speed" />
+			<state id="x51_AIS_data_on_vessel_type" />
+			<state id="x52_AIS_data_on_vessel_size" />
+			<state id="x53_AIS_data_on_speed" />
+			<probabilities>0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085</probabilities>
+		</cpt>
+		<cpt id="Rel_H5" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Source_H5</parents>
+			<probabilities>1 0 1 0 0.675 0.325 0.725 0.275 0.875 0.125 0.825 0.175 0.1 0.9 0.1 0.9 0 1 0 1 0.1 0.9 0.1 0.9 0.05 0.95 0.05 0.95 0.575 0.425 0.45 0.55 0.725 0.275 0.675 0.325 0.775 0.225 0.575 0.425 0.525 0.475 0.725 0.275 0.625 0.375 0.625 0.375 0.625 0.375 0.675 0.325 0.725 0.275 0.725 0.275 0.675 0.325 0.825 0.175 0.825 0.175 0.725 0.275 0.725 0.275 0.625 0.375 0.825 0.175 0.925 0.07499999999999996 0.975 0.02500000000000002 0.725 0.275 0.725 0.275 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 1 0 0.975 0.02500000000000002 0.975 0.02500000000000002</probabilities>
+		</cpt>
+		<cpt id="Rep_H5" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Rel_H5 favourable_duration</parents>
+			<probabilities>1 0 0 1 0.5 0.5 0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="Source_H7" dynamic="plate">
+			<state id="x1_Operators_flagging_Ship_blacklisted_for_IUU_fishing" />
+			<state id="x2_Operators_flagging__Ship_blacklisted_for_smuggling_of_goods" />
+			<state id="x3_Operators_flagging_Track_compatible_with_ship_engaged_in_fishing" />
+			<state id="x4_Operators_flagging_Speed_compatible_with_ship_engaged_in_fishing" />
+			<state id="x5_Operators_flagging_Numerous_persons_on_board__based_on_imagery" />
+			<state id="x6_Operators_flagging_Numerous_persons_on_board__based_on_reports_of_witnesses" />
+			<state id="x7_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x8_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x9_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x10_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x11_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x12_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x13_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x14_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x19_Operators_flagging_Vessel_type_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x20_Operators_flagging_Vessel_size_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x23_Operators_flagging_Ship_position_in_restricted_area" />
+			<state id="x24__Operators_flagging_Ship_position_in_restricted_area__based_on_report_of_witness" />
+			<state id="x25_Operators_flagging_Duration_of_loitering_conditions_compatible_with_a_specific_activity" />
+			<state id="x26_Operators_flagging_Ship_position_near_a_wreckage" />
+			<state id="x27__Operators_flagging_Ship_position_near_a_wreckage__based_on_report_of_a_witness" />
+			<state id="x28_Operators_flagging_Ship_position_near_a_buoy" />
+			<state id="x29_Fusion_service_reporting_on_Compatible_tide_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x30_Fusion_service_reporting_on_Compatible_sea_state_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x31_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity_based_on_forecasts" />
+			<state id="x32_Fusion_service_generating_alert_on__Ship_blacklisted_for_IUU_fishing" />
+			<state id="x33_Fusion_service_generating_alert_on_Vessels_approaching" />
+			<state id="x34_Fusion_service_generating_alert_on_Heading_towards_coastal_area" />
+			<state id="x35_Fusion_service_generating_alert_on_Heading_towards_shore" />
+			<state id="x36_Fusion_service_generating_alert_on__Contact_with_no_AIS" />
+			<state id="x37_Fusion_service_generating_alert_on_Drifting_kinematic_conditions" />
+			<state id="x38_Fusion_service_generating_alert_on_Abrupt_change_of_speed" />
+			<state id="x39_Fusion_service_generating_alert_on_Abrupt_change_of_course" />
+			<state id="x40_Fusion_service_generating_alert_on_Ship_reaching_its_speed_limit" />
+			<state id="x41_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_radar" />
+			<state id="x42_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_AIS" />
+			<state id="x43_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_AIS" />
+			<state id="x44_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_radar" />
+			<state id="x45_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_charts" />
+			<state id="x46_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_charts" />
+			<state id="x47_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_AToN_message" />
+			<state id="x48_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_AToN_message" />
+			<state id="x49_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x50_Radar_tracker_data_on_speed" />
+			<state id="x51_AIS_data_on_vessel_type" />
+			<state id="x52_AIS_data_on_vessel_size" />
+			<state id="x53_AIS_data_on_speed" />
+			<probabilities>0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085</probabilities>
+		</cpt>
+		<cpt id="Rel_H7" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Source_H7</parents>
+			<probabilities>1 0 1 0 0.675 0.325 0.725 0.275 0.875 0.125 0.825 0.175 0.1 0.9 0.1 0.9 0 1 0 1 0.1 0.9 0.1 0.9 0.05 0.95 0.05 0.95 0.575 0.425 0.45 0.55 0.725 0.275 0.675 0.325 0.775 0.225 0.575 0.425 0.525 0.475 0.725 0.275 0.625 0.375 0.625 0.375 0.625 0.375 0.675 0.325 0.725 0.275 0.725 0.275 0.675 0.325 0.825 0.175 0.825 0.175 0.725 0.275 0.725 0.275 0.625 0.375 0.825 0.175 0.925 0.07499999999999996 0.975 0.02500000000000002 0.725 0.275 0.725 0.275 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 1 0 0.975 0.02500000000000002 0.975 0.02500000000000002</probabilities>
+		</cpt>
+		<cpt id="Rep_H7" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Rel_H7 favourable_sea_state</parents>
+			<probabilities>1 0 0 1 0.5 0.5 0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="Source_H8" dynamic="plate">
+			<state id="x1_Operators_flagging_Ship_blacklisted_for_IUU_fishing" />
+			<state id="x2_Operators_flagging__Ship_blacklisted_for_smuggling_of_goods" />
+			<state id="x3_Operators_flagging_Track_compatible_with_ship_engaged_in_fishing" />
+			<state id="x4_Operators_flagging_Speed_compatible_with_ship_engaged_in_fishing" />
+			<state id="x5_Operators_flagging_Numerous_persons_on_board__based_on_imagery" />
+			<state id="x6_Operators_flagging_Numerous_persons_on_board__based_on_reports_of_witnesses" />
+			<state id="x7_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x8_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x9_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x10_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x11_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x12_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x13_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x14_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x19_Operators_flagging_Vessel_type_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x20_Operators_flagging_Vessel_size_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x23_Operators_flagging_Ship_position_in_restricted_area" />
+			<state id="x24__Operators_flagging_Ship_position_in_restricted_area__based_on_report_of_witness" />
+			<state id="x25_Operators_flagging_Duration_of_loitering_conditions_compatible_with_a_specific_activity" />
+			<state id="x26_Operators_flagging_Ship_position_near_a_wreckage" />
+			<state id="x27__Operators_flagging_Ship_position_near_a_wreckage__based_on_report_of_a_witness" />
+			<state id="x28_Operators_flagging_Ship_position_near_a_buoy" />
+			<state id="x29_Fusion_service_reporting_on_Compatible_tide_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x30_Fusion_service_reporting_on_Compatible_sea_state_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x31_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity_based_on_forecasts" />
+			<state id="x32_Fusion_service_generating_alert_on__Ship_blacklisted_for_IUU_fishing" />
+			<state id="x33_Fusion_service_generating_alert_on_Vessels_approaching" />
+			<state id="x34_Fusion_service_generating_alert_on_Heading_towards_coastal_area" />
+			<state id="x35_Fusion_service_generating_alert_on_Heading_towards_shore" />
+			<state id="x36_Fusion_service_generating_alert_on__Contact_with_no_AIS" />
+			<state id="x37_Fusion_service_generating_alert_on_Drifting_kinematic_conditions" />
+			<state id="x38_Fusion_service_generating_alert_on_Abrupt_change_of_speed" />
+			<state id="x39_Fusion_service_generating_alert_on_Abrupt_change_of_course" />
+			<state id="x40_Fusion_service_generating_alert_on_Ship_reaching_its_speed_limit" />
+			<state id="x41_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_radar" />
+			<state id="x42_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_AIS" />
+			<state id="x43_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_AIS" />
+			<state id="x44_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_radar" />
+			<state id="x45_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_charts" />
+			<state id="x46_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_charts" />
+			<state id="x47_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_AToN_message" />
+			<state id="x48_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_AToN_message" />
+			<state id="x49_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x50_Radar_tracker_data_on_speed" />
+			<state id="x51_AIS_data_on_vessel_type" />
+			<state id="x52_AIS_data_on_vessel_size" />
+			<state id="x53_AIS_data_on_speed" />
+			<probabilities>0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085</probabilities>
+		</cpt>
+		<cpt id="Rel_H8" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Source_H8</parents>
+			<probabilities>1 0 1 0 0.675 0.325 0.725 0.275 0.875 0.125 0.825 0.175 0.1 0.9 0.1 0.9 0 1 0 1 0.1 0.9 0.1 0.9 0.05 0.95 0.05 0.95 0.575 0.425 0.45 0.55 0.725 0.275 0.675 0.325 0.775 0.225 0.575 0.425 0.525 0.475 0.725 0.275 0.625 0.375 0.625 0.375 0.625 0.375 0.675 0.325 0.725 0.275 0.725 0.275 0.675 0.325 0.825 0.175 0.825 0.175 0.725 0.275 0.725 0.275 0.625 0.375 0.825 0.175 0.925 0.07499999999999996 0.975 0.02500000000000002 0.725 0.275 0.725 0.275 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 1 0 0.975 0.02500000000000002 0.975 0.02500000000000002</probabilities>
+		</cpt>
+		<cpt id="Rep_H8" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Rel_H8 favourable_tide_conditiones</parents>
+			<probabilities>1 0 0 1 0.5 0.5 0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="Source_H9" dynamic="plate">
+			<state id="x1_Operators_flagging_Ship_blacklisted_for_IUU_fishing" />
+			<state id="x2_Operators_flagging__Ship_blacklisted_for_smuggling_of_goods" />
+			<state id="x3_Operators_flagging_Track_compatible_with_ship_engaged_in_fishing" />
+			<state id="x4_Operators_flagging_Speed_compatible_with_ship_engaged_in_fishing" />
+			<state id="x5_Operators_flagging_Numerous_persons_on_board__based_on_imagery" />
+			<state id="x6_Operators_flagging_Numerous_persons_on_board__based_on_reports_of_witnesses" />
+			<state id="x7_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x8_Operators_flagging_Number_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x9_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x10_Operators_flagging_Size_of_boats_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x11_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x12_Operators_flagging_Boats_type_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x13_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_imagery" />
+			<state id="x14_Operators_flagging_Presence_of_paraphernalia_compatible_with_a_PAG__based_on_reports_of_witnesses" />
+			<state id="x19_Operators_flagging_Vessel_type_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x20_Operators_flagging_Vessel_size_compatible_with_specific_activity__based_on_imagery" />
+			<state id="x23_Operators_flagging_Ship_position_in_restricted_area" />
+			<state id="x24__Operators_flagging_Ship_position_in_restricted_area__based_on_report_of_witness" />
+			<state id="x25_Operators_flagging_Duration_of_loitering_conditions_compatible_with_a_specific_activity" />
+			<state id="x26_Operators_flagging_Ship_position_near_a_wreckage" />
+			<state id="x27__Operators_flagging_Ship_position_near_a_wreckage__based_on_report_of_a_witness" />
+			<state id="x28_Operators_flagging_Ship_position_near_a_buoy" />
+			<state id="x29_Fusion_service_reporting_on_Compatible_tide_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x30_Fusion_service_reporting_on_Compatible_sea_state_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x31_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity_based_on_forecasts" />
+			<state id="x32_Fusion_service_generating_alert_on__Ship_blacklisted_for_IUU_fishing" />
+			<state id="x33_Fusion_service_generating_alert_on_Vessels_approaching" />
+			<state id="x34_Fusion_service_generating_alert_on_Heading_towards_coastal_area" />
+			<state id="x35_Fusion_service_generating_alert_on_Heading_towards_shore" />
+			<state id="x36_Fusion_service_generating_alert_on__Contact_with_no_AIS" />
+			<state id="x37_Fusion_service_generating_alert_on_Drifting_kinematic_conditions" />
+			<state id="x38_Fusion_service_generating_alert_on_Abrupt_change_of_speed" />
+			<state id="x39_Fusion_service_generating_alert_on_Abrupt_change_of_course" />
+			<state id="x40_Fusion_service_generating_alert_on_Ship_reaching_its_speed_limit" />
+			<state id="x41_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_radar" />
+			<state id="x42_Fusion_service_generating_alert_on_Duration_of_loitering_conditions_compatible_with_a_specific_activity__based_on_AIS" />
+			<state id="x43_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_AIS" />
+			<state id="x44_Fusion_service_generating_alert_on_Ship_position_in_restricted_area__based_on_radar" />
+			<state id="x45_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_charts" />
+			<state id="x46_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_charts" />
+			<state id="x47_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_radar_and_AToN_message" />
+			<state id="x48_Fusion_service_reporting_on_Ship_not_near_a_buoy__based_on_AIS_and_AToN_message" />
+			<state id="x49_Fusion_service_reporting_on_Compatible_visibility_conditions_with_specific_activity__based_on_forecasts" />
+			<state id="x50_Radar_tracker_data_on_speed" />
+			<state id="x51_AIS_data_on_vessel_type" />
+			<state id="x52_AIS_data_on_vessel_size" />
+			<state id="x53_AIS_data_on_speed" />
+			<probabilities>0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085 0.02127659574468085</probabilities>
+		</cpt>
+		<cpt id="Rel_H9" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Source_H9</parents>
+			<probabilities>1 0 1 0 0.675 0.325 0.725 0.275 0.875 0.125 0.825 0.175 0.1 0.9 0.1 0.9 0 1 0 1 0.1 0.9 0.1 0.9 0.05 0.95 0.05 0.95 0.575 0.425 0.45 0.55 0.725 0.275 0.675 0.325 0.775 0.225 0.575 0.425 0.525 0.475 0.725 0.275 0.625 0.375 0.625 0.375 0.625 0.375 0.675 0.325 0.725 0.275 0.725 0.275 0.675 0.325 0.825 0.175 0.825 0.175 0.725 0.275 0.725 0.275 0.625 0.375 0.825 0.175 0.925 0.07499999999999996 0.975 0.02500000000000002 0.725 0.275 0.725 0.275 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 0.875 0.125 0.975 0.02500000000000002 1 0 0.975 0.02500000000000002 0.975 0.02500000000000002</probabilities>
+		</cpt>
+		<cpt id="Rep_H9" dynamic="plate">
+			<state id="true" />
+			<state id="false" />
+			<parents>Rel_H9 favourable_visibility</parents>
+			<probabilities>1 0 0 1 0.5 0.5 0.5 0.5</probabilities>
+		</cpt>
+	</nodes>
+	<dynamic numslices="5">
+		<cpt id="favourable_vessel_location" order="1">
+			<parents>favourable_vessel_location</parents>
+			<probabilities>0.99 0.01000000000000001 0.7 0.3 0.7 0.3 0.5 0.5 0.7 0.3 0.5 0.5 0.5 0.5 0.3 0.7 0.7 0.3 0.5 0.5 0.5 0.5 0.3 0.7 0.5 0.5 0.3 0.7 0.3 0.7 0.01 0.99</probabilities>
+		</cpt>
+		<cpt id="favourable_vessel_kinematic_conditiones" order="1">
+			<parents>favourable_vessel_kinematic_conditiones</parents>
+			<probabilities>0.99 0.01000000000000001 0.75 0.25 0.75 0.25 0.25 0.75 0.75 0.25 0.25 0.75 0.25 0.75 0.01 0.99</probabilities>
+		</cpt>
+		<cpt id="favourable_environmental_conditiones" order="1">
+			<parents>favourable_environmental_conditiones</parents>
+			<probabilities>0.99 0.01000000000000001 0.7 0.3 0.7 0.3 0.5 0.5 0.7 0.3 0.5 0.5 0.5 0.5 0.3 0.7 0.7 0.3 0.5 0.5 0.5 0.5 0.3 0.7 0.5 0.5 0.3 0.7 0.3 0.7 0.01 0.99</probabilities>
+		</cpt>
+		<cpt id="Main_Situation" order="1">
+			<parents>Main_Situation</parents>
+			<probabilities>0.99 0.01000000000000001 0.75 0.25 0.75 0.25 0.5 0.5 0.75 0.25 0.5 0.5 0.5 0.5 0.5 0.5 0.75 0.25 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.25 0.75 0.75 0.25 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.25 0.75 0.5 0.5 0.5 0.5 0.5 0.5 0.25 0.75 0.5 0.5 0.25 0.75 0.25 0.75 0.01 0.99</probabilities>
+		</cpt>
+	</dynamic>
+	<extensions>
+		<genie version="1.0" app="GeNIe 2.2.2601.0 ACADEMIC" name="Illegal Diving" faultnameformat="nodestate">
+			<plate leftwidth="100" rightwidth="100">3 6 1566 839</plate>
+			<node id="Main_Situation">
+				<name>Illegal Diving</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>760 64 808 94</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="favourable_vessel_location">
+				<name>Favourable vessel location</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>357 224 405 254</position>
+				<barchart active="true" width="203" height="78" />
+			</node>
+			<node id="favourable_vessel_kinematic_conditiones">
+				<name>Favourable vessel kinematic conditions</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>679 224 727 254</position>
+				<barchart active="true" width="246" height="78" />
+			</node>
+			<node id="no_ais">
+				<name>H6: No AIS</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>920 364 968 394</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="favourable_environmental_conditiones">
+				<name>Favourable environmental conditions</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1220 224 1268 254</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="prohibited_to_idle_area">
+				<name>H2: Prohibited to idle area</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>320 364 368 394</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="far_away_from_buoy">
+				<name>H3: Far away from buoy</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>460 364 508 394</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="near_wreckage">
+				<name>H1: Near wreckage</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>180 364 228 394</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="favourable_duration">
+				<name>H5: Favourable duration</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>760 364 808 394</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="null_speed">
+				<name>H4: Null speed</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>620 364 668 394</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="favourable_tide_conditiones">
+				<name>H8: Favourable tide conditions</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1220 364 1268 394</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="favourable_sea_state">
+				<name>H7: Favourable sea state</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1080 364 1128 394</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="favourable_visibility">
+				<name>H9: Favourable visibility</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1360 364 1408 394</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Rep_H1">
+				<name>Rep H1</name>
+				<interior color="cc99ff" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>166 464 243 495</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Rel_H1">
+				<name>Rel H1</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>167 564 241 594</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Rep_H2">
+				<name>Rep H2</name>
+				<interior color="cc99ff" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>306 464 383 495</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Rel_H2">
+				<name>Rel H2</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>307 564 381 594</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Source_H2">
+				<name>Source H2</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>299 704 389 744</position>
+				<barchart width="128" height="138" />
+			</node>
+			<node id="Rep_H6">
+				<name>Rep H6</name>
+				<interior color="cc99ff" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>906 464 983 495</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Rel_H6">
+				<name>Rel H6</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>907 564 981 594</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Source_H6">
+				<name>Source H6</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>899 704 989 744</position>
+				<barchart width="128" height="78" />
+			</node>
+			<node id="Source_H1">
+				<name>Source H1</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>159 704 249 744</position>
+				<barchart width="128" height="138" />
+			</node>
+			<node id="Rep_H3">
+				<name>Rep H3</name>
+				<interior color="cc99ff" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>446 464 523 495</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Rel_H3">
+				<name>Rel H3</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>447 564 521 594</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Source_H3">
+				<name>Source H3</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>439 704 529 744</position>
+				<barchart width="128" height="168" />
+			</node>
+			<node id="Rep_H4">
+				<name>Rep H4</name>
+				<interior color="cc99ff" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>606 464 683 495</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Rel_H4">
+				<name>Rel H4</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>607 564 681 594</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Source_H4">
+				<name>Source H4</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>599 704 689 744</position>
+				<barchart width="128" height="138" />
+			</node>
+			<node id="Rep_H5">
+				<name>Rep H5</name>
+				<interior color="cc99ff" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>746 464 823 495</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Rel_H5">
+				<name>Rel H5</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>747 564 821 594</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Source_H5">
+				<name>Source H5</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>739 704 829 744</position>
+				<barchart width="128" height="138" />
+			</node>
+			<node id="Rep_H7">
+				<name>Rep H7</name>
+				<interior color="cc99ff" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1066 464 1143 495</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Rel_H7">
+				<name>Rel H7</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1067 564 1141 594</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Source_H7">
+				<name>Source H7</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1059 704 1149 744</position>
+				<barchart width="128" height="78" />
+			</node>
+			<node id="Rep_H8">
+				<name>Rep H8</name>
+				<interior color="cc99ff" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1206 464 1283 495</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Rel_H8">
+				<name>Rel H8</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1207 564 1281 594</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Source_H8">
+				<name>Source H8</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1199 704 1289 744</position>
+				<barchart width="128" height="78" />
+			</node>
+			<node id="Rep_H9">
+				<name>Rep H9</name>
+				<interior color="cc99ff" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1346 464 1423 495</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Rel_H9">
+				<name>Rel H9</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1347 564 1421 594</position>
+				<barchart active="true" width="128" height="78" />
+			</node>
+			<node id="Source_H9">
+				<name>Source H9</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>1339 704 1429 744</position>
+				<barchart width="128" height="78" />
+			</node>
+		</genie>
+	</extensions>
+</smile>

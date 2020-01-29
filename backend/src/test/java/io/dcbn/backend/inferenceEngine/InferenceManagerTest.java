@@ -23,10 +23,9 @@ import static org.mockito.Mockito.*;
 
 public class InferenceManagerTest {
 
+    private static final int NUM_TIME_SLICES = 5;
     private static final Position ZERO_POSITION = new Position(0, 0);
     private static final AreaOfInterest AREA = new AreaOfInterest("TEST_AREA", null);
-
-    private static final int NUM_TIME_SLICES = 5;
 
     private InferenceManager inferenceManager;
 
