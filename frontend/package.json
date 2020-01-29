@@ -10,10 +10,15 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@egjs/hammerjs": "^2.0.17",
     "axios": "^0.19.1",
     "core-js": "^3.4.4",
+    "keycharm": "^0.3.1",
     "material-design-icons-iconfont": "^5.0.1",
     "register-service-worker": "^1.6.2",
+    "vis-data": "^6.3.5",
+    "vis-network": "^7.3.0",
+    "vis-util": "^1.1.8",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.5",
     "vue-class-component": "^7.0.2",
