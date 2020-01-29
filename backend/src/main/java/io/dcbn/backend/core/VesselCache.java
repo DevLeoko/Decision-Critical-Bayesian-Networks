@@ -1,6 +1,7 @@
 package io.dcbn.backend.core;
 
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
+import de.fraunhofer.iosb.iad.maritime.datamodel.VesselType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,24 @@ public class VesselCache {
 
     public Set<String> getAllVesselUuids() {
         return vesselCache.keySet();
+    }
+
+    public Set<Vessel> getAllVesselsInTimeSlice(int timeSlice) {
+        Set<Vessel> vessels = new HashSet<>();
+        for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
+            vessels.add(entry.getValue()[timeSlice]);
+        }
+        return vessels;
+    }
+
+    public Set<Vessel> getAllVesselsInTimeSliceByType(int timeSlice, VesselType type) {
+        Set<Vessel> vessels = new HashSet<>();
+        for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
+            if (entry.getValue()[0].getVesselType() == type) {
+                vessels.add(entry.getValue()[timeSlice]);
+            }
+        }
+        return vessels;
     }
 
     public void insert(Vessel vessel) throws IllegalArgumentException {

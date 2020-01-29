@@ -23,6 +23,8 @@ public class FunctionProvider {
 
     @Setter
     protected int currentTimeSlice;
+    @Setter
+    protected Vessel currentVessel;
 
     /**
      * Creates a new FunctionProvider without any predefined functions.
