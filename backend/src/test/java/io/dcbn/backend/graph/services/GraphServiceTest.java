@@ -60,17 +60,17 @@ public class GraphServiceTest {
 
     @Test
     public void hasCyclesTest() {
-        Node nodeOne = new Node(0, "nodeOne", null, null, "", null,
+        Node nodeOne = new Node("nodeOne", null, null, "", null,
                 StateType.BOOLEAN, ZERO_POSITION);
-        Node nodeTwo = new Node(0, "nodeTwo", null, null, "", null,
+        Node nodeTwo = new Node("nodeTwo", null, null, "", null,
                 StateType.BOOLEAN, ZERO_POSITION);
 
         List<Node> nodeOneParentsList = new ArrayList<>();
         nodeOneParentsList.add(nodeTwo);
         double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}};
-        NodeDependency nodeOne0Dep = new NodeDependency(0, nodeOneParentsList,
+        NodeDependency nodeOne0Dep = new NodeDependency(nodeOneParentsList,
                 new ArrayList<>(), probabilities);
-        NodeDependency nodeOneTDep = new NodeDependency(0, nodeOneParentsList, new ArrayList<>(),
+        NodeDependency nodeOneTDep = new NodeDependency(nodeOneParentsList, new ArrayList<>(),
                 probabilities);
         nodeOne.setTimeZeroDependency(nodeOne0Dep);
         nodeOne.setTimeTDependency(nodeOneTDep);
@@ -78,9 +78,9 @@ public class GraphServiceTest {
         List<Node> nodeTwoParentsList = new ArrayList<>();
         nodeTwoParentsList.add(nodeOne);
         double[][] probabilitiesNodeTwo = {{0.8, 0.2}, {0.6, 0.4}};
-        NodeDependency nodeTwo0Dep = new NodeDependency(0, nodeTwoParentsList,
+        NodeDependency nodeTwo0Dep = new NodeDependency(nodeTwoParentsList,
                 new ArrayList<>(), probabilitiesNodeTwo);
-        NodeDependency nodeTwoTDep = new NodeDependency(0, nodeTwoParentsList, new ArrayList<>(),
+        NodeDependency nodeTwoTDep = new NodeDependency(nodeTwoParentsList, new ArrayList<>(),
                 probabilitiesNodeTwo);
         nodeTwo.setTimeZeroDependency(nodeTwo0Dep);
         nodeTwo.setTimeTDependency(nodeTwoTDep);
@@ -93,25 +93,25 @@ public class GraphServiceTest {
 
     @Test
     public void hasNoCyclesTest() {
-        Node nodeOne = new Node(0, "nodeOne", null, null, "", null,
+        Node nodeOne = new Node("nodeOne", null, null, "", null,
                 StateType.BOOLEAN, ZERO_POSITION);
-        Node nodeTwo = new Node(0, "nodeTwo", null, null, "", null,
+        Node nodeTwo = new Node("nodeTwo", null, null, "", null,
                 StateType.BOOLEAN, ZERO_POSITION);
 
         List<Node> nodeOneParentsList = new ArrayList<>();
         nodeOneParentsList.add(nodeTwo);
         double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}};
-        NodeDependency nodeOne0Dep = new NodeDependency(0, nodeOneParentsList,
+        NodeDependency nodeOne0Dep = new NodeDependency(nodeOneParentsList,
                 new ArrayList<>(), probabilities);
-        NodeDependency nodeOneTDep = new NodeDependency(0, nodeOneParentsList, new ArrayList<>(),
+        NodeDependency nodeOneTDep = new NodeDependency(nodeOneParentsList, new ArrayList<>(),
                 probabilities);
         nodeOne.setTimeZeroDependency(nodeOne0Dep);
         nodeOne.setTimeTDependency(nodeOneTDep);
 
         double[][] probabilitiesNodeTwo = {{0.8, 0.2}, {0.6, 0.4}};
-        NodeDependency nodeTwo0Dep = new NodeDependency(0, new ArrayList<>(),
+        NodeDependency nodeTwo0Dep = new NodeDependency(new ArrayList<>(),
                 new ArrayList<>(), probabilitiesNodeTwo);
-        NodeDependency nodeTwoTDep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+        NodeDependency nodeTwoTDep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
                 probabilitiesNodeTwo);
         nodeTwo.setTimeZeroDependency(nodeTwo0Dep);
         nodeTwo.setTimeTDependency(nodeTwoTDep);

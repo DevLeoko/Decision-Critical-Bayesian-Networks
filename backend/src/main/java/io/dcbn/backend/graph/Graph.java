@@ -39,9 +39,9 @@ public class Graph {
     @Valid
     private List<Node> nodes;
 
-    public Node findNodeByName(String name) {
-        return nodes.stream()
-                .filter(var -> var.getName().equals(name))
-                .collect(Collectors.toList()).get(0);
+    public Graph(String name, int timeSlices, List<Node> nodes) {
+        this.id = 0;
+        this.timeSlices = timeSlices;
+        this.nodes = nodes;
     }
 }

@@ -1,6 +1,7 @@
 package io.dcbn.backend.inferenceEngine;
 
 
+import com.google.common.collect.Lists;
 import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.core.VesselCache;
@@ -37,42 +38,42 @@ public class InferenceManagerTest {
 
     @BeforeEach
     public void setUp() {
-         smuggling = new Node(0, "smuggling", null, null, "", null, StateType.BOOLEAN,
+         smuggling = new Node("smuggling", null, null, "", null, StateType.BOOLEAN,
                 ZERO_POSITION);
-         nullSpeed = new Node(0, "nullSpeed", null, null, "",
+         nullSpeed = new Node("nullSpeed", null, null, "",
                 "nullSpeed", StateType.BOOLEAN, ZERO_POSITION);
-         inTrajectoryArea = new Node(0, "inTrajectoryArea", null, null, "",
+         inTrajectoryArea = new Node("inTrajectoryArea", null, null, "",
                 "inTrajectory", StateType.BOOLEAN, ZERO_POSITION);
-         isInReportedArea = new Node(0, "isInReportedArea", null, null, "",
+         isInReportedArea = new Node("isInReportedArea", null, null, "",
                 "inArea", StateType.BOOLEAN, ZERO_POSITION);
 
-        List<Node> smugglingParentsList = Arrays.asList(isInReportedArea, inTrajectoryArea, nullSpeed);
+        List<Node> smugglingParentsList = Lists.reverse(Arrays.asList(isInReportedArea, inTrajectoryArea, nullSpeed));
         double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}, {0.4, 0.6}, {0.4, 0.6}, {0.2, 0.8},
                 {0.2, 0.8}, {0.001, 0.999}, {0.001, 0.999}};
-        NodeDependency smuggling0Dep = new NodeDependency(0, smugglingParentsList,
+        NodeDependency smuggling0Dep = new NodeDependency(smugglingParentsList,
                 new ArrayList<>(), probabilities);
-        NodeDependency smugglingTDep = new NodeDependency(0, smugglingParentsList, new ArrayList<>(),
+        NodeDependency smugglingTDep = new NodeDependency(smugglingParentsList, new ArrayList<>(),
                 probabilities);
         smuggling.setTimeZeroDependency(smuggling0Dep);
         smuggling.setTimeTDependency(smugglingTDep);
 
-        NodeDependency nS0Dep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+        NodeDependency nS0Dep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
                 new double[][]{{0.7, 0.3}});
-        NodeDependency nSTDep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+        NodeDependency nSTDep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
                 new double[][]{{0.7, 0.3}});
         nullSpeed.setTimeZeroDependency(nS0Dep);
         nullSpeed.setTimeTDependency(nSTDep);
 
-        NodeDependency iTA0Dep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+        NodeDependency iTA0Dep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
                 new double[][]{{0.8, 0.2}});
-        NodeDependency iTATDep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+        NodeDependency iTATDep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
                 new double[][]{{0.8, 0.2}});
         inTrajectoryArea.setTimeZeroDependency(iTA0Dep);
         inTrajectoryArea.setTimeTDependency(iTATDep);
 
-        NodeDependency iIRA0Dep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+        NodeDependency iIRA0Dep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
                 new double[][]{{0.8, 0.2}});
-        NodeDependency iIRATDep = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(),
+        NodeDependency iIRATDep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
                 new double[][]{{0.8, 0.2}});
         isInReportedArea.setTimeZeroDependency(iIRA0Dep);
         isInReportedArea.setTimeTDependency(iIRATDep);
