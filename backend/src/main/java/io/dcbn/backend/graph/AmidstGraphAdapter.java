@@ -46,6 +46,8 @@ public class AmidstGraphAdapter {
     public AmidstGraphAdapter(Graph graph) {
         this.adaptedGraph = graph;
         DynamicVariables dynamicVariables = new DynamicVariables();
+
+        tempChildVariables = new ArrayList<>();
         variables = new ArrayList<>();
 
         //---------------------------------Creating all the variables------------------------------
@@ -54,11 +56,10 @@ public class AmidstGraphAdapter {
             Variable variable = dynamicVariables.newMultinomialDynamicVariable(node.getName(), states);
             variables.add(new Pair<>(variable, node));
             if (node.isValueNode() && ((ValueNode) node).getValue().length == 1) {
-             dynamicVariables.newMultinomialDynamicVariable(TEMP_CHILD + node.getName(), states);
+                Variable tempChild = dynamicVariables.newMultinomialDynamicVariable(TEMP_CHILD + node.getName(), states);
+                tempChildVariables.add(tempChild);
             }
         }
-
-        tempChildVariables = new ArrayList<>();
 
         DynamicDAG dynamicDAG = new DynamicDAG(dynamicVariables);
 
@@ -89,10 +90,11 @@ public class AmidstGraphAdapter {
                         .forEach(variableParentSetT::addParent);
                 // case it is has a virtual Evidence
                 if (node.isValueNode() && ((ValueNode) node).getValue().length == 1) {
-                    Variable tempChild  = dynamicVariables.getVariableByName(TEMP_CHILD + node.getName());
+                    Variable tempChild = tempChildVariables.stream()
+                            .filter(var -> var.getName().equals(TEMP_CHILD + node.getName()))
+                            .findAny().orElse(null);
                     dynamicDAG.getParentSetTime0(tempChild).addParent(variable);
                     dynamicDAG.getParentSetTimeT(tempChild).addParent(variable);
-                    tempChildVariables.add(tempChild);
                 }
         }
 
@@ -138,7 +140,9 @@ public class AmidstGraphAdapter {
         }
 
         for(Variable variable : tempChildVariables) {
-            ValueNode node = (ValueNode) graph.findNodeByName(variable.getName().replace(TEMP_CHILD, ""));
+            ValueNode node = (ValueNode) variables.stream()
+                    .filter(var -> var.getKey().getName().equals(variable.getName().replace(TEMP_CHILD, "")))
+                    .findAny().map(Pair::getValue).orElse(null);
             Multinomial_MultinomialParents multinomialParentsT0 = dbn.getConditionalDistributionTime0(variable);
             Multinomial_MultinomialParents multinomialParentsTT = dbn.getConditionalDistributionTimeT(variable);
             multinomialParentsT0.getMultinomial(0).setProbabilities(new double[] {node.getValue()[0][0], node.getValue()[0][1]});
@@ -146,8 +150,6 @@ public class AmidstGraphAdapter {
             multinomialParentsTT.getMultinomial(0).setProbabilities(new double[] {node.getValue()[0][0], node.getValue()[0][1]});
             multinomialParentsTT.getMultinomial(1).setProbabilities(new double[] {node.getValue()[0][1], node.getValue()[0][0]});
         }
-
-
     }
 
     /**
