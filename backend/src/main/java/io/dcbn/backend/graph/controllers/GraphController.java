@@ -1,15 +1,23 @@
 package io.dcbn.backend.graph.controllers;
 
 import io.dcbn.backend.graph.Graph;
+import io.dcbn.backend.graph.converters.GenieConverter;
 import io.dcbn.backend.graph.repositories.GraphRepository;
 import io.dcbn.backend.graph.services.GraphService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.xml.sax.SAXException;
 
 import javax.validation.Valid;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -112,5 +120,43 @@ public class GraphController {
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+    }
+
+
+    @PutMapping("/graphs/import")
+    public void importGraphFromGenie(@RequestParam("graph") MultipartFile uploadedFile) {
+        if (uploadedFile.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No file uploaded");
+        }
+
+
+        File graphFile;
+        GenieConverter genieConverter = new GenieConverter();
+        try {
+            graphFile = convert(uploadedFile);
+        } catch (IOException e) {
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "File upload failed");
+        }
+        Graph graph;
+        try {
+            graph = genieConverter.fromGenieToDcbn(graphFile);
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File conversion failed");
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        repository.save(graph);
+    }
+
+    private File convert(MultipartFile file) throws IOException, IllegalArgumentException {
+        File convFile = new File(file.getOriginalFilename());
+        if (!convFile.getName().endsWith(".xdsl")) {
+            throw new IllegalArgumentException("Wrong file type (.xdsl required)");
+        }
+        convFile.createNewFile();
+        try (InputStream is = file.getInputStream()) {
+            Files.copy(is, convFile.toPath());
+        }
+        return convFile;
     }
 }

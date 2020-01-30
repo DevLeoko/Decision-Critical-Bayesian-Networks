@@ -29,7 +29,7 @@ public class GenieConverter {
     private static final Position ZERO_POSITION = new Position(0, 0);
 
 
-    public Graph fromGenieToDcbn(File file) throws ParserConfigurationException, IOException, SAXException {
+    public Graph fromGenieToDcbn(File file) throws ParserConfigurationException, IOException, SAXException, IllegalArgumentException{
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(file);
