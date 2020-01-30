@@ -7,7 +7,9 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +39,7 @@ public class GenieConverterTest {
         Node isInReportedArea = new Node("isInReportedArea", null, null, "",
                 "inArea", StateType.BOOLEAN, ZERO_POSITION);
 
-        List<Node> smugglingParentsList = Arrays.asList(isInReportedArea, inTrajectoryArea, nullSpeed);
+        List<Node> smugglingParentsList = Arrays.asList(nullSpeed, inTrajectoryArea, isInReportedArea);
         double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}, {0.4, 0.6}, {0.4, 0.6}, {0.2, 0.8},
                 {0.2, 0.8}, {0.001, 0.999}, {0.001, 0.999}};
         NodeDependency smuggling0Dep = new NodeDependency(smugglingParentsList,
@@ -79,11 +81,11 @@ public class GenieConverterTest {
 
     @Test
     public void testGenieToDcbn() throws IOException, SAXException, ParserConfigurationException {
-        Graph convertedGraph = genieConverter.fromGenieToDcbn(genieFile);
+        Graph convertedGraph = genieConverter.fromGenieToDcbn(new FileInputStream(genieFile));
         AmidstGraphAdapter convertedAdapter = new AmidstGraphAdapter(convertedGraph);
-//        System.out.println(adapter.getDbn());
-//        System.out.println("---------------------");
-//        System.out.println(convertedAdapter.getDbn());
+        System.out.println(adapter.getDbn());
+        System.out.println("---------------------");
+        System.out.println(convertedAdapter.getDbn());
         assertTrue(adapter.getDbn().equalDBNs(convertedAdapter.getDbn(), 0));
     }
 }

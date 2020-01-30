@@ -16,6 +16,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +30,12 @@ public class GenieConverter {
     private static final Position ZERO_POSITION = new Position(0, 0);
 
 
-    public Graph fromGenieToDcbn(File file) throws ParserConfigurationException, IOException, SAXException, IllegalArgumentException{
+    /**
+     * This method takes a .xdsl file (in the genie format) and converts it to a {@link Graph}.
+     * @param file the .xdsl file (in the genie format).
+     * @return the converted {@link Graph}.
+     */
+    public Graph fromGenieToDcbn(InputStream file) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(file);
@@ -137,6 +143,12 @@ public class GenieConverter {
         return new Graph(name, timeSlices, dcbnNodes);
     }
 
+    public File fromDcbnToGenie(Graph graph) {
+        return null;
+    }
+
+
+
     /**
      * Returns the {@link Node} with the given id.
      *
@@ -206,8 +218,7 @@ public class GenieConverter {
             String[] parentsT0TTString = extractChildren(node, "parents")
                     .get(0).getTextContent().split(" ");
             List<io.dcbn.backend.graph.Node> parentNodes = new ArrayList<>();
-            //going backwards for the correct setting of the probabilities
-            for (int i = parentsT0TTString.length - 1; i >= 0; i--) {
+            for (int i = 0; i < parentsT0TTString.length; i++) {
                 parentNodes.add(findDcbnNodeByName(existingDcbnNodes, parentsT0TTString[i]));
             }
             return parentNodes;
