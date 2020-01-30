@@ -20,6 +20,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 class EvidenceFormulaEvaluatorTest {
 
     private EvidenceFormulaEvaluator evaluator;
@@ -29,16 +30,16 @@ class EvidenceFormulaEvaluatorTest {
 
     private static AreaOfInterest area = new AreaOfInterest("TEST_AREA", null);
 
-    private static Object inArea(List<Object> parameters, Set<AreaOfInterest> correlatedAois) {
+    private static Object inArea(List<Object> parameters) {
         if ("TEST_AREA".equals(parameters.get(0))) {
-            correlatedAois.add(area);
+            testFunctions.correlatedAois.add(area);
             return true;
         }
         return false;
     }
 
-    private static Object addTimeSlice(List<Object> parameters, int timeSlice) {
-        return (double) parameters.get(0) + timeSlice;
+    private static Object addTimeSlice(List<Object> parameters) {
+        return (double) parameters.get(0) + testFunctions.currentTimeSlice;
     }
 
     @BeforeAll
@@ -48,12 +49,14 @@ class EvidenceFormulaEvaluatorTest {
         vessel.setLongitude(12.0);
 
         Map<String, FunctionWrapper> functions = new HashMap<>();
-        functions.put("inArea", new FunctionWrapper(Collections.singletonList(String.class), (params, vessel, aois, timeSlice) -> inArea(params, aois)));
-        functions.put("sum", new FunctionWrapper(Arrays.asList(Double.class, Double.class), (params, vessels, aois, timeSlice) -> (double) params.get(0) + (double) params.get(1)));
-        functions.put("isTrue", new FunctionWrapper(Collections.singletonList(Boolean.class), (params, vessels, aois, timeSlice) -> params.get(0)));
-        functions.put("addTimeSlice", new FunctionWrapper(Collections.singletonList(Double.class), (params, vessel, aois, timeSlice) -> addTimeSlice(params, timeSlice)));
+        functions.put("inArea", new FunctionWrapper(Collections.singletonList(String.class), EvidenceFormulaEvaluatorTest::inArea));
+        functions.put("sum", new FunctionWrapper(Arrays.asList(Double.class, Double.class), (params) -> (double) params.get(0) + (double) params.get(1)));
+        functions.put("isTrue", new FunctionWrapper(Collections.singletonList(Boolean.class), (params) -> params.get(0)));
+        functions.put("addTimeSlice", new FunctionWrapper(Collections.singletonList(Double.class), EvidenceFormulaEvaluatorTest::addTimeSlice));
 
         testFunctions = new FunctionProvider(functions);
+        testFunctions.setCurrentTimeSlice(1);
+
     }
 
     @BeforeEach

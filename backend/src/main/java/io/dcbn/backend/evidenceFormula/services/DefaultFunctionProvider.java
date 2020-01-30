@@ -17,7 +17,7 @@ public class DefaultFunctionProvider extends FunctionProvider {
     private VesselCache vesselCache;
     private AoiCache aoiCache;
 
-    private Object inArea(List<Object> parameters, Set<Vessel> ignored, Set<AreaOfInterest> correlatedAois, int timeSlice) {
+    private Object inArea(List<Object> parameters) {
         String aoiName = (String) parameters.get(0);
         if (aoiCache.getAoi(aoiName) == null) {
             throw new SymbolNotFoundException(aoiName);
@@ -30,14 +30,14 @@ public class DefaultFunctionProvider extends FunctionProvider {
         return aoi.getGeometry().contains(vesselPoint);
     }
 
-    private Object distanceToNearest(List<Object> parameters, Set<Vessel> correlatedVessel, Set<AreaOfInterest> correlatedAois, int timeSlice) {
-        Set<Vessel> allVessels = vesselCache.getAllVesselsInTimeSlice(timeSlice);
-        return distance(currentVessel, allVessels, correlatedVessel);
+    private Object distanceToNearest(List<Object> parameters) {
+        Set<Vessel> allVessels = vesselCache.getAllVesselsInTimeSlice(currentTimeSlice);
+        return distance(currentVessel, allVessels);
     }
 
-    public Object distanceToNearestType(List<Object> parameters, Set<Vessel> correlatedVessel, Set<AreaOfInterest> correlatedAois, int timeSlice) {
-        Set<Vessel> allVesselsByType = vesselCache.getAllVesselsInTimeSliceByType(timeSlice, (VesselType) parameters.get(0));
-        return distance(currentVessel, allVesselsByType, correlatedVessel);
+    private Object distanceToNearestType(List<Object> parameters) {
+        Set<Vessel> allVesselsByType = vesselCache.getAllVesselsInTimeSliceByType(currentTimeSlice, (VesselType) parameters.get(0));
+        return distance(currentVessel, allVesselsByType);
     }
 
     private Point createPoint(Vessel vessel) {
@@ -47,7 +47,7 @@ public class DefaultFunctionProvider extends FunctionProvider {
         return new Point(coordsSequence, new GeometryFactory());
     }
 
-    private double distance(Vessel vessel, Set<Vessel> vesselSet, Set<Vessel> correlatedVessel) {
+    private double distance(Vessel vessel, Set<Vessel> vesselSet) {
         Point vesselPoint = createPoint(vessel);
         double distance = Double.POSITIVE_INFINITY;
         Vessel currentCorrelatedVessel = null;
@@ -64,12 +64,10 @@ public class DefaultFunctionProvider extends FunctionProvider {
             }
         }
         if (currentCorrelatedVessel != null) {
-            correlatedVessel.add(currentCorrelatedVessel);
+            correlatedVessels.add(currentCorrelatedVessel);
         }
         return distance;
     }
-
-
 
     public DefaultFunctionProvider(VesselCache vesselCache, AoiCache aoiCache) {
         this.vesselCache = vesselCache;

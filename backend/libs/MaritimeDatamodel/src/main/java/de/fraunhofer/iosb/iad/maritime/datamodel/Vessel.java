@@ -2,9 +2,11 @@ package de.fraunhofer.iosb.iad.maritime.datamodel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 
 @Data
+@EqualsAndHashCode
 public class Vessel implements Cloneable {
 
 	private final long timestamp;
@@ -52,7 +54,6 @@ public class Vessel implements Cloneable {
 	@SneakyThrows
 	public static Vessel copy (Vessel toCopy) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		Vessel deepCopy = objectMapper.readValue(objectMapper.writeValueAsString(toCopy), Vessel.class);
-		return deepCopy;
+		return objectMapper.readValue(objectMapper.writeValueAsString(toCopy), Vessel.class);
 	}
 }

@@ -75,8 +75,7 @@ public class FunctionProvider {
             }
         }
 
-        return wrapper.getFunction().apply(parameters, correlatedVessels, correlatedAois,
-                currentTimeSlice);
+        return wrapper.getFunction().apply(parameters);
     }
 
     /**

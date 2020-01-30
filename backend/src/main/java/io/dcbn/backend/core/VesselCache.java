@@ -35,6 +35,9 @@ public class VesselCache {
     }
 
     public Set<Vessel> getAllVesselsInTimeSlice(int timeSlice) {
+        if(timeSlice < 0 || timeSlice > timeSteps - 1) {
+            throw new IllegalArgumentException("time slice must be between 0 and 'timeSteps' - 1");
+        }
         Set<Vessel> vessels = new HashSet<>();
         for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
             vessels.add(entry.getValue()[timeSlice]);
