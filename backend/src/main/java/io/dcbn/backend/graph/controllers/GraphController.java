@@ -132,31 +132,14 @@ public class GraphController {
 
         File graphFile;
         GenieConverter genieConverter = new GenieConverter();
-        try {
-            graphFile = convert(uploadedFile);
-        } catch (IOException e) {
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "File upload failed");
-        }
         Graph graph;
         try {
-            graph = genieConverter.fromGenieToDcbn(graphFile);
+            graph = genieConverter.fromGenieToDcbn(uploadedFile.getInputStream());
         } catch (ParserConfigurationException | IOException | SAXException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File conversion failed");
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         repository.save(graph);
-    }
-
-    private File convert(MultipartFile file) throws IOException, IllegalArgumentException {
-        File convFile = new File(file.getOriginalFilename());
-        if (!convFile.getName().endsWith(".xdsl")) {
-            throw new IllegalArgumentException("Wrong file type (.xdsl required)");
-        }
-        convFile.createNewFile();
-        try (InputStream is = file.getInputStream()) {
-            Files.copy(is, convFile.toPath());
-        }
-        return convFile;
     }
 }
