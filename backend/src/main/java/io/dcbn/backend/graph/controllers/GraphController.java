@@ -123,7 +123,7 @@ public class GraphController {
     }
 
 
-    @PutMapping("/graphs/import")
+    @PostMapping("/graphs/import")
     public void importGraphFromGenie(@RequestParam("graph") MultipartFile uploadedFile) {
         if (uploadedFile.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No file uploaded");
