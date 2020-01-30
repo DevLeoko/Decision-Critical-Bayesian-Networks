@@ -3,7 +3,7 @@
     <menu-bar />
 
     <v-content>
-      <v-container fluid fill-height align-start py-0>
+      <v-container fluid fill-height align-start pa-0>
         <router-view></router-view>
       </v-container>
     </v-content>
