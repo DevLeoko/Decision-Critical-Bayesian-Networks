@@ -10,6 +10,7 @@ import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
 import io.dcbn.backend.graph.*;
 import io.dcbn.backend.graph.repositories.GraphRepository;
+import io.dcbn.backend.inference.Algorithm;
 import io.dcbn.backend.inference.InferenceManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,16 +29,21 @@ public class InferenceManagerTest {
     private static final AreaOfInterest AREA = new AreaOfInterest("TEST_AREA", null);
 
     private InferenceManager inferenceManager;
+    private Graph graph;
+    private Node smuggling;
+    private Node nullSpeed;
+    private Node inTrajectoryArea;
+    private Node isInReportedArea;
 
     @BeforeEach
     public void setUp() {
-        Node smuggling = new Node(0, "smuggling", null, null, "", null, StateType.BOOLEAN,
+         smuggling = new Node(0, "smuggling", null, null, "", null, StateType.BOOLEAN,
                 ZERO_POSITION);
-        Node nullSpeed = new Node(0, "nullSpeed", null, null, "",
+         nullSpeed = new Node(0, "nullSpeed", null, null, "",
                 "nullSpeed", StateType.BOOLEAN, ZERO_POSITION);
-        Node inTrajectoryArea = new Node(0, "inTrajectoryArea", null, null, "",
+         inTrajectoryArea = new Node(0, "inTrajectoryArea", null, null, "",
                 "inTrajectory", StateType.BOOLEAN, ZERO_POSITION);
-        Node isInReportedArea = new Node(0, "isInReportedArea", null, null, "",
+         isInReportedArea = new Node(0, "isInReportedArea", null, null, "",
                 "inArea", StateType.BOOLEAN, ZERO_POSITION);
 
         List<Node> smugglingParentsList = Arrays.asList(isInReportedArea, inTrajectoryArea, nullSpeed);
@@ -71,7 +77,7 @@ public class InferenceManagerTest {
         isInReportedArea.setTimeZeroDependency(iIRA0Dep);
         isInReportedArea.setTimeTDependency(iIRATDep);
 
-        Graph graph = new Graph(0, "testGraph", NUM_TIME_SLICES,
+        graph = new Graph(0, "testGraph", NUM_TIME_SLICES,
                 Arrays.asList(smuggling, nullSpeed, inTrajectoryArea, isInReportedArea));
 
         Vessel[] vessels = new Vessel[NUM_TIME_SLICES];
@@ -170,5 +176,22 @@ public class InferenceManagerTest {
 
         Vessel vessel = correlatedVessels.iterator().next();
         assertEquals("test", vessel.getUuid());
+    }
+
+    @Test
+    void testVirtualEvidence() {
+        List<Node> newNodes = new ArrayList<>();
+        smuggling.setEvidenceFormulaName(null);
+        nullSpeed.setEvidenceFormulaName(null);
+        inTrajectoryArea.setEvidenceFormulaName(null);
+        isInReportedArea.setEvidenceFormulaName(null);
+        newNodes.add(smuggling);
+        newNodes.add(nullSpeed);
+        ValueNode newInTrajectoryArea = new ValueNode(inTrajectoryArea, new double[][] {{0.6, 0.4}});
+        newNodes.add(newInTrajectoryArea);
+        newNodes.add(isInReportedArea);
+        graph = new Graph(0, "testGraph", NUM_TIME_SLICES, newNodes);
+        AmidstGraphAdapter adapter = new AmidstGraphAdapter(graph);
+        inferenceManager.calculateInference(adapter, null, Algorithm.IMPORTANCE_SAMPLING);
     }
 }
