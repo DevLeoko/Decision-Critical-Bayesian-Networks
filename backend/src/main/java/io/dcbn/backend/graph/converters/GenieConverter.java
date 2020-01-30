@@ -133,7 +133,8 @@ public class GenieConverter {
             String name = extractChildren(nodeAttribute, "name").get(0).getTextContent();
             findDcbnNodeByName(dcbnNodes, nodeID).setName(name);
         }
-        return new Graph(file.getName().replace(".xdsl", ""), timeSlices, dcbnNodes);
+        String name = root.getElementsByTagName("genie").item(0).getAttributes().getNamedItem("name").getNodeValue();
+        return new Graph(name, timeSlices, dcbnNodes);
     }
 
     /**
@@ -145,7 +146,8 @@ public class GenieConverter {
      */
     private Node getNodeWithID(NodeList nodeList, String id) {
         for (int i = 0; i < nodeList.getLength(); i++) {
-            if (nodeList.item(i).hasAttributes() && nodeList.item(i).getAttributes().getNamedItem(ID).getNodeValue().equals(id)) {
+            if (nodeList.item(i).hasAttributes()
+                    && nodeList.item(i).getAttributes().getNamedItem(ID).getNodeValue().equals(id)) {
                 return nodeList.item(i);
             }
         }
