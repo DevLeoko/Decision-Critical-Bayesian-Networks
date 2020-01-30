@@ -4,14 +4,14 @@
       <v-list-item-group color="primary">
         <v-list-item
           :key="formula.id"
-          v-for="formula in formulas"
+          v-for="formula in sortedFormulas"
           link
           @click="selectFormula(formula.id)"
         >
           <v-list-item-content>
             <v-list-item-title>{{ formula.name }}</v-list-item-title>
           </v-list-item-content>
-          <v-list-item-action @click="deleteFormula(formula.id)">
+          <v-list-item-action @click.stop="deleteFormula(formula)">
             <v-btn icon>
               <v-icon color="black">delete</v-icon>
             </v-btn>
@@ -22,7 +22,7 @@
 
     <template v-slot:append>
       <v-flex class="pa-4" style="text-align: center">
-        <v-btn small color="primary" @click="addFormula">
+        <v-btn small color="primary" @click="addFormula()">
           <v-icon class="mr-1" color="white">add_box</v-icon>
           New Expression
         </v-btn>
@@ -33,8 +33,14 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { Formula } from "@/views/EvidenceFormula.vue";
+
 export default Vue.extend({
-  props: ["formulas"],
+  props: {
+    formulas: {
+      type: Array as () => Formula[]
+    }
+  },
   methods: {
     selectFormula(id: string) {
       console.log(id);
@@ -45,48 +51,42 @@ export default Vue.extend({
         }
       });
     },
+
+    generateNewName(): string {
+      const defaultFormulaName = "newFormula";
+      if (this.formulas.length == 0) {
+        return defaultFormulaName;
+      }
+
+      for (let i = 0; ; i++) {
+        let testName = `${defaultFormulaName}${i === 0 ? "" : i}`;
+        if (!this.formulas.filter(formula => formula.name == testName).length) {
+          return testName;
+        }
+      }
+    },
+
     addFormula() {
-      var name = "lol5"; //TODO make unique default name
+      let name = this.generateNewName();
       this.axios
         .post("/evidence-formulas", {
           name: name,
           formula: "true"
         })
-        .then(res => {
-          this.axios.get("/evidence-formulas/" + name).then(res => {
-            this.formulas.push({
-              id: res.data.id,
-              name: res.data.name,
-              formula: res.data.formula
-            });
-          });
-        });
+        .then(res => this.$emit("update-list"));
     },
-    deleteFormula(id: number) {
-      for (var i = 0; i < this.formulas.length; i++) {
-        if (id === this.formulas[i].id) {
-          this.formulas.splice(i, 1);
-        }
-      }
+
+    deleteFormula(formula: Formula) {
+      this.axios
+        .delete(`/evidence-formulas/${formula.id}`)
+        .then(_ => this.$emit("update-list"));
     }
   },
-  created() {
-    //clearing the formulas array to avoid doubled formulas
-    var length = this.formulas.length;
-    console.log(length);
-    for (var i = 0; i < length; i++) {
-      this.formulas.pop();
+
+  computed: {
+    sortedFormulas() {
+      return this.formulas.slice().sort((a, b) => a.name.localeCompare(b.name));
     }
-    //Requesting and pushing the formulas to the list
-    this.axios.get("/evidence-formulas").then(res => {
-      for (var i = 0; i < res.data.length; i++) {
-        this.formulas.push({
-          id: res.data[i].id,
-          name: res.data[i].name,
-          formula: res.data[i].formula
-        });
-      }
-    });
   }
 });
 </script>

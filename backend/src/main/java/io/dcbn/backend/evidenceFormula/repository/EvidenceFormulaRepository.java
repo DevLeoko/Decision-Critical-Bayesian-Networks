@@ -13,6 +13,4 @@ public interface EvidenceFormulaRepository extends CrudRepository<EvidenceFormul
 
     Optional<EvidenceFormula> findByName(String name);
 
-    void deleteByName(String name);
-
 }

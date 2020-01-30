@@ -4,6 +4,10 @@ import io.dcbn.backend.authentication.models.DcbnUser;
 import io.dcbn.backend.authentication.models.Role;
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
 import io.dcbn.backend.authentication.services.DcbnUserDetailsService;
+import io.dcbn.backend.core.AoiCache;
+import io.dcbn.backend.core.VesselCache;
+import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
+import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.evidenceFormula.services.DefaultFunctionProvider;
 import io.dcbn.backend.evidenceFormula.services.FunctionProvider;
 import io.dcbn.backend.graph.*;
@@ -46,7 +50,8 @@ public class DcbnApplication {
 
     @Bean
     public CommandLineRunner commandLineRunner(DcbnUserRepository dcbnUserRepository,
-                                               GraphRepository graphRepository) {
+                                               GraphRepository graphRepository,
+                                               EvidenceFormulaRepository evidenceFormulaRepository) {
         return args -> {
             dcbnUserRepository.save(
                     new DcbnUser("admin", "admin@dcbn.io", passwordEncoder().encode("admin"), Role.ADMIN));
@@ -101,6 +106,10 @@ public class DcbnApplication {
             isInReportedArea.setTimeTDependency(iIRATDep);
             graphRepository.save(new Graph(0, "testGraph", 5,
                     Arrays.asList(nullSpeed, inTrajectoryArea, isInReportedArea, smuggling)));
+
+            for (int i = 0; i < 5; ++i) {
+                evidenceFormulaRepository.save(new EvidenceFormula("test" + i, "true & " + i + " = " + i));
+            }
         };
     }
 
