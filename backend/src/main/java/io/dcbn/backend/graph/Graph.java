@@ -11,6 +11,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -37,4 +38,10 @@ public class Graph {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
     @Valid
     private List<Node> nodes;
+
+    public Node findNodeByName(String name) {
+        return nodes.stream()
+                .filter(var -> var.getName().equals(name))
+                .collect(Collectors.toList()).get(0);
+    }
 }
