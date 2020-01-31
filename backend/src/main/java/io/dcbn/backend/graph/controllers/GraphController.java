@@ -115,7 +115,7 @@ public class GraphController {
     }
 
     @PostMapping("/graphs/evaluate")
-    public Map<String, double[][]> evaluateGraphById(@Valid @RequestBody Graph graph) {
+    public Map<String, double[][]> evaluateGraph(@Valid @RequestBody Graph graph) {
         Graph resultGraph = graphService.evaluateGraph(graph);
         return resultGraph.getNodes().stream().filter(Node::isValueNode)
                 .map(node -> (ValueNode) node).collect(Collectors.toMap(Node::getName, ValueNode::getValue));
