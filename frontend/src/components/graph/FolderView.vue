@@ -83,6 +83,11 @@
                   <v-icon class="mr-2">delete</v-icon> Delete
                 </v-list-item-title>
               </v-list-item>
+              <v-list-item @click="exportGraph(item.graph)">
+                <v-list-item-title>
+                  <v-icon class="mr-2">import_export</v-icon> Export
+                </v-list-item-title>
+              </v-list-item>
             </v-list>
           </v-menu>
         </template>
@@ -113,6 +118,7 @@
       "
       @rename="renameGraph"
       @delete="deleteGraph"
+      @export="exportGraph"
     ></folder-actions>
   </div>
 </template>
@@ -181,6 +187,13 @@ export default Vue.extend({
       this.$router.push({
         name: targetRoute,
         params: { id }
+      });
+    },
+
+    exportGraph(graph: DenseGraph) {
+      const FileDownload = require("js-file-download");
+      this.axios.get("graphs/" + graph.id + "/export").then(res => {
+        FileDownload(res.data, graph.name + ".xdsl");
       });
     }
   },
