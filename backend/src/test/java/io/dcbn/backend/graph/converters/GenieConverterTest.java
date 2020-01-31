@@ -8,10 +8,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,7 +72,7 @@ public class GenieConverterTest {
         graph = new Graph(0, "smuggling", NUM_TIME_SLICES,
                 Arrays.asList(smuggling, nullSpeed, inTrajectoryArea, isInReportedArea));
         adapter = new AmidstGraphAdapter(graph);
-        genieFile = new File(RESOURCE_PATH + "/networks/genie/smuggling.xdsl");
+        genieFile = new File(RESOURCE_PATH + "/networks/genie/Test2.xdsl");
         genieConverter = new GenieConverter();
 
 
@@ -92,9 +89,9 @@ public class GenieConverterTest {
     }
 
     @Test
-    public void testDcbnToGenie() throws ParserConfigurationException, TransformerException {
-        File file = genieConverter.fromDcbnToGenie(graph);
-        System.out.println(file);
+    public void testDcbnToGenie() throws ParserConfigurationException, TransformerException, IOException, SAXException {
+        InputStream targetStream = new FileInputStream(genieFile);
+        File file = genieConverter.fromDcbnToGenie(genieConverter.fromGenieToDcbn(targetStream));
         File tempDir = new File("target/tempTestFiles/");
         tempDir.mkdir();
         File destination = new File("target/tempTestFiles/" + file.getName());

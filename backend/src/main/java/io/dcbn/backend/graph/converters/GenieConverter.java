@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -337,7 +338,7 @@ public class GenieConverter {
             List<io.dcbn.backend.graph.Node> parents = actualNode.getTimeTDependency().getParents();
             numberOfParents += parents.size();
             for (io.dcbn.backend.graph.Node parent : parents) {
-                if (!queue.contains(actualNode)) {
+                if (!queue.contains(parent)) {
                     queue.add(parent);
                 }
             }

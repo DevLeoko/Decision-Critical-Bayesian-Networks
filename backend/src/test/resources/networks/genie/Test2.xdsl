@@ -3,36 +3,36 @@
 <smile version="1.0" id="Network1" numsamples="10000" discsamples="10000">
 	<nodes>
 		<cpt id="A" dynamic="plate">
-			<state id="State0" />
-			<state id="State1" />
+			<state id="true" />
+			<state id="false" />
 			<probabilities>0.3 0.7</probabilities>
 		</cpt>
 		<cpt id="B" dynamic="plate">
-			<state id="State0" />
-			<state id="State1" />
+			<state id="true" />
+			<state id="false" />
 			<probabilities>0.2 0.8</probabilities>
 		</cpt>
 		<cpt id="C" dynamic="plate">
-			<state id="State0" />
-			<state id="State1" />
+			<state id="true" />
+			<state id="false" />
 			<parents>A B</parents>
 			<probabilities>0.999 0.001 0.8 0.2 0.6 0.4 0.2 0.8</probabilities>
 		</cpt>
 		<cpt id="D" dynamic="plate">
-			<state id="State0" />
-			<state id="State1" />
+			<state id="true" />
+			<state id="false" />
 			<parents>C</parents>
 			<probabilities>0.8 0.2 0.4 0.6</probabilities>
 		</cpt>
 	</nodes>
 	<dynamic numslices="10">
 		<cpt id="C" order="1">
-			<parents>C D</parents>
-			<probabilities>0.1 0.9 0.1 0.9 0.5 0.5 0.5 0.5 0.3 0.7 0.3 0.7 0.7 0.3 0.7 0.3 0.2 0.8 0.2 0.8 0.6 0.4 0.6 0.4 0.4 0.6 0.4 0.6 0.8 0.2 0.8 0.2</probabilities>
+			<parents>C</parents>
+			<probabilities>0.1 0.9 0.5 0.5 0.3 0.7 0.7 0.3 0.2 0.8 0.6 0.4 0.4 0.6 0.8 0.2</probabilities>
 		</cpt>
 	</dynamic>
 	<extensions>
-		<genie version="1.0" app="GeNIe 2.4.4601.0 ACADEMIC" name="Network1" faultnameformat="nodestate">
+		<genie version="1.0" app="GeNIe 2.4.4601.0 ACADEMIC" name="Yoloooo" faultnameformat="nodestate">
 			<plate leftwidth="120" rightwidth="120">20 30 1054 592</plate>
 			<node id="C">
 				<name>C</name>
