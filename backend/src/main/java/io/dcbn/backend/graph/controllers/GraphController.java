@@ -1,6 +1,8 @@
 package io.dcbn.backend.graph.controllers;
 
 import io.dcbn.backend.graph.Graph;
+import io.dcbn.backend.graph.Node;
+import io.dcbn.backend.graph.ValueNode;
 import io.dcbn.backend.graph.converters.GenieConverter;
 import io.dcbn.backend.graph.repositories.GraphRepository;
 import io.dcbn.backend.graph.services.GraphService;
@@ -22,6 +24,8 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -111,8 +115,10 @@ public class GraphController {
     }
 
     @PostMapping("/graphs/evaluate")
-    public Graph evaluateGraphById(@Valid @RequestBody Graph graph) {
-        return graphService.evaluateGraph(graph);
+    public Map<String, double[][]> evaluateGraphById(@Valid @RequestBody Graph graph) {
+        Graph resultGraph = graphService.evaluateGraph(graph);
+        return resultGraph.getNodes().stream().filter(Node::isValueNode)
+                .map(node -> (ValueNode) node).collect(Collectors.toMap(Node::getName, ValueNode::getValue));
     }
 
     @PutMapping("/graphs/{id}/lock")
