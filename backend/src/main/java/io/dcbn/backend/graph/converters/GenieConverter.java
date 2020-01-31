@@ -276,7 +276,7 @@ public class GenieConverter {
                 parentsElementTime.setTextContent(parentsStringTime.toString());
                 cptElementTime.appendChild(parentsElementTime);
                 //Setting the probabilities
-                createProbString(document, cptElement, timeTDependency);
+                createProbString(document, cptElementTime, timeTDependency);
             }
         }
 
