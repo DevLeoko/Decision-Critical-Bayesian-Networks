@@ -41,6 +41,7 @@ public class Graph {
 
     public Graph(String name, int timeSlices, List<Node> nodes) {
         this.id = 0;
+        this.name = name;
         this.timeSlices = timeSlices;
         this.nodes = nodes;
     }
