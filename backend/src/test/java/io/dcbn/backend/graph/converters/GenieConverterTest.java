@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,14 +32,14 @@ public class GenieConverterTest {
 
     @BeforeEach
     public void setUp() {
-        Node smuggling = new Node("smuggling", null, null, "", null, StateType.BOOLEAN,
-                ZERO_POSITION);
-        Node nullSpeed = new Node("nullSpeed", null, null, "",
-                "nullSpeed", StateType.BOOLEAN, ZERO_POSITION);
-        Node inTrajectoryArea = new Node("inTrajectoryArea", null, null, "",
-                "inTrajectory", StateType.BOOLEAN, ZERO_POSITION);
-        Node isInReportedArea = new Node("isInReportedArea", null, null, "",
-                "inArea", StateType.BOOLEAN, ZERO_POSITION);
+        Node smuggling = new Node("smuggling", null, null, "#e5f6f7", null, StateType.BOOLEAN,
+                new Position(100, 100));
+        Node nullSpeed = new Node("nullSpeed", null, null, "#e5f6f7",
+                "nullSpeed", StateType.BOOLEAN,  new Position(300, 300));
+        Node inTrajectoryArea = new Node("inTrajectoryArea", null, null, "#e5f6f7",
+                "inTrajectory", StateType.BOOLEAN,  new Position(500, 500));
+        Node isInReportedArea = new Node("isInReportedArea", null, null, "#e5f6f7",
+                "inArea", StateType.BOOLEAN,  new Position(1000, 1000));
 
         List<Node> smugglingParentsList = Arrays.asList(nullSpeed, inTrajectoryArea, isInReportedArea);
         double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}, {0.4, 0.6}, {0.4, 0.6}, {0.2, 0.8},
@@ -70,7 +72,7 @@ public class GenieConverterTest {
         isInReportedArea.setTimeZeroDependency(iIRA0Dep);
         isInReportedArea.setTimeTDependency(iIRATDep);
 
-        graph = new Graph(0, "testGraph", NUM_TIME_SLICES,
+        graph = new Graph(0, "smuggling", NUM_TIME_SLICES,
                 Arrays.asList(smuggling, nullSpeed, inTrajectoryArea, isInReportedArea));
         adapter = new AmidstGraphAdapter(graph);
         genieFile = new File(RESOURCE_PATH + "/networks/genie/smuggling.xdsl");
@@ -83,9 +85,20 @@ public class GenieConverterTest {
     public void testGenieToDcbn() throws IOException, SAXException, ParserConfigurationException {
         Graph convertedGraph = genieConverter.fromGenieToDcbn(new FileInputStream(genieFile));
         AmidstGraphAdapter convertedAdapter = new AmidstGraphAdapter(convertedGraph);
-        System.out.println(adapter.getDbn());
-        System.out.println("---------------------");
-        System.out.println(convertedAdapter.getDbn());
+//        System.out.println(adapter.getDbn());
+//        System.out.println("---------------------");
+//        System.out.println(convertedAdapter.getDbn());
         assertTrue(adapter.getDbn().equalDBNs(convertedAdapter.getDbn(), 0));
+    }
+
+    @Test
+    public void testDcbnToGenie() throws ParserConfigurationException, TransformerException {
+        File file = genieConverter.fromDcbnToGenie(graph);
+        System.out.println(file);
+        File tempDir = new File("target/tempTestFiles/");
+        tempDir.mkdir();
+        File destination = new File("target/tempTestFiles/" + file.getName());
+        file.renameTo(destination);
+        assertTrue(file.getName().endsWith(".xdsl"));
     }
 }
