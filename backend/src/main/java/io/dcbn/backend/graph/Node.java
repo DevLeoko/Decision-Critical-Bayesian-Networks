@@ -19,7 +19,6 @@ import javax.validation.constraints.NotNull;
 @Data
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "name",
@@ -55,6 +54,18 @@ public class Node {
     @Embedded
     @NotNull
     private Position position;
+
+    public Node(String name, NodeDependency timeZeroDependency, NodeDependency timeTDependency, String color,
+                String evidenceFormulaName, StateType stateType, Position position) {
+        this.id = 0;
+        this.name = name;
+        this.timeZeroDependency = timeZeroDependency;
+        this.timeTDependency = timeTDependency;
+        this.color = color;
+        this.evidenceFormulaName = evidenceFormulaName;
+        this.stateType = stateType;
+        this.position = position;
+    }
 
     /**
      * Method to indicate whether the node holds values.

@@ -39,21 +39,21 @@ public class GraphAdapterTests {
      */
     @BeforeEach
     public void setUp() {
-        NodeDependency nodeATimeZeroDependency = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(), new double[][]{{0.3, 0.7}});
-        NodeDependency nodeATimeTDependency = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(), new double[][]{{0.3, 0.7}});
-        a = new Node(0, "A", nodeATimeZeroDependency, nodeATimeTDependency, null, null, StateType.BOOLEAN,
+        NodeDependency nodeATimeZeroDependency = new NodeDependency(new ArrayList<>(), new ArrayList<>(), new double[][]{{0.3, 0.7}});
+        NodeDependency nodeATimeTDependency = new NodeDependency(new ArrayList<>(), new ArrayList<>(), new double[][]{{0.3, 0.7}});
+        a = new Node("A", nodeATimeZeroDependency, nodeATimeTDependency, null, null, StateType.BOOLEAN,
                 ZERO_POSITION);
-        NodeDependency nodeBTimeZeroDependency = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(), new double[][]{{0.2, 0.8}});
-        NodeDependency nodeBTimeTDependency = new NodeDependency(0, new ArrayList<>(), new ArrayList<>(), new double[][]{{0.2, 0.8}});
-        b = new Node(0, "B", nodeBTimeZeroDependency, nodeBTimeTDependency, null, null, StateType.BOOLEAN,
+        NodeDependency nodeBTimeZeroDependency = new NodeDependency(new ArrayList<>(), new ArrayList<>(), new double[][]{{0.2, 0.8}});
+        NodeDependency nodeBTimeTDependency = new NodeDependency(new ArrayList<>(), new ArrayList<>(), new double[][]{{0.2, 0.8}});
+        b = new Node("B", nodeBTimeZeroDependency, nodeBTimeTDependency, null, null, StateType.BOOLEAN,
                 ZERO_POSITION);
 
-        NodeDependency nodeCTimeZeroDependency = new NodeDependency(0, Arrays.asList(a, b), new ArrayList<>(),
+        NodeDependency nodeCTimeZeroDependency = new NodeDependency(Arrays.asList(a, b), new ArrayList<>(),
                 new double[][]{{0.999, 0.001}, {0.6, 0.4}, {0.8, 0.2}, {0.2, 0.8}});
 
-        c = new Node(0, "C", nodeCTimeZeroDependency, null, null, null, StateType.BOOLEAN,
+        c = new Node("C", nodeCTimeZeroDependency, null, null, null, StateType.BOOLEAN,
                 ZERO_POSITION);
-        NodeDependency nodeCTimeTDependency = new NodeDependency(0, Arrays.asList(a, b), Collections.singletonList(c), new double[][]{{0.1, 0.9},
+        NodeDependency nodeCTimeTDependency = new NodeDependency(Arrays.asList(a, b), Collections.singletonList(c), new double[][]{{0.1, 0.9},
                 {0.2, 0.8}, {0.3, 0.7}, {0.4, 0.6}, {0.5, 0.5}, {0.6, 0.4}, {0.7, 0.3}, {0.8, 0.2}});
         c.setTimeTDependency(nodeCTimeTDependency);
         Node[] nodes = new Node[]{a, b, c};
@@ -74,12 +74,12 @@ public class GraphAdapterTests {
 
         DynamicDAG dynamicDAG = new DynamicDAG(dynamicVariables);
 
-        dynamicDAG.getParentSetTime0(c).addParent(a);
         dynamicDAG.getParentSetTime0(c).addParent(b);
+        dynamicDAG.getParentSetTime0(c).addParent(a);
 
-        dynamicDAG.getParentSetTimeT(c).addParent(a);
-        dynamicDAG.getParentSetTimeT(c).addParent(b);
         dynamicDAG.getParentSetTimeT(c).addParent(c_interface);
+        dynamicDAG.getParentSetTimeT(c).addParent(b);
+        dynamicDAG.getParentSetTimeT(c).addParent(a);
 
         DynamicBayesianNetwork dbn = new DynamicBayesianNetwork(dynamicDAG);
 

@@ -1,5 +1,6 @@
 package io.dcbn.backend.graph;
 
+import com.google.common.collect.Lists;
 import eu.amidst.core.datastream.DataStream;
 import eu.amidst.core.distribution.Multinomial;
 import eu.amidst.core.distribution.Multinomial_MultinomialParents;
@@ -70,24 +71,26 @@ public class AmidstGraphAdapter {
 
                 //--------TIME 0-------------
                 ParentSet variableParentSet0 = dynamicDAG.getParentSetTime0(variable);
-                    node.getTimeZeroDependency().getParents().stream()
-                            .map(Node::getName)
-                            .map(this::getVariableByName)
-                            .forEach(variableParentSet0::addParent);
+                Lists.reverse(node.getTimeZeroDependency().getParents()).stream()
+                        .map(Node::getName)
+                        .map(this::getVariableByName)
+                        .forEach(variableParentSet0::addParent);
 
                 //--------TIME T-------------
                 ParentSet variableParentSetT = dynamicDAG.getParentSetTimeT(variable);
-                //Time T
-                node.getTimeTDependency().getParents().stream()
-                        .map(Node::getName)
-                        .map(this::getVariableByName)
-                        .forEach(variableParentSetT::addParent);
-                //--------Time T-1------------
-                node.getTimeTDependency().getParentsTm1().stream()
+
+                //Time T-1
+                Lists.reverse(node.getTimeTDependency().getParentsTm1()).stream()
                         .map(Node::getName)
                         .map(this::getVariableByName)
                         .map(Variable::getInterfaceVariable)
                         .forEach(variableParentSetT::addParent);
+                //Time T
+                Lists.reverse(node.getTimeTDependency().getParents()).stream()
+                        .map(Node::getName)
+                        .map(this::getVariableByName)
+                        .forEach(variableParentSetT::addParent);
+
                 // case it is has a virtual Evidence
                 if (node.isValueNode() && ((ValueNode) node).getValue().length == 1) {
                     Variable tempChild = tempChildVariables.stream()
