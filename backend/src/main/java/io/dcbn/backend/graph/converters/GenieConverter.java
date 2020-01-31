@@ -276,7 +276,7 @@ public class GenieConverter {
                 parentsElementTime.setTextContent(parentsStringTime.toString());
                 cptElementTime.appendChild(parentsElementTime);
                 //Setting the probabilities
-                createProbString(document, cptElement, timeTDependency);
+                createProbString(document, cptElementTime, timeTDependency);
             }
         }
 
@@ -347,6 +347,11 @@ public class GenieConverter {
         return numberOfParents;
     }
 
+    /**
+     * This returns a new {@link Position} with the maximum x and y value of the nodes {@link Position}
+     * @param nodes the {@link List<io.dcbn.backend.graph.Node>} to inspect
+     * @return A new {@link Position} with the maximum x and y value of the nodes {@link Position}
+     */
     private Position findOutMaxPos(List<io.dcbn.backend.graph.Node> nodes) {
         double maxX = 0;
         double maxY = 0;
