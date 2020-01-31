@@ -29,7 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+/**
+ * This class is a converter for the Genie file format (.xdsl)
+ */
 @NoArgsConstructor
 public class GenieConverter {
 
@@ -278,7 +280,7 @@ public class GenieConverter {
             }
         }
 
-
+        //Creating the file
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource domSource = new DOMSource(document);
@@ -288,6 +290,13 @@ public class GenieConverter {
         return graphXDSL;
     }
 
+    /**
+     * This method sorts a {@link List<io.dcbn.backend.graph.Node>} by the number
+     * of parents (direct and indirectly linked)
+     * @param graph The graph containing the nodes
+     * @return the {@link List<io.dcbn.backend.graph.Node>} sorted by the number
+     * parents (direct and indirectly linked)
+     */
     private List<io.dcbn.backend.graph.Node> sortNodesAfterNumberOfParents(Graph graph) {
         List<io.dcbn.backend.graph.Node> nodes = graph.getNodes();
         List<Pair<io.dcbn.backend.graph.Node, Integer>> sortedNodePair = new ArrayList<>();
@@ -314,6 +323,11 @@ public class GenieConverter {
         return sortedNodes;
     }
 
+    /**
+     * This method returns the number of parents (direct and indirect) of th given {@link io.dcbn.backend.graph.Node}
+     * @param node the {@link io.dcbn.backend.graph.Node}
+     * @return returns the number of parents (direct and indirect)
+     */
     private int getNumberOfParents(io.dcbn.backend.graph.Node node) {
         List<io.dcbn.backend.graph.Node> queue = new ArrayList<>();
         int numberOfParents = 0;
@@ -446,6 +460,12 @@ public class GenieConverter {
         return null;
     }
 
+    /**
+     * Returns the {@link io.dcbn.backend.graph.Node} with the given name.
+     * @param nodes the {@link List<io.dcbn.backend.graph.Node>} to search into
+     * @param name the name to search after.
+     * @return The {@link io.dcbn.backend.graph.Node} with the given name.
+     */
     private io.dcbn.backend.graph.Node findDcbnNodeByName(List<io.dcbn.backend.graph.Node> nodes, String name) {
         List<io.dcbn.backend.graph.Node> nodeToReturn = nodes.stream()
                 .filter(node -> node.getName().equals(name)).collect(Collectors.toList());
