@@ -6,11 +6,11 @@
 </template>
 
 <style lang="css" scoped>
-  #mynetwork {
-    width: fit-content;
-    height: fit-content;
-    border: 1px solid lightgray;
-  }
+#mynetwork {
+  width: fit-content;
+  height: fit-content;
+  border: 1px solid lightgray;
+}
 </style>
 
 <script lang="ts">
@@ -69,7 +69,7 @@ export default Vue.extend({
             type: "arrow"
           },
           smooth: {
-            enabled: true,
+            enabled: true
           }
         }
       },
@@ -81,14 +81,10 @@ export default Vue.extend({
         deleteNode: true,
         deleteEdge: true
       },
-      layout:{
-
-      }
+      layout: {}
     };
 
     var network = new vis.Network(container!, data, options);
   }
 });
-
-
 </script>
