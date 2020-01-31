@@ -139,7 +139,7 @@ public class GraphController {
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
-        repository.save(graph).getId();
+        repository.save(graph);
 
     }
 
