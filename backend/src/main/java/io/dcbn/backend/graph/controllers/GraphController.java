@@ -162,7 +162,7 @@ public class GraphController {
     @GetMapping("/graphs/{id}/export")
     public ResponseEntity<String> exportGraph(@PathVariable long id) {
         Graph graph = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph not found"));
         GenieConverter genieConverter = new GenieConverter();
         try {
             return ResponseEntity.ok()

@@ -85,7 +85,8 @@
               </v-list-item>
               <v-list-item @click="exportGraph(item.graph)">
                 <v-list-item-title>
-                  <v-icon class="mr-2">import_export</v-icon> Export
+                  <v-icon class="mr-2">import_export</v-icon>
+                  Export
                 </v-list-item-title>
               </v-list-item>
             </v-list>
@@ -94,6 +95,7 @@
       </v-treeview>
       <template v-slot:append>
         <v-divider></v-divider>
+        <v-progress-linear indeterminate v-if="loading" />
         <v-row justify="center">
           <v-col class="flex-grow-0 my-4">
             <v-btn
@@ -125,15 +127,14 @@
       "
       @rename="renameGraph"
       @delete="deleteGraph"
-      @export="exportGraph"
     ></folder-actions>
     <v-snackbar v-model="hasErrorBar" color="error" timeout="5000">
       {{ error }}
-      <v-btn icon @click="hasError = false"><v-icon>clear</v-icon></v-btn>
+      <v-btn icon @click="hasErrorBar = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
     <v-snackbar v-model="successBar" color="success" timeout="3000">
       {{ successMessage }}
-      <v-btn icon @click="success = false"><v-icon>clear</v-icon></v-btn>
+      <v-btn icon @click="successBar = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
   </div>
 </template>
@@ -167,7 +168,8 @@ export default Vue.extend({
       hasErrorBar: false,
       error: "",
       successBar: false,
-      successMessage: ""
+      successMessage: "",
+      loading: false
     };
   },
 
@@ -210,16 +212,23 @@ export default Vue.extend({
     },
 
     exportGraph(graph: DenseGraph) {
+      this.loading = true;
       const FileDownload = require("js-file-download");
-      this.axios.get("graphs/" + graph.id + "/export").then(res => {
-        FileDownload(res.data, graph.name + ".xdsl");
-      });
+      this.axios
+        .get(`graphs/${graph.id}/export`)
+        .then(res => {
+          FileDownload(res.data, graph.name + ".xdsl");
+        })
+        .catch(error => {
+          this.throwError(error.response.data.message);
+        });
+      this.loading = false;
     },
 
     importGraph(file: any) {
+      this.loading = true;
       if (file != null) {
-        var formData = new FormData();
-        var imagefile = document.querySelector("#file");
+        const formData = new FormData();
         formData.append("graph", file);
         this.axios
           .post("graphs/import", formData, {
@@ -235,13 +244,13 @@ export default Vue.extend({
             this.throwError(error.response.data.message);
           });
       }
+      this.loading = false;
     },
 
     throwError(message: string) {
       this.error = message;
       this.hasErrorBar = true;
     },
-
     throwSuccess(message: string) {
       this.successMessage = message;
       this.successBar = true;
