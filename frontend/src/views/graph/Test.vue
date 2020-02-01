@@ -1,18 +1,47 @@
 <template>
-  <div style="max-height: 100%; width: 100%">
-    <test-toolbar />
+  <div style="max-height: 100%; width: 100% ">
+    <test-toolbar @test="displayResults" />
     <div id="mynetwork" ref="network"></div>
-    <v-sparkline
-      :value="graphValue"
-      color="white"
-      auto-draw
-      height="100"
-      line-width="3"
-      padding="5"
-      stroke-linecap="round"
-      ref="graphSvg"
+    <v-menu
+      v-model="showNodeAction"
+      :position-x="x"
+      :position-y="y"
+      :close-on-click="false"
+      absolute
     >
-    </v-sparkline>
+      <div class="white">
+        <v-btn tile>Virtual Evidence</v-btn>
+        <v-btn tile>Binary Evidences</v-btn>
+        <v-btn icon color="red"><v-icon>close</v-icon></v-btn>
+      </div>
+    </v-menu>
+
+    <v-dialog v-model="virtualEvidenceOpen" width="500">
+      <v-card>
+        <v-card-title>
+          Set virtual evidence
+        </v-card-title>
+
+        <v-card-text class="py-3">
+          <v-slider
+            v-model="slider"
+            thumb-label
+            max="1"
+            step="0.05"
+            hide-details
+          ></v-slider>
+        </v-card-text>
+
+        <!-- <v-divider></v-divider> -->
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="virtualEvidenceOpen = false">
+            Apply
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -20,61 +49,18 @@
 #mynetwork {
   width: 100%;
   height: 100%;
-  uff: #9c4c46;
   border: 1px solid lightgray;
 }
 </style>
 
 <script lang="ts">
-interface Node {
-  id: number;
-  label: string;
-  shape?: string;
-  image?: string;
-}
-
-interface Link {
-  id?: number;
-  from: number;
-  to: number;
-}
-
-function generateGraphImage(svgContainer: HTMLElement): string {
-  svgContainer.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-
-  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-
-  line.setAttribute("x1", "0%");
-  line.setAttribute("x2", "100%");
-  line.setAttribute("y1", "50%");
-  line.setAttribute("y2", "50%");
-  line.setAttribute("opacity", "0.3");
-  line.setAttribute("stroke", "white");
-  line.setAttribute("stroke-dasharray", "17");
-
-  svgContainer.prepend(line);
-
-  const background = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "rect"
-  );
-
-  background.setAttribute("width", "100%");
-  background.setAttribute("height", "100%");
-  background.setAttribute("fill", "#3498db");
-  background.setAttribute("rx", "4");
-  background.setAttribute("ry", "4");
-
-  svgContainer.prepend(background);
-  const svg = svgContainer.outerHTML;
-
-  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
-}
-
 import TestToolbar from "@/components/graph/TestToolbar.vue";
 import Vue from "vue";
-import vis from "vis-network";
+import vis, { network } from "vis-network";
+
 import graph from "@/../tests/resources/graph1.json";
+
+import { generateGraphImage, createVisGraph, dcbn } from "../../utils/graph";
 
 export default Vue.extend({
   components: {
@@ -84,57 +70,105 @@ export default Vue.extend({
   data() {
     return {
       graph,
-      graphValue: [12, 4, 23, 65, 43, 2],
+      nodes: null as vis.data.DataSet<vis.Node, "id"> | null,
+      nodeIndecies: [] as string[],
+      showNodeAction: false,
+      x: 0,
+      y: 0,
 
-      nodes: [
-        { id: 1, label: "Node 1", shape: "image" },
-        { id: 2, label: "Node 2", shape: "image" },
-        { id: 3, label: "Node 3" },
-        { id: 4, label: "Node 4" },
-        { id: 5, label: "Node 5" }
-      ] as Array<Node>
+      virtualEvidenceOpen: false,
+
+      presentValues: [] as {
+        evidences: number[][];
+        virtualEvidence: number[];
+      }[]
     };
   },
 
   methods: {
-    buildGraph(): string {
-      return generateGraphImage((this.$refs.graphSvg as any).$el);
+    displayResults(results: dcbn.GraphResult) {
+      Object.keys(results).forEach(key => {
+        const values = results[key];
+        const id = this.nodeIndecies.indexOf(key);
+
+        const presentValue = this.presentValues[id];
+
+        if (!presentValue.evidences.length) {
+          this.nodes!.update({
+            id,
+            image: generateGraphImage(
+              values.map(val => val[0]),
+              presentValue.virtualEvidence.length ? "virtEvidence" : "computed"
+            )
+          });
+        }
+      });
+    },
+
+    quickSetValues(nodeId: number, upper: boolean) {
+      this.showNodeAction = false;
+
+      const desiredValue = new Array(graph.timeSlices).fill(
+        upper ? [1, 0] : [0, 1]
+      );
+
+      const resetAction =
+        this.presentValues[nodeId].evidences.length &&
+        this.presentValues[nodeId].evidences.every(
+          val => !!val[0] == upper && !!val[1] != upper
+        );
+
+      if (resetAction) {
+        this.presentValues[nodeId].evidences = [];
+
+        this.nodes!.update({
+          id: nodeId,
+          image: generateGraphImage(undefined)
+        });
+      } else {
+        this.presentValues[nodeId].evidences = desiredValue;
+
+        this.presentValues[nodeId].virtualEvidence = [];
+
+        this.nodes!.update({
+          id: nodeId,
+          image: generateGraphImage(
+            new Array(graph.timeSlices).fill(upper ? 1 : 0),
+            "evidence"
+          )
+        });
+      }
     }
   },
 
   mounted() {
-    // create an array with edges
-    var edges = new vis.DataSet<Link>([
-      { from: 1, to: 3 },
-      { from: 1, to: 2 },
-      { from: 2, to: 4 },
-      { from: 2, to: 5 },
-      { from: 3, to: 3 }
-    ]);
+    const { nodeData, nodeIndecies, network } = createVisGraph(
+      document.getElementById("mynetwork")!,
+      this.graph,
+      this.quickSetValues,
+      (nodeId, position) => {
+        this.x = position.x + 10;
+        this.y = position.y - 50;
+        this.showNodeAction = true;
+      }
+    );
 
-    this.nodes[0].image = this.buildGraph();
-    this.graphValue = [34, 52, 234, 100];
-    this.nodes[1].image = this.buildGraph();
+    network.on("deselectNode", () => {
+      this.showNodeAction = false;
+    });
+    network.on("dragStart", () => {
+      this.showNodeAction = false;
+    });
+    network.on("zoom", () => {
+      this.showNodeAction = false;
+    });
 
-    console.log(this.nodes[0].image);
+    this.nodes = nodeData;
+    this.nodeIndecies = nodeIndecies;
 
-    // create a network
-    var container = document.getElementById("mynetwork");
-
-    var data = {
-      nodes: this.nodes,
-      edges: edges
-    };
-
-    var options = {};
-
-    var network = new vis.Network(container!, data, options);
+    nodeIndecies.forEach(() =>
+      this.presentValues.push({ evidences: [], virtualEvidence: [] })
+    );
   }
-
-  // watch: {
-  //   graph() {
-
-  //   }
-  // }
 });
 </script>

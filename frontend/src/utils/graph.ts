@@ -1,0 +1,229 @@
+export declare module dcbn {
+  export interface TimeZeroDependency {
+    id: number;
+    parents: string[];
+    parentsTm1: any[];
+    probabilities: number[][];
+  }
+
+  export interface TimeTDependency {
+    id: number;
+    parents: string[];
+    parentsTm1: any[];
+    probabilities: number[][];
+  }
+
+  export interface StateType {
+    states: string[];
+  }
+
+  export interface Position {
+    x: number;
+    y: number;
+  }
+
+  export interface Node {
+    type: string;
+    name: string;
+    id: number;
+    timeZeroDependency: TimeZeroDependency;
+    timeTDependency: TimeTDependency;
+    color: string;
+    evidenceFormulaName?: any;
+    stateType: StateType;
+    position: Position;
+    value?: number[][];
+  }
+
+  export interface Graph {
+    id: number;
+    name: string;
+    timeSlices: number;
+    nodes: Node[];
+  }
+
+  export interface GraphResult {
+    [key: string]: number[][];
+  }
+
+  export type NodeValueType =
+    | "evidence"
+    | "virtEvidence"
+    | "empty"
+    | "computed";
+}
+
+export function generateGraphImage(
+  graphValue: number[] | undefined,
+  type: dcbn.NodeValueType = "empty"
+): string {
+  const svgContainer = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg"
+  );
+
+  svgContainer.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  svgContainer.setAttribute("viewBox", "0 0 300 100");
+
+  const background = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "rect"
+  );
+
+  background.setAttribute("width", "100%");
+  background.setAttribute("height", "100%");
+  background.setAttribute(
+    "fill",
+    type == "evidence"
+      ? "#e47833"
+      : type == "empty"
+      ? "#6c7a89"
+      : type == "computed"
+      ? "#3498db"
+      : "#446cb3"
+  );
+  background.setAttribute("rx", "4");
+  background.setAttribute("ry", "4");
+
+  svgContainer.appendChild(background);
+
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+
+  line.setAttribute("x1", "0%");
+  line.setAttribute("x2", "100%");
+  line.setAttribute("y1", "50%");
+  line.setAttribute("y2", "50%");
+  line.setAttribute("opacity", "0.3");
+  line.setAttribute("stroke", "white");
+  line.setAttribute("stroke-dasharray", "17");
+
+  svgContainer.appendChild(line);
+
+  if (graphValue) {
+    const graphString =
+      "M" +
+      graphValue
+        .map(
+          (val, i) =>
+            `${(300 / (graphValue.length - 1)) * i} ${80 * (1 - val) + 10} ${
+              graphValue.length == i + 1 ? "" : "L"
+            }`
+        )
+        .join("");
+
+    // const pathShadow = document.createElementNS(
+    //   "http://www.w3.org/2000/svg",
+    //   "path"
+    // );
+    // pathShadow.setAttribute("d", graphString);
+    // pathShadow.setAttribute("fill", "none");
+    // pathShadow.setAttribute("stroke", "black");
+    // pathShadow.setAttribute("opacity", "0.2");
+    // pathShadow.setAttribute("stroke-width", "8");
+    // svgContainer.appendChild(pathShadow);
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", graphString);
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", "white");
+    path.setAttribute("opacity", "1");
+    path.setAttribute("stroke-width", "5");
+    svgContainer.appendChild(path);
+  }
+
+  const svg = svgContainer.outerHTML;
+
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+
+// import graph from "@/../tests/resources/graph1.json";
+import vis, { Edge, Node } from "vis-network";
+
+export function createVisGraph(
+  container: HTMLElement,
+  graph: dcbn.Graph,
+  actionCallback: (nodeId: number, upper: boolean) => void,
+  nodeSelect: (nodeId: number, position: { x: number; y: number }) => void
+) {
+  const nodes: Node[] = [];
+  const nodeIndecies: string[] = graph.nodes.map(n => n.name).sort();
+  const edges: Edge[] = [];
+
+  graph.nodes.forEach(node => {
+    const nodeId = nodeIndecies.indexOf(node.name);
+
+    nodes.push({
+      id: nodeId,
+      label: node.name,
+      image: generateGraphImage(undefined)
+      // ...node.position
+    });
+
+    edges.push(
+      ...(node.timeTDependency.parents as string[]).map(parent => ({
+        from: nodeIndecies.indexOf(parent),
+        to: nodeId
+      }))
+    );
+
+    edges.push(
+      ...(node.timeTDependency.parentsTm1 as string[]).map(
+        (parent): Edge => ({
+          from: nodeIndecies.indexOf(parent),
+          to: nodeId,
+          dashes: true,
+          label: "time",
+          color: "grey",
+          physics: true,
+          smooth: true
+        })
+      )
+    );
+  });
+
+  const nodeData = new vis.DataSet(nodes);
+
+  var data = {
+    nodes: nodeData,
+    edges: edges
+  };
+
+  var options: vis.Options = {
+    physics: false,
+    nodes: {
+      shape: "image"
+    },
+    edges: {
+      smooth: false,
+      length: 250,
+      arrows: {
+        to: {
+          enabled: true,
+          scaleFactor: 0.6,
+          type: "arrow"
+        }
+      }
+    }
+  };
+
+  const network = new vis.Network(container, data, options);
+
+  network.on("doubleClick", param => {
+    const nodeId: number = param.nodes[0];
+    const upper =
+      network.getPositions([nodeId])[nodeId].y > param.pointer.canvas.y;
+
+    actionCallback(nodeId, upper);
+  });
+
+  network.on("selectNode", param => {
+    param.event.preventDefault();
+    param.event.srcEvent.stopPropagation();
+    param.event.srcEvent.preventDefault();
+    nodeSelect(param.nodes[0], param.event.center);
+
+    return false;
+  });
+
+  return { nodeData, nodeIndecies, network };
+}
