@@ -46,16 +46,13 @@ export declare module dcbn {
     [key: string]: number[][];
   }
 
-  export type NodeValueType =
-    | "evidence"
-    | "virtEvidence"
-    | "empty"
-    | "computed";
+  export type NodeValueType = "evidence" | "empty" | "computed";
 }
 
 export function generateGraphImage(
   graphValue: number[] | undefined,
-  type: dcbn.NodeValueType = "empty"
+  type: dcbn.NodeValueType = "empty",
+  virtualEvidence: number | null = null
 ): string {
   const svgContainer = document.createElementNS(
     "http://www.w3.org/2000/svg",
@@ -80,7 +77,7 @@ export function generateGraphImage(
       ? "#6c7a89"
       : type == "computed"
       ? "#3498db"
-      : "#446cb3"
+      : ""
   );
   background.setAttribute("rx", "4");
   background.setAttribute("ry", "4");
@@ -98,6 +95,23 @@ export function generateGraphImage(
   line.setAttribute("stroke-dasharray", "17");
 
   svgContainer.appendChild(line);
+
+  if (virtualEvidence !== null) {
+    const virtualLine = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "line"
+    );
+
+    virtualLine.setAttribute("x1", "0%");
+    virtualLine.setAttribute("x2", "100%");
+    virtualLine.setAttribute("y1", `${80 * (1 - virtualEvidence) + 10}%`);
+    virtualLine.setAttribute("y2", `${80 * (1 - virtualEvidence) + 10}%`);
+    virtualLine.setAttribute("opacity", "0.4");
+    virtualLine.setAttribute("stroke", "#446cb3"); //67809f
+    virtualLine.setAttribute("stroke-width", "3");
+
+    svgContainer.appendChild(virtualLine);
+  }
 
   if (graphValue) {
     const graphString =
@@ -190,6 +204,7 @@ export function createVisGraph(
 
   var options: vis.Options = {
     physics: false,
+    autoResize: true,
     nodes: {
       shape: "image"
     },
