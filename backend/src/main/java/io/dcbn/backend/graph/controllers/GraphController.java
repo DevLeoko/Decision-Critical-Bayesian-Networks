@@ -150,16 +150,15 @@ public class GraphController {
     }
 
     @GetMapping("/graphs/{id}/export")
-    public ResponseEntity<FileSystemResource> exportGraph(@PathVariable long id) {
+    public ResponseEntity<String> exportGraph(@PathVariable long id) {
         Graph graph = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         GenieConverter genieConverter = new GenieConverter();
         try {
-            FileSystemResource resource = new FileSystemResource(genieConverter.fromDcbnToGenie(graph));
             return ResponseEntity.ok()
                     .contentType(MediaType.TEXT_XML)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                    .body(resource);
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + graph.getName() + ".xdsl\"")
+                    .body(genieConverter.fromDcbnToGenie(graph));
         } catch (TransformerException | ParserConfigurationException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File conversion failed");
         }
