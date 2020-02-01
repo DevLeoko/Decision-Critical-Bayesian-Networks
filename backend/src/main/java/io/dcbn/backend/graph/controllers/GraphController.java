@@ -132,7 +132,7 @@ public class GraphController {
 
 
     @PostMapping("/graphs/import")
-    public void importGraphFromGenie(@RequestParam("graph") MultipartFile uploadedFile) {
+    public Graph importGraphFromGenie(@RequestParam("graph") MultipartFile uploadedFile) {
         if (uploadedFile.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No file uploaded");
         }
@@ -145,21 +145,30 @@ public class GraphController {
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+
+        //Checking that the graph name is unique
+        for (Graph graphSaved : repository.findAll()) {
+            if (graphSaved.getName().equals(graph.getName())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A graph with the same name ("
+                        + graph.getName() + ") already exists");
+            }
+        }
         repository.save(graph);
+        return repository.findById(graph.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Save Failed"));
 
     }
 
     @GetMapping("/graphs/{id}/export")
-    public ResponseEntity<FileSystemResource> exportGraph(@PathVariable long id) {
+    public ResponseEntity<String> exportGraph(@PathVariable long id) {
         Graph graph = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph not found"));
         GenieConverter genieConverter = new GenieConverter();
         try {
-            FileSystemResource resource = new FileSystemResource(genieConverter.fromDcbnToGenie(graph));
             return ResponseEntity.ok()
                     .contentType(MediaType.TEXT_XML)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                    .body(resource);
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + graph.getName() + ".xdsl\"")
+                    .body(genieConverter.fromDcbnToGenie(graph));
         } catch (TransformerException | ParserConfigurationException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File conversion failed");
         }

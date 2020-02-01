@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
  * This class is a converter for the Genie file format (.xdsl)
  */
 @NoArgsConstructor
-public class GenieConverter {
+public class  GenieConverter {
 
     private static final String ID = "id";
     private static final List<io.dcbn.backend.graph.Node> EMPTY_NODE_LIST = new ArrayList<>();
@@ -155,7 +156,7 @@ public class GenieConverter {
         return new Graph(name, timeSlices, dcbnNodes);
     }
 
-    public File fromDcbnToGenie(Graph graph) throws ParserConfigurationException, TransformerException {
+    public String fromDcbnToGenie(Graph graph) throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
         Document document = documentBuilder.newDocument();
@@ -281,14 +282,17 @@ public class GenieConverter {
             }
         }
 
-        //Creating the file
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource domSource = new DOMSource(document);
-        File graphXDSL = new File(graph.getName() + ".xdsl");
-        StreamResult streamResult = new StreamResult(graphXDSL);
-        transformer.transform(domSource, streamResult);
-        return graphXDSL;
+        StringWriter sw = new StringWriter();
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+
+        transformer.transform(new DOMSource(document), new StreamResult(sw));
+        return sw.toString();
+
     }
 
     /**
