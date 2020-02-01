@@ -96,7 +96,7 @@ public class EvidenceFormulaController {
 
     @PostMapping("/evidence-formulas/evaluate")
     @PreAuthorize("hasRole('ADMIN')")
-    public boolean evaluateEvidenceFormulaByName(@RequestBody EvaluationRequest evaluationRequest, HttpServletResponse response) {
+    public boolean evaluateEvidenceFormula(@RequestBody EvaluationRequest evaluationRequest, HttpServletResponse response) {
         ObjectMapper mapper = new JsonMapper();
         try {
             Vessel vessel = mapper.convertValue(evaluationRequest.getParameters(), Vessel.class);

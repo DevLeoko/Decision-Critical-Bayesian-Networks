@@ -106,10 +106,6 @@ public class DcbnApplication {
             isInReportedArea.setTimeTDependency(iIRATDep);
             graphRepository.save(new Graph(0, "testGraph", 5,
                     Arrays.asList(nullSpeed, inTrajectoryArea, isInReportedArea, smuggling)));
-
-            for (int i = 0; i < 5; ++i) {
-                evidenceFormulaRepository.save(new EvidenceFormula("test" + i, "true & " + i + " = " + i));
-            }
         };
     }
 

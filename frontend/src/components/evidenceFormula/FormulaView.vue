@@ -25,7 +25,7 @@
     <v-row row pa-3>
       <v-col cols="7">
         <v-textarea
-          class="sheoi"
+          class="formula-area"
           height="60vh"
           outlined
           label="Formula"
@@ -101,31 +101,32 @@
           <v-icon class="mr-1">colorize</v-icon>test
         </v-btn>
       </v-col>
-      <v-col>
-        <div
-          v-if="successfulEvaluation && evaluationResult"
-          class="success--text headline"
-          style="text-align: end"
-        >
-          true
-        </div>
-
-        <div
-          v-if="successfulEvaluation && !evaluationResult"
-          class="error--text headline"
-          style="text-align: end"
-        >
-          false
-        </div>
-      </v-col>
     </v-row>
     <v-snackbar v-model="hasError" color="error" timeout="5000">
-      {{ error }}
+      {{ errorMessage }}
       <v-btn icon @click="hasError = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
     <v-snackbar v-model="success" color="success" timeout="3000">
       {{ successMessage }}
       <v-btn icon @click="success = false"><v-icon>clear</v-icon></v-btn>
+    </v-snackbar>
+
+    <v-snackbar
+      v-if="evaluationResult"
+      v-model="successfulEvaluation"
+      color="success"
+      timeout="3000"
+    >
+      true
+    </v-snackbar>
+
+    <v-snackbar
+      v-if="!evaluationResult"
+      v-model="successfulEvaluation"
+      color="error"
+      timeout="3000"
+    >
+      false
     </v-snackbar>
   </v-container>
 </template>
@@ -208,7 +209,7 @@ export default Vue.extend({
       hasError: false,
       nameError: false,
       formulaError: false,
-      error: "",
+      errorMessage: "",
       success: false,
       successMessage: "",
       successfulEvaluation: false,
@@ -230,19 +231,19 @@ export default Vue.extend({
 
         if (data.parameterSize) {
           this.formulaError = true;
-          this.error = parameterSize(error);
+          this.errorMessage = parameterSize(error);
         } else if (data.symbolNotFound) {
           this.formulaError = true;
-          this.error = symbolNotFound(error);
+          this.errorMessage = symbolNotFound(error);
         } else if (data.parse) {
           this.formulaError = true;
-          this.error = parse(error);
+          this.errorMessage = parse(error);
         } else if (data.typeMismatch) {
           this.formulaError = true;
-          this.error = typeMismatch(error);
+          this.errorMessage = typeMismatch(error);
         } else {
           this.nameError = true;
-          this.error = `Formula with name ${this.formula.name} exists already!`;
+          this.errorMessage = `Formula with name ${this.formula.name} exists already!`;
         }
       }
     },
@@ -288,18 +289,12 @@ export default Vue.extend({
           .catch(this.setError);
       }
     }
-  },
-
-  watch: {
-    "$route.params.id": function() {
-      this.successfulEvaluation = false;
-    }
   }
 });
 </script>
 
 <style>
-.sheoi textarea {
+.formula-area textarea {
   height: 97%;
 }
 </style>
