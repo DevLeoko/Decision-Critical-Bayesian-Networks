@@ -152,13 +152,14 @@ public class InferenceManager {
                 instance.setValue(variable, state);
             }
 
+            //Setting the evidences
             for(Node node : nodesToSetValuesFromValueNode) {
                 int state = ((ValueNode) node).getIndexOfState(time);
                 Variable variable = adaptedGraph.getVariableByName(node.getName());
                 instance.setValue(variable, state);
             }
 
-            //Setting state 0 for every
+            //Setting state 0 for every temporary child (JUST FOR 2 STATES)
             for (Variable variable : tempChildVariables) {
                 instance.setValue(variable, 0);
             }
