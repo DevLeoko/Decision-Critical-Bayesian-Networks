@@ -222,7 +222,7 @@ export default Vue.extend({
         .catch(error => {
           this.throwError(error.response.data.message);
         })
-        .then(_ => (this.loading = false));
+        .then(() => (this.loading = false));
     },
 
     importGraph(file: any) {
@@ -243,7 +243,7 @@ export default Vue.extend({
           .catch(error => {
             this.throwError(error.response.data.message);
           })
-          .then(_ => (this.loading = false));
+          .then(() => (this.loading = false));
       } else {
         this.loading = false;
       }
