@@ -94,10 +94,10 @@
     </v-row>
     <v-row mt-2>
       <v-col>
-        <v-btn color="success" @click="save(formula)"
+        <v-btn :loading="loading" color="success" @click="save(formula)"
           ><v-icon class="mr-1">save</v-icon>Save</v-btn
         >
-        <v-btn class="ml-2" color="primary" @click="test()">
+        <v-btn :loading="loading" class="ml-2" color="primary" @click="test()">
           <v-icon class="mr-1">colorize</v-icon>test
         </v-btn>
       </v-col>
@@ -118,6 +118,9 @@
       timeout="3000"
     >
       true
+      <v-btn icon @click="successfulEvaluation = false"
+        ><v-icon>clear</v-icon></v-btn
+      >
     </v-snackbar>
 
     <v-snackbar
@@ -127,6 +130,9 @@
       timeout="3000"
     >
       false
+      <v-btn icon @click="successfulEvaluation = false"
+        ><v-icon>clear</v-icon></v-btn
+      >
     </v-snackbar>
   </v-container>
 </template>
@@ -147,6 +153,9 @@ export default Vue.extend({
   props: {
     formula: {
       type: Object as () => Formula
+    },
+    loading: {
+      type: Object as () => boolean
     }
   },
   components: {
@@ -260,6 +269,7 @@ export default Vue.extend({
     },
 
     test() {
+      this.$emit("update:loading", true);
       let result = {} as { [key: string]: any };
       for (let variable of this.variables) {
         result[variable.name] = variable.value;
@@ -277,17 +287,11 @@ export default Vue.extend({
     },
 
     save(formula: Formula) {
-      if (formula.id === -1) {
-        this.axios
-          .post("/evidence-formulas", formula)
-          .then(this.setSuccess)
-          .catch(this.setError);
-      } else {
-        this.axios
-          .put(`/evidence-formulas/${formula.id}`, formula)
-          .then(this.setSuccess)
-          .catch(this.setError);
-      }
+      this.$emit("update:loading", true);
+      this.axios
+        .put(`/evidence-formulas/${formula.id}`, formula)
+        .then(this.setSuccess)
+        .catch(this.setError);
     }
   }
 });

@@ -1,12 +1,17 @@
 <template>
   <v-layout row wrap>
     <v-flex xs3>
-      <formula-list :formulas="formulas" @update-list="updateList()" />
+      <formula-list
+        :loading.sync="loading"
+        :formulas="formulas"
+        @update-list="updateList()"
+      />
     </v-flex>
     <v-flex xs9 pa-3>
       <formula-view
         v-if="currentFormula()"
         :formula="currentFormula()"
+        :loading.sync="loading"
         @update-list="updateList()"
       />
       <v-layout v-else row wrap>
@@ -34,7 +39,8 @@ export interface Formula {
 export default Vue.extend({
   data() {
     return {
-      formulas: [] as Formula[]
+      formulas: [] as Formula[],
+      loading: false
     };
   },
   components: {
@@ -44,9 +50,12 @@ export default Vue.extend({
 
   methods: {
     updateList() {
-      this.axios.get("/evidence-formulas").then(res => {
-        this.formulas = res.data;
-      });
+      this.axios
+        .get("/evidence-formulas")
+        .then(res => {
+          this.formulas = res.data;
+        })
+        .then(() => (this.loading = false));
     },
     currentFormula(): any {
       for (let formula of this.formulas) {

@@ -59,7 +59,7 @@
 
     <template v-slot:append>
       <v-flex class="pa-4" style="text-align: center">
-        <v-btn small color="primary" @click="addFormula()">
+        <v-btn :loading="loading" small color="primary" @click="addFormula()">
           <v-icon class="mr-1" color="white">add_box</v-icon>
           New Expression
         </v-btn>
@@ -76,6 +76,9 @@ export default Vue.extend({
   props: {
     formulas: {
       type: Array as () => Formula[]
+    },
+    loading: {
+      type: Object as () => boolean
     }
   },
 
@@ -102,19 +105,21 @@ export default Vue.extend({
     },
 
     addFormula() {
+      this.$emit("update:loading", true);
       let name = this.generateNewName();
       this.axios
         .post("/evidence-formulas", {
           name: name,
           formula: "true"
         })
-        .then(res => this.$emit("update-list"));
+        .then(() => this.$emit("update-list"));
     },
 
     deleteFormula(formula: Formula) {
+      this.$emit("update:loading", true);
       this.axios
         .delete(`/evidence-formulas/${formula.id}`)
-        .then(_ => this.$emit("update-list"));
+        .then(() => this.$emit("update-list"));
     },
 
     changeSelection(formula: Formula) {
