@@ -1,17 +1,54 @@
 <template>
   <v-navigation-drawer permanent width="100%">
+    <v-dialog v-model="deleteWarning" persistent="true" max-width="400">
+      <v-card>
+        <v-card-title>
+          <v-icon class="mr-2">delete_sweep</v-icon> Confirm deletion
+        </v-card-title>
+        <v-card-text>
+          You are about to delete the evidence formula '{{
+            deletedFormula.name
+          }}'. Are you sure you want to do this? This action can not be undone,
+          please confirm.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="gray" text @click="deleteWarning = false">
+            Cancel
+          </v-btn>
+
+          <v-btn
+            color="red"
+            outlined
+            @click="
+              deleteWarning = false;
+              deleteFormula(deletedFormula);
+            "
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-list style=" max-height: 80vh; overflow: auto">
       <v-list-item-group color="primary">
         <v-list-item
+          @click="changeSelection(formula)"
           :key="formula.id"
           v-for="formula in sortedFormulas"
-          link
-          @click="selectFormula(formula.id)"
         >
           <v-list-item-content>
             <v-list-item-title>{{ formula.name }}</v-list-item-title>
           </v-list-item-content>
-          <v-list-item-action @click.stop="deleteFormula(formula)">
+
+          <v-list-item-action
+            @click.stop="
+              deleteWarning = true;
+              deletedFormula = formula;
+            "
+          >
             <v-btn icon>
               <v-icon color="black">delete</v-icon>
             </v-btn>
@@ -41,17 +78,15 @@ export default Vue.extend({
       type: Array as () => Formula[]
     }
   },
-  methods: {
-    selectFormula(id: string) {
-      console.log(id);
-      this.$router.push({
-        name: "EvidenceFormula",
-        params: {
-          id
-        }
-      });
-    },
 
+  data() {
+    return {
+      deletedFormula: {} as Formula,
+      deleteWarning: false
+    };
+  },
+
+  methods: {
     generateNewName(): string {
       const defaultFormulaName = "newFormula";
       if (this.formulas.length == 0) {
@@ -80,6 +115,15 @@ export default Vue.extend({
       this.axios
         .delete(`/evidence-formulas/${formula.id}`)
         .then(_ => this.$emit("update-list"));
+    },
+
+    changeSelection(formula: Formula) {
+      this.$router.push({
+        name: "EvidenceFormula",
+        params: {
+          id: `${formula.id}`
+        }
+      });
     }
   },
 

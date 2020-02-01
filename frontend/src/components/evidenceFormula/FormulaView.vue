@@ -160,7 +160,6 @@ export default Vue.extend({
         { name: "width", type: "number", value: 10 },
         { name: "length", type: "number", value: 10 },
         { name: "draught", type: "number", value: 10 },
-        { name: "cog", type: "number", value: 10 },
         { name: "longitude", type: "number", value: 10 },
         { name: "latitude", type: "number", value: 10 },
         { name: "heading", type: "number", value: 10 },
