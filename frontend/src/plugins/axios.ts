@@ -21,12 +21,12 @@ store.subscribe(mutation => {
 axiosInstance.interceptors.response.use(
   response => response,
   function(error) {
-    // if (error.response !== undefined && error.response.status == 403) {
-    //   store.dispatch("logout");
-    //   router.push({ name: "login" });
-    // } else {
-    //   return Promise.reject(error);
-    // }
+    if (error.response !== undefined && error.response.status == 403) {
+      store.dispatch("logout");
+      router.push({ name: "login" });
+    } else {
+      return Promise.reject(error);
+    }
   }
 );
 

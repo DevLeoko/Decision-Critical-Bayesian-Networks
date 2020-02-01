@@ -20,16 +20,16 @@ export default Vue.extend({
   data: () => ({}),
 
   async created() {
-    // if (this.$store.state.isUserLoggedIn) {
-    //   const user = (await this.axios.post("/refreshAccount")).data.user;
-    //   this.$store.dispatch("setUser", user);
-    // } else {
-    //   if (!this.$route.meta.unauthorized) {
-    //     this.$router.push({
-    //       name: "Login"
-    //     });
-    //   }
-    // }
+    if (this.$store.state.isUserLoggedIn) {
+      const user = (await this.axios.post("/refreshAccount")).data.user;
+      this.$store.dispatch("setUser", user);
+    } else {
+      if (!this.$route.meta.unauthorized) {
+        this.$router.push({
+          name: "Login"
+        });
+      }
+    }
   }
 });
 </script>
