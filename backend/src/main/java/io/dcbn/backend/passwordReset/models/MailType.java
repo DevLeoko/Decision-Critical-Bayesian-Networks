@@ -21,11 +21,13 @@ public enum MailType {
             Calendar now = Calendar.getInstance();
             now.add(Calendar.MINUTE, resetTokenDurationInMinutes);
 
-            return Jwts.builder()
+            String token = Jwts.builder()
                     .signWith(Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS512)
                     .setSubject("" + user.getId())
                     .setExpiration(now.getTime())
                     .compact();
+
+            return "http://localhost:8080/#/reset-password?key=" + token;
         }
     };
 

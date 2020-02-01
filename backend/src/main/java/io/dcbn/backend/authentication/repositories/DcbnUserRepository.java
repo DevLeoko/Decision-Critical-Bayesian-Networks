@@ -17,4 +17,8 @@ public interface DcbnUserRepository extends CrudRepository<DcbnUser, Long> {
 
     boolean existsByUsernameOrEmail(String username, String email);
 
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
+
 }

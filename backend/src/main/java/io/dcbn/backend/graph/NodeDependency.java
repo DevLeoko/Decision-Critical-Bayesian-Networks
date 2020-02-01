@@ -16,7 +16,6 @@ import java.util.List;
  * in the same order required by amidst.
  */
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @JsonIdentityInfo(
@@ -41,4 +40,10 @@ public class NodeDependency {
     @Convert(converter = ProbabilityConverter.class)
     private double[][] probabilities;
 
+    public NodeDependency(List<Node> parents, List<Node> parentsTm1, double[][] probabilities) {
+        this.id = 0;
+        this.parents = parents;
+        this.parentsTm1 = parentsTm1;
+        this.probabilities = probabilities;
+    }
 }
