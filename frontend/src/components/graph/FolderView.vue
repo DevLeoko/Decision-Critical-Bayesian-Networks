@@ -102,6 +102,13 @@
             >
               <v-icon>add</v-icon> Add new graph
             </v-btn>
+            <v-file-input
+              label="Import"
+              outlined
+              dense
+              class="ma-3"
+              @change="importGraph($event)"
+            ></v-file-input>
           </v-col>
         </v-row>
       </template>
@@ -120,6 +127,14 @@
       @delete="deleteGraph"
       @export="exportGraph"
     ></folder-actions>
+    <v-snackbar v-model="hasErrorBar" color="error" timeout="5000">
+      {{ error }}
+      <v-btn icon @click="hasError = false"><v-icon>clear</v-icon></v-btn>
+    </v-snackbar>
+    <v-snackbar v-model="successBar" color="success" timeout="3000">
+      {{ successMessage }}
+      <v-btn icon @click="success = false"><v-icon>clear</v-icon></v-btn>
+    </v-snackbar>
   </div>
 </template>
 
@@ -148,7 +163,11 @@ export default Vue.extend({
     return {
       search: null,
       menu: true,
-      i: 100
+      i: 100,
+      hasErrorBar: false,
+      error: "",
+      successBar: false,
+      successMessage: ""
     };
   },
 
@@ -195,6 +214,37 @@ export default Vue.extend({
       this.axios.get("graphs/" + graph.id + "/export").then(res => {
         FileDownload(res.data, graph.name + ".xdsl");
       });
+    },
+
+    importGraph(file: any) {
+      if (file != null) {
+        var formData = new FormData();
+        var imagefile = document.querySelector("#file");
+        formData.append("graph", file);
+        this.axios
+          .post("graphs/import", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          })
+          .then(res => {
+            this.graphs.push(res.data);
+            this.throwSuccess("Graph imported");
+          })
+          .catch(error => {
+            this.throwError(error.response.data.message);
+          });
+      }
+    },
+
+    throwError(message: string) {
+      this.error = message;
+      this.hasErrorBar = true;
+    },
+
+    throwSuccess(message: string) {
+      this.successMessage = message;
+      this.successBar = true;
     }
   },
 

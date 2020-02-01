@@ -132,7 +132,7 @@ public class GraphController {
 
 
     @PostMapping("/graphs/import")
-    public void importGraphFromGenie(@RequestParam("graph") MultipartFile uploadedFile) {
+    public Graph importGraphFromGenie(@RequestParam("graph") MultipartFile uploadedFile) {
         if (uploadedFile.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No file uploaded");
         }
@@ -145,7 +145,17 @@ public class GraphController {
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+
+        //Checking that the graph name is unique
+        for (Graph graphSaved : repository.findAll()) {
+            if (graphSaved.getName().equals(graph.getName())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A graph with the same name ("
+                        + graph.getName() + ") already exists");
+            }
+        }
         repository.save(graph);
+        return repository.findById(graph.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Save Failed"));
 
     }
 
