@@ -1,17 +1,28 @@
 package io.dcbn.backend.graph.controllers;
 
 import io.dcbn.backend.graph.Graph;
+import io.dcbn.backend.graph.Node;
+import io.dcbn.backend.graph.ValueNode;
+import io.dcbn.backend.graph.converters.GenieConverter;
 import io.dcbn.backend.graph.repositories.GraphRepository;
 import io.dcbn.backend.graph.services.GraphService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.xml.sax.SAXException;
 
 import javax.validation.Valid;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
 import java.security.Principal;
-import java.util.Collections;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -100,9 +111,44 @@ public class GraphController {
         repository.save(graph);
     }
 
-    @PostMapping("/graphs/evaluate")
-    public Graph evaluateGraphById(@Valid @RequestBody Graph graph) {
-        return graphService.evaluateGraph(graph);
+    @PostMapping("/graphs/{id}/evaluate")
+    public Map<String, double[][]> evaluateGraphById(@PathVariable long id, @RequestBody Map<String, double[][]> values) {
+        Graph graph = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph does not exist!"));
+        Map<String, Node> nodeMap = graph.getNodes().stream().collect(Collectors.toMap(Node::getName, node -> node));
+
+        // Replace all nodes that have values with ValueNodes
+        for (Map.Entry<String, double[][]> valueEntry : values.entrySet()) {
+            Node node = nodeMap.get(valueEntry.getKey());
+            if (node == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid node name in map!");
+            }
+            nodeMap.put(valueEntry.getKey(), new ValueNode(node, valueEntry.getValue()));
+        }
+
+        // nodeMap now contains all graph nodes with the correct nodes replaced by ValueNodes
+
+        // Change all references to old Node objects to ValueNodes.
+        for (Map.Entry<String, Node> nodeEntry : nodeMap.entrySet()) {
+            Node node = nodeEntry.getValue();
+
+            List<List<Node>> parents = Arrays.asList(node.getTimeZeroDependency().getParentsTm1(),
+                    node.getTimeZeroDependency().getParents(),
+                    node.getTimeTDependency().getParentsTm1(),
+                    node.getTimeTDependency().getParents());
+            for (List<Node> currentParents : parents) {
+                for (int i = 0; i < currentParents.size(); ++i) {
+                    String parentName = currentParents.get(i).getName();
+                    if (values.containsKey(parentName)) {
+                        currentParents.set(i, nodeMap.get(parentName));
+                    }
+                }
+            }
+        }
+
+        graph.setNodes(new ArrayList<>(nodeMap.values()));
+        Graph resultGraph = graphService.evaluateGraph(graph);
+        return resultGraph.getNodes().stream().filter(Node::isValueNode)
+                .map(node -> (ValueNode) node).collect(Collectors.toMap(Node::getName, ValueNode::getValue));
     }
 
     @PutMapping("/graphs/{id}/lock")
@@ -111,6 +157,50 @@ public class GraphController {
             graphService.updateLock(id, principal.getName());
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+
+    @PostMapping("/graphs/import")
+    public Graph importGraphFromGenie(@RequestParam("graph") MultipartFile uploadedFile) {
+        if (uploadedFile.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No file uploaded");
+        }
+        GenieConverter genieConverter = new GenieConverter();
+        Graph graph;
+        try {
+            graph = genieConverter.fromGenieToDcbn(uploadedFile.getInputStream());
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File conversion failed");
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+
+        //Checking that the graph name is unique
+        for (Graph graphSaved : repository.findAll()) {
+            if (graphSaved.getName().equals(graph.getName())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A graph with the same name ("
+                        + graph.getName() + ") already exists");
+            }
+        }
+        repository.save(graph);
+        return repository.findById(graph.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Save Failed"));
+
+    }
+
+    @GetMapping("/graphs/{id}/export")
+    public ResponseEntity<String> exportGraph(@PathVariable long id) {
+        Graph graph = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph not found"));
+        GenieConverter genieConverter = new GenieConverter();
+        try {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.TEXT_XML)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + graph.getName() + ".xdsl\"")
+                    .body(genieConverter.fromDcbnToGenie(graph));
+        } catch (TransformerException | ParserConfigurationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File conversion failed");
         }
     }
 }

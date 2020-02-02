@@ -51,5 +51,4 @@ public enum StateType {
         }
         return null;
     }
-
 }

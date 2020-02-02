@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Arrays;
+
 /**
  * This extension of a node represents a node with a evidence (Input) of with calculated values (Output).
  */
@@ -44,5 +46,31 @@ public class ValueNode extends Node {
     @Override
     public boolean isValueNode() {
         return true;
+    }
+
+    public boolean checkValuesAreStates() {
+        for(double[] timeSliceValue: value) {
+            double sum = 0;
+            for(double valueForState: timeSliceValue) {
+                sum += valueForState;
+                if (valueForState != Math.floor(valueForState)) {
+                    return false;
+                }
+            }
+            if(sum != 1.0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int getIndexOfState(int timeSlice) {
+        double[] arrayToCheck = value[timeSlice];
+        for(int i = 0; i < arrayToCheck.length; i++) {
+            if (arrayToCheck[i] == 1.0) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

@@ -1,0 +1,233 @@
+{
+    "id": 17,
+    "name": "Yoloooo",
+    "timeSlices": 10,
+    "nodes": [
+        {
+            "type": "Node",
+            "name": "A",
+            "id": 18,
+            "timeZeroDependency": {
+                "id": 20,
+                "parents": [],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.3,
+                        0.7
+                    ]
+                ]
+            },
+            "timeTDependency": {
+                "id": 19,
+                "parents": [],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.3,
+                        0.7
+                    ]
+                ]
+            },
+            "color": "#e5f6f7",
+            "evidenceFormulaName": null,
+            "stateType": {
+                "states": [
+                    "true",
+                    "false"
+                ]
+            },
+            "position": {
+                "x": 222.5,
+                "y": 551.0
+            }
+        },
+        {
+            "type": "Node",
+            "name": "B",
+            "id": 21,
+            "timeZeroDependency": {
+                "id": 23,
+                "parents": [],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.2,
+                        0.8
+                    ]
+                ]
+            },
+            "timeTDependency": {
+                "id": 22,
+                "parents": [],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.2,
+                        0.8
+                    ]
+                ]
+            },
+            "color": "#e5f6f7",
+            "evidenceFormulaName": null,
+            "stateType": {
+                "states": [
+                    "true",
+                    "false"
+                ]
+            },
+            "position": {
+                "x": 552.5,
+                "y": 548.0
+            }
+        },
+        {
+            "type": "Node",
+            "name": "C",
+            "id": 24,
+            "timeZeroDependency": {
+                "id": 26,
+                "parents": [
+                    "A",
+                    "B"
+                ],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.999,
+                        0.001
+                    ],
+                    [
+                        0.8,
+                        0.2
+                    ],
+                    [
+                        0.6,
+                        0.4
+                    ],
+                    [
+                        0.2,
+                        0.8
+                    ]
+                ]
+            },
+            "timeTDependency": {
+                "id": 25,
+                "parents": [
+                    "A",
+                    "B"
+                ],
+                "parentsTm1": [
+                    "C"
+                ],
+                "probabilities": [
+                    [
+                        0.1,
+                        0.9
+                    ],
+                    [
+                        0.5,
+                        0.5
+                    ],
+                    [
+                        0.3,
+                        0.7
+                    ],
+                    [
+                        0.7,
+                        0.3
+                    ],
+                    [
+                        0.2,
+                        0.8
+                    ],
+                    [
+                        0.6,
+                        0.4
+                    ],
+                    [
+                        0.4,
+                        0.6
+                    ],
+                    [
+                        0.8,
+                        0.2
+                    ]
+                ]
+            },
+            "color": "#e5f6f7",
+            "evidenceFormulaName": null,
+            "stateType": {
+                "states": [
+                    "true",
+                    "false"
+                ]
+            },
+            "position": {
+                "x": 404.5,
+                "y": 163.0
+            }
+        },
+        {
+            "type": "Node",
+            "name": "D",
+            "id": 27,
+            "timeZeroDependency": {
+                "id": 29,
+                "parents": [
+                    "C"
+                ],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.8,
+                        0.2
+                    ],
+                    [
+                        0.4,
+                        0.6
+                    ]
+                ]
+            },
+            "timeTDependency": {
+                "id": 28,
+                "parents": [
+                    "C"
+                ],
+                "parentsTm1": [
+                    "C"
+                ],
+                "probabilities": [
+                    [
+                        0.8,
+                        0.2
+                    ],
+                    [
+                        0.8,
+                        0.2
+                    ],
+                    [
+                        0.4,
+                        0.6
+                    ],
+                    [
+                        0.4,
+                        0.6
+                    ]
+                ]
+            },
+            "color": "#e5f6f7",
+            "evidenceFormulaName": null,
+            "stateType": {
+                "states": [
+                    "true",
+                    "false"
+                ]
+            },
+            "position": {
+                "x": 738.5,
+                "y": 161.0
+            }
+        }
+    ]
+}

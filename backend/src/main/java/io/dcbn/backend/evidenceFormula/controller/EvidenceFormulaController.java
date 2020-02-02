@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
@@ -13,15 +14,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
+@Transactional
 @RestController
 public class EvidenceFormulaController {
 
@@ -62,23 +67,24 @@ public class EvidenceFormulaController {
         repository.save(evidenceFormula);
     }
 
-    @DeleteMapping("/evidence-formulas/{name}")
+    @DeleteMapping("/evidence-formulas/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteEvidenceFormulaByName(@PathVariable String name) {
-        if (!repository.existsByName(name)) {
+    public void deleteEvidenceFormulaById(@PathVariable long id) {
+        if (!repository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND);
         }
-        repository.deleteByName(name);
+        repository.deleteById(id);
     }
 
-    @PutMapping("/evidence-formulas/{name}")
+    @PutMapping("/evidence-formulas/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public void updateEvidenceFormulaByName(@PathVariable String name,
+    public void updateEvidenceFormulaByName(@PathVariable long id,
                                             @Valid @RequestBody EvidenceFormula evidenceFormula) {
-        EvidenceFormula oldEvidenceFormula = repository.findByName(name)
+        EvidenceFormula oldEvidenceFormula = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND));
 
-        if (!name.equals(evidenceFormula.getName())) {
+
+        if (!oldEvidenceFormula.getName().equals(evidenceFormula.getName())) {
             if (repository.existsByName(evidenceFormula.getName())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ALREADY_EXISTS);
             }
@@ -88,24 +94,22 @@ public class EvidenceFormulaController {
         repository.save(evidenceFormula);
     }
 
-    @PostMapping("/evidence-formulas/{name}/evaluate")
+    @PostMapping("/evidence-formulas/evaluate")
     @PreAuthorize("hasRole('ADMIN')")
-    public boolean evaluateEvidenceFormulaByName(@PathVariable String name,
-                                                 HttpServletRequest request) {
-        EvidenceFormula evidenceFormula = repository.findByName(name)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND));
+    public boolean evaluateEvidenceFormula(@RequestBody EvaluationRequest evaluationRequest, HttpServletResponse response) {
         ObjectMapper mapper = new JsonMapper();
         try {
-            JsonNode node = mapper.readValue(request.getReader(), JsonNode.class);
-            return evaluator.evaluate(node, evidenceFormula);
+            Vessel vessel = mapper.convertValue(evaluationRequest.getParameters(), Vessel.class);
+            return evaluator.evaluate(vessel, evaluationRequest.getFormula());
         } catch (EvaluationException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @ExceptionHandler(EvaluationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public EvaluationException handleException(EvaluationException ex) {
         return ex;
     }

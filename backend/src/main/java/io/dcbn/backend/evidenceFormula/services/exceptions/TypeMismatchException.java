@@ -1,7 +1,9 @@
 package io.dcbn.backend.evidenceFormula.services.exceptions;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Getter;
 
+@JsonTypeName("typeMismatch")
 public class TypeMismatchException extends EvaluationException {
 
     @Getter

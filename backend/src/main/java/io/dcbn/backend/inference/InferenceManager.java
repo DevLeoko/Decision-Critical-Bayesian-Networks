@@ -94,21 +94,38 @@ public class InferenceManager {
                                     BiFunction<Integer, EvidenceFormula, String> formulaResolver, Algorithm algorithm) {
         DynamicBayesianNetworkSampler dynamicSampler = new DynamicBayesianNetworkSampler(
                 adaptedGraph.getDbn());
+
         List<Node> nodes = adaptedGraph.getAdaptedGraph().getNodes();
-        List<Node> nodesToEvaluate = nodes.stream()
+        List<Node> nodesWithFormula = nodes.stream()
                 .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() == null)
                 .collect(Collectors.toList());
+        List<Node> nodesWithVirEvi = nodes.stream()
+                .filter(var -> var.isValueNode() && ((ValueNode) var).getValue().length == 1).collect(Collectors.toList());
+
+        //finding all the temporary child nodes fot the
+        List<Variable> tempChildVariables = adaptedGraph.getDbn().getDynamicVariables().getListOfDynamicVariables().stream()
+                .filter(var -> var.getName().substring(0, 9).equals("tempChild"))
+                .collect(Collectors.toList());
+
         //Hiding the variables we want to evaluate during inference calculations
-        nodesToEvaluate.stream()
+
+        nodesWithVirEvi.stream()
+                .map(Node::getName)
+                .map(adaptedGraph::getVariableByName)
+                .forEach(dynamicSampler::setHiddenVar);
+        nodesWithFormula.stream()
                 .map(Node::getName)
                 .map(adaptedGraph::getVariableByName)
                 .forEach(dynamicSampler::setHiddenVar);
         DataStream<DynamicDataInstance> dataPredict = dynamicSampler
                 .sampleToDataBase(1, adaptedGraph.getAdaptedGraph().getTimeSlices());
 
-        //Setting the results of the evidenceFormulas for each time-step
         List<Node> nodesToSetValues = nodes.stream()
                 .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() != null)
+                .collect(Collectors.toList());
+        List<Node> nodesToSetValuesFromValueNode = nodes.stream()
+                .filter(var -> var.isValueNode())
+                .filter(var -> ((ValueNode) var).checkValuesAreStates())
                 .collect(Collectors.toList());
 
         //Running inference
@@ -135,8 +152,19 @@ public class InferenceManager {
                 instance.setValue(variable, state);
             }
 
-            //The InferenceEngineForDBN must be reset at the beginning of each Sequence.
-            //We also set the evidence.
+            //Setting the evidences
+            for(Node node : nodesToSetValuesFromValueNode) {
+                int state = ((ValueNode) node).getIndexOfState(time);
+                Variable variable = adaptedGraph.getVariableByName(node.getName());
+                instance.setValue(variable, state);
+            }
+
+            //Setting state 0 for every temporary child (JUST FOR 2 STATES)
+            for (Variable variable : tempChildVariables) {
+                instance.setValue(variable, 0);
+            }
+
+            //We set the evidence.
             InferenceEngineForDBN.addDynamicEvidence(instance);
             //Then we run inference
             InferenceEngineForDBN.runInference();
