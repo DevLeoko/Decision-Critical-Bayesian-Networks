@@ -2,14 +2,14 @@ export declare module dcbn {
   export interface TimeZeroDependency {
     id: number;
     parents: string[];
-    parentsTm1: any[];
+    parentsTm1: string[];
     probabilities: number[][];
   }
 
   export interface TimeTDependency {
     id: number;
     parents: string[];
-    parentsTm1: any[];
+    parentsTm1: string[];
     probabilities: number[][];
   }
 
@@ -127,17 +127,6 @@ export function generateGraphImage(
         )
         .join("");
 
-    // const pathShadow = document.createElementNS(
-    //   "http://www.w3.org/2000/svg",
-    //   "path"
-    // );
-    // pathShadow.setAttribute("d", graphString);
-    // pathShadow.setAttribute("fill", "none");
-    // pathShadow.setAttribute("stroke", "black");
-    // pathShadow.setAttribute("opacity", "0.2");
-    // pathShadow.setAttribute("stroke-width", "8");
-    // svgContainer.appendChild(pathShadow);
-
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
     path.setAttribute("d", graphString);
     path.setAttribute("fill", "none");
@@ -152,7 +141,6 @@ export function generateGraphImage(
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 }
 
-// import graph from "@/../tests/resources/graph1.json";
 import vis, { Edge, Node } from "vis-network";
 
 export function createVisGraph(

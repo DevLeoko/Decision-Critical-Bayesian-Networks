@@ -123,6 +123,7 @@ import TestToolbar from "@/components/graph/TestToolbar.vue";
 import Vue from "vue";
 import vis, { network } from "vis-network";
 
+// TODO fetch actual graph from backend
 import graph from "@/../tests/resources/graph1.json";
 
 import { generateGraphImage, createVisGraph, dcbn } from "../../utils/graph";
@@ -215,6 +216,7 @@ export default Vue.extend({
     }
   },
 
+  // TODO check whether thats the right lifecycle hook
   mounted() {
     const { nodeData, nodeIndecies, network } = createVisGraph(
       document.getElementById("mynetwork")!,
