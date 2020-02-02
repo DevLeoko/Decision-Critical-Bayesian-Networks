@@ -1,0 +1,315 @@
+{
+    "id": 0,
+    "name": "testGraph",
+    "timeSlices": 5,
+    "nodes": [
+        {
+            "type": "ValueNode",
+            "name": "smuggling",
+            "id": 0,
+            "timeZeroDependency": {
+                "id": 0,
+                "parents": [
+                    "isInReportedArea",
+                    "inTrajectoryArea",
+                    "nullSpeed"
+                ],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.8,
+                        0.2
+                    ],
+                    [
+                        0.6,
+                        0.4
+                    ],
+                    [
+                        0.4,
+                        0.6
+                    ],
+                    [
+                        0.4,
+                        0.6
+                    ],
+                    [
+                        0.2,
+                        0.8
+                    ],
+                    [
+                        0.2,
+                        0.8
+                    ],
+                    [
+                        0.001,
+                        0.999
+                    ],
+                    [
+                        0.001,
+                        0.999
+                    ]
+                ]
+            },
+            "timeTDependency": {
+                "id": 0,
+                "parents": [
+                    "isInReportedArea",
+                    "inTrajectoryArea",
+                    "nullSpeed"
+                ],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.8,
+                        0.2
+                    ],
+                    [
+                        0.6,
+                        0.4
+                    ],
+                    [
+                        0.4,
+                        0.6
+                    ],
+                    [
+                        0.4,
+                        0.6
+                    ],
+                    [
+                        0.2,
+                        0.8
+                    ],
+                    [
+                        0.2,
+                        0.8
+                    ],
+                    [
+                        0.001,
+                        0.999
+                    ],
+                    [
+                        0.001,
+                        0.999
+                    ]
+                ]
+            },
+            "color": "#ffffff",
+            "evidenceFormulaName": null,
+            "stateType": {
+                "states": [
+                    "true",
+                    "false"
+                ]
+            },
+            "position": {
+                "x": 0.0,
+                "y": 0.0
+            },
+            "value": [
+                [
+                    6.000000000000003E-4,
+                    0.9994000000000001
+                ],
+                [
+                    6.000000000000003E-4,
+                    0.9994000000000001
+                ],
+                [
+                    0.4002,
+                    0.5998
+                ],
+                [
+                    0.4002,
+                    0.5998
+                ],
+                [
+                    0.4002,
+                    0.5998
+                ]
+            ]
+        },
+        {
+            "type": "ValueNode",
+            "name": "nullSpeed",
+            "id": 0,
+            "timeZeroDependency": {
+                "id": 0,
+                "parents": [],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.7,
+                        0.3
+                    ]
+                ]
+            },
+            "timeTDependency": {
+                "id": 0,
+                "parents": [],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.7,
+                        0.3
+                    ]
+                ]
+            },
+            "color": "#ffffff",
+            "evidenceFormulaName": null,
+            "stateType": {
+                "states": [
+                    "true",
+                    "false"
+                ]
+            },
+            "position": {
+                "x": 0.0,
+                "y": 0.0
+            },
+            "value": [
+                [
+                    1.0,
+                    0.0
+                ],
+                [
+                    1.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    1.0
+                ],
+                [
+                    0.0,
+                    1.0
+                ],
+                [
+                    0.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "type": "ValueNode",
+            "name": "inTrajectoryArea",
+            "id": 0,
+            "timeZeroDependency": {
+                "id": 0,
+                "parents": [],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.8,
+                        0.2
+                    ]
+                ]
+            },
+            "timeTDependency": {
+                "id": 0,
+                "parents": [],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.8,
+                        0.2
+                    ]
+                ]
+            },
+            "color": "#ffffff",
+            "evidenceFormulaName": null,
+            "stateType": {
+                "states": [
+                    "true",
+                    "false"
+                ]
+            },
+            "position": {
+                "x": 0.0,
+                "y": 0.0
+            },
+            "value": [
+                [
+                    0.0,
+                    1.0
+                ],
+                [
+                    0.0,
+                    1.0
+                ],
+                [
+                    0.0,
+                    1.0
+                ],
+                [
+                    0.0,
+                    1.0
+                ],
+                [
+                    0.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "type": "ValueNode",
+            "name": "isInReportedArea",
+            "id": 0,
+            "timeZeroDependency": {
+                "id": 0,
+                "parents": [],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.8,
+                        0.2
+                    ]
+                ]
+            },
+            "timeTDependency": {
+                "id": 0,
+                "parents": [],
+                "parentsTm1": [],
+                "probabilities": [
+                    [
+                        0.8,
+                        0.2
+                    ]
+                ]
+            },
+            "color": "#ffffff",
+            "evidenceFormulaName": null,
+            "stateType": {
+                "states": [
+                    "true",
+                    "false"
+                ]
+            },
+            "position": {
+                "x": 0.0,
+                "y": 0.0
+            },
+            "value": [
+                [
+                    0.0,
+                    1.0
+                ],
+                [
+                    0.0,
+                    1.0
+                ],
+                [
+                    1.0,
+                    0.0
+                ],
+                [
+                    1.0,
+                    0.0
+                ],
+                [
+                    1.0,
+                    0.0
+                ]
+            ]
+        }
+    ]
+}
