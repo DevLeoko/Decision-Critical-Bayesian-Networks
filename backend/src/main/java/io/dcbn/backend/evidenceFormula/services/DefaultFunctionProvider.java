@@ -20,10 +20,10 @@ public class DefaultFunctionProvider extends FunctionProvider {
 
     private Object inArea(List<Object> parameters) {
         String aoiName = (String) parameters.get(0);
-        if (aoiCache.getAoi(aoiName) == null) {
+        AreaOfInterest aoi = aoiCache.getAoi(aoiName);
+        if (aoi == null) {
             throw new SymbolNotFoundException(aoiName);
         }
-        AreaOfInterest aoi = aoiCache.getAoi(aoiName);
         correlatedAois.add(aoi);
 
         Point vesselPoint = createPoint(currentVessel);
@@ -37,7 +37,8 @@ public class DefaultFunctionProvider extends FunctionProvider {
     }
 
     private Object distanceToNearestType(List<Object> parameters) {
-        Set<Vessel> allVesselsByType = vesselCache.getAllVesselsInTimeSliceByType(currentTimeSlice, (VesselType) parameters.get(0));
+        VesselType type = VesselType.valueOf((String) parameters.get(0));
+        Set<Vessel> allVesselsByType = vesselCache.getAllVesselsInTimeSliceByType(currentTimeSlice, type);
         return distance(currentVessel, allVesselsByType);
     }
 
@@ -77,7 +78,7 @@ public class DefaultFunctionProvider extends FunctionProvider {
         Map<String, FunctionWrapper> functions = new HashMap<>();
         functions.put("inArea", new FunctionWrapper(Collections.singletonList(String.class), this::inArea));
         functions.put("distanceToNearest", new FunctionWrapper(Collections.emptyList(), this::distanceToNearest));
-        functions.put("distanceToNearestType", new FunctionWrapper(Collections.singletonList(VesselType.class), this::distanceToNearestType));
+        functions.put("distanceToNearestType", new FunctionWrapper(Collections.singletonList(String.class), this::distanceToNearestType));
         super.functions = functions;
     }
 

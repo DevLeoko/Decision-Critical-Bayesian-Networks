@@ -1,9 +1,9 @@
 package io.dcbn.backend.evidenceFormula.services.visitors;
 
-import io.dcbn.backend.evidenceFormula.services.SingleFunction;
 import lombok.Data;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Represents a function in our evidence formula DSL.
@@ -20,7 +20,7 @@ public class FunctionWrapper {
      * A function from {@code List<Object>} to {@code Object}.
      * This has to be so generic because the parameters or return types of functions could be anything.
      */
-    private final SingleFunction<List<Object>, Object> function;
+    private final Function<List<Object>, Object> function;
 
 
 }

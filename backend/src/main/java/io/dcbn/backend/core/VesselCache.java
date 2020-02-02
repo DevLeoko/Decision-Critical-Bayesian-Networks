@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class VesselCache {
@@ -38,21 +39,21 @@ public class VesselCache {
         if(timeSlice < 0 || timeSlice > timeSteps - 1) {
             throw new IllegalArgumentException("time slice must be between 0 and 'timeSteps' - 1");
         }
-        Set<Vessel> vessels = new HashSet<>();
-        for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
-            vessels.add(entry.getValue()[timeSlice]);
-        }
-        return vessels;
+
+        return vesselCache.values().stream()
+                .map(vesselArr -> vesselArr[timeSlice])
+                .collect(Collectors.toSet());
     }
 
     public Set<Vessel> getAllVesselsInTimeSliceByType(int timeSlice, VesselType type) {
-        Set<Vessel> vessels = new HashSet<>();
-        for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
-            if (entry.getValue()[0].getVesselType() == type) {
-                vessels.add(entry.getValue()[timeSlice]);
-            }
+        if(timeSlice < 0 || timeSlice > timeSteps - 1) {
+            throw new IllegalArgumentException("time slice must be between 0 and 'timeSteps' - 1");
         }
-        return vessels;
+
+        return vesselCache.values().stream()
+                .filter(vesselsArr -> vesselsArr[0].getVesselType().equals(type))
+                .map(vesselArr -> vesselArr[timeSlice])
+                .collect(Collectors.toSet());
     }
 
     public void insert(Vessel vessel) throws IllegalArgumentException {
