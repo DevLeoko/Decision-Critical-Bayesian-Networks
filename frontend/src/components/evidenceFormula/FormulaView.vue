@@ -112,24 +112,11 @@
     </v-snackbar>
 
     <v-snackbar
-      v-if="evaluationResult"
       v-model="successfulEvaluation"
-      color="success"
+      :color="evaluationResult ? 'success' : 'error'"
       timeout="3000"
     >
-      true
-      <v-btn icon @click="successfulEvaluation = false"
-        ><v-icon>clear</v-icon></v-btn
-      >
-    </v-snackbar>
-
-    <v-snackbar
-      v-if="!evaluationResult"
-      v-model="successfulEvaluation"
-      color="error"
-      timeout="3000"
-    >
-      false
+      {{ evaluationResult ? "true" : "false" }}
       <v-btn icon @click="successfulEvaluation = false"
         ><v-icon>clear</v-icon></v-btn
       >
