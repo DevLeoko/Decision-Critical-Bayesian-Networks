@@ -74,7 +74,7 @@ public class DcbnApplication {
                     "inArea", StateType.BOOLEAN, ZERO_POSITION);
 
             List<Node> smugglingParentsList = Arrays
-                    .asList(isInReportedArea, inTrajectoryArea, nullSpeed);
+                    .asList(nullSpeed, inTrajectoryArea, isInReportedArea);
             double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}, {0.4, 0.6}, {0.4, 0.6}, {0.2, 0.8},
                     {0.2, 0.8}, {0.001, 0.999}, {0.001, 0.999}};
             NodeDependency smuggling0Dep = new NodeDependency(smugglingParentsList,

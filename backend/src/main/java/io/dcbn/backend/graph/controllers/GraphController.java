@@ -7,7 +7,6 @@ import io.dcbn.backend.graph.converters.GenieConverter;
 import io.dcbn.backend.graph.repositories.GraphRepository;
 import io.dcbn.backend.graph.services.GraphService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,9 +22,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -114,8 +111,41 @@ public class GraphController {
         repository.save(graph);
     }
 
-    @PostMapping("/graphs/evaluate")
-    public Map<String, double[][]> evaluateGraph(@Valid @RequestBody Graph graph) {
+    @PostMapping("/graphs/{id}/evaluate")
+    public Map<String, double[][]> evaluateGraphById(@PathVariable long id, @RequestBody Map<String, double[][]> values) {
+        Graph graph = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph does not exist!"));
+        Map<String, Node> nodeMap = graph.getNodes().stream().collect(Collectors.toMap(Node::getName, node -> node));
+
+        // Replace all nodes that have values with ValueNodes
+        for (Map.Entry<String, double[][]> valueEntry : values.entrySet()) {
+            Node node = nodeMap.get(valueEntry.getKey());
+            if (node == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid node name in map!");
+            }
+            nodeMap.put(valueEntry.getKey(), new ValueNode(node, valueEntry.getValue()));
+        }
+
+        // nodeMap now contains all graph nodes with the correct nodes replaced by ValueNodes
+
+        // Change all references to old Node objects to ValueNodes.
+        for (Map.Entry<String, Node> nodeEntry : nodeMap.entrySet()) {
+            Node node = nodeEntry.getValue();
+
+            List<List<Node>> parents = Arrays.asList(node.getTimeZeroDependency().getParentsTm1(),
+                    node.getTimeZeroDependency().getParents(),
+                    node.getTimeTDependency().getParentsTm1(),
+                    node.getTimeTDependency().getParents());
+            for (List<Node> currentParents : parents) {
+                for (int i = 0; i < currentParents.size(); ++i) {
+                    String parentName = currentParents.get(i).getName();
+                    if (values.containsKey(parentName)) {
+                        currentParents.set(i, nodeMap.get(parentName));
+                    }
+                }
+            }
+        }
+
+        graph.setNodes(new ArrayList<>(nodeMap.values()));
         Graph resultGraph = graphService.evaluateGraph(graph);
         return resultGraph.getNodes().stream().filter(Node::isValueNode)
                 .map(node -> (ValueNode) node).collect(Collectors.toMap(Node::getName, ValueNode::getValue));
