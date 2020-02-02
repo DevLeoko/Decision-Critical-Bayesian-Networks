@@ -219,7 +219,8 @@ export default Vue.extend({
       success: false,
       successMessage: "",
       successfulEvaluation: false,
-      evaluationResult: false
+      evaluationResult: false,
+      savedName: ""
     };
   },
 
@@ -249,7 +250,7 @@ export default Vue.extend({
           this.errorMessage = typeMismatch(error);
         } else {
           this.nameError = true;
-          this.errorMessage = `Formula with name ${this.formula.name} exists already!`;
+          this.errorMessage = `Formula with name ${this.savedName} exists already!`;
         }
       }
     },
@@ -285,6 +286,7 @@ export default Vue.extend({
     },
 
     save(formula: Formula) {
+      this.savedName = formula.name;
       this.$emit("update:loading", true);
       this.axios
         .put(`/evidence-formulas/${formula.id}`, formula)
