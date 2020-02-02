@@ -3,7 +3,7 @@
     <v-row wrap pa-3>
       <v-col cols="7">
         <v-text-field
-          v-model="formula.name"
+          v-model="internalFormula.name"
           hide-details
           :error="hasError && nameError"
           label="Name"
@@ -30,7 +30,7 @@
           outlined
           label="Formula"
           counter="500"
-          v-model="formula.formula"
+          v-model="internalFormula.formula"
           :error="hasError && formulaError"
         />
       </v-col>
@@ -94,7 +94,7 @@
     </v-row>
     <v-row mt-2>
       <v-col>
-        <v-btn color="success" @click="save(formula)"
+        <v-btn color="success" @click="save(internalFormula)"
           ><v-icon class="mr-1">save</v-icon>Save</v-btn
         >
         <v-btn class="ml-2" color="primary" @click="test()">
@@ -207,6 +207,7 @@ export default Vue.extend({
       successMessage: "",
       successfulEvaluation: false,
       evaluationResult: false,
+      internalFormula: this.formula,
       savedName: ""
     };
   },
@@ -261,7 +262,7 @@ export default Vue.extend({
       }
       this.axios
         .post(`/evidence-formulas/evaluate`, {
-          formula: this.formula,
+          formula: this.internalFormula,
           parameters: result
         })
         .then(resp => {
@@ -280,6 +281,11 @@ export default Vue.extend({
         .then(this.setSuccess)
         .catch(this.setError)
         .then(() => this.$emit("update:loading", false));
+    }
+  },
+  watch: {
+    $route(value, old) {
+      this.internalFormula = this.formula;
     }
   }
 });
