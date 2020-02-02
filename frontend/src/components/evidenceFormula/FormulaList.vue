@@ -78,6 +78,9 @@ export default Vue.extend({
   props: {
     formulas: {
       type: Array as () => Formula[]
+    },
+    loading: {
+      type: Boolean
     }
   },
 

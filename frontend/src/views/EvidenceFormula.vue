@@ -11,7 +11,7 @@
       <formula-view
         v-if="currentFormula()"
         :formula="currentFormula()"
-        :loading.sync="loading"
+        @update:loading="loading = $event"
         @update-list="updateList()"
       />
       <v-layout v-else row wrap>
