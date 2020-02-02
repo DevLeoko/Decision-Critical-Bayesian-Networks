@@ -10,7 +10,17 @@
       absolute
     >
       <div class="white">
-        <v-btn tile @click="virtualEvidenceOpen = true">Virtual Evidence</v-btn>
+        <v-btn
+          tile
+          @click="
+            if (presentValues[activeId].virtualEvidence === null) {
+              virtualSync = 0; // force watcher to pick up update
+              virtualSync = 0.5;
+            }
+            virtualEvidenceOpen = true;
+          "
+          >Virtual Evidence</v-btn
+        >
         <v-btn
           tile
           @click="
@@ -34,18 +44,31 @@
 
         <v-card-text class="py-3">
           <v-slider
-            :value="presentValues[activeId].virtualEvidence"
             v-model="virtualSync"
-            :color="
-              presentValues[activeId].virtualEvidence === null
-                ? 'grey'
-                : 'primary'
-            "
+            thumb-color="primary"
+            color=" green lighten-2"
+            track-color="red lighten-2"
             thumb-label
             max="1"
             step="0.05"
             hide-details
           ></v-slider>
+          <v-row justify="space-between" align-content="center" no-gutters>
+            <v-col class="flex-grow-0">false</v-col>
+            <v-col cols="3">
+              <v-text-field
+                type="number"
+                v-model.number="virtualSync"
+                max="1"
+                min="0"
+                step="0.01"
+                hide-details
+                outlined
+                dense
+              ></v-text-field>
+            </v-col>
+            <v-col class="flex-grow-0">true</v-col>
+          </v-row>
         </v-card-text>
 
         <v-card-actions>
@@ -259,7 +282,7 @@ export default Vue.extend({
     },
     presentValues: {
       handler() {
-        this.rerenderNode(this.activeId);
+        if (this.activeId != -1) this.rerenderNode(this.activeId);
       },
       deep: true
     }
