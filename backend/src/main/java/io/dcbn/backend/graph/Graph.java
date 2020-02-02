@@ -11,6 +11,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -37,4 +38,11 @@ public class Graph {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
     @Valid
     private List<Node> nodes;
+
+    public Graph(String name, int timeSlices, List<Node> nodes) {
+        this.id = 0;
+        this.name = name;
+        this.timeSlices = timeSlices;
+        this.nodes = nodes;
+    }
 }

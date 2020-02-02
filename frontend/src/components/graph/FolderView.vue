@@ -83,12 +83,19 @@
                   <v-icon class="mr-2">delete</v-icon> Delete
                 </v-list-item-title>
               </v-list-item>
+              <v-list-item @click="exportGraph(item.graph)">
+                <v-list-item-title>
+                  <v-icon class="mr-2">import_export</v-icon>
+                  Export
+                </v-list-item-title>
+              </v-list-item>
             </v-list>
           </v-menu>
         </template>
       </v-treeview>
       <template v-slot:append>
         <v-divider></v-divider>
+        <v-progress-linear indeterminate v-if="loading" />
         <v-row justify="center">
           <v-col class="flex-grow-0 my-4">
             <v-btn
@@ -97,6 +104,13 @@
             >
               <v-icon>add</v-icon> Add new graph
             </v-btn>
+            <v-file-input
+              label="Import"
+              outlined
+              dense
+              class="ma-3"
+              @change="importGraph($event)"
+            ></v-file-input>
           </v-col>
         </v-row>
       </template>
@@ -114,6 +128,14 @@
       @rename="renameGraph"
       @delete="deleteGraph"
     ></folder-actions>
+    <v-snackbar v-model="hasErrorBar" color="error" timeout="5000">
+      {{ error }}
+      <v-btn icon @click="hasErrorBar = false"><v-icon>clear</v-icon></v-btn>
+    </v-snackbar>
+    <v-snackbar v-model="successBar" color="success" timeout="3000">
+      {{ successMessage }}
+      <v-btn icon @click="successBar = false"><v-icon>clear</v-icon></v-btn>
+    </v-snackbar>
   </div>
 </template>
 
@@ -142,7 +164,12 @@ export default Vue.extend({
     return {
       search: null,
       menu: true,
-      i: 100
+      i: 100,
+      hasErrorBar: false,
+      error: "",
+      successBar: false,
+      successMessage: "",
+      loading: false
     };
   },
 
@@ -182,6 +209,53 @@ export default Vue.extend({
         name: targetRoute,
         params: { id }
       });
+    },
+
+    exportGraph(graph: DenseGraph) {
+      this.loading = true;
+      const FileDownload = require("js-file-download");
+      this.axios
+        .get(`graphs/${graph.id}/export`)
+        .then(res => {
+          FileDownload(res.data, graph.name + ".xdsl");
+        })
+        .catch(error => {
+          this.throwError(error.response.data.message);
+        })
+        .then(() => (this.loading = false));
+    },
+
+    importGraph(file: any) {
+      this.loading = true;
+      if (file != null) {
+        const formData = new FormData();
+        formData.append("graph", file);
+        this.axios
+          .post("graphs/import", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          })
+          .then(res => {
+            this.graphs.push(res.data);
+            this.throwSuccess("Graph imported");
+          })
+          .catch(error => {
+            this.throwError(error.response.data.message);
+          })
+          .then(() => (this.loading = false));
+      } else {
+        this.loading = false;
+      }
+    },
+
+    throwError(message: string) {
+      this.error = message;
+      this.hasErrorBar = true;
+    },
+    throwSuccess(message: string) {
+      this.successMessage = message;
+      this.successBar = true;
     }
   },
 
