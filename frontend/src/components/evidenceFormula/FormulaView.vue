@@ -94,10 +94,10 @@
     </v-row>
     <v-row mt-2>
       <v-col>
-        <v-btn :loading="loading" color="success" @click="save(formula)"
+        <v-btn color="success" @click="save(formula)"
           ><v-icon class="mr-1">save</v-icon>Save</v-btn
         >
-        <v-btn :loading="loading" class="ml-2" color="primary" @click="test()">
+        <v-btn class="ml-2" color="primary" @click="test()">
           <v-icon class="mr-1">colorize</v-icon>test
         </v-btn>
       </v-col>
@@ -153,9 +153,6 @@ export default Vue.extend({
   props: {
     formula: {
       type: Object as () => Formula
-    },
-    loading: {
-      type: Object as () => boolean
     }
   },
   components: {
@@ -283,7 +280,8 @@ export default Vue.extend({
           this.successfulEvaluation = false;
           this.showResponse(resp.data);
         })
-        .catch(this.setError);
+        .catch(this.setError)
+        .then(() => this.$emit("update:loading", false));
     },
 
     save(formula: Formula) {
@@ -291,7 +289,8 @@ export default Vue.extend({
       this.axios
         .put(`/evidence-formulas/${formula.id}`, formula)
         .then(this.setSuccess)
-        .catch(this.setError);
+        .catch(this.setError)
+        .then(() => this.$emit("update:loading", false));
     }
   }
 });

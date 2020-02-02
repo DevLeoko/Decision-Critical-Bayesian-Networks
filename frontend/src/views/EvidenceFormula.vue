@@ -50,12 +50,9 @@ export default Vue.extend({
 
   methods: {
     updateList() {
-      this.axios
-        .get("/evidence-formulas")
-        .then(res => {
-          this.formulas = res.data;
-        })
-        .then(() => (this.loading = false));
+      this.axios.get("/evidence-formulas").then(res => {
+        this.formulas = res.data;
+      });
     },
     currentFormula(): any {
       for (let formula of this.formulas) {
