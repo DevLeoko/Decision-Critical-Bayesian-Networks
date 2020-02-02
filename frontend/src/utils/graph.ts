@@ -61,6 +61,8 @@ export function generateGraphImage(
 
   svgContainer.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   svgContainer.setAttribute("viewBox", "0 0 300 100");
+  svgContainer.setAttribute("width", "300");
+  svgContainer.setAttribute("height", "100");
 
   const background = document.createElementNS(
     "http://www.w3.org/2000/svg",
@@ -170,7 +172,7 @@ export function createVisGraph(
       id: nodeId,
       label: node.name,
       image: generateGraphImage(undefined)
-      // ...node.position
+      // ...node.position TODO reinstate once done testing
     });
 
     edges.push(
@@ -205,6 +207,7 @@ export function createVisGraph(
   var options: vis.Options = {
     physics: false,
     autoResize: true,
+    height: "100%",
     nodes: {
       shape: "image"
     },
