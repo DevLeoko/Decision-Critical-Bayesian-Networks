@@ -1,0 +1,30 @@
+{
+  "en": {
+    "messages": {
+      "signIn": "Sign In",
+      "forgotPwQ": "Forgot your password?",
+      "pwRequired": "Please enter a password!",
+      "emailRequired": "Please enter an email!",
+      "pw": "password",
+      "email": "email",
+      "emailInvalid": "This is not a valid email!",
+      "noMatch": "Email and password do not match!",
+      "pwResetInstruction": "No worries! Just enter your email address and we will send you a link to reset you password.",
+      "pwRequirements": "The password requires a min. length of 8 and has to contain at least one letter and one number",
+      "nameRequired": "Name is required",
+      "nameValid": "Invalid name",
+      "evidenceFormulas": "Evidence-Formulas",
+      "graphView": "Graph-View",
+      "login": "Login",
+      "logout": "Logout",
+      "pwResetEmailSent": "All done! Check your emails for the reset-link.",
+      "pwDontMatch": "Passwords do not match!",
+      "newPw": "new password",
+      "retypePw": "retype new password",
+      "pwReset": "Reset password",
+      "backToLogin": "Back to login",
+      "infoResetToken": "Missing reset-token! Visit 'forgot your password?' first.",
+      "infoPwChanged": "Password changed! You can sign in now."
+    }
+  }
+}

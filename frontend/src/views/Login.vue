@@ -2,18 +2,12 @@
   <small-view>
     <v-layout row wrap>
       <v-flex xs12>
-        <h1 class="font-weight-light ml-2 mb-2">
-          Sign In.
-        </h1>
-        <v-alert type="info" v-if="info" dismissible outlined>
-          {{ info }}
-        </v-alert>
-        <v-alert type="error" v-model="hasError" dismissible outlined dense>
-          {{ error }}
-        </v-alert>
+        <h1 class="font-weight-light ml-2 mb-2">{{$t("messages.signIn")}}</h1>
+        <v-alert type="info" v-if="info" dismissible outlined>{{ info }}</v-alert>
+        <v-alert type="error" v-model="hasError" dismissible outlined dense>{{ error }}</v-alert>
         <v-form v-model="valid" @submit="submit">
           <v-text-field
-            label="email"
+            :label="$t('messages.email')"
             v-model="email"
             solo
             :rules="mailValidation"
@@ -21,11 +15,11 @@
           ></v-text-field>
 
           <v-text-field
-            label="password"
+            :label="$t('messages.pw')"
             type="password"
             v-model="password"
             solo
-            :rules="required('Please enter a password!')"
+            :rules="required('messages.pwRequired')"
             required
           ></v-text-field>
 
@@ -35,17 +29,13 @@
             :loading="loading"
             color="primary"
             class="mt-2 ml-2"
-          >
-            Sign in
-          </v-btn>
+          >{{$t("messages.signIn")}}</v-btn>
           <v-btn
             color="primary"
             class="mt-2 ml-4"
             text
             :to="{ name: 'ForgotPassword' }"
-          >
-            Forgot your password?
-          </v-btn>
+          >{{$t("messages.forgotPwQ")}}</v-btn>
         </v-form>
       </v-flex>
     </v-layout>

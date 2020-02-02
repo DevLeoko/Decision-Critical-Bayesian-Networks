@@ -1,12 +1,8 @@
 <template>
   <small-view>
-    <h1 class="font-weight-light">
-      Reset password.
-    </h1>
+    <h1 class="font-weight-light">Reset password.</h1>
 
-    <v-alert type="error" v-model="hasError" dismissible outlined dense>
-      {{ error }}
-    </v-alert>
+    <v-alert type="error" v-model="hasError" dismissible outlined dense>{{ error }}</v-alert>
 
     <v-form ref="form" v-model="valid" @submit="submit">
       <v-text-field
@@ -31,13 +27,9 @@
         :loading="loading"
         color="primary"
         class="mt-2 ml-2"
-      >
-        Reset password
-      </v-btn>
+      >Reset password</v-btn>
 
-      <v-btn color="primary" depressed class="ml-4 mt-2" dark to="login">
-        Back to login
-      </v-btn>
+      <v-btn color="primary" depressed class="ml-4 mt-2" dark to="login">Back to login</v-btn>
     </v-form>
   </small-view>
 </template>
@@ -76,6 +68,7 @@ export default Vue.extend({
       this.$router.push({
         name: "login",
         params: {
+          lang: this.$i18n.locale,
           info: "Missing reset-token! Visit 'forgot your password?' first."
         }
       });
@@ -95,6 +88,7 @@ export default Vue.extend({
           this.$router.push({
             name: "login",
             params: {
+              lang: this.$i18n.locale,
               info: "Password changed! You can sign in now."
             }
           });

@@ -1,0 +1,30 @@
+{
+  "de": {
+    "messages": {
+      "signIn": "Anmelden",
+      "forgotPwQ": "Passwort vergessen?",
+      "pwRequired": "Bitte Passwort eingeben!",
+      "emailRequired": "Bitte Email eingeben!",
+      "pw": "Passwort",
+      "email": "Email",
+      "emailInvalid": "Die eingegebene Email ist nicht valide!",
+      "noMatch": "Email oder Passwort sind nicht korrekt!",
+      "pwResetInstruction": "Keine Sorge! Gib einfach deine Email ein und wir senden dir eine Email zum zurücksetzen deines Passworts.",
+      "pwRequirements": "The password requires a min. length of 8 and has to contain at least one letter and one number",
+      "nameRequired": "Name ist notwendig",
+      "nameValid": "Ungültiger Name",
+      "evidenceFormulas": "Evidenz-Formeln",
+      "graphView": "Graph-Ansicht",
+      "login": "Anmelden",
+      "logout": "Abmelden",
+      "pwResetEmailSent": "Alles erledigt! Wir haben dir einen Reset-Link zugesendet.",
+      "pwDontMatch": "Passwörter stimmen nicht überein!",
+      "newPw": "Neues Passwort",
+      "retypePw": "Neues Passwort wiederholen",
+      "pwReset": "Passwort zurücksetzen",
+      "backToLogin": "Zurück zum Login",
+      "infoResetToken": "Fehlender Reset-Token! Gehe zuerst auf 'Passwort vergessen?'",
+      "infoPwChanged": "Passwort geändert! Du kannst dich jetzt anmelden."
+    }
+  }
+}

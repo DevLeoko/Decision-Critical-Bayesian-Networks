@@ -26,7 +26,8 @@ export default Vue.extend({
     } else {
       if (!this.$route.meta.unauthorized) {
         this.$router.push({
-          name: "Login"
+          name: "Login",
+          params: { lang: this.$i18n.locale }
         });
       }
     }

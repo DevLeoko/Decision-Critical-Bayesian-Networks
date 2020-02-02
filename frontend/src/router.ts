@@ -1,5 +1,7 @@
+import RouterView from "./views/RouterView.vue";
 import Vue from "vue";
 import Router from "vue-router";
+import { i18n } from "./internationalization/translation";
 
 Vue.use(Router);
 
@@ -13,61 +15,81 @@ function generateDefaultRoute(name: String, children = undefined) {
 }
 
 export default new Router({
+  mode: "history",
+  base: process.env.BASE_URL,
   routes: [
     {
-      name: "SuperAdmin",
-      path: "/super-admin",
-      component: () => import("./views/SuperAdmin.vue")
-    },
-    {
-      name: "Login",
-      path: "/login",
-      meta: { unauthorized: true },
-      component: () => import("./views/Login.vue")
-    },
-    {
-      name: "ResetPassword",
-      path: "/reset-password",
-      meta: { unauthorized: true },
-      component: () => import("./views/ResetPassword.vue")
-    },
-    {
-      name: "ForgotPassword",
-      path: "/forgot-password",
-      meta: { unauthorized: true },
-      component: () => import("./views/ForgotPassword.vue")
-    },
-    {
-      name: "EvidenceFormulaBase",
-      path: "/evidence-formula",
-      component: () => import("./views/EvidenceFormula.vue")
-    },
-    {
-      name: "EvidenceFormula",
-      path: "/evidence-formula/:id",
-      component: () => import("./views/EvidenceFormula.vue")
-    },
-    {
-      name: "GraphBase",
-      path: "/graph",
-      component: () => import("./views/graph/Index.vue")
-    },
-    {
-      name: "Graph",
-      path: "/graph/:id",
-      component: () => import("./views/graph/Index.vue"),
+      path: "/:lang",
+      component: RouterView,
+      beforeEnter(to, from, next) {
+        const lang = to.params.lang;
+        if (!["en", "de"].includes(lang)) return next("en");
+        if (i18n.locale !== lang) {
+          i18n.locale = lang;
+        }
+        return next();
+      },
       children: [
         {
-          name: "Edit Graph",
-          path: "edit",
-          component: () => import("./views/graph/Edit.vue")
+          name: "SuperAdmin",
+          path: "super-admin",
+          component: () => import("./views/SuperAdmin.vue")
         },
         {
-          name: "Test Graph",
-          path: "test",
-          component: () => import("./views/graph/Test.vue")
+          name: "Login",
+          path: "login",
+          meta: { unauthorized: true },
+          component: () => import("./views/Login.vue")
+        },
+        {
+          name: "ResetPassword",
+          path: "reset-password",
+          meta: { unauthorized: true },
+          component: () => import("./views/ResetPassword.vue")
+        },
+        {
+          name: "ForgotPassword",
+          path: "forgot-password",
+          meta: { unauthorized: true },
+          component: () => import("./views/ForgotPassword.vue")
+        },
+        {
+          name: "EvidenceFormulaBase",
+          path: "evidence-formula",
+          component: () => import("./views/EvidenceFormula.vue")
+        },
+        {
+          name: "EvidenceFormula",
+          path: "evidence-formula/:id",
+          component: () => import("./views/EvidenceFormula.vue")
+        },
+        {
+          name: "GraphBase",
+          path: "graph",
+          component: () => import("./views/graph/Index.vue")
+        },
+        {
+          name: "Graph",
+          path: "graph/:id",
+          component: () => import("./views/graph/Index.vue"),
+          children: [
+            {
+              name: "Edit Graph",
+              path: "edit",
+              component: () => import("./views/graph/Edit.vue")
+            },
+            {
+              name: "Test Graph",
+              path: "test",
+              component: () => import("./views/graph/Test.vue")
+            }
+          ]
         }
       ]
+    },
+    {
+      path: "*",
+      redirect: "/en"
     }
   ]
 });
