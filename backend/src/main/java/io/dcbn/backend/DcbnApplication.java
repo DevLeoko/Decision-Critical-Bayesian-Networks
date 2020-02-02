@@ -6,7 +6,6 @@ import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
 import io.dcbn.backend.authentication.services.DcbnUserDetailsService;
 import io.dcbn.backend.core.AoiCache;
 import io.dcbn.backend.core.VesselCache;
-import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.evidenceFormula.services.DefaultFunctionProvider;
 import io.dcbn.backend.evidenceFormula.services.FunctionProvider;
@@ -110,8 +109,8 @@ public class DcbnApplication {
     }
 
     @Bean
-    public FunctionProvider functionsBean() {
-        return new DefaultFunctionProvider();
+    public FunctionProvider functionsBean(VesselCache vesselCache, AoiCache aoiCache) {
+        return new DefaultFunctionProvider(vesselCache, aoiCache);
     }
 
 }
