@@ -128,11 +128,11 @@
       @rename="renameGraph"
       @delete="deleteGraph"
     ></folder-actions>
-    <v-snackbar v-model="hasErrorBar" color="error" timeout="5000">
+    <v-snackbar v-model="hasErrorBar" color="error" :timeout="5000">
       {{ error }}
       <v-btn icon @click="hasErrorBar = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
-    <v-snackbar v-model="successBar" color="success" timeout="3000">
+    <v-snackbar v-model="successBar" color="success" :timeout="3000">
       {{ successMessage }}
       <v-btn icon @click="successBar = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
@@ -154,6 +154,7 @@ export interface TreeItem {
 
 import Vue from "vue";
 import FolderActions from "@/components/graph/FolderViewActions.vue";
+import { dcbn } from "../../utils/graph";
 export default Vue.extend({
   props: {
     graphs: Array as () => Array<DenseGraph>
@@ -175,24 +176,51 @@ export default Vue.extend({
 
   methods: {
     duplicateGraph(graph: DenseGraph) {
-      let copy = JSON.parse(JSON.stringify(graph));
-
-      copy.name += "_COPY";
-      copy.id *= 21 + this.graphs.length;
-
-      this.graphs.push(copy);
-      // TDOD send /create request
+      this.axios
+        .get(`/graphs/${graph.id}`)
+        .then(res => {
+          let copy: dcbn.Graph = JSON.parse(JSON.stringify(res.data));
+          copy.id = 0;
+          copy.name = this.generateNewCopyName(copy);
+          copy.nodes.forEach(node => {
+            node.id = 0;
+            node.timeZeroDependency.id = 0;
+            node.timeTDependency.id = 0;
+          });
+          console.log(copy);
+          this.axios
+            .post("/graphs", copy)
+            .then(res => {
+              console.log(res.data);
+              copy.id = res.data;
+              this.graphs.push({ name: copy.name, id: copy.id });
+              this.throwSuccess(
+                `Graph ${graph.name} duplicated to ${copy.name}`
+              );
+            })
+            .catch(error => this.throwError(error.response.data.message));
+        })
+        .catch(error => this.throwError(error.response.data.message));
     },
 
     renameGraph({ graph, name }: { graph: DenseGraph; name: string }) {
-      graph.name = name;
-      // TDOD send /rename request
+      this.axios
+        .post(`/graphs/${graph.id}/name`, name)
+        .then(() => {
+          graph.name = name;
+          this.throwSuccess(`Graph renamed to ${name}`);
+        })
+        .catch(error => this.throwError(error.response.data.message));
     },
 
     deleteGraph({ graph }: { graph: DenseGraph }) {
-      this.graphs.splice(this.graphs.indexOf(graph), 1);
-
-      // TDOD send /delete request
+      this.axios
+        .delete(`/graphs/${graph.id}`)
+        .then(() => {
+          this.graphs.splice(this.graphs.indexOf(graph), 1);
+          this.throwSuccess("Graph deleted");
+        })
+        .catch(error => this.throwError(error.response.data.message));
     },
 
     // graphId is actually an int ._.
@@ -237,7 +265,7 @@ export default Vue.extend({
             }
           })
           .then(res => {
-            this.graphs.push(res.data);
+            this.graphs.push({ name: res.data.name, id: res.data.id });
             this.throwSuccess("Graph imported");
           })
           .catch(error => {
@@ -256,6 +284,20 @@ export default Vue.extend({
     throwSuccess(message: string) {
       this.successMessage = message;
       this.successBar = true;
+    },
+
+    generateNewCopyName(graph: dcbn.Graph): string {
+      const gefaultGraphCopyName = `${graph.name}_COPY`;
+      if (this.graphs.length == 0) {
+        return gefaultGraphCopyName;
+      }
+
+      for (let i = 0; ; i++) {
+        let testName = `${gefaultGraphCopyName}${i === 0 ? "" : i}`;
+        if (!this.graphs.filter(graph => graph.name == testName).length) {
+          return testName;
+        }
+      }
     }
   },
 

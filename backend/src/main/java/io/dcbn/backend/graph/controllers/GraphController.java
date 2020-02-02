@@ -7,7 +7,6 @@ import io.dcbn.backend.graph.converters.GenieConverter;
 import io.dcbn.backend.graph.repositories.GraphRepository;
 import io.dcbn.backend.graph.services.GraphService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +23,6 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -58,7 +56,7 @@ public class GraphController {
     }
 
     @PostMapping("/graphs")
-    public void createGraph(@Valid @RequestBody Graph graph, Principal principal) {
+    public long createGraph(@Valid @RequestBody Graph graph, Principal principal) {
         try {
             graphService.updateLock(graph.getId(), principal.getName());
         } catch (IllegalArgumentException e) {
@@ -68,14 +66,14 @@ public class GraphController {
         if (graphService.hasCycles(graph)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Graph has cycles!");
         }
-
         repository.save(graph);
+        return graph.getId();
     }
 
     @DeleteMapping("/graphs/{id}")
     public void deleteById(@PathVariable long id, Principal principal) {
         if (!repository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph not found");
         }
 
         try {
@@ -109,7 +107,14 @@ public class GraphController {
 
     @PostMapping("/graphs/{id}/name")
     public void renameGraphById(@PathVariable long id, @RequestBody String name) {
-        Graph graph = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Graph graph = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph not found"));
+        //Checking that the graph name is unique
+        for (Graph graphSaved : repository.findAll()) {
+            if (graphSaved.getName().equals(name)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A graph with the same name ("
+                        + name + ") already exists");
+            }
+        }
         graph.setName(name);
         repository.save(graph);
     }
