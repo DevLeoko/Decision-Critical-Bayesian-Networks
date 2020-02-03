@@ -2,6 +2,7 @@ import RouterView from "./views/RouterView.vue";
 import Vue from "vue";
 import Router from "vue-router";
 import { i18n } from "./internationalization/translation";
+import { messages } from "./internationalization/translation";
 
 Vue.use(Router);
 
@@ -22,7 +23,7 @@ export default new Router({
       component: RouterView,
       beforeEnter(to, from, next) {
         const lang = to.params.lang;
-        if (!["en", "de"].includes(lang)) return next("en");
+        if (!Object.keys(messages).includes(lang)) return next(i18n.locale);
         if (i18n.locale !== lang) {
           i18n.locale = lang;
         }

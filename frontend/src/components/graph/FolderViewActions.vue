@@ -3,18 +3,18 @@
     <v-dialog v-model="deleteOpen" max-width="400">
       <v-card>
         <v-card-title>
-          <v-icon class="mr-2">delete_sweep</v-icon> Confirm deletion
+          <v-icon class="mr-2">delete_sweep</v-icon>
+          {{ $t("folderViewActions.confirmDeletion") }}
         </v-card-title>
         <v-card-text>
-          You are about to delete the graph '{{ currentGraph.name }}'. Are you
-          sure you want to do this? This action can not be undone, please
-          confirm.
+          {{ $t("folderViewActions.sureToDelete1") }}{{ currentGraph.name
+          }}{{ $t("folderViewActions.sureToDelete2") }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
 
           <v-btn color="gray" text @click="deleteOpen = false">
-            Cancel
+            {{ $t("folderViewActions.cancel") }}
           </v-btn>
 
           <v-btn
@@ -25,7 +25,7 @@
               $emit('delete', currentGraph);
             "
           >
-            Delete
+            {{ $t("folderViewActions.delete") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -34,7 +34,8 @@
     <v-dialog v-model="renameOpen" max-width="400">
       <v-card>
         <v-card-title>
-          <v-icon class="mr-2">text_fields</v-icon> Change name
+          <v-icon class="mr-2">text_fields</v-icon>
+          {{ $t("folderViewActions.changeName") }}
         </v-card-title>
         <v-card-text class="pb-3">
           <!-- Enter a new name: -->
@@ -44,7 +45,7 @@
           <v-spacer></v-spacer>
 
           <v-btn color="gray" text @click="renameOpen = false">
-            Cancel
+            {{ $t("folderViewActions.cancel") }}
           </v-btn>
 
           <v-btn
@@ -62,7 +63,7 @@
               });
             "
           >
-            Rename
+            {{ $t("folderViewActions.rename") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -71,7 +72,8 @@
     <v-dialog v-model="moveOpen" max-width="400">
       <v-card>
         <v-card-title>
-          <v-icon class="mr-2">folder</v-icon> Move to
+          <v-icon class="mr-2">folder</v-icon>
+          {{ $t("folderViewActions.moveTo") }}
         </v-card-title>
         <v-card-text class="pb-3" style="max-height: 700px; overflow: auto">
           <v-list shaped>

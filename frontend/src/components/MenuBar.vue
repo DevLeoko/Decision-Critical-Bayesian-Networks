@@ -21,11 +21,13 @@
       <v-btn
         class="ml-4"
         :to="{ name: graphView ? 'EvidenceFormulaBase' : 'GraphBase' }"
-        >{{ graphView ? "Evidence-Formulas" : "Grpahview" }}</v-btn
+        >{{
+          graphView ? $t("menuBar.evidenceFormulas") : $t("menuBar.graphView")
+        }}</v-btn
       >
-      <v-btn class="ml-4 px-3" @click="logout" dark color="grey darken-3"
-        >Logout</v-btn
-      >
+      <v-btn class="ml-4 px-3" @click="logout" dark color="grey darken-3">{{
+        $t("menuBar.logout")
+      }}</v-btn>
     </template>
   </v-app-bar>
 </template>

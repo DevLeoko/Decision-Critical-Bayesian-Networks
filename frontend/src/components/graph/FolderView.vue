@@ -26,7 +26,7 @@
           <v-col>
             <v-text-field
               v-model="search"
-              label="Search for graph"
+              :label="$t('folderView.searchForGraph')"
               solo
               class="ma-3"
               hide-details
@@ -62,31 +62,35 @@
             <v-list>
               <v-list-item @click="duplicateGraph(item.graph)">
                 <v-list-item-title>
-                  <v-icon class="mr-2">file_copy</v-icon> Duplicate
+                  <v-icon class="mr-2">file_copy</v-icon>
+                  {{ $t("folderView.duplicate") }}
                 </v-list-item-title>
               </v-list-item>
 
               <v-list-item @click="() => $refs.actions.renameGraph(item)">
                 <v-list-item-title>
-                  <v-icon class="mr-2">text_fields</v-icon> Rename
+                  <v-icon class="mr-2">text_fields</v-icon>
+                  {{ $t("folderView.rename") }}
                 </v-list-item-title>
               </v-list-item>
 
               <v-list-item @click="() => $refs.actions.moveGraph(item)">
                 <v-list-item-title>
-                  <v-icon class="mr-2">double_arrow</v-icon> Move
+                  <v-icon class="mr-2">double_arrow</v-icon>
+                  {{ $t("folderView.move") }}
                 </v-list-item-title>
               </v-list-item>
 
               <v-list-item @click="() => $refs.actions.deleteGraph(item)">
                 <v-list-item-title>
-                  <v-icon class="mr-2">delete</v-icon> Delete
+                  <v-icon class="mr-2">delete</v-icon>
+                  {{ $t("folderView.delete") }}
                 </v-list-item-title>
               </v-list-item>
               <v-list-item @click="exportGraph(item.graph)">
                 <v-list-item-title>
                   <v-icon class="mr-2">import_export</v-icon>
-                  Export
+                  {{ $t("folderView.export") }}
                 </v-list-item-title>
               </v-list-item>
             </v-list>
@@ -102,10 +106,10 @@
               color="primary"
               @click="graphs.push({ name: 'TestGraph' + i++, id: 10 + i })"
             >
-              <v-icon>add</v-icon> Add new graph
+              <v-icon>add</v-icon> {{ $t("folderView.addNewGraph") }}
             </v-btn>
             <v-file-input
-              label="Import"
+              :label="$t('folderView.import')"
               outlined
               dense
               class="ma-3"

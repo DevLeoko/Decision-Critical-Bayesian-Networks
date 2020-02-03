@@ -6,7 +6,7 @@
           v-model="internalFormula.name"
           hide-details
           :error="hasError && nameError"
-          label="Name"
+          :label="$t('formulaView.name')"
           outlined
         ></v-text-field>
       </v-col>
@@ -28,7 +28,7 @@
           class="formula-area"
           height="60vh"
           outlined
-          label="Formula"
+          :label="$t('formulaView.formula')"
           counter="500"
           v-model="internalFormula.formula"
           :error="hasError && formulaError"
@@ -41,7 +41,7 @@
           style="overflow-y: auto; max-height: 60vh"
         >
           <v-card-title primary-title>
-            Test
+            {{ $t("formulaView.testData") }}
           </v-card-title>
           <v-card-text>
             <v-container>
@@ -95,10 +95,10 @@
     <v-row mt-2>
       <v-col>
         <v-btn color="success" @click="save(internalFormula)"
-          ><v-icon class="mr-1">save</v-icon>Save</v-btn
+          ><v-icon class="mr-1">save</v-icon>{{ $t("formulaView.save") }}</v-btn
         >
         <v-btn class="ml-2" color="primary" @click="test()">
-          <v-icon class="mr-1">colorize</v-icon>test
+          <v-icon class="mr-1">colorize</v-icon>{{ $t("formulaView.test") }}
         </v-btn>
       </v-col>
     </v-row>

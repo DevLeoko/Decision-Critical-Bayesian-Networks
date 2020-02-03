@@ -1,30 +1,120 @@
 {
   "de": {
-    "messages": {
-      "signIn": "Anmelden",
-      "forgotPwQ": "Passwort vergessen?",
-      "pwRequired": "Bitte Passwort eingeben!",
-      "emailRequired": "Bitte Email eingeben!",
-      "pw": "Passwort",
-      "email": "Email",
-      "emailInvalid": "Die eingegebene Email ist nicht valide!",
-      "noMatch": "Email oder Passwort sind nicht korrekt!",
-      "pwResetInstruction": "Keine Sorge! Gib einfach deine Email ein und wir senden dir eine Email zum zurücksetzen deines Passworts.",
-      "pwRequirements": "The password requires a min. length of 8 and has to contain at least one letter and one number",
-      "nameRequired": "Name ist notwendig",
-      "nameValid": "Ungültiger Name",
-      "evidenceFormulas": "Evidenz-Formeln",
-      "graphView": "Graph-Ansicht",
-      "login": "Anmelden",
+    "formulaList": {
+      "confirmDeletion": "Löschen bestätigen",
+      "sureToDelete1": "Du bist dabei folgende Evidenzformel zu löschen: '",
+      "sureToDelete2": "'. Sicher, dass du das tun möchtest? Die Aktion kann nicht rückgängig gemacht werden, bitte bestätigen.",
+      "cancel": "Abbrechen",
+      "delete": "Löschen",
+      "newExpression": "Neuer Ausdruck"
+    },
+    "formulaView": {
+      "name": "Name",
+      "formula": "Formeln",
+      "test": "Testen",
+      "testData": "Testdaten",
+      "save": "Speichern"
+    },
+    "infoDialog": {
+      "title": "Wie man den Evidenzformel-Editor benutzt",
+      "introduction": "Der Evidenzformel-Editor unterstützt aktuell boole'sche Ausdrücke, inklusive dem Vergleichen von Zahlen, Variablen und Funktionsaufrufen. Komplexeres Verhalten muss in vordefinierten Funktionen durchgeführt werden.",
+      "availableFunctions": "Aktuell verfügbare Funktionen:",
+      "variable": "Die verfügbaren Variablen stehen am rechten Rand. Bisher können nur Variablen vom Typ boolean oder Zahl direkt in der Evidenzformel verwendet werden. Die anderen Typen können genutzt werden, wenn man Funktionen evaluiert.",
+      "testing": "Die Formeln können durch Drücken des 'Test' Buttons, am unteren Rand, getestet werden. Beim Testen werden die Variablen, aus der grauen Box am rechten Rand, verwendet.",
+      "example": "Ein Ausdruck könnte beispielsweise wie folgt aussehen: 'speed > 10 &amp; inArea(WRECKAGE)'.",
+      "gotIt": "Verstanden!"
+    },
+    "editorToolbar": {
+      "switchToTest": "Zur Testumgebung wechseln"
+    },
+    "folderView": {
+      "duplicate": "Duplizieren",
+      "rename": "Umbenennen",
+      "move": "Verschieben",
+      "delete": "Löschen",
+      "export": "Exportieren",
+      "import": "Importieren",
+      "addNewGraph": "Neuen Graph hinzufügen",
+      "searchForGraph": "Graph suchen"
+    },
+    "folderViewActions": {
+      "confirmDeletion": "Löschen bestätigen",
+      "sureToDelete1": "Du bist dabei folgenden Graphen zu löschen: '",
+      "sureToDelete2": "'. Sicher, dass du das tun möchtest? Die Aktion kann nicht rückgängig gemacht werden, bitte bestätigen.",
+      "cancel": "Abbrechen",
+      "delete": "Löschen",
+      "changeName": "Name ändern",
+      "rename": "Umbenennen",
+      "moveTo": "Verschieben nach"
+    },
+    "testToolbar": {
+      "test": "Testen",
+      "clearGraph": "Graph säubern",
+      "exportState": "State exportieren",
+      "importState": "State importieren",
+      "switchToEditor": "Zum Editor wechseln"
+    },
+    "menuBar": {
       "logout": "Abmelden",
-      "pwResetEmailSent": "Alles erledigt! Wir haben dir einen Reset-Link zugesendet.",
-      "pwDontMatch": "Passwörter stimmen nicht überein!",
-      "newPw": "Neues Passwort",
-      "retypePw": "Neues Passwort wiederholen",
-      "pwReset": "Passwort zurücksetzen",
-      "backToLogin": "Zurück zum Login",
-      "infoResetToken": "Fehlender Reset-Token! Gehe zuerst auf 'Passwort vergessen?'",
-      "infoPwChanged": "Passwort geändert! Du kannst dich jetzt anmelden."
+      "evidenceFormulas": "Evidenzformeln",
+      "graphView": "Graphansicht"
+    },
+    "graphIndex": {
+      "selectOrCreate": "Bitte einen neuen Graphen erstellen oder einen Bestehenden auswählen!"
+    },
+    "graphTest": {
+      "virtualEvidence": "Virtuelle Evidenz",
+      "binaryEvidence": "Binäre Evidenz",
+      "setVirtualEvidence": "Virtuelle Evidenz setzen",
+      "reset": "Zurücksetzen",
+      "done": "Fertig",
+      "setEvidences": "Evidenzen setzen"
+    },
+    "evidenceFormula": {
+      "selectOrCreate": "Bitte eine neue Evidenzformel erstellen oder eine Bestehende auswählen!"
+    },
+    "forgotPassword": {
+      "forgotPwQ": "Passwort vergessen?",
+      "resetInstruction": "Keine Sorge! Gib einfach deine Email ein und wir senden dir einen Link zum Zurücksetzen.",
+      "email": "Email",
+      "reset": "Passwort zurücksetzen",
+      "backToLogin": "Zurück zur Anmeldung",
+      "resetEmailSent": "Alles erledigt! Sieh in deinen Emails nach."
+    },
+    "login": {
+      "signIn": "Anmelden",
+      "email": "Email",
+      "password": "Passwort",
+      "passwordRequired": "Bitte ein Passwort eingeben!",
+      "forgotPwQ": "Passwort vergessen?"
+    },
+    "resetPassword": {
+      "newPassword": "neues Passwort",
+      "retypeNewPassword": "neues Passwort wiederholen",
+      "resetPassword": "Passwort zurücksetzen",
+      "backToLogin": "Zurück zur Anmeldung",
+      "missingResetToken": "Fehlender Reset-Token! Gehe zuerst auf 'Passwort vergesen?'",
+      "passwordChanged": "Passwort geändert! Du kannst dich jetzt anmelden."
+    },
+    "superAdmin": {
+      "username": "Benutzername",
+      "email": "Email",
+      "role": "Benutzerrolle",
+      "cancel": "Abbrechen",
+      "save": "Speichern",
+      "users": "Nutzer",
+      "noUsersFound": "Keine Nutzer gefunden!",
+      "createUser": "Nutzer erstellen",
+      "failedToCreateUser": "Erstellen von neuem Nutzer fehlgeschlagen!",
+      "editUser": "Nutzer bearbeiten"
+    },
+    "validation": {
+      "emailRequired": "Bitte eine Email eingeben!",
+      "emailInvalid": "Die eingegeben Email ist ungültig!",
+      "passwordRequired": "Bitte ein Passwort eingeben!",
+      "passwordRequirements": "Das Passwort muss eine Mindestlänge von 8 Zeichen haben und mindestens einen Buchstaben und eine Zahl beinhalten.",
+      "nameRequired": "Name ist notwendig",
+      "nameInvalid": "Ungültiger name"
     }
   }
 }

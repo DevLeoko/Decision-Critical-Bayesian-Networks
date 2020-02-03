@@ -5,19 +5,20 @@ export const mailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|
 export const passwordRegex = /^.*(?=.{8,})(?=.*\d)((?=.*[a-zA-Z]){1}).*$/;
 
 export const mailValidation = [
-  (v: string) => !!v || i18n.t("messages.emailRequired"),
-  (v: string) => mailRegex.test(v) || i18n.t("messages.emailInvalid")
+  (v: string) => !!v || i18n.t("validation.emailRequired"),
+  (v: string) => mailRegex.test(v) || i18n.t("validation.emailInvalid")
 ];
 
 export const passwordValidation = [
-  (v: string) => !!v || i18n.t("messages.pwRequired"),
-  (v: string) => passwordRegex.test(v) || i18n.t("messages.pwRequirements")
+  (v: string) => !!v || i18n.t("validation.passwordRequired"),
+  (v: string) =>
+    passwordRegex.test(v) || i18n.t("validation.passwordRequirements")
 ];
 
 export const nameValidation = [
-  (v: string) => !!v || i18n.t("message.nameRequired"),
-  (v: string) => /^.{1,16}$/.test(v) || i18n.t("messages.nameInvalid"),
-  (v: string) => /^.*[a-zA-Z].*$/.test(v) || i18n.t("messages.nameInvalid")
+  (v: string) => !!v || i18n.t("validation.nameRequired"),
+  (v: string) => /^.{1,16}$/.test(v) || i18n.t("validation.nameInvalid"),
+  (v: string) => /^.*[a-zA-Z].*$/.test(v) || i18n.t("validation.nameInvalid")
 ];
 
 export const required = (message: string) => [

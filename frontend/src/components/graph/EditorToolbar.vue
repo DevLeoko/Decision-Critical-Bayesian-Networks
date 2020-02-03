@@ -21,7 +21,9 @@
     ></v-text-field>
 
     <v-spacer></v-spacer>
-    <v-btn small color="primary" class="ml-3">Switch to Testenvironment</v-btn>
+    <v-btn small color="primary" class="ml-3">{{
+      $t("editorToolbar.switchToTest")
+    }}</v-btn>
   </v-toolbar>
 </template>
 
