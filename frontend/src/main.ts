@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import "./registerServiceWorker";
+import "vis-network";
 import axios from "./plugins/axios";
 import VueAxios from "vue-axios";
 import vuetify from "./plugins/vuetify";

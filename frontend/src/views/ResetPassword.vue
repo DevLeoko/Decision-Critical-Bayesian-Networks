@@ -82,7 +82,7 @@ export default Vue.extend({
       this.axios
         .post("/reset-password", {
           password: this.password,
-          key: this.$route.query.key
+          token: this.$route.query.key
         })
         .then(() => {
           this.$router.push({

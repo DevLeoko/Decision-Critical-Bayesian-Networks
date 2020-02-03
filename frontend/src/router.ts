@@ -80,11 +80,16 @@ export default new Router({
             },
             {
               name: "Test Graph",
-              path: "test",
               component: () => import("./views/graph/Test.vue")
             }
           ]
+              path: "test",
         }
+        // {
+        //   name: "Test Graph",
+        //   path: "test",
+        //   component: () => import("./views/graph/Test.vue")
+        // }
       ]
     },
     {

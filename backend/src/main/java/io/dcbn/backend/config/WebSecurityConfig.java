@@ -2,6 +2,7 @@ package io.dcbn.backend.config;
 
 import io.dcbn.backend.authentication.filters.JwtAuthorizationFilter;
 import io.dcbn.backend.authentication.filters.JwtGenerationFilter;
+import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,57 +18,74 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Value("${jwt.secret}")
-  private String secret;
+    @Value("${jwt.secret}")
+    private String secret;
 
-  private final UserDetailsService userDetailsService;
-  private final PasswordEncoder passwordEncoder;
+    @Value("${jwt.access.duration}")
+    private int tokenDurationInMinutes;
 
-  public WebSecurityConfig(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-    this.userDetailsService = userDetailsService;
-    this.passwordEncoder = passwordEncoder;
-  }
+    private final UserDetailsService userDetailsService;
+    private final DcbnUserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-  }
+    public WebSecurityConfig(UserDetailsService userDetailsService, DcbnUserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http.cors().and().csrf().disable()
-        .authorizeRequests()
-        .anyRequest().authenticated()
-        .and()
-        .addFilter(new JwtGenerationFilter(authenticationManager(), secret))
-        .addFilterAfter(new JwtAuthorizationFilter(secret),
-            UsernamePasswordAuthenticationFilter.class)
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.NEVER);
-  }
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS").allowedOrigins("http://localhost:8080");
+            }
+        };
+    }
 
-  @Override
-  public void configure(WebSecurity web) throws Exception {
-    web.ignoring().antMatchers("/request-password", "/reset-password");
-  }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+    }
 
-  @Bean
-  public DefaultWebSecurityExpressionHandler expressionHandler() {
-    DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
-    expressionHandler.setRoleHierarchy(roleHierarchy());
-    return expressionHandler;
-  }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable()
+                .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+                .addFilter(new JwtGenerationFilter(authenticationManager(), userRepository, secret, tokenDurationInMinutes))
+                .addFilterAfter(new JwtAuthorizationFilter(secret),
+                        UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.NEVER);
+    }
 
-  @Bean
-  public RoleHierarchy roleHierarchy() {
-    RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-    roleHierarchy.setHierarchy("ROLE_SUPERADMIN\nROLE_ADMIN > ROLE_MODERATOR");
-    return roleHierarchy;
-  }
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/request-password", "/reset-password");
+    }
+
+    @Bean
+    public DefaultWebSecurityExpressionHandler expressionHandler() {
+        DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
+        expressionHandler.setRoleHierarchy(roleHierarchy());
+        return expressionHandler;
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ROLE_SUPERADMIN\nROLE_ADMIN > ROLE_MODERATOR");
+        return roleHierarchy;
+    }
 
 }

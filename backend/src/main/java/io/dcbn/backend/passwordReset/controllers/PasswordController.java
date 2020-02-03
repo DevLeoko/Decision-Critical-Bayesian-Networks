@@ -9,7 +9,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -19,51 +18,54 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
+
 @RestController
 public class PasswordController {
 
-  private final MailService mailService;
-  private final DcbnUserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
+    private final DcbnUserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-  @Value("${jwt.secret}")
-  private String secret;
+    @Value("${jwt.secret}")
+    private String secret;
 
-  @Autowired
-  public PasswordController(MailService mailService,
-      DcbnUserRepository userRepository,
-      PasswordEncoder passwordEncoder) {
-    this.mailService = mailService;
-    this.userRepository = userRepository;
-    this.passwordEncoder = passwordEncoder;
-  }
-
-  @PostMapping("/request-password")
-  public void requestPassword(@RequestBody String email) {
-    DcbnUser user = userRepository.findByEmail(email)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    mailService.sendMail(user, MailType.PASSWORD_RESET);
-  }
-
-  @PostMapping("/reset-password")
-  public void resetPassword(@Valid @RequestBody ResetRequest resetRequest) {
-    try {
-      Claims claims = Jwts.parser()
-          .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
-          .parseClaimsJws(resetRequest.getToken())
-          .getBody();
-
-      long id = Long.parseLong(claims.getSubject());
-      DcbnUser user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
-          HttpStatus.NOT_FOUND));
-
-      user.setPassword(resetRequest.getPassword());
-      userRepository.save(user.withEncryptedPassword(passwordEncoder));
-
-    } catch (JwtException e) {
-      e.printStackTrace();
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    @Autowired
+    public PasswordController(MailService mailService,
+                              DcbnUserRepository userRepository,
+                              PasswordEncoder passwordEncoder) {
+        this.mailService = mailService;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
-  }
+
+    @PostMapping("/request-password")
+    public void requestPassword(@RequestBody String email) {
+        System.out.println(email);
+        DcbnUser user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        mailService.sendMail(user, MailType.PASSWORD_RESET);
+    }
+
+    @PostMapping("/reset-password")
+    public void resetPassword(@Valid @RequestBody ResetRequest resetRequest) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
+                    .parseClaimsJws(resetRequest.getToken())
+                    .getBody();
+
+            long id = Long.parseLong(claims.getSubject());
+            DcbnUser user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND));
+
+            user.setPassword(passwordEncoder.encode(resetRequest.getPassword()));
+            userRepository.save(user);
+
+        } catch (JwtException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }
