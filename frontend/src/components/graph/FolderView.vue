@@ -108,7 +108,7 @@
               label="Import"
               outlined
               dense
-              class="ma-3"
+              class="ma-1"
               @change="importGraph($event)"
             ></v-file-input>
           </v-col>
@@ -176,10 +176,11 @@ export default Vue.extend({
 
   methods: {
     duplicateGraph(graph: DenseGraph) {
+      this.loading = true;
       this.axios
         .get(`/graphs/${graph.id}`)
         .then(res => {
-          let copy: dcbn.Graph = JSON.parse(JSON.stringify(res.data));
+          const copy = res.data as dcbn.Graph;
           copy.id = 0;
           copy.name = this.generateNewCopyName(copy);
           copy.nodes.forEach(node => {
@@ -187,11 +188,10 @@ export default Vue.extend({
             node.timeZeroDependency.id = 0;
             node.timeTDependency.id = 0;
           });
-          console.log(copy);
           this.axios
             .post("/graphs", copy)
-            .then(res => {
-              copy.id = res.data;
+            .then(resp => {
+              copy.id = resp.data;
               this.graphs.push({ name: copy.name, id: copy.id });
               this.throwSuccess(
                 `Graph ${graph.name} duplicated to ${copy.name}`
@@ -199,27 +199,32 @@ export default Vue.extend({
             })
             .catch(error => this.throwError(error.response.data.message));
         })
-        .catch(error => this.throwError(error.response.data.message));
+        .catch(error => this.throwError(error.response.data.message))
+        .then(() => (this.loading = false));
     },
 
     renameGraph({ graph, name }: { graph: DenseGraph; name: string }) {
+      this.loading = true;
       this.axios
         .post(`/graphs/${graph.id}/name`, name)
         .then(() => {
           graph.name = name;
           this.throwSuccess(`Graph renamed to ${name}`);
         })
-        .catch(error => this.throwError(error.response.data.message));
+        .catch(error => this.throwError(error.response.data.message))
+        .then(() => (this.loading = false));
     },
 
     deleteGraph({ graph }: { graph: DenseGraph }) {
+      this.loading = true;
       this.axios
         .delete(`/graphs/${graph.id}`)
         .then(() => {
           this.graphs.splice(this.graphs.indexOf(graph), 1);
           this.throwSuccess("Graph deleted");
         })
-        .catch(error => this.throwError(error.response.data.message));
+        .catch(error => this.throwError(error.response.data.message))
+        .then(() => (this.loading = false));
     },
 
     // graphId is actually an int ._.
@@ -287,10 +292,6 @@ export default Vue.extend({
 
     generateNewCopyName(graph: dcbn.Graph): string {
       const gefaultGraphCopyName = `${graph.name}_COPY`;
-      if (this.graphs.length == 0) {
-        return gefaultGraphCopyName;
-      }
-
       for (let i = 0; ; i++) {
         let testName = `${gefaultGraphCopyName}${i === 0 ? "" : i}`;
         if (!this.graphs.filter(graph => graph.name == testName).length) {
