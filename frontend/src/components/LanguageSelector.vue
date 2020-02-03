@@ -1,15 +1,20 @@
 <template>
-  <v-select
-    color="white"
-    style="max-width: 80px"
-    dense
-    class="mt-5"
-    solo
-    :items="langs"
-    v-model="currentLang"
-    :label="currentLang"
-    @change="setLocale"
-  ></v-select>
+  <v-menu>
+    <template v-slot:activator="{ on }">
+      <v-btn v-on="on">
+        {{ currentLang }}
+      </v-btn>
+    </template>
+    <v-list>
+      <v-list-item
+        v-for="(lang, index) in langs"
+        :key="index"
+        @click="setLocale(lang)"
+      >
+        <v-list-item-title>{{ lang }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-menu>
 </template>
 
 <script lang="ts">
@@ -24,8 +29,9 @@ export default Vue.extend({
     };
   },
   methods: {
-    setLocale() {
-      this.$i18n.locale = this.currentLang;
+    setLocale(lang: string) {
+      this.currentLang = lang;
+      this.$i18n.locale = lang;
       document.documentElement.setAttribute("lang", this.currentLang);
       this.$router.push({
         name: this.$router.currentRoute.name,
