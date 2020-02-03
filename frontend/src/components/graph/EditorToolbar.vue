@@ -3,7 +3,7 @@
     <v-toolbar-title>Editor</v-toolbar-title>
 
     <v-btn small color="primary" class="ml-3"><v-icon>save</v-icon></v-btn>
-    <v-btn small color="primary" class="ml-3"><v-icon>add</v-icon></v-btn>
+    <v-btn small color="primary" class="ml-3" @click="addNode()"><v-icon>add</v-icon></v-btn>
     <v-btn small color="primary" class="ml-3">
       <v-icon>arrow_right_alt</v-icon></v-btn
     ><v-btn small color="primary" class="ml-3">

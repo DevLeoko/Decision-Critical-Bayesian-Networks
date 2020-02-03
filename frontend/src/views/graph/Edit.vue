@@ -20,7 +20,7 @@
         <v-btn
           tile
           @click="
-          deleteNode;
+          this.deleteNode;
           ">
           Delete
         </v-btn>
@@ -37,7 +37,7 @@
   </div>
 </template>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 #mynetwork {
   width: 100%;
   height: 100%;
@@ -53,8 +53,8 @@ import vis, {network, data} from "vis-network";
 //Import test Graph
 import graph from "@/../tests/resources/graph1.json";
 
-//Get the Graph structure that will be use in the playground
-import { createVisGraph, dcbn } from "../../utils/graph";
+//Get the frontend Graph structure and the constructor
+import { dcbn, createEditGraph } from "../../utils/graph";
 
 export default Vue.extend({
   components: {
@@ -64,27 +64,30 @@ export default Vue.extend({
   data(){
     return{
       graph,
-      nodes: null as vis.data.DataSet<vis.Node, "id"> | null,
+      nodes: null as vis.DataSet<vis.Node, "id"> | null,
       showEditOptions: false,
       x: 0,
       y:0,
+      activeId: -1,
       editProperties: false,
     };
   },
 
   methods:{
-    addNode(id: number){
-      
-    },
 
+    addNode(){
+
+    },
+    //delete node with id
     deleteNode(id: number){
+      
 
     },
-
+    //edit Node Name and Value
     editNode(id: number){
 
     },
-
+    //add a new Edge from Node to Node
     addEdge(from: Node,to: Node){
 
     },
@@ -93,71 +96,34 @@ export default Vue.extend({
   },
 
   mounted() {
-    // create an array with nodes
-    var nodes = new vis.DataSet([
-      { id: 1, label: "Node 1" },
-      { id: 2, label: "Node 2" },
-      { id: 3, label: "Node 3" },
-      { id: 4, label: "Node 4" },
-      { id: 5, label: "Node 5" },
-      { id: 6, label: "Node 6" }
-    ]);
-
-    // create an array with edges
-    var edges = new vis.DataSet<any>([
-      { from: 1, to: 3 },
-      { from: 1, to: 2 },
-      { from: 2, to: 4 },
-      { from: 2, to: 5 },
-      { from: 3, to: 6 }
-    ]);
-
-    // create a network
-    var container = document.getElementById("mynetwork");
-
-    var data = {
-      nodes: nodes,
-      edges: edges
-    };
-    var options = {
-      physics: {
-        enabled: false
-      },
-      nodes: {
-        shape: "square",
-        title: undefined,
-        value: undefined
-      },
-      edges: {
-        arrows: {
-          to: {
-            enabled: true,
-            imageHeight: undefined,
-            imageWidth: undefined,
-            scaleFactor: 1,
-            src: undefined,
-            type: "arrow"
-          },
-          smooth: {
-            enabled: true
-          }
-        }
-      },
-      manipulation: {
-        enabled: true,
-        initiallyActive: true,
-        addEdge: true,
-        editNode: undefined,
-        deleteNode: true,
-        deleteEdge: true
-      },
-      layout: {}
-    };
-
-    var network = new vis.Network(container!, data, options);
-
+    const{nodeData, nodeIndecies, network} = createEditGraph(
+      document.getElementById("mynetwork")!,
+      this.graph,
+      (nodeId, position) => {
+        this.x = position.x + 10;
+        this.y = position.y - 50;
+        this.activeId = nodeId;
+        this.showEditOptions = true;
+      }
+    );
+    
     network.on("selectNode", () =>{
-    })
+      this.showEditOptions = true;
+    });
+
+    network.on("deselectNode", () => {
+      this.showEditOptions = false;
+    });
+
+    network.on("dragStart", () => {
+      this.showEditOptions = false;
+    });
+
+    network.on("dragging", () => {
+      this.editProperties = false;
+    });
+
+    this.nodes = nodeData;
   }
 });
 </script>
