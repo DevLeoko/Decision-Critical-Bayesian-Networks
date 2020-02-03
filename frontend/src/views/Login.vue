@@ -2,9 +2,13 @@
   <small-view>
     <v-layout row wrap>
       <v-flex xs12>
-        <h1 class="font-weight-light ml-2 mb-2">{{$t("messages.signIn")}}</h1>
-        <v-alert type="info" v-if="info" dismissible outlined>{{ info }}</v-alert>
-        <v-alert type="error" v-model="hasError" dismissible outlined dense>{{ error }}</v-alert>
+        <h1 class="font-weight-light ml-2 mb-2">{{ $t("messages.signIn") }}</h1>
+        <v-alert type="info" v-if="info" dismissible outlined>{{
+          info
+        }}</v-alert>
+        <v-alert type="error" v-model="hasError" dismissible outlined dense>{{
+          error
+        }}</v-alert>
         <v-form v-model="valid" @submit="submit">
           <v-text-field
             :label="$t('messages.email')"
@@ -29,13 +33,15 @@
             :loading="loading"
             color="primary"
             class="mt-2 ml-2"
-          >{{$t("messages.signIn")}}</v-btn>
+            >{{ $t("messages.signIn") }}</v-btn
+          >
           <v-btn
             color="primary"
             class="mt-2 ml-4"
             text
             :to="{ name: 'ForgotPassword' }"
-          >{{$t("messages.forgotPwQ")}}</v-btn>
+            >{{ $t("messages.forgotPwQ") }}</v-btn
+          >
         </v-form>
       </v-flex>
     </v-layout>
@@ -96,7 +102,8 @@ export default Vue.extend({
           this.$store.dispatch("setUser", res.data.user);
 
           this.$router.push({
-            name: "TODO"
+            name: "Graph",
+            params: { lang: this.$i18n.locale }
           });
         })
         .catch(err => {

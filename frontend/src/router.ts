@@ -15,7 +15,6 @@ function generateDefaultRoute(name: String, children = undefined) {
 }
 
 export default new Router({
-  mode: "history",
   base: process.env.BASE_URL,
   routes: [
     {
@@ -80,21 +79,16 @@ export default new Router({
             },
             {
               name: "Test Graph",
+              path: "",
               component: () => import("./views/graph/Test.vue")
             }
           ]
-              path: "test",
         }
-        // {
-        //   name: "Test Graph",
-        //   path: "test",
-        //   component: () => import("./views/graph/Test.vue")
-        // }
       ]
     },
     {
       path: "*",
-      redirect: "/en"
+      redirect: "/en/login"
     }
   ]
 });

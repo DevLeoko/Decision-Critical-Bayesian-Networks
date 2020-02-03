@@ -21,8 +21,11 @@
       <v-btn
         class="ml-4"
         :to="{ name: graphView ? 'EvidenceFormulaBase' : 'GraphBase' }"
-      >{{ graphView ? "Evidence-Formulas" : "Grpahview" }}</v-btn>
-      <v-btn class="ml-4 px-3" @click="logout" dark color="grey darken-3">Logout</v-btn>
+        >{{ graphView ? "Evidence-Formulas" : "Grpahview" }}</v-btn
+      >
+      <v-btn class="ml-4 px-3" @click="logout" dark color="grey darken-3"
+        >Logout</v-btn
+      >
     </template>
   </v-app-bar>
 </template>
@@ -43,7 +46,7 @@ export default Vue.extend({
   },
   computed: {
     graphView(): boolean {
-      return (this.$route.fullPath as string).startsWith("/graph");
+      return (this.$route.fullPath as string).includes("/graph");
     }
   }
 });

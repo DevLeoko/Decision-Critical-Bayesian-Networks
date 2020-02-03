@@ -3,6 +3,7 @@
     <template v-slot:activator="{ on }">
       <v-btn v-on="on">
         {{ currentLang }}
+        <v-icon>arrow_drop_down</v-icon>
       </v-btn>
     </template>
     <v-list>
