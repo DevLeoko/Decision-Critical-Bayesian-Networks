@@ -143,6 +143,82 @@ export function generateGraphImage(
 
 import vis, { Edge, Node } from "vis-network";
 
+export function createEditGraph(container: HTMLElement,
+  graph: dcbn.Graph){
+  const nodes: Node[] = [];
+  const nodeIndecies: string[] = graph.nodes.map(n => n.name).sort();
+  const edges: Edge[] = [];
+
+  graph.nodes.forEach(node => {
+    const nodeId = nodeIndecies.indexOf(node.name);
+
+    nodes.push({
+      id: nodeId,
+      label: node.name,
+      // ...node.position TODO reinstate once done testing
+    });
+
+    edges.push(
+      ...(node.timeTDependency.parents as string[]).map(parent => ({
+        from: nodeIndecies.indexOf(parent),
+        to: nodeId
+      }))
+    );
+
+    edges.push(
+      ...(node.timeTDependency.parentsTm1 as string[]).map(
+        (parent): Edge => ({
+          from: nodeIndecies.indexOf(parent),
+          to: nodeId,
+          dashes: true,
+          label: "time",
+          color: "grey",
+          physics: true,
+          smooth: false
+        })
+      )
+    );
+  });
+  const nodeData = new vis.DataSet(nodes);
+  var data = {
+    nodes: nodeData,
+    edges: edges
+  };
+
+  var options: vis.Options = {
+    physics: false,
+    autoResize: true,
+    height: "100%",
+    nodes: {
+      shape: "square",
+      title: undefined,
+      value: undefined
+    },
+    edges: {
+      arrows: {
+        to: {
+          enabled: true,
+          scaleFactor: 1,
+          type: "arrow"
+        },
+      }
+    },
+    manipulation: {
+      enabled: true,
+      initiallyActive: true,
+      addEdge: true,
+      editNode: undefined,
+      deleteNode: true,
+      deleteEdge: true
+    },
+    layout: {}
+    }
+
+    const network = new vis.Network(container, data, options);
+
+    return { nodeData, nodeIndecies, network };
+  };
+
 export function createVisGraph(
   container: HTMLElement,
   graph: dcbn.Graph,
