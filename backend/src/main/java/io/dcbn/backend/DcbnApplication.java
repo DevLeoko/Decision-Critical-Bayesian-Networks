@@ -6,7 +6,6 @@ import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
 import io.dcbn.backend.authentication.services.DcbnUserDetailsService;
 import io.dcbn.backend.core.AoiCache;
 import io.dcbn.backend.core.VesselCache;
-import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.evidenceFormula.services.DefaultFunctionProvider;
 import io.dcbn.backend.evidenceFormula.services.FunctionProvider;
@@ -74,7 +73,7 @@ public class DcbnApplication {
                     "inArea", StateType.BOOLEAN, ZERO_POSITION);
 
             List<Node> smugglingParentsList = Arrays
-                    .asList(isInReportedArea, inTrajectoryArea, nullSpeed);
+                    .asList(nullSpeed, inTrajectoryArea, isInReportedArea);
             double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}, {0.4, 0.6}, {0.4, 0.6}, {0.2, 0.8},
                     {0.2, 0.8}, {0.001, 0.999}, {0.001, 0.999}};
             NodeDependency smuggling0Dep = new NodeDependency(smugglingParentsList,
@@ -110,8 +109,8 @@ public class DcbnApplication {
     }
 
     @Bean
-    public FunctionProvider functionsBean() {
-        return new DefaultFunctionProvider();
+    public FunctionProvider functionsBean(VesselCache vesselCache, AoiCache aoiCache) {
+        return new DefaultFunctionProvider(vesselCache, aoiCache);
     }
 
 }

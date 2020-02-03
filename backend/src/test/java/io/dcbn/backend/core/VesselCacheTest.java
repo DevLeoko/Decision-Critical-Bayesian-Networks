@@ -1,6 +1,7 @@
 package io.dcbn.backend.core;
 
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
+import de.fraunhofer.iosb.iad.maritime.datamodel.VesselType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,12 +25,93 @@ public class VesselCacheTest {
     }
 
     @Test
-    void getAllUuidsWithEmptyCacheTest() {
+    public void getAllVesselsInTimeSliceExceptionTest() {
+        assertThrows(IllegalArgumentException.class,
+                () -> vesselCache.getAllVesselsInTimeSlice(-1));
+        assertThrows(IllegalArgumentException.class,
+                () -> vesselCache.getAllVesselsInTimeSlice(5));
+    }
+
+    @Test
+    public void getAllVesselsInTimeSliceByTypeTest() {
+        vessel.setSpeed(0.0);
+        vessel.setVesselType(VesselType.FISHING_VESSEL);
+        vesselCache.insert(vessel);
+        vesselTwo.setVesselType(VesselType.CARGO);
+        vesselTwo.setSpeed(0.0);
+        vesselCache.insert(vesselTwo);
+        vesselCache.updateTimeSlices();
+        vessel = Vessel.copy(vessel);
+        vesselTwo = Vessel.copy(vesselTwo);
+        vessel.setSpeed(1.0);
+        vesselCache.insert(vessel);
+        vesselTwo.setSpeed(2.0);
+        vesselCache.insert(vesselTwo);
+
+        Set<Vessel> vesselSet = vesselCache.getAllVesselsInTimeSliceByType(0, VesselType.CARGO);
+        assertTrue(vesselSet.contains(vesselTwo));
+        assertEquals(1, vesselSet.size());
+
+        for(Vessel vessel : vesselSet) {
+            assertEquals(VesselType.CARGO, vessel.getVesselType());
+            assertEquals(2.0, vessel.getSpeed());
+        }
+
+        vesselSet = vesselCache.getAllVesselsInTimeSliceByType(1, VesselType.FISHING_VESSEL);
+        assertEquals(1, vesselSet.size());
+
+        for(Vessel vessel : vesselSet) {
+            assertEquals(VesselType.FISHING_VESSEL, vessel.getVesselType());
+            assertEquals(0.0, vessel.getSpeed());
+        }
+    }
+
+    @Test
+    public void getAllVesselsInTimeSliceTest() {
+        vessel.setSpeed(0.0);
+        vesselCache.insert(vessel);
+        vesselTwo.setSpeed(0.0);
+        vesselCache.insert(vesselTwo);
+        vesselCache.updateTimeSlices();
+        vessel = Vessel.copy(vessel);
+        vesselTwo = Vessel.copy(vesselTwo);
+        vessel.setSpeed(1.0);
+        vesselCache.insert(vessel);
+        vesselTwo.setSpeed(2.0);
+        vesselCache.insert(vesselTwo);
+
+        Set<Vessel> vesselSet = vesselCache.getAllVesselsInTimeSlice(0);
+        assertTrue(vesselSet.contains(vessel));
+        assertTrue(vesselSet.contains(vesselTwo));
+        assertEquals(vesselSet.size(), 2);
+
+        for(Vessel vessel : vesselSet) {
+            if(vessel.getUuid().equals("Vessel1")) {
+                assertEquals(1.0, vessel.getSpeed());
+            } else if (vessel.getUuid().equals("Vessel2")) {
+                assertEquals(2.0, vessel.getSpeed());
+            }
+        }
+
+        vesselSet = vesselCache.getAllVesselsInTimeSlice(1);
+        assertEquals(2, vesselSet.size());
+
+        for(Vessel vessel : vesselSet) {
+            if(vessel.getUuid().equals("Vessel1")) {
+                assertEquals(0.0, vessel.getSpeed());
+            } else if (vessel.getUuid().equals("Vessel2")) {
+                assertEquals(0.0, vessel.getSpeed());
+            }
+        }
+    }
+
+    @Test
+    public void getAllUuidsWithEmptyCacheTest() {
         assertTrue(vesselCache.getAllVesselUuids().isEmpty());
     }
 
     @Test
-    void getAllUuidsTest() {
+    public void getAllUuidsTest() {
         vesselCache.insert(vessel);
         vesselCache.insert(vesselTwo);
         Set<String> uuids = vesselCache.getAllVesselUuids();

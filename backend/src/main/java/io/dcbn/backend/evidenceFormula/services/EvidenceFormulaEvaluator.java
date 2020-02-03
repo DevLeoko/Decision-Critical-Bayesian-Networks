@@ -62,7 +62,7 @@ public class EvidenceFormulaEvaluator {
     public boolean evaluate(int timeSlice, JsonNode json, EvidenceFormula evidenceFormula) {
         ObjectMapper mapper = new JsonMapper();
         Vessel vessel = mapper.convertValue(json, Vessel.class);
-        return evaluateInternal(timeSlice, vessel, evidenceFormula);
+        return evaluate(timeSlice, vessel, evidenceFormula);
     }
 
     public boolean evaluate(Vessel vessel, EvidenceFormula evidenceFormula) {
@@ -78,6 +78,7 @@ public class EvidenceFormulaEvaluator {
      * @return the boolean value of the evaluated formula.
      */
     public boolean evaluate(int timeSlice, Vessel vessel, EvidenceFormula evidenceFormula) {
+        functions.setCurrentVessel(vessel);
         return evaluateInternal(timeSlice, vessel, evidenceFormula);
     }
 

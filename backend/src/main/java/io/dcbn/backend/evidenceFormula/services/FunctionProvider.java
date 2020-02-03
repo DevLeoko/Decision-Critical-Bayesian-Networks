@@ -23,6 +23,8 @@ public class FunctionProvider {
 
     @Setter
     protected int currentTimeSlice;
+    @Setter
+    protected Vessel currentVessel;
 
     /**
      * Creates a new FunctionProvider without any predefined functions.
@@ -73,8 +75,7 @@ public class FunctionProvider {
             }
         }
 
-        return wrapper.getFunction().apply(parameters, correlatedVessels, correlatedAois,
-                currentTimeSlice);
+        return wrapper.getFunction().apply(parameters);
     }
 
     /**

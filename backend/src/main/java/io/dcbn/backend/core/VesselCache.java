@@ -1,11 +1,13 @@
 package io.dcbn.backend.core;
 
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
+import de.fraunhofer.iosb.iad.maritime.datamodel.VesselType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class VesselCache {
@@ -31,6 +33,27 @@ public class VesselCache {
 
     public Set<String> getAllVesselUuids() {
         return vesselCache.keySet();
+    }
+
+    public Set<Vessel> getAllVesselsInTimeSlice(int timeSlice) {
+        if(timeSlice < 0 || timeSlice > timeSteps - 1) {
+            throw new IllegalArgumentException("time slice must be between 0 and 'timeSteps' - 1");
+        }
+
+        return vesselCache.values().stream()
+                .map(vesselArr -> vesselArr[timeSlice])
+                .collect(Collectors.toSet());
+    }
+
+    public Set<Vessel> getAllVesselsInTimeSliceByType(int timeSlice, VesselType type) {
+        if(timeSlice < 0 || timeSlice > timeSteps - 1) {
+            throw new IllegalArgumentException("time slice must be between 0 and 'timeSteps' - 1");
+        }
+
+        return vesselCache.values().stream()
+                .filter(vesselsArr -> vesselsArr[0].getVesselType().equals(type))
+                .map(vesselArr -> vesselArr[timeSlice])
+                .collect(Collectors.toSet());
     }
 
     public void insert(Vessel vessel) throws IllegalArgumentException {
