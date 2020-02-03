@@ -13,7 +13,12 @@
       Import state</v-btn
     >
     <v-spacer></v-spacer>
-    <v-btn small color="primary lighten-2">Switch to Editor</v-btn>
+    <v-btn
+      v-if="$store.state.user.role == 'ADMIN'"
+      small
+      color="primary lighten-2"
+      >Switch to Editor</v-btn
+    >
   </v-toolbar>
 </template>
 
