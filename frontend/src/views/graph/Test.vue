@@ -1,6 +1,10 @@
 <template>
   <div style="max-height: 100%; width: 100% ">
-    <test-toolbar @test="displayResults" />
+    <test-toolbar
+      @test="displayResults"
+      :nodeIndecies="this.nodeIndecies"
+      :presentValues="this.presentValues"
+    />
     <div id="mynetwork" ref="network"></div>
     <v-menu
       v-model="showNodeAction"
@@ -25,9 +29,9 @@
           tile
           @click="
             if (!presentValues[activeId].evidences.length)
-              presentValues[activeId].evidences = new Array(
-                graph.timeSlices
-              ).fill(false);
+              presentValues[activeId].evidences = new Array(timeSlices).fill(
+                false
+              );
             binaryEvidenceOpen = true;
           "
           >Binary Evidences</v-btn
@@ -102,7 +106,7 @@
 
         <v-card-text>
           <v-switch
-            v-for="i in graph.timeSlices"
+            v-for="i in timeSlices"
             :key="i"
             :label="`: Timestep ${i}`"
             v-model="presentValues[activeId].evidences[i - 1]"
@@ -129,6 +133,10 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-snackbar v-model="hasErrorBar" color="error" :timeout="5000">
+      {{ errorMessage }}
+      <v-btn icon @click="hasErrorBar = false"><v-icon>clear</v-icon></v-btn>
+    </v-snackbar>
   </div>
 </template>
 
@@ -158,7 +166,9 @@ export default Vue.extend({
 
   data() {
     return {
-      graph,
+      hasErrorBar: false,
+      errorMessage: "",
+      timeSlices: 0,
       nodes: null as vis.data.DataSet<vis.Node, "id"> | null,
       nodeIndecies: [] as string[],
       showNodeAction: false,
@@ -174,6 +184,7 @@ export default Vue.extend({
 
       presentValues: [] as {
         evidences: boolean[];
+        //Assuming its the true value
         virtualEvidence: number | null;
         computed: number[];
       }[]
@@ -185,6 +196,9 @@ export default Vue.extend({
       Object.keys(results).forEach(key => {
         const values = results[key];
         const id = this.nodeIndecies.indexOf(key);
+
+        console.log(id, values, this.nodeIndecies, key);
+
         this.presentValues[id].computed = values.map(val => val[0]);
 
         this.rerenderNode(id);
@@ -194,7 +208,7 @@ export default Vue.extend({
     quickSetValues(nodeId: number, upper: boolean) {
       this.showNodeAction = false;
 
-      const desiredValue = new Array(graph.timeSlices).fill(upper);
+      const desiredValue = new Array(this.timeSlices).fill(upper);
 
       const resetAction =
         this.presentValues[nodeId].evidences.length &&
@@ -241,38 +255,47 @@ export default Vue.extend({
 
   // TODO check whether thats the right lifecycle hook
   mounted() {
-    const { nodeData, nodeIndecies, network } = createVisGraph(
-      document.getElementById("mynetwork")!,
-      this.graph,
-      this.quickSetValues,
-      (nodeId, position) => {
-        this.x = position.x + 10;
-        this.y = position.y - 50;
-        this.activeId = nodeId;
-        this.showNodeAction = true;
-      }
-    );
+    this.axios
+      .get(`/graphs/${this.$route.params.id}`)
+      .then(res => {
+        this.timeSlices = res.data.timeSlices;
+        const { nodeData, nodeIndecies, network } = createVisGraph(
+          document.getElementById("mynetwork")!,
+          res.data,
+          this.quickSetValues,
+          (nodeId, position) => {
+            this.x = position.x + 10;
+            this.y = position.y - 50;
+            this.activeId = nodeId;
+            this.showNodeAction = true;
+          }
+        );
 
-    network.on("deselectNode", () => {
-      this.showNodeAction = false;
-    });
-    network.on("dragStart", () => {
-      this.showNodeAction = false;
-    });
-    network.on("zoom", () => {
-      this.showNodeAction = false;
-    });
+        network.on("deselectNode", () => {
+          this.showNodeAction = false;
+        });
+        network.on("dragStart", () => {
+          this.showNodeAction = false;
+        });
+        network.on("zoom", () => {
+          this.showNodeAction = false;
+        });
 
-    this.nodes = nodeData;
-    this.nodeIndecies = nodeIndecies;
+        this.nodes = nodeData;
+        this.nodeIndecies = nodeIndecies;
 
-    nodeIndecies.forEach(() =>
-      this.presentValues.push({
-        evidences: [],
-        virtualEvidence: null,
-        computed: []
+        nodeIndecies.forEach(() =>
+          this.presentValues.push({
+            evidences: [],
+            virtualEvidence: null,
+            computed: []
+          })
+        );
       })
-    );
+      .catch(error => {
+        this.errorMessage = error.response.data.message;
+        this.hasErrorBar = true;
+      });
   },
 
   watch: {

@@ -191,7 +191,6 @@ export default Vue.extend({
           this.axios
             .post("/graphs", copy)
             .then(res => {
-              console.log(res.data);
               copy.id = res.data;
               this.graphs.push({ name: copy.name, id: copy.id });
               this.throwSuccess(

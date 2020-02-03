@@ -12,7 +12,7 @@
         Please select a graph or create a new one!
       </v-alert>
     </v-col>
-    <router-view v-else></router-view>
+    <router-view v-else :key="$route.name + $route.params.id"></router-view>
   </v-row>
 </template>
 
