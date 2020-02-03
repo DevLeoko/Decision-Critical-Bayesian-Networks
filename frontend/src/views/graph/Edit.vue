@@ -1,14 +1,46 @@
 <template>
-  <div>
+  <div style="max-height: 100%; width: 100% ">
     <edit-bar />
     <div id="mynetwork" ref="network"></div>
+    <v-menu
+      v-model="showEditOptions"
+      :position-x="x"
+      :position-y="y"
+      :close-on-click="false"
+      absolute
+    >
+      <div class="white">
+        <v-btn
+          tile
+          @click="
+          editProperties = true;
+          ">
+          Properties
+        </v-btn>
+        <v-btn
+          tile
+          @click="
+          deleteNode;
+          ">
+          Delete
+        </v-btn>
+        <v-btn icon color="red">
+          <v-icon>close</v-icon>
+        </v-btn>
+      </div>
+    </v-menu>
+
+    <v-dialog v-model="editProperties" width="500" v-if="activeId !== -1">
+      
+    </v-dialog>
+
   </div>
 </template>
 
 <style lang="css" scoped>
 #mynetwork {
-  width: fit-content;
-  height: fit-content;
+  width: 100%;
+  height: 100%;
   border: 1px solid lightgray;
 }
 </style>
@@ -16,12 +48,50 @@
 <script lang="ts">
 import EditBar from "@/components/graph/EditorToolbar.vue";
 import Vue from "vue";
-import vis from "vis-network";
+import vis, {network, data} from "vis-network";
+
+//Import test Graph
+import graph from "@/../tests/resources/graph1.json";
+
+//Get the Graph structure that will be use in the playground
+import { createVisGraph, dcbn } from "../../utils/graph";
 
 export default Vue.extend({
   components: {
     EditBar
   },
+
+  data(){
+    return{
+      graph,
+      nodes: null as vis.data.DataSet<vis.Node, "id"> | null,
+      showEditOptions: false,
+      x: 0,
+      y:0,
+      editProperties: false,
+    };
+  },
+
+  methods:{
+    addNode(id: number){
+      
+    },
+
+    deleteNode(id: number){
+
+    },
+
+    editNode(id: number){
+
+    },
+
+    addEdge(from: Node,to: Node){
+
+    },
+    
+
+  },
+
   mounted() {
     // create an array with nodes
     var nodes = new vis.DataSet([
@@ -85,6 +155,9 @@ export default Vue.extend({
     };
 
     var network = new vis.Network(container!, data, options);
+
+    network.on("selectNode", () =>{
+    })
   }
 });
 </script>
