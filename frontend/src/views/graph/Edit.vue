@@ -20,7 +20,7 @@
         <v-btn
           tile
           @click="
-          this.deleteNode;
+          deleteNode();
           ">
           Delete
         </v-btn>
@@ -48,8 +48,8 @@
 <script lang="ts">
 import EditBar from "@/components/graph/EditorToolbar.vue";
 import Vue from "vue";
-import vis, {network, data} from "vis-network";
-
+import vis, {data} from "vis-network";
+import network from 'vis-network'
 //Import test Graph
 import graph from "@/../tests/resources/graph1.json";
 
@@ -63,6 +63,7 @@ export default Vue.extend({
 
   data(){
     return{
+      network,
       graph,
       nodes: null as vis.DataSet<vis.Node, "id"> | null,
       showEditOptions: false,
@@ -71,28 +72,6 @@ export default Vue.extend({
       activeId: -1,
       editProperties: false,
     };
-  },
-
-  methods:{
-
-    addNode(){
-
-    },
-    //delete node with id
-    deleteNode(id: number){
-      
-
-    },
-    //edit Node Name and Value
-    editNode(id: number){
-
-    },
-    //add a new Edge from Node to Node
-    addEdge(from: Node,to: Node){
-
-    },
-    
-
   },
 
   mounted() {
@@ -106,6 +85,8 @@ export default Vue.extend({
         this.showEditOptions = true;
       }
     );
+
+    this.nodes = nodeData;
     
     network.on("selectNode", () =>{
       this.showEditOptions = true;
@@ -118,12 +99,6 @@ export default Vue.extend({
     network.on("dragStart", () => {
       this.showEditOptions = false;
     });
-
-    network.on("dragging", () => {
-      this.editProperties = false;
-    });
-
-    this.nodes = nodeData;
   }
 });
 </script>

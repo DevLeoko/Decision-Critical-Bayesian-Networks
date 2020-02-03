@@ -213,7 +213,7 @@ export function createEditGraph(
     layout: {
       improvedLayout:true
     }
-    }
+  };
 
     const network = new vis.Network(container, data, options);
   
