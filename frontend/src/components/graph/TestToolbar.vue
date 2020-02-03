@@ -8,7 +8,9 @@
     <v-btn small color="primary" class="ml-3">Export state</v-btn
     ><v-btn small color="primary" class="ml-3"> Import state</v-btn>
     <v-spacer></v-spacer>
-    <v-btn small color="primary lighten-2">Switch to Editor</v-btn>
+    <template v-if="$store.state.user.role == 'ADMIN'">
+      <v-btn small color="primary lighten-2">Switch to Editor</v-btn>
+    </template>
   </v-toolbar>
 </template>
 

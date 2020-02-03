@@ -7,6 +7,7 @@ Vue.use(Vuex);
 interface User {
   name: string;
   email: string;
+  role: string;
 }
 
 export default new Vuex.Store({
@@ -14,7 +15,7 @@ export default new Vuex.Store({
 
   state: {
     token: "",
-    user: { name: "", email: "" },
+    user: { name: "", email: "", role: "" },
     isUserLoggedIn: false
   } as { token: string; user: User; isUserLoggedIn: boolean },
 

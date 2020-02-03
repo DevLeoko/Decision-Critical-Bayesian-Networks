@@ -106,7 +106,7 @@ export default Vue.extend({
           this.$store.dispatch("setUser", res.data.user);
 
           this.$router.push({
-            name: "TODO"
+            name: "Graph"
           });
         })
         .catch(err => {
