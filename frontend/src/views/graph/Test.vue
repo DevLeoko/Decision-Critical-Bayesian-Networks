@@ -5,7 +5,7 @@
       @export="exportState()"
       @import="importState()"
       @clear="clear()"
-      :nodeIndecies="this.nodeIndecies"
+      :nodeIndices="this.nodeIndices"
       :presentValues="this.presentValues"
     />
     <div id="mynetwork" ref="network"></div>
@@ -172,11 +172,10 @@ export default Vue.extend({
 
   data() {
     return {
-      hasErrorBar: false,
-      errorMessage: "",
       timeSlices: 0,
+      graphName: "",
       nodes: null as vis.data.DataSet<vis.Node, "id"> | null,
-      nodeIndecies: [] as string[],
+      nodeIndices: [] as string[],
       showNodeAction: false,
       x: 0,
       y: 0,
@@ -204,7 +203,7 @@ export default Vue.extend({
     displayResults(results: dcbn.GraphResult) {
       Object.keys(results).forEach(key => {
         const values = results[key];
-        const id = this.nodeIndecies.indexOf(key);
+        const id = this.nodeIndices.indexOf(key);
         this.presentValues[id].computed = values.map(val => val[0]);
         this.rerenderNode(id);
       });
@@ -258,14 +257,14 @@ export default Vue.extend({
     },
 
     rerenderAll() {
-      for (let i = 0; i < this.nodeIndecies.length; ++i) {
+      for (let i = 0; i < this.nodeIndices.length; ++i) {
         this.rerenderNode(i);
       }
     },
 
     clear() {
       this.presentValues = [];
-      this.nodeIndecies.forEach(() =>
+      this.nodeIndices.forEach(() =>
         this.presentValues.push({
           evidences: [],
           virtualEvidence: null,
@@ -282,10 +281,10 @@ export default Vue.extend({
       }
 
       let obj = {
-        nodeIndecies: this.nodeIndecies,
+        nodeIndices: this.nodeIndices,
         presentValues
       };
-      FileDownload(JSON.stringify(obj), `${this.graph.name}.json`);
+      FileDownload(JSON.stringify(obj), `${this.graphName}.json`);
     },
 
     importState() {
@@ -300,18 +299,18 @@ export default Vue.extend({
 
     setFile(event: any) {
       const text = event.target.result;
-      let obj = JSON.parse(text);
+      const fileContent = JSON.parse(text);
+      const fileNodeIndices = fileContent.nodeIndices as string[];
 
-      for (let node of this.graph.nodes) {
-        const name = node.name;
-        if (!obj.nodeIndecies.includes(name)) {
+      for (let name of fileNodeIndices) {
+        if (!this.nodeIndices.includes(name)) {
           this.error = true;
           this.errorMessage = `No node with name ${name} found!`;
           return;
         }
       }
 
-      this.presentValues = obj.presentValues;
+      this.presentValues = fileContent.presentValues;
       this.rerenderAll();
     }
   },
@@ -325,7 +324,8 @@ export default Vue.extend({
       .get(`/graphs/${this.$route.params.id}`)
       .then(res => {
         this.timeSlices = res.data.timeSlices;
-        const { nodeData, nodeIndecies, network } = createVisGraph(
+        this.graphName = res.data.name;
+        const { nodeData, nodeIndices, network } = createVisGraph(
           document.getElementById("mynetwork")!,
           res.data,
           this.quickSetValues,
@@ -348,13 +348,13 @@ export default Vue.extend({
         });
 
         this.nodes = nodeData;
-        this.nodeIndecies = nodeIndecies;
+        this.nodeIndices = nodeIndices;
 
-    this.clear();
+        this.clear();
       })
       .catch(error => {
         this.errorMessage = error.response.data.message;
-        this.hasErrorBar = true;
+        this.error = true;
       });
   },
 

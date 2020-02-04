@@ -155,11 +155,11 @@ export function createVisGraph(
   nodeSelect: (nodeId: number, position: { x: number; y: number }) => void
 ) {
   const nodes: Node[] = [];
-  const nodeIndecies: string[] = graph.nodes.map(n => n.name).sort();
+  const nodeIndices: string[] = graph.nodes.map(n => n.name).sort();
   const edges: Edge[] = [];
 
   graph.nodes.forEach(node => {
-    const nodeId = nodeIndecies.indexOf(node.name);
+    const nodeId = nodeIndices.indexOf(node.name);
 
     nodes.push({
       id: nodeId,
@@ -170,7 +170,7 @@ export function createVisGraph(
 
     edges.push(
       ...(node.timeTDependency.parents as string[]).map(parent => ({
-        from: nodeIndecies.indexOf(parent),
+        from: nodeIndices.indexOf(parent),
         to: nodeId
       }))
     );
@@ -178,7 +178,7 @@ export function createVisGraph(
     edges.push(
       ...(node.timeTDependency.parentsTm1 as string[]).map(
         (parent): Edge => ({
-          from: nodeIndecies.indexOf(parent),
+          from: nodeIndices.indexOf(parent),
           to: nodeId,
           dashes: true,
           label: "time",
@@ -236,5 +236,5 @@ export function createVisGraph(
     return false;
   });
 
-  return { nodeData, nodeIndecies, network };
+  return { nodeData, nodeIndices, network };
 }

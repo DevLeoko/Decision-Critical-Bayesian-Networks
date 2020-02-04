@@ -106,6 +106,7 @@ public class GraphController {
 
     @PostMapping("/graphs/{id}/name")
     public void renameGraphById(@PathVariable long id, @RequestBody String name) {
+        System.out.println(name);
         Graph graph = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph not found"));
         //Checking that the graph name is unique
         for (Graph graphSaved : repository.findAll()) {

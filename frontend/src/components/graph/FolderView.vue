@@ -202,7 +202,11 @@ export default Vue.extend({
     renameGraph({ graph, name }: { graph: dcbn.DenseGraph; name: string }) {
       this.loading = true;
       this.axios
-        .post(`/graphs/${graph.id}/name`, name)
+        .post(`/graphs/${graph.id}/name`, name, {
+          headers: {
+            "Content-Type": "text/plain"
+          }
+        })
         .then(() => {
           graph.name = name;
           this.throwSuccess(`Graph renamed to ${name}`);
