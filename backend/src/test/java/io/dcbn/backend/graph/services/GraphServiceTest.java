@@ -2,6 +2,7 @@ package io.dcbn.backend.graph.services;
 
 import io.dcbn.backend.authentication.models.DcbnUser;
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
+import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.graph.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,8 @@ import static org.mockito.Mockito.when;
 public class GraphServiceTest {
 
     private GraphService service;
-    private static DcbnUserRepository repository;
+    private static DcbnUserRepository dcbnRepository;
+    private static EvidenceFormulaRepository evidenceFormulaRepository;
 
     private static DcbnUser dcbnUser1 = mock(DcbnUser.class);
 
@@ -30,18 +32,20 @@ public class GraphServiceTest {
 
     @BeforeAll
     public static void beforeAll() {
-        repository = mock(DcbnUserRepository.class);
+        dcbnRepository = mock(DcbnUserRepository.class);
 
-        when(repository.findByUsername("user1")).thenReturn(Optional.of(dcbnUser1));
+        when(dcbnRepository.findByUsername("user1")).thenReturn(Optional.of(dcbnUser1));
         when(dcbnUser1.getId()).thenReturn((long) 0);
 
-        when(repository.findByUsername("user2")).thenReturn(Optional.of(dcbnUser2));
+        when(dcbnRepository.findByUsername("user2")).thenReturn(Optional.of(dcbnUser2));
         when(dcbnUser2.getId()).thenReturn((long) 1);
+
+        evidenceFormulaRepository = mock(EvidenceFormulaRepository.class);
     }
 
     @BeforeEach
     public void setUp() {
-        service = new GraphService(repository, null);
+        service = new GraphService(dcbnRepository, evidenceFormulaRepository, null);
     }
 
     @Test

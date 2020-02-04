@@ -1,13 +1,16 @@
 package io.dcbn.backend.graph.services;
 
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
+import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
+import io.dcbn.backend.graph.Node;
 import io.dcbn.backend.inference.Algorithm;
 import io.dcbn.backend.inference.InferenceManager;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -15,10 +18,12 @@ public class GraphService {
 
     private Map<Long, GraphLock> lock;
     private final DcbnUserRepository dcbnUserRepository;
+    private final EvidenceFormulaRepository evidenceFormulaRepository;
     private InferenceManager manager;
 
-    public GraphService(DcbnUserRepository dcbnUserRepository, InferenceManager manager) {
+    public GraphService(DcbnUserRepository dcbnUserRepository, EvidenceFormulaRepository evidenceFormulaRepository, InferenceManager manager) {
         this.dcbnUserRepository = dcbnUserRepository;
+        this.evidenceFormulaRepository = evidenceFormulaRepository;
         this.manager = manager;
         this.lock = new HashMap<>();
     }
@@ -48,5 +53,15 @@ public class GraphService {
         AmidstGraphAdapter adaptedGraph = new AmidstGraphAdapter(graph);
         return manager
                 .calculateInference(adaptedGraph, (i, formula) -> "false", Algorithm.IMPORTANCE_SAMPLING);
+    }
+
+    public boolean notAllEvidenceFormulasExist(Graph graph) {
+        List<Node> nodes = graph.getNodes();
+        for (Node node : nodes) {
+            if (node.getEvidenceFormulaName() != null && !evidenceFormulaRepository.existsByName(node.getEvidenceFormulaName())) {
+                return false;
+            }
+        }
+        return true;
     }
 }
