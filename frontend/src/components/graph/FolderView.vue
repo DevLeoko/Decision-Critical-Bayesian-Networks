@@ -140,15 +140,10 @@
 </template>
 
 <script lang="ts">
-interface DenseGraph {
-  name: string;
-  id: number;
-}
-
 export interface TreeItem {
   name: string;
   id: string | number;
-  graph?: DenseGraph;
+  graph?: dcbn.DenseGraph;
   children: TreeItem[];
 }
 
@@ -157,7 +152,7 @@ import FolderActions from "@/components/graph/FolderViewActions.vue";
 import { dcbn } from "../../utils/graph";
 export default Vue.extend({
   props: {
-    graphs: Array as () => Array<DenseGraph>
+    graphs: Array as () => Array<dcbn.DenseGraph>
   },
 
   components: { FolderActions },
@@ -175,7 +170,7 @@ export default Vue.extend({
   },
 
   methods: {
-    duplicateGraph(graph: DenseGraph) {
+    duplicateGraph(graph: dcbn.DenseGraph) {
       this.loading = true;
       this.axios
         .get(`/graphs/${graph.id}`)
@@ -203,7 +198,7 @@ export default Vue.extend({
         .then(() => (this.loading = false));
     },
 
-    renameGraph({ graph, name }: { graph: DenseGraph; name: string }) {
+    renameGraph({ graph, name }: { graph: dcbn.DenseGraph; name: string }) {
       this.loading = true;
       this.axios
         .post(`/graphs/${graph.id}/name`, name)
@@ -215,7 +210,7 @@ export default Vue.extend({
         .then(() => (this.loading = false));
     },
 
-    deleteGraph({ graph }: { graph: DenseGraph }) {
+    deleteGraph({ graph }: { graph: dcbn.DenseGraph }) {
       this.loading = true;
       this.axios
         .delete(`/graphs/${graph.id}`)
@@ -243,7 +238,7 @@ export default Vue.extend({
       });
     },
 
-    exportGraph(graph: DenseGraph) {
+    exportGraph(graph: dcbn.DenseGraph) {
       this.loading = true;
       const FileDownload = require("js-file-download");
       this.axios

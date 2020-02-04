@@ -42,6 +42,11 @@ export declare module dcbn {
     nodes: Node[];
   }
 
+  export interface DenseGraph {
+    name: string;
+    id: number;
+  }
+
   export interface GraphResult {
     [key: string]: number[][];
   }

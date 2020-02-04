@@ -18,21 +18,27 @@
 
 <script lang="ts">
 import FolderView from "@/components/graph/FolderView.vue";
+import { dcbn } from "@/utils/graph";
 
 import Vue from "vue";
 export default Vue.extend({
   components: { FolderView },
   data() {
     return {
-      graphs: [
-        { name: "TestGraph", id: 10 },
-        { name: "testFolder/Graph1", id: 11 },
-        { name: "testFolder/Graph2", id: 12 },
-        { name: "testFolder2/Graph45", id: 13 },
-        { name: "testFolder/1/grrr", id: 14 },
-        { name: "testFolder/1/uff", id: 15 }
-      ]
+      graphs: [] as dcbn.DenseGraph[]
     };
+  },
+
+  created() {
+    this.axios.get("/graphs?withStructure=false").then(res => {
+      const graphArray = res.data as dcbn.Graph[];
+      graphArray.forEach(graph => {
+        this.graphs.push({
+          name: graph.name,
+          id: graph.id
+        });
+      });
+    });
   }
 });
 </script>
