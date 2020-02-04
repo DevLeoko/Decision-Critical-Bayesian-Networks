@@ -82,20 +82,12 @@ public class GenieConverterTest {
     public void testGenieToDcbn() throws IOException, SAXException, ParserConfigurationException {
         Graph convertedGraph = genieConverter.fromGenieToDcbn(new FileInputStream(genieFile));
         AmidstGraphAdapter convertedAdapter = new AmidstGraphAdapter(convertedGraph);
-//        System.out.println(adapter.getDbn());
-//        System.out.println("---------------------");
-//        System.out.println(convertedAdapter.getDbn());
+        //TODO make test better (equalsDBN broken)
         assertTrue(adapter.getDbn().equalDBNs(convertedAdapter.getDbn(), 0));
     }
 
     @Test
     public void testDcbnToGenie() throws ParserConfigurationException, TransformerException, IOException, SAXException {
-//        InputStream targetStream = new FileInputStream(genieFile);
-//        File file = genieConverter.fromDcbnToGenie(genieConverter.fromGenieToDcbn(targetStream));
-//        File tempDir = new File("target/tempTestFiles/");
-//        tempDir.mkdir();
-//        File destination = new File("target/tempTestFiles/" + file.getName());
-//        file.renameTo(destination);
-//        assertTrue(file.getName().endsWith(".xdsl"));
+        //TODO make test
     }
 }

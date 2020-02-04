@@ -53,7 +53,6 @@ public class AmidstGraphAdapter {
             //Creating the temporary children.
             if (node.isValueNode() && ((ValueNode) node).getValue().length == 1
                     && Math.floor(((ValueNode) node).getValue()[0][0]) != ((ValueNode) node).getValue()[0][0]) {
-                System.out.println("vir evi");
                 Variable tempChild = dynamicVariables
                         .newMultinomialDynamicVariable(TEMP_CHILD + node.getName(), states);
                 tempChildVariables.add(tempChild);
@@ -103,7 +102,7 @@ public class AmidstGraphAdapter {
         dbn = new DynamicBayesianNetwork(dynamicDAG);
         //----------------------------------------Setting probabilities-------------------------------------------
         for (Node node : graph.getNodes()) {
-            Variable variable = getVariableByName(node.getName());// TODO optional (#HannesDieserGott)?
+            Variable variable = getVariableByName(node.getName());
             if (variable == null) {
                 continue;
             }
