@@ -135,8 +135,6 @@ public class GraphAdapterTests {
         testGraph = new Graph(0, "testGraph", 5, nodeList);
         AmidstGraphAdapter amidstGraphAdapter = new AmidstGraphAdapter(testGraph);
         generatedDBN = amidstGraphAdapter.getDbn();
-        System.out.println(generatedDBN);
-
         //----------------generating correct DBN--------------------
         DynamicVariables dynamicVariables = new DynamicVariables();
         Variable a = dynamicVariables.newMultinomialDynamicVariable("A", 2);
