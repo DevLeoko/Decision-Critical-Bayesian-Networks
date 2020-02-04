@@ -1,6 +1,6 @@
 <template>
   <div style="max-height: 100%; width: 100% ">
-    <edit-bar />
+    <edit-bar @nodeAdd="addNode()"/>
     <div id="mynetwork" ref="network"></div>
     <v-menu
       v-model="showEditOptions"
@@ -17,7 +17,9 @@
           ">
           Properties
         </v-btn>
-        <v-btn tile>
+        <v-btn
+         tile
+         @click="del()">
           Delete
         </v-btn>
         <v-btn icon color="red">
@@ -64,7 +66,6 @@ import Vue from "vue";
 import vis, {data} from "vis-network";
 //Import test Graph
 import graph from "@/../tests/resources/graph1.json";
-import network from "vis-network";
 
 //Get the frontend Graph structure and the constructor
 import { dcbn, createEditGraph } from "../../utils/graph";
@@ -83,13 +84,18 @@ export default Vue.extend({
       x: 0,
       y:0,
       activeId: -1,
-      editProperties: false
+      editProperties: false,
+      network : {} as vis.Network
     };
   },
 
   methods:{
-    delete: function(){
-      this.$emit('del')
+    addNode: function(){
+      this.network.addNodeMode();
+    },
+
+    del: function(){
+      this.network.deleteSelected();
     }
   },
 
@@ -105,6 +111,7 @@ export default Vue.extend({
       }
     );
     this.nodes = nodeData;
+    this.network = net;
 
     net.on("selectNode", () =>{
       this.showEditOptions = true;
