@@ -156,8 +156,8 @@
             v-for="(value, index) in presentValues[activeId].computed"
             :key="index"
           >
-            <v-col cols="3">{{ index + 1 }}</v-col>
-            <v-col cols="9">
+            <v-col cols="1">{{ index + 1 }}</v-col>
+            <v-col cols="11">
               <v-progress-linear height="100%" :value="value * 100">
                 <template v-slot="{ value }">
                   <strong :style="`color: ${value >= 40 ? 'white' : 'black'}`"
