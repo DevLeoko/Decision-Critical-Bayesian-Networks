@@ -4,13 +4,23 @@
       <v-btn color="success" class="ml-3" @click="evaluate($route.params.id)">
         <v-icon class="mr-1">check</v-icon>Test
       </v-btn>
-      <v-spacer></v-spacer>
-      <v-btn small color="primary" class="ml-3">Clear graph</v-btn>
-      <v-btn small color="primary" class="ml-3">Export state</v-btn
-      ><v-btn small color="primary" class="ml-3"> Import state</v-btn>
-      <v-spacer></v-spacer>
-      <v-btn small color="primary lighten-2">Switch to Editor</v-btn>
-    </v-toolbar>
+    <v-spacer></v-spacer>
+    <v-btn small color="primary" class="ml-3" @click="$emit('clear')"
+      >Clear graph</v-btn
+    >
+    <v-btn small color="primary" class="ml-3" @click="$emit('export')"
+      >Export state</v-btn
+    ><v-btn small color="primary" class="ml-3" @click="$emit('import')">
+      Import state</v-btn
+    >
+    <v-spacer></v-spacer>
+    <v-btn
+      v-if="$store.state.user.role == 'ADMIN'"
+      small
+      color="primary lighten-2"
+      >Switch to Editor</v-btn
+    >
+  </v-toolbar>
     <v-snackbar v-model="hasErrorBar" color="error" :timeout="5000">
       {{ errorMessage }}
       <v-btn icon @click="hasErrorBar = false"><v-icon>clear</v-icon></v-btn>

@@ -2,6 +2,9 @@
   <div style="max-height: 100%; width: 100% ">
     <test-toolbar
       @test="displayResults"
+      @export="exportState()"
+      @import="importState()"
+      @clear="clear()"
       :nodeIndecies="this.nodeIndecies"
       :presentValues="this.presentValues"
     />
@@ -133,6 +136,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <input ref="stateImport" type="file" display="none" />
     <v-snackbar v-model="hasErrorBar" color="error" :timeout="5000">
       {{ errorMessage }}
       <v-btn icon @click="hasErrorBar = false"><v-icon>clear</v-icon></v-btn>
@@ -158,6 +162,8 @@ import vis, { network } from "vis-network";
 import graph from "@/../tests/resources/graph1.json";
 
 import { generateGraphImage, createVisGraph, dcbn } from "../../utils/graph";
+
+import FileDownload from "js-file-download";
 
 export default Vue.extend({
   components: {
@@ -187,7 +193,10 @@ export default Vue.extend({
         //Assuming its the true value
         virtualEvidence: number | null;
         computed: number[];
-      }[]
+      }[],
+
+      error: false,
+      errorMessage: ""
     };
   },
 
@@ -246,11 +255,72 @@ export default Vue.extend({
         id,
         image: generateGraphImage(values, type, entry.virtualEvidence)
       });
+    },
+
+    rerenderAll() {
+      for (let i = 0; i < this.nodeIndecies.length; ++i) {
+        this.rerenderNode(i);
+      }
+    },
+
+    clear() {
+      this.presentValues = [];
+      this.nodeIndecies.forEach(() =>
+        this.presentValues.push({
+          evidences: [],
+          virtualEvidence: null,
+          computed: []
+        })
+      );
+      this.rerenderAll();
+    },
+
+    exportState() {
+      const presentValues = Object.assign([], this.presentValues);
+      for (let presentValue of presentValues) {
+        presentValue.computed = [];
+      }
+
+      let obj = {
+        nodeIndecies: this.nodeIndecies,
+        presentValues
+      };
+      FileDownload(JSON.stringify(obj), `${this.graph.name}.json`);
+    },
+
+    importState() {
+      (this.$refs.stateImport as any).click();
+    },
+
+    handleFileSelect(file: File) {
+      const reader = new FileReader();
+      reader.onload = this.setFile;
+      reader.readAsText(file);
+    },
+
+    setFile(event: any) {
+      const text = event.target.result;
+      let obj = JSON.parse(text);
+
+      for (let node of this.graph.nodes) {
+        const name = node.name;
+        if (!obj.nodeIndecies.includes(name)) {
+          this.error = true;
+          this.errorMessage = `No node with name ${name} found!`;
+          return;
+        }
+      }
+
+      this.presentValues = obj.presentValues;
+      this.rerenderAll();
     }
   },
 
   // TODO check whether thats the right lifecycle hook
   mounted() {
+    (this.$refs.stateImport as any).addEventListener("change", (evt: any) =>
+      this.handleFileSelect(evt.target.files[0])
+    );
     this.axios
       .get(`/graphs/${this.$route.params.id}`)
       .then(res => {
@@ -280,13 +350,7 @@ export default Vue.extend({
         this.nodes = nodeData;
         this.nodeIndecies = nodeIndecies;
 
-        nodeIndecies.forEach(() =>
-          this.presentValues.push({
-            evidences: [],
-            virtualEvidence: null,
-            computed: []
-          })
-        );
+    this.clear();
       })
       .catch(error => {
         this.errorMessage = error.response.data.message;
