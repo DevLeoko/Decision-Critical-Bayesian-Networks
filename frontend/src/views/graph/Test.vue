@@ -5,6 +5,8 @@
       @export="exportState()"
       @import="importState()"
       @clear="clear()"
+      :nodeIndices="this.nodeIndices"
+      :presentValues="this.presentValues"
     />
     <div id="mynetwork" ref="network"></div>
     <v-menu
@@ -30,9 +32,9 @@
           tile
           @click="
             if (!presentValues[activeId].evidences.length)
-              presentValues[activeId].evidences = new Array(
-                graph.timeSlices
-              ).fill(false);
+              presentValues[activeId].evidences = new Array(timeSlices).fill(
+                false
+              );
             binaryEvidenceOpen = true;
           "
           >Binary Evidences</v-btn
@@ -107,7 +109,7 @@
 
         <v-card-text>
           <v-switch
-            v-for="i in graph.timeSlices"
+            v-for="i in timeSlices"
             :key="i"
             :label="`: Timestep ${i}`"
             v-model="presentValues[activeId].evidences[i - 1]"
@@ -135,8 +137,9 @@
       </v-card>
     </v-dialog>
     <input ref="stateImport" type="file" display="none" />
-    <v-snackbar v-model="error" color="error">
+    <v-snackbar v-model="hasErrorBar" color="error" :timeout="5000">
       {{ errorMessage }}
+      <v-btn icon @click="hasErrorBar = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
   </div>
 </template>
@@ -169,9 +172,10 @@ export default Vue.extend({
 
   data() {
     return {
-      graph,
+      timeSlices: 0,
+      graphName: "",
       nodes: null as vis.data.DataSet<vis.Node, "id"> | null,
-      nodeIndecies: [] as string[],
+      nodeIndices: [] as string[],
       showNodeAction: false,
       x: 0,
       y: 0,
@@ -185,6 +189,7 @@ export default Vue.extend({
 
       presentValues: [] as {
         evidences: boolean[];
+        //Assuming its the true value
         virtualEvidence: number | null;
         computed: number[];
       }[],
@@ -198,9 +203,8 @@ export default Vue.extend({
     displayResults(results: dcbn.GraphResult) {
       Object.keys(results).forEach(key => {
         const values = results[key];
-        const id = this.nodeIndecies.indexOf(key);
+        const id = this.nodeIndices.indexOf(key);
         this.presentValues[id].computed = values.map(val => val[0]);
-
         this.rerenderNode(id);
       });
     },
@@ -208,7 +212,7 @@ export default Vue.extend({
     quickSetValues(nodeId: number, upper: boolean) {
       this.showNodeAction = false;
 
-      const desiredValue = new Array(graph.timeSlices).fill(upper);
+      const desiredValue = new Array(this.timeSlices).fill(upper);
 
       const resetAction =
         this.presentValues[nodeId].evidences.length &&
@@ -253,14 +257,14 @@ export default Vue.extend({
     },
 
     rerenderAll() {
-      for (let i = 0; i < this.nodeIndecies.length; ++i) {
+      for (let i = 0; i < this.nodeIndices.length; ++i) {
         this.rerenderNode(i);
       }
     },
 
     clear() {
       this.presentValues = [];
-      this.nodeIndecies.forEach(() =>
+      this.nodeIndices.forEach(() =>
         this.presentValues.push({
           evidences: [],
           virtualEvidence: null,
@@ -277,10 +281,10 @@ export default Vue.extend({
       }
 
       let obj = {
-        nodeIndecies: this.nodeIndecies,
+        nodeIndices: this.nodeIndices,
         presentValues
       };
-      FileDownload(JSON.stringify(obj), `${this.graph.name}.json`);
+      FileDownload(JSON.stringify(obj), `${this.graphName}.json`);
     },
 
     importState() {
@@ -295,18 +299,18 @@ export default Vue.extend({
 
     setFile(event: any) {
       const text = event.target.result;
-      let obj = JSON.parse(text);
+      const fileContent = JSON.parse(text);
+      const fileNodeIndices = fileContent.nodeIndices as string[];
 
-      for (let node of this.graph.nodes) {
-        const name = node.name;
-        if (!obj.nodeIndecies.includes(name)) {
+      for (let name of fileNodeIndices) {
+        if (!this.nodeIndices.includes(name)) {
           this.error = true;
           this.errorMessage = `No node with name ${name} found!`;
           return;
         }
       }
 
-      this.presentValues = obj.presentValues;
+      this.presentValues = fileContent.presentValues;
       this.rerenderAll();
     }
   },
@@ -316,33 +320,42 @@ export default Vue.extend({
     (this.$refs.stateImport as any).addEventListener("change", (evt: any) =>
       this.handleFileSelect(evt.target.files[0])
     );
+    this.axios
+      .get(`/graphs/${this.$route.params.id}`)
+      .then(res => {
+        this.timeSlices = res.data.timeSlices;
+        this.graphName = res.data.name;
+        const { nodeData, nodeIndices, network } = createVisGraph(
+          document.getElementById("mynetwork")!,
+          res.data,
+          this.quickSetValues,
+          (nodeId, position) => {
+            this.x = position.x + 10;
+            this.y = position.y - 50;
+            this.activeId = nodeId;
+            this.showNodeAction = true;
+          }
+        );
 
-    const { nodeData, nodeIndecies, network } = createVisGraph(
-      document.getElementById("mynetwork")!,
-      this.graph,
-      this.quickSetValues,
-      (nodeId, position) => {
-        this.x = position.x + 10;
-        this.y = position.y - 50;
-        this.activeId = nodeId;
-        this.showNodeAction = true;
-      }
-    );
+        network.on("deselectNode", () => {
+          this.showNodeAction = false;
+        });
+        network.on("dragStart", () => {
+          this.showNodeAction = false;
+        });
+        network.on("zoom", () => {
+          this.showNodeAction = false;
+        });
 
-    network.on("deselectNode", () => {
-      this.showNodeAction = false;
-    });
-    network.on("dragStart", () => {
-      this.showNodeAction = false;
-    });
-    network.on("zoom", () => {
-      this.showNodeAction = false;
-    });
+        this.nodes = nodeData;
+        this.nodeIndices = nodeIndices;
 
-    this.nodes = nodeData;
-    this.nodeIndecies = nodeIndecies;
-
-    this.clear();
+        this.clear();
+      })
+      .catch(error => {
+        this.errorMessage = error.response.data.message;
+        this.error = true;
+      });
   },
 
   watch: {
