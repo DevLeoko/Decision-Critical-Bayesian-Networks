@@ -6,9 +6,9 @@
     <v-btn small color="primary" class="ml-3" @click="$emit('nodeAdd')"
       ><v-icon>add </v-icon></v-btn
     >
-    <v-btn small color="primary" class="ml-3">
+    <v-btn small color="primary" class="ml-3" @click="$emit('edgeAdd')">
       <v-icon>arrow_right_alt</v-icon></v-btn
-    ><v-btn small color="primary" class="ml-3">
+    ><v-btn small color="primary" class="ml-3" @click="$emit('edgeTAdd')">
       <v-icon>arrow_right_alt</v-icon>Time</v-btn
     >
     <v-select class="ml-3" outlined flat dense></v-select>

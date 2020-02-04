@@ -59,6 +59,7 @@
   width: 100%;
   height: 100%;
   border: 1px solid lightgray;
+  max-height: 100vh;
 }
 </style>
 
@@ -71,6 +72,8 @@ import graph from "@/../tests/resources/graph1.json";
 
 //Get the frontend Graph structure and the constructor
 import { dcbn, createEditGraph } from "../../utils/graph";
+
+let network = {} as vis.Network;
 
 export default Vue.extend({
   components: {
@@ -86,27 +89,41 @@ export default Vue.extend({
       x: 0,
       y: 0,
       activeId: -1,
-      editProperties: false,
-      network: {} as vis.Network
+      editProperties: false
     };
   },
 
   methods: {
     addNode: function() {
-      this.network.addNodeMode();
+      network.addNodeMode();
     },
 
     del: function() {
-      this.network.deleteSelected();
+      network.deleteSelected();
     },
 
     addEdge: function() {
-      this.network.addEdgeMode();
+      var options = {
+        edges: {
+          label: " "
+        }
+      };
+      network.setOptions(options);
+      network.addEdgeMode();
     },
     addTEdge: function() {
-      const options = this.network.getOptionsFromConfigurator();
-      this.network.addEdgeMode();
-      //this.network.setOptions(optionsT);
+      var optionsT = {
+        edges: {
+          label: "T",
+          smooth: {
+            enabled: true,
+            type: "dynamic",
+            roundness: 0.5
+          }
+        }
+      };
+      network.setOptions(optionsT);
+      network.addEdgeMode();
     }
   },
 
@@ -122,7 +139,7 @@ export default Vue.extend({
       }
     );
     this.nodes = nodeData;
-    this.network = net;
+    network = net;
 
     net.on("selectNode", () => {
       this.showEditOptions = true;

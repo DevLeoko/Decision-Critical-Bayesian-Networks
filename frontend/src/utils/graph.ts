@@ -146,7 +146,8 @@ import vis, { Edge, Node } from "vis-network";
 export function createEditGraph(
   container: HTMLElement,
   graph: dcbn.Graph,
-  nodeSelect: (nodeId: number, position: { x: number; y: number }) => void){
+  nodeSelect: (nodeId: number, position: { x: number; y: number }) => void
+) {
   const nodes: Node[] = [];
   const nodeIndecies: string[] = graph.nodes.map(n => n.name).sort();
   const edges: Edge[] = [];
@@ -198,13 +199,13 @@ export function createEditGraph(
       value: undefined
     },
     edges: {
-      smooth: false,
+      smooth: true,
       arrows: {
         to: {
           enabled: true,
           scaleFactor: 1,
           type: "arrow"
-        },
+        }
       }
     },
     manipulation: {
@@ -215,27 +216,27 @@ export function createEditGraph(
       editNode: undefined,
       editEdge: true,
       deleteNode: true,
-      deleteEdge: true,
+      deleteEdge: true
     },
     layout: {
       randomSeed: 2,
-      improvedLayout:true
+      improvedLayout: true
     }
   };
 
-    const net = new vis.Network(container, data, options);
-  
-    net.on("selectNode", param => {
-      param.event.preventDefault();
-      param.event.srcEvent.stopPropagation();
-      param.event.srcEvent.preventDefault();
-      nodeSelect(param.nodes[0], param.event.center);
-  
-      return false;
-    });
+  const net = new vis.Network(container, data, options);
 
-    return { nodeData, nodeIndecies, net };
-  };
+  net.on("selectNode", param => {
+    param.event.preventDefault();
+    param.event.srcEvent.stopPropagation();
+    param.event.srcEvent.preventDefault();
+    nodeSelect(param.nodes[0], param.event.center);
+
+    return false;
+  });
+
+  return { nodeData, nodeIndecies, net };
+}
 
 export function createVisGraph(
   container: HTMLElement,
