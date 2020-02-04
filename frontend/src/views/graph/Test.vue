@@ -37,7 +37,16 @@
               );
             binaryEvidenceOpen = true;
           "
-          >Binary Evidences</v-btn
+        >
+          Binary Evidences
+        </v-btn>
+        <v-btn
+          tile
+          @click="valuesOpen = true"
+          v-if="
+            activeId !== -1 && presentValues[activeId].computed.length !== 0
+          "
+          >Values</v-btn
         >
         <v-btn icon color="red"><v-icon>close</v-icon></v-btn>
       </div>
@@ -136,6 +145,39 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="valuesOpen" width="500" v-if="activeId !== -1">
+      <v-card>
+        <v-card-title class="headline">
+          Values of {{ nodeIndices[activeId] }}
+        </v-card-title>
+
+        <v-card-text>
+          <v-row
+            v-for="(value, index) in presentValues[activeId].computed"
+            :key="index"
+          >
+            <v-col cols="3">{{ index + 1 }}</v-col>
+            <v-col cols="9">
+              <v-progress-linear height="100%" :value="value * 100">
+                <template v-slot="{ value }">
+                  <strong :style="`color: ${value >= 40 ? 'white' : 'black'}`"
+                    >{{ Math.ceil(value) }}%</strong
+                  >
+                </template>
+              </v-progress-linear>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="primary" text @click="valuesOpen = false">
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <input ref="stateImport" type="file" display="none" />
     <v-snackbar v-model="hasErrorBar" color="error" :timeout="5000">
       {{ errorMessage }}
@@ -184,6 +226,7 @@ export default Vue.extend({
 
       virtualEvidenceOpen: false,
       binaryEvidenceOpen: false,
+      valuesOpen: false,
 
       activeId: -1,
 
