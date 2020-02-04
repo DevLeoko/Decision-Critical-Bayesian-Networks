@@ -175,6 +175,12 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <input
+      ref="stateImport"
+      type="file"
+      @change="evt => handleFileSelect(evt.target.files[0])"
+      display="none"
+    />
     <v-snackbar v-model="error" color="error" :timeout="5000">
       {{ errorMessage }}
       <v-btn icon @click="error = false"><v-icon>clear</v-icon></v-btn>
