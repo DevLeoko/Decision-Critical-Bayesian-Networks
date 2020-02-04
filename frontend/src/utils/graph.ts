@@ -199,7 +199,7 @@ export function createEditGraph(
       value: undefined
     },
     edges: {
-      smooth: true,
+      smooth: false,
       arrows: {
         to: {
           enabled: true,
@@ -209,8 +209,6 @@ export function createEditGraph(
       }
     },
     manipulation: {
-      enabled: true,
-      initiallyActive: true,
       addNode: true,
       addEdge: true,
       editNode: undefined,
