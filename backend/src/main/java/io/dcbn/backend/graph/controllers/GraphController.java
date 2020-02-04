@@ -65,6 +65,11 @@ public class GraphController {
         if (graphService.hasCycles(graph)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Graph has cycles!");
         }
+
+        if(graphService.notAllEvidenceFormulasExist(graph)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Some evidence formulas do not exist!");
+        }
+
         repository.save(graph);
         return graph.getId();
     }
@@ -96,6 +101,10 @@ public class GraphController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Graph has cycles!");
         }
 
+        if(graphService.notAllEvidenceFormulasExist(graph)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Some evidence formulas do not exist!");
+        }
+
         Graph oldGraph = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         oldGraph.setNodes(graph.getNodes());
@@ -106,7 +115,6 @@ public class GraphController {
 
     @PostMapping("/graphs/{id}/name")
     public void renameGraphById(@PathVariable long id, @RequestBody String name) {
-        System.out.println(name);
         Graph graph = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph not found"));
         //Checking that the graph name is unique
         for (Graph graphSaved : repository.findAll()) {
@@ -115,6 +123,7 @@ public class GraphController {
                         + name + ") already exists");
             }
         }
+
         graph.setName(name);
         repository.save(graph);
     }
