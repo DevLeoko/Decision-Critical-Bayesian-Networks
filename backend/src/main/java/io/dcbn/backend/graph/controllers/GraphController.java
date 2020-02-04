@@ -55,7 +55,7 @@ public class GraphController {
     }
 
     @PostMapping("/graphs")
-    public void createGraph(@Valid @RequestBody Graph graph, Principal principal) {
+    public long createGraph(@Valid @RequestBody Graph graph, Principal principal) {
         try {
             graphService.updateLock(graph.getId(), principal.getName());
         } catch (IllegalArgumentException e) {
@@ -66,13 +66,18 @@ public class GraphController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Graph has cycles!");
         }
 
+        if(graphService.notAllEvidenceFormulasExist(graph)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Some evidence formulas do not exist!");
+        }
+
         repository.save(graph);
+        return graph.getId();
     }
 
     @DeleteMapping("/graphs/{id}")
     public void deleteById(@PathVariable long id, Principal principal) {
         if (!repository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph not found");
         }
 
         try {
@@ -96,6 +101,10 @@ public class GraphController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Graph has cycles!");
         }
 
+        if(graphService.notAllEvidenceFormulasExist(graph)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Some evidence formulas do not exist!");
+        }
+
         Graph oldGraph = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         oldGraph.setNodes(graph.getNodes());
@@ -106,7 +115,15 @@ public class GraphController {
 
     @PostMapping("/graphs/{id}/name")
     public void renameGraphById(@PathVariable long id, @RequestBody String name) {
-        Graph graph = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Graph graph = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph not found"));
+        //Checking that the graph name is unique
+        for (Graph graphSaved : repository.findAll()) {
+            if (graphSaved.getName().equals(name)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A graph with the same name ("
+                        + name + ") already exists");
+            }
+        }
+
         graph.setName(name);
         repository.save(graph);
     }

@@ -2,8 +2,7 @@ package io.dcbn.backend.graph;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,15 +17,12 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Getter
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id",
-        scope = NodeDependency.class)
 @Data
 public class NodeDependency {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     private long id;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})

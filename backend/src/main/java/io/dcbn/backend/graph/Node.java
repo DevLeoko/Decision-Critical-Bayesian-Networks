@@ -1,8 +1,6 @@
 package io.dcbn.backend.graph;
 
 import com.fasterxml.jackson.annotation.*;
-import io.dcbn.backend.evidenceFormula.model.EvidenceFormulaExistsConstraint;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,6 +27,7 @@ public class Node {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     private long id;
 
     @NotEmpty
@@ -45,7 +44,6 @@ public class Node {
     @NotBlank
     private String color;
 
-    @EvidenceFormulaExistsConstraint
     private String evidenceFormulaName;
 
     @NotNull
