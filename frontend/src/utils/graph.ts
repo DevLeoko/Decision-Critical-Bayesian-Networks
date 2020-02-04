@@ -209,15 +209,23 @@ export function createEditGraph(
     },
     manipulation: {
       enabled: true,
+      initiallyActive: true,
+      addNode: true,
+      addEdge: true,
+      editNode: undefined,
+      editEdge: true,
+      deleteNode: true,
+      deleteEdge: true,
     },
     layout: {
+      randomSeed: 2,
       improvedLayout:true
     }
   };
 
-    const network = new vis.Network(container, data, options);
+    const net = new vis.Network(container, data, options);
   
-    network.on("selectNode", param => {
+    net.on("selectNode", param => {
       param.event.preventDefault();
       param.event.srcEvent.stopPropagation();
       param.event.srcEvent.preventDefault();
@@ -226,7 +234,7 @@ export function createEditGraph(
       return false;
     });
 
-    return { nodeData, nodeIndecies, network };
+    return { nodeData, nodeIndecies, net };
   };
 
 export function createVisGraph(
