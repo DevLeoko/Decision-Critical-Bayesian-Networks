@@ -105,6 +105,7 @@
               <v-icon>add</v-icon> Add new graph
             </v-btn>
             <v-file-input
+              hide-details
               label="Import"
               outlined
               dense
