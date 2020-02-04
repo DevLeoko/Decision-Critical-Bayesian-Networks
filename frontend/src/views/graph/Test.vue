@@ -160,9 +160,9 @@
             <v-col cols="11">
               <v-progress-linear height="100%" :value="value * 100">
                 <template v-slot="{ value }">
-                  <strong :style="`color: ${value >= 40 ? 'white' : 'black'}`"
-                    >{{ Math.ceil(value) }}%</strong
-                  >
+                  <strong :style="`color: ${value >= 40 ? 'white' : 'black'}`">
+                    {{ Math.ceil(value) }}%
+                  </strong>
                 </template>
               </v-progress-linear>
             </v-col>

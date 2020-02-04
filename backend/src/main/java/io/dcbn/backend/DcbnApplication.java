@@ -61,16 +61,14 @@ public class DcbnApplication {
                     new DcbnUser("superadmin", "superadmin@dcbn.io", passwordEncoder().encode("superadmin"),
                             Role.SUPERADMIN));
 
-            Position ZERO_POSITION = new Position(0.0, 0.0);
-
             Node smuggling = new Node("smuggling", null, null, "#ffffff", null, StateType.BOOLEAN,
-                    ZERO_POSITION);
+                    new Position(0.0, 0.0));
             Node nullSpeed = new Node("nullSpeed", null, null, "#ffffff",
-                    "nullSpeed", StateType.BOOLEAN, ZERO_POSITION);
+                    "nullSpeed", StateType.BOOLEAN, new Position(200.0, 0.0));
             Node inTrajectoryArea = new Node("inTrajectoryArea", null, null, "#ffffff",
-                    "inTrajectory", StateType.BOOLEAN, ZERO_POSITION);
+                    "inTrajectory", StateType.BOOLEAN, new Position(0.0, 200.0));
             Node isInReportedArea = new Node("isInReportedArea", null, null, "#ffffff",
-                    "inArea", StateType.BOOLEAN, ZERO_POSITION);
+                    "inArea", StateType.BOOLEAN, new Position(-200.0, 0.0));
 
             List<Node> smugglingParentsList = Arrays
                     .asList(nullSpeed, inTrajectoryArea, isInReportedArea);
