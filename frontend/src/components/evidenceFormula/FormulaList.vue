@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer permanent width="100%">
-    <v-dialog v-model="deleteWarning" :persistent="true" max-width="400">
+    <v-dialog v-model="deleteWarning" persistent max-width="400">
       <v-card>
         <v-card-title>
           <v-icon class="mr-2">delete_sweep</v-icon> Confirm deletion

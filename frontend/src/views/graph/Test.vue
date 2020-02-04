@@ -196,11 +196,7 @@ export default Vue.extend({
       Object.keys(results).forEach(key => {
         const values = results[key];
         const id = this.nodeIndecies.indexOf(key);
-
-        console.log(id, values, this.nodeIndecies, key);
-
         this.presentValues[id].computed = values.map(val => val[0]);
-
         this.rerenderNode(id);
       });
     },

@@ -40,7 +40,6 @@ export default Vue.extend({
 
   data() {
     return {
-      // graphResp,
       hasErrorBar: false,
       errorMessage: ""
     };
@@ -50,23 +49,16 @@ export default Vue.extend({
     evaluate(id: number) {
       let valueMap = {} as { [key: string]: number[][] };
       this.nodeIndecies.forEach(node => {
-        var index = this.nodeIndecies.indexOf(node) as number;
+        const index = this.nodeIndecies.indexOf(node);
         //If evidences are present
-        if (this.presentValues[index].evidences.length != 0) {
-          console.log(node);
-          let valueArray = [] as number[][];
-          this.presentValues[index].evidences.forEach(evi => {
-            if (evi) {
-              valueArray.push([1.0, 0.0]);
-            } else {
-              valueArray.push([0.0, 1.0]);
-            }
-          });
-          valueMap[node] = valueArray;
+        if (this.presentValues[index].evidences.length) {
+          valueMap[node] = this.presentValues[index].evidences.map(evid =>
+            evid ? [1, 0] : [0, 1]
+          );
           //If virtual evidence is present
         } else if (this.presentValues[index].virtualEvidence != null) {
           let valueArray = [] as number[][];
-          let virEvi = this.presentValues[index].virtualEvidence as number;
+          let virEvi = this.presentValues[index].virtualEvidence!;
           valueArray.push([virEvi, 1 - virEvi]);
           valueMap[node] = valueArray;
         }
@@ -74,7 +66,6 @@ export default Vue.extend({
       this.axios
         .post(`/graphs/${id}/evaluate`, valueMap)
         .then(res => {
-          console.log(res);
           this.$emit("test", res.data);
         })
         .catch(error => {
