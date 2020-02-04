@@ -163,8 +163,8 @@ export function createVisGraph(
     nodes.push({
       id: nodeId,
       label: node.name,
-      image: generateGraphImage(undefined)
-      // ...node.position
+      image: generateGraphImage(undefined),
+      ...node.position
     });
 
     edges.push(
