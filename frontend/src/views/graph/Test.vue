@@ -43,9 +43,7 @@
         <v-btn
           tile
           @click="valuesOpen = true"
-          v-if="
-            activeId !== -1 && presentValues[activeId].computed.length !== 0
-          "
+          v-if="activeId !== -1 && presentValues[activeId].computed.length"
           >Values</v-btn
         >
         <v-btn icon color="red"><v-icon>close</v-icon></v-btn>
@@ -147,9 +145,7 @@
     </v-dialog>
     <v-dialog v-model="valuesOpen" width="500" v-if="activeId !== -1">
       <v-card>
-        <v-card-title class="headline">
-          Values of {{ nodeIndices[activeId] }}
-        </v-card-title>
+        <v-card-title> Values of {{ nodeIndices[activeId] }} </v-card-title>
 
         <v-card-text>
           <v-row
@@ -161,7 +157,7 @@
               <v-progress-linear height="100%" :value="value * 100">
                 <template v-slot="{ value }">
                   <strong :style="`color: ${value >= 40 ? 'white' : 'black'}`">
-                    {{ Math.ceil(value) }}%
+                    {{ value.toFixed(2) }}%
                   </strong>
                 </template>
               </v-progress-linear>

@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @SpringBootApplication
@@ -76,7 +77,7 @@ public class DcbnApplication {
                     {0.2, 0.8}, {0.001, 0.999}, {0.001, 0.999}};
             NodeDependency smuggling0Dep = new NodeDependency(smugglingParentsList,
                     new ArrayList<>(), probabilities);
-            NodeDependency smugglingTDep = new NodeDependency(smugglingParentsList, new ArrayList<>(),
+            NodeDependency smugglingTDep = new NodeDependency(smugglingParentsList, Collections.singletonList(isInReportedArea),
                     probabilities);
             smuggling.setTimeZeroDependency(smuggling0Dep);
             smuggling.setTimeTDependency(smugglingTDep);
