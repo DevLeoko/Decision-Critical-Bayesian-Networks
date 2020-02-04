@@ -1,6 +1,10 @@
 <template>
   <div style="max-height: 100%; width: 100% ">
-    <edit-bar @nodeAdd="addNode()"/>
+    <edit-bar
+      @nodeAdd="addNode()"
+      @edgeAdd="addEdge()"
+      @edgeTAdd="addTEdge()"
+    />
     <div id="mynetwork" ref="network"></div>
     <v-menu
       v-model="showEditOptions"
@@ -10,16 +14,10 @@
       absolute
     >
       <div class="white">
-        <v-btn
-          tile
-          @click="
-          editProperties = true;
-          ">
+        <v-btn tile @click="editProperties = true">
           Properties
         </v-btn>
-        <v-btn
-         tile
-         @click="del()">
+        <v-btn tile @click="del()">
           Delete
         </v-btn>
         <v-btn icon color="red">
@@ -28,27 +26,31 @@
       </div>
     </v-menu>
 
-    <v-dialog v-model="editProperties" fullscreen hide-overlay transition="dialog-bottom-transition">
-        <v-card>
-          <v-toolbar dark color="primary">
-            <v-btn icon dark @click="editProperties = false">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-            <v-toolbar-title>Properties</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn dark text @click="editProperties = false">Save</v-btn>
-            </v-toolbar-items>
-          </v-toolbar>
-          <v-tabs>
+    <v-dialog
+      v-model="editProperties"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
+      <v-card>
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click="editProperties = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>Properties</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn dark text @click="editProperties = false">Save</v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-tabs>
           <v-tab>General</v-tab>
-      
+
           <v-tab>Definition</v-tab>
           <v-tab>Format</v-tab>
-          </v-tabs>
-        </v-card>
+        </v-tabs>
+      </v-card>
     </v-dialog>
-
   </div>
 </template>
 
@@ -63,7 +65,7 @@
 <script lang="ts">
 import EditBar from "@/components/graph/EditorToolbar.vue";
 import Vue from "vue";
-import vis, {data} from "vis-network";
+import vis, { data } from "vis-network";
 //Import test Graph
 import graph from "@/../tests/resources/graph1.json";
 
@@ -75,32 +77,41 @@ export default Vue.extend({
     EditBar
   },
 
-  data(){
-    return{
+  data() {
+    return {
       graph,
       nodes: null as vis.DataSet<vis.Node, "id"> | null,
       edges: vis.DataSet,
       showEditOptions: false,
       x: 0,
-      y:0,
+      y: 0,
       activeId: -1,
       editProperties: false,
-      network : {} as vis.Network
+      network: {} as vis.Network
     };
   },
 
-  methods:{
-    addNode: function(){
+  methods: {
+    addNode: function() {
       this.network.addNodeMode();
     },
 
-    del: function(){
+    del: function() {
       this.network.deleteSelected();
+    },
+
+    addEdge: function() {
+      this.network.addEdgeMode();
+    },
+    addTEdge: function() {
+      const options = this.network.getOptionsFromConfigurator();
+      this.network.addEdgeMode();
+      //this.network.setOptions(optionsT);
     }
   },
 
   mounted() {
-    const{nodeData, nodeIndecies, net} = createEditGraph(
+    const { nodeData, nodeIndecies, net } = createEditGraph(
       document.getElementById("mynetwork")!,
       this.graph,
       (nodeId, position) => {
@@ -113,7 +124,7 @@ export default Vue.extend({
     this.nodes = nodeData;
     this.network = net;
 
-    net.on("selectNode", () =>{
+    net.on("selectNode", () => {
       this.showEditOptions = true;
     });
 
