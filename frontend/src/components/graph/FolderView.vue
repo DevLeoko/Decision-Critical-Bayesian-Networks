@@ -169,24 +169,26 @@ export default Vue.extend({
   },
 
   methods: {
-    createGraph() {
+    async createGraph() {
       this.loading = true;
-      this.axios
-        .post("/graphs", {
+      try {
+        const newName = this.generateNewUString("newGraph");
+        const res = await this.axios.post("/graphs", {
           id: 0,
-          name: this.generateNewUString("newGraph"),
+          name: newName,
           timeSlices: 5,
           nodes: []
-        })
-        .then(res => {
-          this.graphs.push({
-            name: this.generateNewUString("newGraph"),
-            id: res.data
-          });
-          this.throwSuccess("The graph has been generated");
-        })
-        .catch(error => this.throwError(error.response.data.message))
-        .then(() => (this.loading = false));
+        });
+        this.graphs.push({
+          name: newName,
+          id: res.data
+        });
+        this.throwSuccess("The graph has been generated");
+      } catch (err) {
+        this.throwError(err.response.data.message);
+      } finally {
+        this.loading = false;
+      }
     },
 
     duplicateGraph(graph: dcbn.DenseGraph) {
