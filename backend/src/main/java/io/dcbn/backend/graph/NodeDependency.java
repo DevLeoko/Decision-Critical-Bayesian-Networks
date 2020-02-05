@@ -25,11 +25,11 @@ public class NodeDependency {
     @JsonIgnore
     private long id;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonIdentityReference(alwaysAsId = true)
     private List<Node> parents;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonIdentityReference(alwaysAsId = true)
     private List<Node> parentsTm1;
 

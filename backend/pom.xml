@@ -10,6 +10,7 @@
     <groupId>io.dcbn.backend</groupId>
     <artifactId>dcbn</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>dcbn</name>
     <description>Application for the identification of decision-critical situations through dynamic bayesian networks
     </description>

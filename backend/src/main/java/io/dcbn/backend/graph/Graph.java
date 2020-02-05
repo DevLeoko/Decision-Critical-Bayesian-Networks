@@ -34,7 +34,7 @@ public class Graph {
     private int timeSlices;
 
     @Getter
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
     @Valid
     private List<Node> nodes;
 

@@ -131,6 +131,7 @@ public class InferenceManagerTest {
         EvidenceFormulaRepository mockFormulaRepository = mock(EvidenceFormulaRepository.class);
         ArgumentCaptor<String> nameCaptor = ArgumentCaptor.forClass(String.class);
         when(mockFormulaRepository.findByName(nameCaptor.capture())).then(invocation -> Optional.of((new EvidenceFormula(nameCaptor.getValue(), null))));
+        when(mockFormulaRepository.existsByName(anyString())).thenReturn(true);
 
         inferenceManager = new InferenceManager(mockCache, mockRepository, mockFormulaRepository,
                 mockEvaluator);

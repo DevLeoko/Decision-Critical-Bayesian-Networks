@@ -92,7 +92,7 @@ public class FunctionProvider {
      * @return an unmodifiable set of vessels which where included by the previously evaluated functions.
      */
     public Set<Vessel> getCorrelatedVessels() {
-        return Collections.unmodifiableSet(correlatedVessels);
+        return correlatedVessels;
     }
 
     /**
@@ -101,7 +101,7 @@ public class FunctionProvider {
      * @return an unmodifiable set of areas of interest which where included by the previously evaluated functions.
      */
     public Set<AreaOfInterest> getCorrelatedAois() {
-        return Collections.unmodifiableSet(correlatedAois);
+        return correlatedAois;
     }
 
 }
