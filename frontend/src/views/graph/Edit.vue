@@ -29,11 +29,27 @@
     <v-layout row justify-center>
       <v-dialog v-model="editProperties" persistent max-width="500">
         <v-card>
-          <v-tabs center-active dark v-model="tab">
-            <v-tab href="#general">General </v-tab>
-            <v-tab href="#values">Values</v-tab>
-            <v-tab href="#format">Format</v-tab>
-          </v-tabs>
+          <v-card-title class="headline grey lighten-2" primary-title>
+            Properties
+          </v-card-title>
+          <v-col cols="12" sm="6" md="8">
+            <v-text-field label="Node Name" placeholder="new"></v-text-field>
+          </v-col>
+          <v-card-title primary-title>
+            Values
+          </v-card-title>
+          <v-col cols="14" sm="6" md="8">
+            <v-text-field label="True" placeholder="0.5"></v-text-field>
+          </v-col>
+
+          <v-col cols="18" sm="6" md="8">
+            <v-text-field label="False" placeholder="0.5"></v-text-field>
+          </v-col>
+          <v-card-title primary-title>
+            Format Node
+          </v-card-title>
+          <v-color-picker class="ma-2" hide-inputs></v-color-picker>
+
           <v-spacer></v-spacer>
           <v-card-actions>
             <v-spacer></v-spacer>
