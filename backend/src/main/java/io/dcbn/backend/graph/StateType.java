@@ -32,7 +32,6 @@ public enum StateType {
                 return i;
             }
         }
-        //TODO catch if -1 is returned (maybe return -1 ant catch exception)
         return -1;
     }
 
