@@ -10,6 +10,7 @@
         large
         elevation="4"
         class="ml-3"
+        style="z-index: 10"
         @click="menu = true"
         ><v-icon>chevron_right</v-icon>
       </v-btn>

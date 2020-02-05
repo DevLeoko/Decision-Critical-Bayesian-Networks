@@ -151,8 +151,7 @@ import vis, { Edge, Node } from "vis-network";
 export function createVisGraph(
   container: HTMLElement,
   graph: dcbn.Graph,
-  actionCallback: (nodeId: number, upper: boolean) => void,
-  nodeSelect: (nodeId: number, position: { x: number; y: number }) => void
+  actionCallback: (nodeId: number, upper: boolean) => void
 ) {
   const nodes: Node[] = [];
   const nodeIndices: string[] = graph.nodes.map(n => n.name).sort();
@@ -225,15 +224,6 @@ export function createVisGraph(
       network.getPositions([nodeId])[nodeId].y > param.pointer.canvas.y;
 
     actionCallback(nodeId, upper);
-  });
-
-  network.on("selectNode", param => {
-    param.event.preventDefault();
-    param.event.srcEvent.stopPropagation();
-    param.event.srcEvent.preventDefault();
-    nodeSelect(param.nodes[0], param.event.center);
-
-    return false;
   });
 
   return { nodeData, nodeIndices, network };
