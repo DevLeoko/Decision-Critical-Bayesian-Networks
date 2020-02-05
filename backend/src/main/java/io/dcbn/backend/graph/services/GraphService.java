@@ -31,7 +31,7 @@ public class GraphService {
     //checks if Graph has cycles
     public boolean hasCycles(Graph graph) {
         AmidstGraphAdapter graphAdapter = new AmidstGraphAdapter(graph);
-        return graphAdapter.getDbn().getDynamicDAG().containCycles();
+        return graph.getNodes().size() != 0 && graphAdapter.getDbn().getDynamicDAG().containCycles();
     }
 
     public void updateLock(long graphId, String userName) throws IllegalArgumentException {
@@ -59,9 +59,9 @@ public class GraphService {
         List<Node> nodes = graph.getNodes();
         for (Node node : nodes) {
             if (node.getEvidenceFormulaName() != null && !evidenceFormulaRepository.existsByName(node.getEvidenceFormulaName())) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }
