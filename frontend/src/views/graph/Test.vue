@@ -15,6 +15,7 @@
       :position-y="y"
       :close-on-click="false"
       absolute
+      top
     >
       <div class="white">
         <v-btn
@@ -37,7 +38,14 @@
               );
             binaryEvidenceOpen = true;
           "
-          >Binary Evidences</v-btn
+        >
+          Binary Evidences
+        </v-btn>
+        <v-btn
+          tile
+          @click="valuesOpen = true"
+          v-if="activeId !== -1 && presentValues[activeId].computed.length"
+          >Values</v-btn
         >
         <v-btn icon color="red"><v-icon>close</v-icon></v-btn>
       </div>
@@ -136,10 +144,46 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <input ref="stateImport" type="file" display="none" />
-    <v-snackbar v-model="hasErrorBar" color="error" :timeout="5000">
+    <v-dialog v-model="valuesOpen" width="500" v-if="activeId !== -1">
+      <v-card>
+        <v-card-title> Values of {{ nodeIndices[activeId] }} </v-card-title>
+
+        <v-card-text>
+          <v-row
+            v-for="(value, index) in presentValues[activeId].computed"
+            :key="index"
+          >
+            <v-col cols="1">{{ index + 1 }}</v-col>
+            <v-col cols="11">
+              <v-progress-linear height="100%" :value="value * 100">
+                <template v-slot="{ value }">
+                  <strong :style="`color: ${value >= 40 ? 'white' : 'black'}`">
+                    {{ value.toFixed(2) }}%
+                  </strong>
+                </template>
+              </v-progress-linear>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="primary" text @click="valuesOpen = false">
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <input
+      ref="stateImport"
+      type="file"
+      @change="evt => handleFileSelect(evt.target.files[0])"
+      display="none"
+    />
+    <v-snackbar v-model="error" color="error" :timeout="5000">
       {{ errorMessage }}
-      <v-btn icon @click="hasErrorBar = false"><v-icon>clear</v-icon></v-btn>
+      <v-btn icon @click="error = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
   </div>
 </template>
@@ -184,6 +228,7 @@ export default Vue.extend({
 
       virtualEvidenceOpen: false,
       binaryEvidenceOpen: false,
+      valuesOpen: false,
 
       activeId: -1,
 
@@ -288,13 +333,16 @@ export default Vue.extend({
     },
 
     importState() {
+      (this.$refs.stateImport as HTMLInputElement).value = "";
       (this.$refs.stateImport as any).click();
     },
 
     handleFileSelect(file: File) {
-      const reader = new FileReader();
-      reader.onload = this.setFile;
-      reader.readAsText(file);
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = this.setFile;
+        reader.readAsText(file);
+      }
     },
 
     setFile(event: any) {
@@ -315,31 +363,39 @@ export default Vue.extend({
     }
   },
 
-  // TODO check whether thats the right lifecycle hook
   mounted() {
-    (this.$refs.stateImport as any).addEventListener("change", (evt: any) =>
-      this.handleFileSelect(evt.target.files[0])
-    );
+    const container = document.getElementById("mynetwork")!;
+
     this.axios
       .get(`/graphs/${this.$route.params.id}`)
       .then(res => {
         this.timeSlices = res.data.timeSlices;
         this.graphName = res.data.name;
         const { nodeData, nodeIndices, network } = createVisGraph(
-          document.getElementById("mynetwork")!,
+          container,
           res.data,
-          this.quickSetValues,
-          (nodeId, position) => {
-            this.x = position.x + 10;
-            this.y = position.y - 50;
-            this.activeId = nodeId;
-            this.showNodeAction = true;
-          }
+          this.quickSetValues
         );
 
-        network.on("deselectNode", () => {
-          this.showNodeAction = false;
+        network.on("click", param => {
+          const nodeId = param.nodes[0];
+
+          if (nodeId !== undefined) {
+            const boundingBox = network.getBoundingBox(nodeId);
+            const position = network.canvasToDOM({
+              x: boundingBox.left,
+              y: boundingBox.top
+            });
+            const containerPos = container.getBoundingClientRect() as DOMRect;
+            this.x = containerPos.x + position.x;
+            this.y = containerPos.y + position.y;
+            this.activeId = nodeId;
+            this.showNodeAction = true;
+          } else {
+            this.showNodeAction = false;
+          }
         });
+
         network.on("dragStart", () => {
           this.showNodeAction = false;
         });
