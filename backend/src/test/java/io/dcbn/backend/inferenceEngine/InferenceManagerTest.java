@@ -38,13 +38,13 @@ public class InferenceManagerTest {
 
     @BeforeEach
     public void setUp() {
-         smuggling = new Node("smuggling", null, null, "", null, StateType.BOOLEAN,
+        smuggling = new Node("smuggling", null, null, "", null, StateType.BOOLEAN,
                 ZERO_POSITION);
-         nullSpeed = new Node("nullSpeed", null, null, "",
+        nullSpeed = new Node("nullSpeed", null, null, "",
                 "nullSpeed", StateType.BOOLEAN, ZERO_POSITION);
-         inTrajectoryArea = new Node("inTrajectoryArea", null, null, "",
+        inTrajectoryArea = new Node("inTrajectoryArea", null, null, "",
                 "inTrajectory", StateType.BOOLEAN, ZERO_POSITION);
-         isInReportedArea = new Node("isInReportedArea", null, null, "",
+        isInReportedArea = new Node("isInReportedArea", null, null, "",
                 "inArea", StateType.BOOLEAN, ZERO_POSITION);
 
         List<Node> smugglingParentsList = Lists.reverse(Arrays.asList(isInReportedArea, inTrajectoryArea, nullSpeed));
@@ -188,11 +188,36 @@ public class InferenceManagerTest {
         isInReportedArea.setEvidenceFormulaName(null);
         newNodes.add(smuggling);
         newNodes.add(nullSpeed);
-        ValueNode newInTrajectoryArea = new ValueNode(inTrajectoryArea, new double[][] {{0.6, 0.4}});
+        ValueNode newInTrajectoryArea = new ValueNode(inTrajectoryArea, new double[][]{{0.6, 0.4}});
         newNodes.add(newInTrajectoryArea);
         newNodes.add(isInReportedArea);
         graph = new Graph(0, "testGraph", NUM_TIME_SLICES, newNodes);
         AmidstGraphAdapter adapter = new AmidstGraphAdapter(graph);
-        inferenceManager.calculateInference(adapter, null, Algorithm.IMPORTANCE_SAMPLING);
+        Graph result = inferenceManager.calculateInference(adapter, null, Algorithm.IMPORTANCE_SAMPLING);
+        result.getNodes().forEach(node -> {
+            double[][] correctValues;
+            switch (node.getName()) {
+                case "smuggling":
+                    correctValues = new double[][]{{0.54, 0.46}, {0.54, 0.46}, {0.54, 0.46}, {0.54, 0.46}, {0.54, 0.46}};
+                    break;
+                case "nullSpeed":
+                    correctValues = new double[][]{{0.7, 0.3}, {0.7, 0.3}, {0.7, 0.3}, {0.7, 0.3}, {0.7, 0.3}};
+                    break;
+                case "inTrajectoryArea":
+                    correctValues = new double[][]{{0.85, 0.15}, {0.85, 0.15}, {0.85, 0.15}, {0.85, 0.15}, {0.85, 0.15}};
+                    break;
+                case "isInReportedArea":
+                    correctValues = new double[][]{{0.8, 0.2}, {0.8, 0.2}, {0.8, 0.2}, {0.8, 0.2}, {0.8, 0.2}};
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + node.getName());
+            }
+            for(int i = 0; i < ((ValueNode) node).getValue().length; i++) {
+                for( int j = 0; j < ((ValueNode) node).getValue()[i].length; j++) {
+                    assertEquals(correctValues[i][j], ((ValueNode) node).getValue()[i][j], 2e-2);
+                }
+            }
+
+        });
     }
 }

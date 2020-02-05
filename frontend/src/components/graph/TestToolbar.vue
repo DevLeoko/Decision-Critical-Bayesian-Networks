@@ -18,6 +18,7 @@
         v-if="$store.state.user.role == 'ADMIN'"
         small
         color="primary lighten-2"
+        @click="goToEditor()"
         >Switch to Editor</v-btn
       >
     </v-toolbar>
@@ -56,6 +57,10 @@ export default Vue.extend({
   },
 
   methods: {
+    goToEditor() {
+      this.$router.push({ name: "Edit Graph" });
+    },
+
     evaluate(id: number) {
       let valueMap = {} as { [key: string]: number[][] };
       this.nodeIndices.forEach(node => {

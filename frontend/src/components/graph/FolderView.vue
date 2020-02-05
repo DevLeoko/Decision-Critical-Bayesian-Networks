@@ -99,10 +99,7 @@
         <v-progress-linear indeterminate v-if="loading" />
         <v-row justify="center">
           <v-col class="flex-grow-0 my-4">
-            <v-btn
-              color="primary"
-              @click="graphs.push({ name: 'TestGraph' + i++, id: 10 + i })"
-            >
+            <v-btn color="primary" @click="createGraph()">
               <v-icon>add</v-icon> Add new graph
             </v-btn>
             <v-file-input
@@ -172,6 +169,28 @@ export default Vue.extend({
   },
 
   methods: {
+    async createGraph() {
+      this.loading = true;
+      try {
+        const newName = this.generateNewUString("newGraph");
+        const res = await this.axios.post("/graphs", {
+          id: 0,
+          name: newName,
+          timeSlices: 5,
+          nodes: []
+        });
+        this.graphs.push({
+          name: newName,
+          id: res.data
+        });
+        this.throwSuccess("The graph has been generated");
+      } catch (err) {
+        this.throwError(err.response.data.message);
+      } finally {
+        this.loading = false;
+      }
+    },
+
     duplicateGraph(graph: dcbn.DenseGraph) {
       this.loading = true;
       this.axios
@@ -179,7 +198,7 @@ export default Vue.extend({
         .then(res => {
           const copy = res.data as dcbn.Graph;
           copy.id = 0;
-          copy.name = this.generateNewCopyName(copy);
+          copy.name = this.generateNewUString(`${graph.name}_COPY`);
           copy.nodes.forEach(node => {
             node.id = 0;
             node.timeZeroDependency.id = 0;
@@ -291,8 +310,8 @@ export default Vue.extend({
       this.successBar = true;
     },
 
-    generateNewCopyName(graph: dcbn.Graph): string {
-      const gefaultGraphCopyName = `${graph.name}_COPY`;
+    generateNewUString(defaultString: string): string {
+      const gefaultGraphCopyName = defaultString;
       for (let i = 0; ; i++) {
         let testName = `${gefaultGraphCopyName}${i === 0 ? "" : i}`;
         if (!this.graphs.filter(graph => graph.name == testName).length) {
