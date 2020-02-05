@@ -22,8 +22,6 @@ public class Listener {
 
     @JmsListener(destination = "${spring.activemq.queue.vessel}", containerFactory="jsaFactory")
     public void receiveVessel(String vessel) throws JsonProcessingException {
-        System.out.println(vessel);
-
         vesselHandler.handleVessel(JsonMapper.fromJsonToVessel(vessel));
     }
 

@@ -108,7 +108,7 @@ public class EvidenceFormulaEvaluator {
         return functions.getCorrelatedVessels();
     }
 
-    public Set<AreaOfInterest> getCorrelatedAois() {
+    public Set<String> getCorrelatedAois() {
         return functions.getCorrelatedAois();
     }
 

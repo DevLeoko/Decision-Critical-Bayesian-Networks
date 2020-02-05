@@ -101,7 +101,7 @@ public class InferenceManagerTest {
                 .forClass(EvidenceFormula.class);
         ArgumentCaptor<Vessel> vesselCaptor = ArgumentCaptor.forClass(Vessel.class);
 
-        Set<AreaOfInterest> correlatedAois = new HashSet<>();
+        Set<String> correlatedAois = new HashSet<>();
         Set<Vessel> correlatedVessels = new HashSet<>();
         when(mockEvaluator
                 .evaluate(anyInt(), vesselCaptor.capture(), evidenceFormulaCaptor.capture()))
@@ -112,7 +112,7 @@ public class InferenceManagerTest {
                         case "nullSpeed":
                             return vessel.getSpeed() <= 2;
                         case "inArea":
-                            correlatedAois.add(AREA);
+                            correlatedAois.add("AREA");
                             return vessel.getLongitude() <= 4 && vessel.getLongitude() >= 2;
                         default:
                             return false;
@@ -169,9 +169,9 @@ public class InferenceManagerTest {
         List<Outcome> outcomes = inferenceManager.calculateInference("test");
         Outcome outcome = outcomes.get(0);
 
-        Set<AreaOfInterest> correlatedAois = outcome.getCorrelatedAOIs();
+        Set<String> correlatedAois = outcome.getCorrelatedAOIs();
         assertEquals(1, correlatedAois.size());
-        assertTrue(correlatedAois.contains(AREA));
+        assertTrue(correlatedAois.contains("AREA"));
 
         Set<Vessel> correlatedVessels = outcome.getCorrelatedVessels();
         assertEquals(1, correlatedVessels.size());

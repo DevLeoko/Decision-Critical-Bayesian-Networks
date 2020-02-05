@@ -24,7 +24,11 @@ public class DefaultFunctionProvider extends FunctionProvider {
         if (aoi == null) {
             throw new SymbolNotFoundException(aoiName);
         }
-        correlatedAois.add(aoi);
+        if (currentVessel.getLongitude() == null || currentVessel.getLatitude() == null) {
+            throw new IllegalArgumentException("Longitude and latitude has to be set!");
+        }
+
+        correlatedAois.add(aoi.getName());
 
         Point vesselPoint = createPoint(currentVessel);
 
@@ -38,6 +42,10 @@ public class DefaultFunctionProvider extends FunctionProvider {
 
     private Object distanceToNearestType(List<Object> parameters) {
         VesselType type = VesselType.valueOf((String) parameters.get(0));
+        if (type == null) {
+            throw new IllegalArgumentException("VesselType has to be set!");
+        }
+
         Set<Vessel> allVesselsByType = vesselCache.getAllVesselsInTimeSliceByType(currentTimeSlice, type);
         return distance(currentVessel, allVesselsByType);
     }

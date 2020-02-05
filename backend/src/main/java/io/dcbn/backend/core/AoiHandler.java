@@ -18,10 +18,7 @@ public class AoiHandler {
     }
 
     public void handleAoi(AreaOfInterest aoi) {
-        try {
-            aoiCache.insert(aoi.getName(), aoi);
-        } catch (IllegalArgumentException e) {
-            producer.send(e.getMessage());
-        }
+        aoiCache.insert(aoi.getName(), aoi);
+        System.out.println(aoiCache.getAllAois());
     }
 }

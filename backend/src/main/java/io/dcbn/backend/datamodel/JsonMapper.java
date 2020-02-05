@@ -1,5 +1,6 @@
 package io.dcbn.backend.datamodel;
 
+import com.cedarsoftware.util.io.JsonReader;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
@@ -9,8 +10,8 @@ public class JsonMapper {
 
     private static ObjectMapper mapper = new ObjectMapper();
 
-    public static AreaOfInterest fromJsonToAreaOfInterest(String json) throws JsonProcessingException {
-        return mapper.readValue(json, AreaOfInterest.class);
+    public static AreaOfInterest fromJsonToAreaOfInterest(String json) {
+        return (AreaOfInterest) JsonReader.jsonToJava(json);
     }
 
     public static Vessel fromJsonToVessel(String json) throws JsonProcessingException {
