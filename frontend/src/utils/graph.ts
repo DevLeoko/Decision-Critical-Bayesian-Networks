@@ -148,10 +148,13 @@ export function generateGraphImage(
 
 import vis, { Edge, Node } from "vis-network";
 
+export const defaultColor = "#67809f";
+
 export function createEditGraph(
   container: HTMLElement,
   graph: dcbn.Graph,
-  nodeSelect: (nodeId: number, position: { x: number; y: number }) => void
+  nodeSelect: (nodeId: number, position: { x: number; y: number }) => void,
+  graphManipulationCallbacks: { [name: string]: Function }
 ) {
   const nodes: Node[] = [];
   const nodeIndecies: string[] = graph.nodes.map(n => n.name).sort();
@@ -201,7 +204,9 @@ export function createEditGraph(
     nodes: {
       shape: "square",
       title: undefined,
-      value: undefined
+      value: undefined,
+      color: defaultColor,
+      borderWidth: 0
     },
     edges: {
       smooth: false,
@@ -214,12 +219,10 @@ export function createEditGraph(
       }
     },
     manipulation: {
-      addNode: true,
-      addEdge: true,
-      editNode: undefined,
-      editEdge: true,
-      deleteNode: true,
-      deleteEdge: true
+      addNode: graphManipulationCallbacks.addNode,
+      addEdge: graphManipulationCallbacks.addEdge,
+      deleteNode: graphManipulationCallbacks.deleteNode,
+      deleteEdge: graphManipulationCallbacks.deleteEdge
     },
     layout: {
       randomSeed: 2,
@@ -238,7 +241,9 @@ export function createEditGraph(
     return false;
   });
 
-  return { nodeData, nodeIndecies, net };
+  const edgeData = new vis.DataSet(edges);
+
+  return { nodeData, edgeData, nodeIndecies, net };
 }
 
 export function createVisGraph(
