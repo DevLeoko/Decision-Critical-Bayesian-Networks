@@ -26,31 +26,27 @@
       </div>
     </v-menu>
 
-    <v-dialog
-      v-model="editProperties"
-      fullscreen
-      hide-overlay
-      transition="dialog-bottom-transition"
-    >
-      <v-card>
-        <v-toolbar dark color="primary">
-          <v-btn icon dark @click="editProperties = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>Properties</v-toolbar-title>
+    <v-layout row justify-center>
+      <v-dialog v-model="editProperties" persistent max-width="500">
+        <v-card>
+          <v-tabs center-active dark v-model="tab">
+            <v-tab href="#general">General </v-tab>
+            <v-tab href="#values">Values</v-tab>
+            <v-tab href="#format">Format</v-tab>
+          </v-tabs>
           <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <v-btn dark text @click="editProperties = false">Save</v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-tabs>
-          <v-tab>General</v-tab>
-
-          <v-tab>Definition</v-tab>
-          <v-tab>Format</v-tab>
-        </v-tabs>
-      </v-card>
-    </v-dialog>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" flat @click="editProperties = false"
+              >Save</v-btn
+            >
+            <v-btn color="red" flat @click="editProperties = false"
+              >Cancel</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-layout>
   </div>
 </template>
 
@@ -95,7 +91,7 @@ export default Vue.extend({
 
   methods: {
     addNode: function() {
-      network.addNodeMode();
+      network.addNodeMode;
     },
 
     del: function() {
