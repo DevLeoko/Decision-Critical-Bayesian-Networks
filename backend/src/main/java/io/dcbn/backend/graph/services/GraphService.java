@@ -26,7 +26,7 @@ public class GraphService {
     //checks if Graph has cycles
     public boolean hasCycles(Graph graph) {
         AmidstGraphAdapter graphAdapter = new AmidstGraphAdapter(graph);
-        return graphAdapter.getDbn().getDynamicDAG().containCycles();
+        return graph.getNodes().size() != 0 && graphAdapter.getDbn().getDynamicDAG().containCycles();
     }
 
     public void updateLock(long graphId, String userName) throws IllegalArgumentException {

@@ -137,9 +137,9 @@
       </v-card>
     </v-dialog>
     <input ref="stateImport" type="file" display="none" />
-    <v-snackbar v-model="hasErrorBar" color="error" :timeout="5000">
+    <v-snackbar v-model="error" color="error" :timeout="5000">
       {{ errorMessage }}
-      <v-btn icon @click="hasErrorBar = false"><v-icon>clear</v-icon></v-btn>
+      <v-btn icon @click="error = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
   </div>
 </template>
