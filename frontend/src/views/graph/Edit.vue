@@ -86,7 +86,7 @@ export default Vue.extend({
       graph,
       nodes: null as vis.DataSet<vis.Node, "id"> | null,
       nodeIndecies: [] as string[],
-      edges: vis.DataSet,
+      edges: null as vis.DataSet<vis.Edge, "id"> | null,
       showEditOptions: false,
       x: 0,
       y: 0,
@@ -143,20 +143,61 @@ export default Vue.extend({
     addToDependencies(dependency: dcbn.TimeZeroDependency, powerOfTwo: number) {
       let index = powerOfTwo;
       while (index <= dependency.probabilities.length) {
-        console.log(`SPLICING FROM ${index - powerOfTwo} to ${index}`);
-
         const toAdd = dependency.probabilities.slice(index - powerOfTwo, index);
         dependency.probabilities.splice(index, 0, ...toAdd);
         index += 2 * powerOfTwo;
       }
-      console.log("");
+    },
+
+    removeFromDependencies(
+      dependency: dcbn.TimeZeroDependency,
+      powerOfTwo: number
+    ) {
+      let index = powerOfTwo;
+      while (index <= dependency.probabilities.length) {
+        dependency.probabilities.splice(index, powerOfTwo);
+        index += powerOfTwo;
+      }
+    },
+
+    removeDependencies(toNode: dcbn.Node, fromName: string) {
+      // FIXME: This does not work when a node is both a time parent and a normal parent!!!
+      if (!toNode) {
+        return;
+      }
+      const isTimeDependency = toNode.timeTDependency.parentsTm1.includes(
+        fromName
+      );
+
+      const powerOfTwo = this.findPowerOfTwo(toNode, fromName);
+      if (!isTimeDependency) {
+        this.removeFromDependencies(toNode.timeZeroDependency, powerOfTwo);
+      }
+
+      this.removeFromDependencies(toNode.timeTDependency, powerOfTwo);
+
+      if (isTimeDependency) {
+        toNode.timeTDependency.parentsTm1.splice(
+          toNode.timeTDependency.parentsTm1.indexOf(fromName),
+          1
+        );
+      } else {
+        toNode.timeZeroDependency.parents.splice(
+          toNode.timeZeroDependency.parents.indexOf(fromName),
+          1
+        );
+        toNode.timeTDependency.parents.splice(
+          toNode.timeZeroDependency.parents.indexOf(fromName),
+          1
+        );
+      }
     }
   },
 
   mounted() {
     graph = graphData as dcbn.Graph;
     const self = this;
-    const { nodeData, nodeIndecies, net } = createEditGraph(
+    const { nodeData, edgeData, nodeIndecies, net } = createEditGraph(
       document.getElementById("mynetwork")!,
       this.graph,
       (nodeId, position) => {
@@ -220,13 +261,26 @@ export default Vue.extend({
           }
 
           self.addToDependencies(toNode.timeTDependency, powerOfTwo);
-
-          console.log(toNode.timeZeroDependency.probabilities);
-          console.log(toNode.timeTDependency.probabilities);
-
           callback(data);
         },
         deleteNode(data: any, callback: Function) {
+          for (let edgeUuid of data.edges as string[]) {
+            const edge = self.edges!.get(edgeUuid);
+            if (!edge) {
+              break;
+            }
+            const toName = self.nodeIndecies[edge.to as number];
+            const fromName = self.nodeIndecies[edge.from as number];
+
+            const toNode = self.graph.nodes.find(node => node.name === toName)!;
+            self.removeDependencies(toNode, fromName);
+          }
+          self.graph.nodes.splice(
+            self.graph.nodes.findIndex(
+              node => node.name === self.nodeIndecies[data.nodes[0] as number]
+            ),
+            1
+          );
           callback(data);
         },
         deleteEdge(data: any, callback: Function) {
@@ -237,6 +291,7 @@ export default Vue.extend({
 
     this.nodeIndecies = nodeIndecies;
     this.nodes = nodeData;
+    this.edges = edgeData;
     network = net;
 
     net.on("selectNode", () => {
@@ -265,8 +320,6 @@ export default Vue.extend({
 
       const newPosition = network.getPositions(nodeId)[0];
       node.position = newPosition;
-
-      console.log(this.graph);
     });
   }
 });

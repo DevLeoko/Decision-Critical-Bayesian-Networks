@@ -241,7 +241,9 @@ export function createEditGraph(
     return false;
   });
 
-  return { nodeData, nodeIndecies, net };
+  const edgeData = new vis.DataSet(edges);
+
+  return { nodeData, edgeData, nodeIndecies, net };
 }
 
 export function createVisGraph(
