@@ -33,10 +33,10 @@ public class Node {
     @NotEmpty
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private NodeDependency timeZeroDependency;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private NodeDependency timeTDependency;
 
     //rgb color in Hexadecimal

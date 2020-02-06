@@ -160,9 +160,15 @@ export function createEditGraph(
   const edges: Edge[] = [];
   const dcbnNodes: { [uuid: string]: dcbn.Node } = {};
 
-  graph.nodes.forEach(node => {
+  for (const node of graph.nodes) {
     const nodeId = vis.util.randomUUID();
     dcbnNodes[nodeId] = node;
+  }
+
+  graph.nodes.forEach(node => {
+    const nodeId = Object.keys(dcbnNodes).find(
+      n => node.name === dcbnNodes[n].name
+    )!;
 
     nodes.push({
       id: nodeId,

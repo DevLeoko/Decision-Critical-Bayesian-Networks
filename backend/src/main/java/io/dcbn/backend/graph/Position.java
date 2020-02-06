@@ -14,7 +14,6 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor
 @Embeddable
 public class Position {
-
-    private double x;
-    private double y;
+    private Double x;
+    private Double y;
 }

@@ -1,6 +1,7 @@
 <template>
   <div style="max-height: 100%; width: 100% ">
     <edit-bar
+      @save="save()"
       @nodeAdd="addNode()"
       @edgeAdd="addEdge()"
       @edgeTAdd="addTEdge()"
@@ -96,6 +97,11 @@ export default Vue.extend({
   },
 
   methods: {
+    save() {
+      // TODO: Provide the user with feedback.
+      this.axios.put(`/graphs/${this.$route.params.id}`, this.graph);
+    },
+
     addNode: function() {
       network.addNodeMode();
     },
@@ -186,7 +192,7 @@ export default Vue.extend({
           1
         );
         toNode.timeTDependency.parents.splice(
-          toNode.timeZeroDependency.parents.indexOf(fromName),
+          toNode.timeTDependency.parents.indexOf(fromName),
           1
         );
       }
@@ -322,7 +328,7 @@ export default Vue.extend({
         const nodeId = event.nodes[0];
         const node = this.dcbnNodes[nodeId];
 
-        const newPosition = network.getPositions(nodeId)[0];
+        const newPosition = network.getPositions(nodeId)[nodeId];
         node.position = newPosition;
       });
     });

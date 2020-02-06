@@ -2,7 +2,9 @@
   <v-toolbar bottom>
     <v-toolbar-title>Editor</v-toolbar-title>
 
-    <v-btn small color="primary" class="ml-3"><v-icon>save</v-icon></v-btn>
+    <v-btn small color="primary" class="ml-3" @click="$emit('save')"
+      ><v-icon>save</v-icon></v-btn
+    >
     <v-btn small color="primary" class="ml-3" @click="$emit('nodeAdd')"
       ><v-icon>add </v-icon></v-btn
     >

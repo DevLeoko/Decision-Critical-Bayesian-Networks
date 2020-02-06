@@ -39,7 +39,7 @@ public class  GenieConverter {
 
     private static final String ID = "id";
     private static final List<io.dcbn.backend.graph.Node> EMPTY_NODE_LIST = new ArrayList<>();
-    private static final Position ZERO_POSITION = new Position(0, 0);
+    private static final Position ZERO_POSITION = new Position(0.0, 0.0);
 
 
     /**
@@ -186,8 +186,8 @@ public class  GenieConverter {
         plateElement.setAttribute("leftwidth", "120");
         plateElement.setAttribute("rightwidth", "120");
         Position platePosition = findOutMaxPos(graph.getNodes());
-        int plateX = (int) platePosition.getX() + 200; //200 is default offset
-        int plateY = (int) platePosition.getY() + 200; //200 is default offset
+        int plateX = platePosition.getX().intValue() + 200; //200 is default offset
+        int plateY = platePosition.getY().intValue() + 200; //200 is default offset
         plateElement.setTextContent("0 0 " + plateX + " " + plateY);
         genieElement.appendChild(plateElement);
 

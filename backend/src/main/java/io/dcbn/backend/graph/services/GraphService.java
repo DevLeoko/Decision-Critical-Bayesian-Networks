@@ -59,9 +59,9 @@ public class GraphService {
         List<Node> nodes = graph.getNodes();
         for (Node node : nodes) {
             if (node.getEvidenceFormulaName() != null && !evidenceFormulaRepository.existsByName(node.getEvidenceFormulaName())) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }
