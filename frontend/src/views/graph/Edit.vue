@@ -194,7 +194,13 @@ export default Vue.extend({
     },
 
     generateNewNodeName() {
-      return "test";
+      const defaultName = "newNode";
+      for (let i = 0; ; i++) {
+        let testName = `${defaultName}${i === 0 ? "" : i}`;
+        if (!this.graph.nodes.filter(node => node.name == testName).length) {
+          return testName;
+        }
+      }
     }
   },
 
