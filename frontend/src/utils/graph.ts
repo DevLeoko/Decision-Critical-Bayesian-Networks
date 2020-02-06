@@ -157,11 +157,12 @@ export function createEditGraph(
   graphManipulationCallbacks: { [name: string]: Function }
 ) {
   const nodes: Node[] = [];
-  const nodeIndecies: string[] = graph.nodes.map(n => n.name).sort();
   const edges: Edge[] = [];
+  const dcbnNodes: { [uuid: string]: dcbn.Node } = {};
 
   graph.nodes.forEach(node => {
-    const nodeId = nodeIndecies.indexOf(node.name);
+    const nodeId = vis.util.randomUUID();
+    dcbnNodes[nodeId] = node;
 
     nodes.push({
       id: nodeId,
@@ -170,7 +171,7 @@ export function createEditGraph(
 
     edges.push(
       ...(node.timeTDependency.parents as string[]).map(parent => ({
-        from: nodeIndecies.indexOf(parent),
+        from: Object.keys(dcbnNodes).find(key => dcbnNodes[key].name == parent),
         to: nodeId
       }))
     );
@@ -178,7 +179,9 @@ export function createEditGraph(
     edges.push(
       ...(node.timeTDependency.parentsTm1 as string[]).map(
         (parent): Edge => ({
-          from: nodeIndecies.indexOf(parent),
+          from: Object.keys(dcbnNodes).find(
+            key => dcbnNodes[key].name == parent
+          ),
           to: nodeId,
           dashes: true,
           label: "time",
@@ -191,10 +194,11 @@ export function createEditGraph(
   });
 
   const nodeData = new vis.DataSet(nodes);
+  const edgeData = new vis.DataSet(edges);
 
   var data = {
     nodes: nodeData,
-    edges: edges
+    edges: edgeData
   };
 
   var options: vis.Options = {
@@ -241,9 +245,7 @@ export function createEditGraph(
     return false;
   });
 
-  const edgeData = new vis.DataSet(edges);
-
-  return { nodeData, edgeData, nodeIndecies, net };
+  return { nodeData, edgeData, dcbnNodes, net };
 }
 
 export function createVisGraph(

@@ -85,7 +85,7 @@ export default Vue.extend({
     return {
       graph,
       nodes: null as vis.DataSet<vis.Node, "id"> | null,
-      nodeIndecies: [] as string[],
+      dcbnNodes: {} as { [uuid: string]: dcbn.Node },
       edges: null as vis.DataSet<vis.Edge, "id"> | null,
       showEditOptions: false,
       x: 0,
@@ -191,13 +191,17 @@ export default Vue.extend({
           1
         );
       }
+    },
+
+    generateNewNodeName() {
+      return "test";
     }
   },
 
   mounted() {
     graph = graphData as dcbn.Graph;
     const self = this;
-    const { nodeData, edgeData, nodeIndecies, net } = createEditGraph(
+    const { nodeData, edgeData, dcbnNodes, net } = createEditGraph(
       document.getElementById("mynetwork")!,
       this.graph,
       (nodeId, position) => {
@@ -208,7 +212,8 @@ export default Vue.extend({
       },
       {
         addNode(data: any, callback: Function) {
-          self.graph.nodes.push({
+          data.label = self.generateNewNodeName();
+          self.dcbnNodes[data.id] = {
             type: "Node",
             name: data.label,
             id: 0,
@@ -233,20 +238,16 @@ export default Vue.extend({
               x: data.x,
               y: data.y
             }
-          });
+          };
+          self.graph.nodes.push(self.dcbnNodes[data.id]);
           callback(data);
         },
         addEdge(data: any, callback: Function) {
           const fromId = data.from as number;
           const toId = data.to as number;
 
-          const fromName = self.nodeIndecies[fromId];
-          const toName = self.nodeIndecies[toId];
-
-          const fromNode = self.graph.nodes.find(
-            node => node.name == fromName
-          )!;
-          const toNode = self.graph.nodes.find(node => node.name === toName)!;
+          const fromName = self.dcbnNodes[fromId].name;
+          const toNode = self.dcbnNodes[toId];
 
           if (self.timeEdge) {
             toNode.timeTDependency.parentsTm1.push(fromName);
@@ -266,21 +267,22 @@ export default Vue.extend({
         deleteNode(data: any, callback: Function) {
           for (let edgeUuid of data.edges as string[]) {
             const edge = self.edges!.get(edgeUuid);
+
             if (!edge) {
               break;
             }
-            const toName = self.nodeIndecies[edge.to as number];
-            const fromName = self.nodeIndecies[edge.from as number];
+            const toNode = self.dcbnNodes[edge.to as string];
+            const fromName = self.dcbnNodes[edge.from as string].name;
 
-            const toNode = self.graph.nodes.find(node => node.name === toName)!;
             self.removeDependencies(toNode, fromName);
           }
           self.graph.nodes.splice(
             self.graph.nodes.findIndex(
-              node => node.name === self.nodeIndecies[data.nodes[0] as number]
+              node => node.name === self.dcbnNodes[data.nodes[0] as string].name
             ),
             1
           );
+          delete self.dcbnNodes[data.label];
           callback(data);
         },
         deleteEdge(data: any, callback: Function) {
@@ -289,7 +291,7 @@ export default Vue.extend({
       }
     );
 
-    this.nodeIndecies = nodeIndecies;
+    this.dcbnNodes = dcbnNodes;
     this.nodes = nodeData;
     this.edges = edgeData;
     network = net;
@@ -311,12 +313,7 @@ export default Vue.extend({
         return;
       }
       const nodeId = event.nodes[0];
-      const nodeName = this.nodeIndecies[nodeId];
-
-      const node = this.graph.nodes.find(node => node.name === nodeName);
-      if (!node) {
-        return;
-      }
+      const node = this.dcbnNodes[nodeId];
 
       const newPosition = network.getPositions(nodeId)[0];
       node.position = newPosition;
