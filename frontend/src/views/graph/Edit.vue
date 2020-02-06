@@ -26,43 +26,11 @@
       </div>
     </v-menu>
 
-    <v-layout row justify-center>
-      <v-dialog v-model="editProperties" persistent max-width="500">
-        <v-card>
-          <v-card-title class="headline grey lighten-2" primary-title>
-            Properties
-          </v-card-title>
-          <v-col cols="12" sm="6" md="8">
-            <v-text-field label="Node Name" placeholder="new"></v-text-field>
-          </v-col>
-          <v-card-title primary-title>
-            Values
-          </v-card-title>
-          <v-col cols="14" sm="6" md="8">
-            <v-text-field label="True" placeholder="0.5"></v-text-field>
-          </v-col>
-
-          <v-col cols="18" sm="6" md="8">
-            <v-text-field label="False" placeholder="0.5"></v-text-field>
-          </v-col>
-          <v-card-title primary-title>
-            Format Node
-          </v-card-title>
-          <v-color-picker class="ma-2" hide-inputs></v-color-picker>
-
-          <v-spacer></v-spacer>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="green darken-1" flat @click="editProperties = false"
-              >Save</v-btn
-            >
-            <v-btn color="red" flat @click="editProperties = false"
-              >Cancel</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-layout>
+    <node-properties :open.sync="editProperties" :node="selectedNode" />
+    <v-snackbar v-model="hasError" color="error" :timeout="5000">
+      {{ errorMessage }}
+      <v-btn icon @click="hasError = false"><v-icon>clear</v-icon></v-btn>
+    </v-snackbar>
   </div>
 </template>
 
@@ -79,23 +47,24 @@
 import EditBar from "@/components/graph/EditorToolbar.vue";
 import Vue from "vue";
 import vis, { data } from "vis-network";
+import NodeProperties from "@/components/graph/NodeProperties.vue";
 //Import test Graph
 
 //Get the frontend Graph structure and the constructor
 import { defaultColor, dcbn, createEditGraph } from "../../utils/graph";
-import graphData from "@/../tests/resources/graph1.json";
 
-let graph = graphData as dcbn.Graph;
 let network = {} as vis.Network;
 
 export default Vue.extend({
   components: {
-    EditBar
+    EditBar,
+    NodeProperties
   },
 
   data() {
     return {
-      graph,
+      //TODO null problems?
+      graph: null as dcbn.Graph | null,
       nodes: null as vis.DataSet<vis.Node, "id"> | null,
       nodeIndecies: [] as string[],
       edges: null as vis.DataSet<vis.Edge, "id"> | null,
@@ -104,7 +73,11 @@ export default Vue.extend({
       y: 0,
       activeId: -1,
       editProperties: false,
-      timeEdge: false
+      timeEdge: false,
+      //TODO replace with $emit?
+      selectedNode: null as dcbn.Node | null,
+      hasError: false,
+      errorMessage: ""
     };
   },
 
@@ -207,132 +180,152 @@ export default Vue.extend({
   },
 
   mounted() {
-    graph = graphData as dcbn.Graph;
-    const self = this;
-    const { nodeData, edgeData, nodeIndecies, net } = createEditGraph(
-      document.getElementById("mynetwork")!,
-      this.graph,
-      (nodeId, position) => {
-        this.x = position.x + 10;
-        this.y = position.y - 50;
-        this.activeId = nodeId;
-        this.showEditOptions = true;
-      },
-      {
-        addNode(data: any, callback: Function) {
-          self.graph.nodes.push({
-            type: "Node",
-            name: data.label,
-            id: 0,
-            timeZeroDependency: {
-              id: 0,
-              parents: [],
-              parentsTm1: [],
-              probabilities: [[0.5, 0.5]]
+    this.axios
+      .get(`/graphs/${this.$route.params.id}`)
+      .then(res => {
+        this.graph = res.data as dcbn.Graph;
+        const self = this;
+        const { nodeData, edgeData, nodeIndecies, net } = createEditGraph(
+          document.getElementById("mynetwork")!,
+          this.graph,
+          (nodeId, position) => {
+            this.x = position.x + 10;
+            this.y = position.y - 50;
+            this.activeId = nodeId;
+            this.showEditOptions = true;
+          },
+          {
+            addNode(data: any, callback: Function) {
+              self.graph!.nodes.push({
+                type: "Node",
+                name: data.label,
+                id: 0,
+                timeZeroDependency: {
+                  id: 0,
+                  parents: [],
+                  parentsTm1: [],
+                  probabilities: [[0.5, 0.5]]
+                },
+                timeTDependency: {
+                  id: 0,
+                  parents: [],
+                  parentsTm1: [],
+                  probabilities: [[0.5, 0.5]]
+                },
+                color: defaultColor,
+                evidenceFormulaName: null,
+                stateType: {
+                  states: ["true", "false"]
+                },
+                position: {
+                  x: data.x,
+                  y: data.y
+                }
+              });
+              callback(data);
             },
-            timeTDependency: {
-              id: 0,
-              parents: [],
-              parentsTm1: [],
-              probabilities: [[0.5, 0.5]]
+            addEdge(data: any, callback: Function) {
+              const fromId = data.from as number;
+              const toId = data.to as number;
+
+              const fromName = self.nodeIndecies[fromId];
+              const toName = self.nodeIndecies[toId];
+
+              const fromNode = self.graph!.nodes.find(
+                node => node.name == fromName
+              )!;
+              const toNode = self.graph!.nodes.find(
+                node => node.name === toName
+              )!;
+
+              if (self.timeEdge) {
+                toNode.timeTDependency.parentsTm1.push(fromName);
+              } else {
+                toNode.timeZeroDependency.parents.push(fromName);
+                toNode.timeTDependency.parents.push(fromName);
+              }
+
+              const powerOfTwo = self.findPowerOfTwo(toNode, fromName);
+              if (!self.timeEdge) {
+                self.addToDependencies(toNode.timeZeroDependency, powerOfTwo);
+              }
+
+              self.addToDependencies(toNode.timeTDependency, powerOfTwo);
+              callback(data);
             },
-            color: defaultColor,
-            evidenceFormulaName: null,
-            stateType: {
-              states: ["true", "false"]
+            deleteNode(data: any, callback: Function) {
+              for (let edgeUuid of data.edges as string[]) {
+                const edge = self.edges!.get(edgeUuid);
+                if (!edge) {
+                  break;
+                }
+                const toName = self.nodeIndecies[edge.to as number];
+                const fromName = self.nodeIndecies[edge.from as number];
+
+                const toNode = self.graph!.nodes.find(
+                  node => node.name === toName
+                )!;
+                self.removeDependencies(toNode, fromName);
+              }
+              self.graph!.nodes.splice(
+                self.graph!.nodes.findIndex(
+                  node =>
+                    node.name === self.nodeIndecies[data.nodes[0] as number]
+                ),
+                1
+              );
+              callback(data);
             },
-            position: {
-              x: data.x,
-              y: data.y
+            deleteEdge(data: any, callback: Function) {
+              callback(data);
             }
+          }
+        );
+
+        this.nodeIndecies = nodeIndecies;
+        this.nodes = nodeData;
+        this.edges = edgeData;
+        network = net;
+
+        net.on("selectNode", graph => {
+          const nodeVis = this.nodes!.get(graph.nodes[0], {
+            fields: ["label"]
           });
-          callback(data);
-        },
-        addEdge(data: any, callback: Function) {
-          const fromId = data.from as number;
-          const toId = data.to as number;
-
-          const fromName = self.nodeIndecies[fromId];
-          const toName = self.nodeIndecies[toId];
-
-          const fromNode = self.graph.nodes.find(
-            node => node.name == fromName
+          this.selectedNode = this.graph!.nodes.find(
+            node => node.name == nodeVis!.label
           )!;
-          const toNode = self.graph.nodes.find(node => node.name === toName)!;
+          this.showEditOptions = true;
+        });
 
-          if (self.timeEdge) {
-            toNode.timeTDependency.parentsTm1.push(fromName);
-          } else {
-            toNode.timeZeroDependency.parents.push(fromName);
-            toNode.timeTDependency.parents.push(fromName);
+        net.on("deselectNode", () => {
+          this.selectedNode = null;
+          this.showEditOptions = false;
+        });
+
+        net.on("dragStart", () => {
+          this.showEditOptions = false;
+        });
+
+        net.on("dragEnd", event => {
+          if (!event.nodes.length) {
+            return;
+          }
+          const nodeId = event.nodes[0];
+          const nodeName = this.nodeIndecies[nodeId];
+
+          const node = this.graph!.nodes.find(node => node.name === nodeName);
+          if (!node) {
+            return;
           }
 
-          const powerOfTwo = self.findPowerOfTwo(toNode, fromName);
-          if (!self.timeEdge) {
-            self.addToDependencies(toNode.timeZeroDependency, powerOfTwo);
-          }
-
-          self.addToDependencies(toNode.timeTDependency, powerOfTwo);
-          callback(data);
-        },
-        deleteNode(data: any, callback: Function) {
-          for (let edgeUuid of data.edges as string[]) {
-            const edge = self.edges!.get(edgeUuid);
-            if (!edge) {
-              break;
-            }
-            const toName = self.nodeIndecies[edge.to as number];
-            const fromName = self.nodeIndecies[edge.from as number];
-
-            const toNode = self.graph.nodes.find(node => node.name === toName)!;
-            self.removeDependencies(toNode, fromName);
-          }
-          self.graph.nodes.splice(
-            self.graph.nodes.findIndex(
-              node => node.name === self.nodeIndecies[data.nodes[0] as number]
-            ),
-            1
-          );
-          callback(data);
-        },
-        deleteEdge(data: any, callback: Function) {
-          callback(data);
-        }
-      }
-    );
-
-    this.nodeIndecies = nodeIndecies;
-    this.nodes = nodeData;
-    this.edges = edgeData;
-    network = net;
-
-    net.on("selectNode", () => {
-      this.showEditOptions = true;
-    });
-
-    net.on("deselectNode", () => {
-      this.showEditOptions = false;
-    });
-
-    net.on("dragStart", () => {
-      this.showEditOptions = false;
-    });
-
-    net.on("dragEnd", event => {
-      if (!event.nodes.length) {
-        return;
-      }
-      const nodeId = event.nodes[0];
-      const nodeName = this.nodeIndecies[nodeId];
-
-      const node = this.graph.nodes.find(node => node.name === nodeName);
-      if (!node) {
-        return;
-      }
-
-      const newPosition = network.getPositions(nodeId)[0];
-      node.position = newPosition;
-    });
+          const newPosition = network.getPositions(nodeId)[0];
+          node.position = newPosition;
+        });
+      })
+      .catch(error => {
+        this.errorMessage = error.response.data.message;
+        this.hasError = true;
+      });
   }
 });
 </script>
