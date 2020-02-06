@@ -32,8 +32,8 @@
       >
         <v-col cols="3"> {{ node.stateType.states[i - 1] }}</v-col>
         <v-col
-          v-for="i in Math.pow(2, node.timeZeroDependency.parents.length)"
-          :key="i"
+          v-for="k in Math.pow(2, node.timeZeroDependency.parents.length)"
+          :key="k"
           style="outline-width: 2px;
   outline-style: solid;
   outline-color: black;"
@@ -88,12 +88,12 @@
       >
         <v-col cols="3"> {{ node.stateType.states[i - 1] }}</v-col>
         <v-col
-          v-for="i in Math.pow(
+          v-for="l in Math.pow(
             2,
             node.timeZeroDependency.parents.length +
               node.timeTDependency.parentsTm1.length
           )"
-          :key="i"
+          :key="l"
           style="outline-width: 2px;
   outline-style: solid;
   outline-color: black;"

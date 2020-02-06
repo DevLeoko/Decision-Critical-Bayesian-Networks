@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="open" width="unset">
+    <v-dialog v-model="open" width="600">
       <v-card>
         <v-card-title class="headline primary lighten-3" primary-title>
           <div v-if="properties">
@@ -41,7 +41,13 @@
             >
             <v-btn v-else class="ma-3" @click="Time0 = true">Time 0</v-btn>
           </v-row>
-          <prob-table :node="node" :time0="Time0" />
+          <div style="max-width: 100%; overflow-x: auto">
+            <prob-table
+              :node="node"
+              :time0="Time0"
+              :style="`width: ${Math.pow(2, tableNum) * 150 + 150}px`"
+            />
+          </div>
         </div>
 
         <v-spacer></v-spacer>
@@ -77,6 +83,15 @@ export default Vue.extend({
     },
     changeName(name: any) {
       this.node.name = name;
+    }
+  },
+
+  computed: {
+    tableNum(): number {
+      return this.Time0
+        ? this.node.timeZeroDependency.parents.length
+        : this.node.timeZeroDependency.parents.length +
+            this.node.timeTDependency.parentsTm1.length;
     }
   }
 });
