@@ -166,7 +166,8 @@ export function createEditGraph(
 
     nodes.push({
       id: nodeId,
-      label: node.name
+      label: node.name,
+      ...node.position
     });
 
     edges.push(
@@ -217,7 +218,7 @@ export function createEditGraph(
       arrows: {
         to: {
           enabled: true,
-          scaleFactor: 1,
+          scaleFactor: 0.6,
           type: "arrow"
         }
       }
@@ -227,10 +228,6 @@ export function createEditGraph(
       addEdge: graphManipulationCallbacks.addEdge,
       deleteNode: graphManipulationCallbacks.deleteNode,
       deleteEdge: graphManipulationCallbacks.deleteEdge
-    },
-    layout: {
-      randomSeed: 2,
-      improvedLayout: true
     }
   };
 
