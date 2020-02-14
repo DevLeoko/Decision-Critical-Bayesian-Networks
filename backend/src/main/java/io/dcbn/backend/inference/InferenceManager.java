@@ -104,7 +104,7 @@ public class InferenceManager {
 
         //finding all the temporary child nodes fot the
         List<Variable> tempChildVariables = adaptedGraph.getDbn().getDynamicVariables().getListOfDynamicVariables().stream()
-                .filter(var -> var.getName().substring(0, 9).equals("tempChild"))
+                .filter(var -> var.getName().length() >= 9 && var.getName().substring(0, 9).equals("tempChild"))
                 .collect(Collectors.toList());
 
         //Hiding the variables we want to evaluate during inference calculations
