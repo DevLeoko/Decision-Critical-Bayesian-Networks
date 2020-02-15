@@ -294,7 +294,6 @@ export default Vue.extend({
           this.selectedNode = this.graph!.nodes.find(
             node => node.name == nodeVis!.label
           )!;
-          console.log(this.nodes!.get({ returnType: "Object" }));
           this.showEditOptions = true;
         });
 
