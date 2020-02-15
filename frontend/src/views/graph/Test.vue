@@ -188,26 +188,15 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-#mynetwork {
-  width: 100%;
-  height: 100%;
-  max-height: 100vh;
-  border: 1px solid lightgray;
-}
-</style>
-
 <script lang="ts">
 import TestToolbar from "@/components/graph/TestToolbar.vue";
 import Vue from "vue";
 import vis, { network } from "vis-network";
 
-// TODO fetch actual graph from backend
-import graph from "@/../tests/resources/graph1.json";
-
-import { generateGraphImage, createVisGraph, dcbn } from "../../utils/graph";
-
 import FileDownload from "js-file-download";
+import { dcbn } from "@/utils/graph/graph";
+import { generateStatsSVG } from "@/utils/graph/generateStatsSVG";
+import { createTestGraph } from "@/utils/graph/graphGenerator";
 
 export default Vue.extend({
   components: {
@@ -297,7 +286,7 @@ export default Vue.extend({
 
       this.nodes!.update({
         id,
-        image: generateGraphImage(values, type, entry.virtualEvidence)
+        image: generateStatsSVG(values, type, entry.virtualEvidence)
       });
     },
 
@@ -371,7 +360,7 @@ export default Vue.extend({
       .then(res => {
         this.timeSlices = res.data.timeSlices;
         this.graphName = res.data.name;
-        const { nodeData, nodeIndices, network } = createVisGraph(
+        const { nodeData, nodeIndices, network } = createTestGraph(
           container,
           res.data,
           this.quickSetValues
@@ -409,6 +398,7 @@ export default Vue.extend({
         this.clear();
       })
       .catch(error => {
+        console.log(error);
         this.errorMessage = error.response.data.message;
         this.error = true;
       });

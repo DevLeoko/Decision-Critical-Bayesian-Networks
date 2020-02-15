@@ -34,24 +34,13 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-#mynetwork {
-  width: 100%;
-  height: 100%;
-  border: 1px solid lightgray;
-  max-height: 100vh;
-}
-</style>
-
 <script lang="ts">
 import EditBar from "@/components/graph/EditorToolbar.vue";
 import Vue from "vue";
 import vis, { data } from "vis-network";
 import NodeProperties from "@/components/graph/NodeProperties.vue";
-//Import test Graph
-
-//Get the frontend Graph structure and the constructor
-import { defaultColor, dcbn, createEditGraph } from "../../utils/graph";
+import { dcbn } from "@/utils/graph/graph";
+import { createEditGraph, defaultColor } from "@/utils/graph/graphGenerator";
 
 let network = {} as vis.Network;
 
@@ -185,7 +174,7 @@ export default Vue.extend({
       .then(res => {
         this.graph = res.data as dcbn.Graph;
         const self = this;
-        const { nodeData, edgeData, nodeIndecies, net } = createEditGraph(
+        const result = createEditGraph(
           document.getElementById("mynetwork")!,
           this.graph,
           (nodeId, position) => {
@@ -282,12 +271,12 @@ export default Vue.extend({
           }
         );
 
-        this.nodeIndecies = nodeIndecies;
-        this.nodes = nodeData;
-        this.edges = edgeData;
-        network = net;
+        this.nodeIndecies = result.nodeIndices;
+        this.nodes = result.nodes;
+        this.edges = result.edges;
+        network = result.network;
 
-        net.on("selectNode", graph => {
+        network.on("selectNode", graph => {
           const nodeVis = this.nodes!.get(graph.nodes[0], {
             fields: ["label"]
           });
@@ -298,16 +287,16 @@ export default Vue.extend({
           this.showEditOptions = true;
         });
 
-        net.on("deselectNode", () => {
+        network.on("deselectNode", () => {
           this.selectedNode = null;
           this.showEditOptions = false;
         });
 
-        net.on("dragStart", () => {
+        network.on("dragStart", () => {
           this.showEditOptions = false;
         });
 
-        net.on("dragEnd", event => {
+        network.on("dragEnd", event => {
           if (!event.nodes.length) {
             return;
           }

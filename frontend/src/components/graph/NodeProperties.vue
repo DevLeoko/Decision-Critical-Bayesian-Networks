@@ -63,7 +63,7 @@
 <script lang="ts">
 import Vue from "vue";
 import ProbTable from "@/components/graph/ProbTable.vue";
-import { dcbn } from "../../utils/graph";
+import { dcbn } from "@/utils/graph/graph";
 
 export default Vue.extend({
   data() {
