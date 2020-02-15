@@ -16,20 +16,11 @@
   </v-row>
 </template>
 
-<style lang="scss">
-#mynetwork {
-  width: 100%;
-  height: 100%;
-  border: 1px solid lightgray;
-  max-height: 100vh;
-}
-</style>
-
 <script lang="ts">
 import FolderView from "@/components/graph/FolderView.vue";
+import { dcbn } from "@/utils/graph";
 
 import Vue from "vue";
-import { dcbn } from "@/utils/graph/graph";
 export default Vue.extend({
   components: { FolderView },
   data() {

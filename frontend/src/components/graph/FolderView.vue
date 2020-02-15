@@ -148,7 +148,7 @@ export interface TreeItem {
 
 import Vue from "vue";
 import FolderActions from "@/components/graph/FolderViewActions.vue";
-import { dcbn } from "@/utils/graph/graph";
+import { dcbn } from "../../utils/graph";
 export default Vue.extend({
   props: {
     graphs: Array as () => Array<dcbn.DenseGraph>

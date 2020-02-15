@@ -6,14 +6,25 @@
       @edgeTAdd="addTEdge()"
     />
     <div id="mynetwork" ref="network"></div>
-    <node-action-selector ref="nodeActionSelector">
-      <v-btn tile @click="editProperties = true">
-        Properties
-      </v-btn>
-      <v-btn tile @click="del()">
-        Delete
-      </v-btn>
-    </node-action-selector>
+    <v-menu
+      v-model="showEditOptions"
+      :position-x="x"
+      :position-y="y"
+      :close-on-click="false"
+      absolute
+    >
+      <div class="white">
+        <v-btn tile @click="editProperties = true">
+          Properties
+        </v-btn>
+        <v-btn tile @click="del()">
+          Delete
+        </v-btn>
+        <v-btn icon color="red">
+          <v-icon>close</v-icon>
+        </v-btn>
+      </div>
+    </v-menu>
 
     <node-properties :open.sync="editProperties" :node="selectedNode" />
     <v-snackbar v-model="hasError" color="error" :timeout="5000">
@@ -23,21 +34,30 @@
   </div>
 </template>
 
+<style lang="scss" scoped>
+#mynetwork {
+  width: 100%;
+  height: 100%;
+  border: 1px solid lightgray;
+  max-height: 100vh;
+}
+</style>
+
 <script lang="ts">
 import EditBar from "@/components/graph/EditorToolbar.vue";
-import NodeActionSelector from "@/components/graph/NodeActionSelector.vue";
 import Vue from "vue";
 import vis, { data } from "vis-network";
 import NodeProperties from "@/components/graph/NodeProperties.vue";
-import { dcbn } from "@/utils/graph/graph";
-import { createEditGraph, defaultColor } from "@/utils/graph/graphGenerator";
+//Import test Graph
+
+//Get the frontend Graph structure and the constructor
+import { defaultColor, dcbn, createEditGraph } from "../../utils/graph";
 
 let network = {} as vis.Network;
 
 export default Vue.extend({
   components: {
     EditBar,
-    NodeActionSelector,
     NodeProperties
   },
 
@@ -48,7 +68,9 @@ export default Vue.extend({
       nodes: null as vis.DataSet<vis.Node, "id"> | null,
       nodeIndecies: [] as string[],
       edges: null as vis.DataSet<vis.Edge, "id"> | null,
-
+      showEditOptions: false,
+      x: 0,
+      y: 0,
       activeId: -1,
       editProperties: false,
       timeEdge: false,
@@ -163,9 +185,15 @@ export default Vue.extend({
       .then(res => {
         this.graph = res.data as dcbn.Graph;
         const self = this;
-        const result = createEditGraph(
+        const { nodeData, edgeData, nodeIndecies, net } = createEditGraph(
           document.getElementById("mynetwork")!,
           this.graph,
+          (nodeId, position) => {
+            this.x = position.x + 10;
+            this.y = position.y - 50;
+            this.activeId = nodeId;
+            this.showEditOptions = true;
+          },
           {
             addNode(data: any, callback: Function) {
               self.graph!.nodes.push({
@@ -254,27 +282,31 @@ export default Vue.extend({
           }
         );
 
-        this.nodeIndecies = result.nodeIndices;
-        this.nodes = result.nodes;
-        this.edges = result.edges;
-        network = result.network;
+        this.nodeIndecies = nodeIndecies;
+        this.nodes = nodeData;
+        this.edges = edgeData;
+        network = net;
 
-        (this.$refs.nodeActionSelector as any).register(network);
-
-        network.on("click", graph => {
-          if (graph.nodes[0]) {
-            const nodeVis = this.nodes!.get(graph.nodes[0], {
-              fields: ["label"]
-            })!;
-            this.selectedNode = this.graph!.nodes.find(
-              node => node.name == nodeVis.label
-            )!;
-          } else {
-            this.selectedNode = null;
-          }
+        net.on("selectNode", graph => {
+          const nodeVis = this.nodes!.get(graph.nodes[0], {
+            fields: ["label"]
+          });
+          this.selectedNode = this.graph!.nodes.find(
+            node => node.name == nodeVis!.label
+          )!;
+          this.showEditOptions = true;
         });
 
-        network.on("dragEnd", event => {
+        net.on("deselectNode", () => {
+          this.selectedNode = null;
+          this.showEditOptions = false;
+        });
+
+        net.on("dragStart", () => {
+          this.showEditOptions = false;
+        });
+
+        net.on("dragEnd", event => {
           if (!event.nodes.length) {
             return;
           }
