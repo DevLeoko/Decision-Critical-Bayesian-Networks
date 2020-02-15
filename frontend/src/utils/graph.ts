@@ -157,20 +157,28 @@ export function createEditGraph(
   graphManipulationCallbacks: { [name: string]: Function }
 ) {
   const nodes: Node[] = [];
-  const nodeIndecies: string[] = graph.nodes.map(n => n.name).sort();
   const edges: Edge[] = [];
+  const dcbnNodes: { [uuid: string]: dcbn.Node } = {};
+
+  for (const node of graph.nodes) {
+    const nodeId = vis.util.randomUUID();
+    dcbnNodes[nodeId] = node;
+  }
 
   graph.nodes.forEach(node => {
-    const nodeId = nodeIndecies.indexOf(node.name);
+    const nodeId = Object.keys(dcbnNodes).find(
+      n => node.name === dcbnNodes[n].name
+    )!;
 
     nodes.push({
       id: nodeId,
-      label: node.name
+      label: node.name,
+      ...node.position
     });
 
     edges.push(
       ...(node.timeTDependency.parents as string[]).map(parent => ({
-        from: nodeIndecies.indexOf(parent),
+        from: Object.keys(dcbnNodes).find(key => dcbnNodes[key].name == parent),
         to: nodeId
       }))
     );
@@ -178,7 +186,9 @@ export function createEditGraph(
     edges.push(
       ...(node.timeTDependency.parentsTm1 as string[]).map(
         (parent): Edge => ({
-          from: nodeIndecies.indexOf(parent),
+          from: Object.keys(dcbnNodes).find(
+            key => dcbnNodes[key].name == parent
+          ),
           to: nodeId,
           dashes: true,
           label: "time",
@@ -191,10 +201,11 @@ export function createEditGraph(
   });
 
   const nodeData = new vis.DataSet(nodes);
+  const edgeData = new vis.DataSet(edges);
 
   var data = {
     nodes: nodeData,
-    edges: edges
+    edges: edgeData
   };
 
   var options: vis.Options = {
@@ -213,7 +224,7 @@ export function createEditGraph(
       arrows: {
         to: {
           enabled: true,
-          scaleFactor: 1,
+          scaleFactor: 0.6,
           type: "arrow"
         }
       }
@@ -223,10 +234,6 @@ export function createEditGraph(
       addEdge: graphManipulationCallbacks.addEdge,
       deleteNode: graphManipulationCallbacks.deleteNode,
       deleteEdge: graphManipulationCallbacks.deleteEdge
-    },
-    layout: {
-      randomSeed: 2,
-      improvedLayout: true
     }
   };
 
@@ -241,9 +248,7 @@ export function createEditGraph(
     return false;
   });
 
-  const edgeData = new vis.DataSet(edges);
-
-  return { nodeData, edgeData, nodeIndecies, net };
+  return { nodeData, edgeData, dcbnNodes, net };
 }
 
 export function createVisGraph(

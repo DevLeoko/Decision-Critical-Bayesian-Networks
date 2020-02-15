@@ -27,7 +27,7 @@ public class GraphServiceTest {
 
     private static DcbnUser dcbnUser2 = mock(DcbnUser.class);
 
-    private static final Position ZERO_POSITION = new Position(0, 0);
+    private static final Position ZERO_POSITION = new Position(0.0, 0.0);
     private static final int NUM_TIME_SLICES = 5;
 
     @BeforeAll

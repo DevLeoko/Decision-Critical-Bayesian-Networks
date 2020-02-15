@@ -1,6 +1,7 @@
 <template>
   <div style="max-height: 100%; width: 100% ">
     <edit-bar
+      @save="save()"
       @nodeAdd="addNode()"
       @edgeAdd="addEdge()"
       @edgeTAdd="addTEdge()"
@@ -66,7 +67,7 @@ export default Vue.extend({
       //TODO null problems?
       graph: null as dcbn.Graph | null,
       nodes: null as vis.DataSet<vis.Node, "id"> | null,
-      nodeIndecies: [] as string[],
+      dcbnNodes: {} as { [uuid: string]: dcbn.Node },
       edges: null as vis.DataSet<vis.Edge, "id"> | null,
       showEditOptions: false,
       x: 0,
@@ -82,6 +83,11 @@ export default Vue.extend({
   },
 
   methods: {
+    save() {
+      // TODO: Provide the user with feedback.
+      this.axios.put(`/graphs/${this.$route.params.id}`, this.graph);
+    },
+
     addNode: function() {
       network.addNodeMode;
     },
@@ -172,120 +178,122 @@ export default Vue.extend({
           1
         );
         toNode.timeTDependency.parents.splice(
-          toNode.timeZeroDependency.parents.indexOf(fromName),
+          toNode.timeTDependency.parents.indexOf(fromName),
           1
         );
+      }
+    },
+
+    generateNewNodeName() {
+      const defaultName = "newNode";
+      for (let i = 0; ; i++) {
+        let testName = `${defaultName}${i === 0 ? "" : i}`;
+        if (!this.graph.nodes.filter(node => node.name == testName).length) {
+          return testName;
+        }
       }
     }
   },
 
   mounted() {
-    this.axios
-      .get(`/graphs/${this.$route.params.id}`)
-      .then(res => {
-        this.graph = res.data as dcbn.Graph;
-        const self = this;
-        const { nodeData, edgeData, nodeIndecies, net } = createEditGraph(
-          document.getElementById("mynetwork")!,
-          this.graph,
-          (nodeId, position) => {
-            this.x = position.x + 10;
-            this.y = position.y - 50;
-            this.activeId = nodeId;
-            this.showEditOptions = true;
-          },
-          {
-            addNode(data: any, callback: Function) {
-              self.graph!.nodes.push({
-                type: "Node",
-                name: data.label,
+    this.axios.get(`/graphs/${this.$route.params.id}`).then(resp => {
+      this.graph = resp.data;
+      const self = this;
+      const { nodeData, edgeData, dcbnNodes, net } = createEditGraph(
+        document.getElementById("mynetwork")!,
+        this.graph,
+        (nodeId, position) => {
+          this.x = position.x + 10;
+          this.y = position.y - 50;
+          this.activeId = nodeId;
+          this.showEditOptions = true;
+        },
+        {
+          addNode(data: any, callback: Function) {
+            data.label = self.generateNewNodeName();
+            self.dcbnNodes[data.id] = {
+              type: "Node",
+              name: data.label,
+              id: 0,
+              timeZeroDependency: {
                 id: 0,
-                timeZeroDependency: {
-                  id: 0,
-                  parents: [],
-                  parentsTm1: [],
-                  probabilities: [[0.5, 0.5]]
-                },
-                timeTDependency: {
-                  id: 0,
-                  parents: [],
-                  parentsTm1: [],
-                  probabilities: [[0.5, 0.5]]
-                },
-                color: defaultColor,
-                evidenceFormulaName: null,
-                stateType: {
-                  states: ["true", "false"]
-                },
-                position: {
-                  x: data.x,
-                  y: data.y
-                }
-              });
-              callback(data);
-            },
-            addEdge(data: any, callback: Function) {
-              const fromId = data.from as number;
-              const toId = data.to as number;
-
-              const fromName = self.nodeIndecies[fromId];
-              const toName = self.nodeIndecies[toId];
-
-              const fromNode = self.graph!.nodes.find(
-                node => node.name == fromName
-              )!;
-              const toNode = self.graph!.nodes.find(
-                node => node.name === toName
-              )!;
-
-              if (self.timeEdge) {
-                toNode.timeTDependency.parentsTm1.push(fromName);
-              } else {
-                toNode.timeZeroDependency.parents.push(fromName);
-                toNode.timeTDependency.parents.push(fromName);
+                parents: [],
+                parentsTm1: [],
+                probabilities: [[0.5, 0.5]]
+              },
+              timeTDependency: {
+                id: 0,
+                parents: [],
+                parentsTm1: [],
+                probabilities: [[0.5, 0.5]]
+              },
+              color: defaultColor,
+              evidenceFormulaName: null,
+              stateType: {
+                states: ["true", "false"]
+              },
+              position: {
+                x: data.x,
+                y: data.y
               }
+            };
+            self.graph.nodes.push(self.dcbnNodes[data.id]);
+            callback(data);
+          },
+          addEdge(data: any, callback: Function) {
+            const fromId = data.from as number;
+            const toId = data.to as number;
 
-              const powerOfTwo = self.findPowerOfTwo(toNode, fromName);
-              if (!self.timeEdge) {
-                self.addToDependencies(toNode.timeZeroDependency, powerOfTwo);
-              }
+            const fromName = self.dcbnNodes[fromId].name;
+            const toNode = self.dcbnNodes[toId];
 
-              self.addToDependencies(toNode.timeTDependency, powerOfTwo);
-              callback(data);
-            },
-            deleteNode(data: any, callback: Function) {
-              for (let edgeUuid of data.edges as string[]) {
-                const edge = self.edges!.get(edgeUuid);
-                if (!edge) {
-                  break;
-                }
-                const toName = self.nodeIndecies[edge.to as number];
-                const fromName = self.nodeIndecies[edge.from as number];
-
-                const toNode = self.graph!.nodes.find(
-                  node => node.name === toName
-                )!;
-                self.removeDependencies(toNode, fromName);
-              }
-              self.graph!.nodes.splice(
-                self.graph!.nodes.findIndex(
-                  node =>
-                    node.name === self.nodeIndecies[data.nodes[0] as number]
-                ),
-                1
-              );
-              callback(data);
-            },
-            deleteEdge(data: any, callback: Function) {
-              callback(data);
+            if (self.timeEdge) {
+              toNode.timeTDependency.parentsTm1.push(fromName);
+            } else {
+              toNode.timeZeroDependency.parents.push(fromName);
+              toNode.timeTDependency.parents.push(fromName);
             }
-          }
-        );
 
-        this.nodeIndecies = nodeIndecies;
-        this.nodes = nodeData;
-        this.edges = edgeData;
-        network = net;
+            const powerOfTwo = self.findPowerOfTwo(toNode, fromName);
+            if (!self.timeEdge) {
+              self.addToDependencies(toNode.timeZeroDependency, powerOfTwo);
+            }
+
+            self.addToDependencies(toNode.timeTDependency, powerOfTwo);
+            callback(data);
+          },
+          deleteNode(data: any, callback: Function) {
+            for (let edgeUuid of data.edges as string[]) {
+              const edge = self.edges!.get(edgeUuid);
+
+              if (!edge) {
+                break;
+              }
+              const toNode = self.dcbnNodes[edge.to as string];
+              const fromName = self.dcbnNodes[edge.from as string].name;
+
+              self.removeDependencies(toNode, fromName);
+            }
+            self.graph.nodes.splice(
+              self.graph.nodes.findIndex(
+                node =>
+                  node.name === self.dcbnNodes[data.nodes[0] as string].name
+              ),
+              1
+            );
+            delete self.dcbnNodes[data.label];
+            callback(data);
+          },
+          deleteEdge(data: any, callback: Function) {
+            callback(data);
+          }
+        }
+      );
+
+      this.dcbnNodes = dcbnNodes;
+      this.nodes = nodeData;
+      this.edges = edgeData;
+      network = net;
 
         net.on("selectNode", graph => {
           const nodeVis = this.nodes!.get(graph.nodes[0], {
@@ -313,13 +321,8 @@ export default Vue.extend({
           const nodeId = event.nodes[0];
           const nodeName = this.nodeIndecies[nodeId];
 
-          const node = this.graph!.nodes.find(node => node.name === nodeName);
-          if (!node) {
-            return;
-          }
-
-          const newPosition = network.getPositions(nodeId)[0];
-          node.position = newPosition;
+        const newPosition = network.getPositions(nodeId)[nodeId];
+        node.position = newPosition;
         });
       })
       .catch(error => {
