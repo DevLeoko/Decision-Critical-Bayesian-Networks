@@ -47,7 +47,7 @@
 <script lang="ts">
 import Vue from "vue";
 import CptContainer from "@/components/graph/CptContainer.vue";
-import { dcbn } from "../../utils/graph";
+import { dcbn } from "@/utils/graph/graph";
 
 export default Vue.extend({
   data() {

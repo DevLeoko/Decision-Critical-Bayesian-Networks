@@ -9,47 +9,37 @@
       :presentValues="this.presentValues"
     />
     <div id="mynetwork" ref="network"></div>
-    <v-menu
-      v-model="showNodeAction"
-      :position-x="x"
-      :position-y="y"
-      :close-on-click="false"
-      absolute
-      top
-    >
-      <div class="white">
-        <v-btn
-          tile
-          @click="
-            if (presentValues[activeId].virtualEvidence === null) {
-              virtualSync = 0; // force watcher to pick up update
-              virtualSync = 0.5;
-            }
-            virtualEvidenceOpen = true;
-          "
-          >Virtual Evidence</v-btn
-        >
-        <v-btn
-          tile
-          @click="
-            if (!presentValues[activeId].evidences.length)
-              presentValues[activeId].evidences = new Array(timeSlices).fill(
-                false
-              );
-            binaryEvidenceOpen = true;
-          "
-        >
-          Binary Evidences
-        </v-btn>
-        <v-btn
-          tile
-          @click="valuesOpen = true"
-          v-if="activeId !== -1 && presentValues[activeId].computed.length"
-          >Values</v-btn
-        >
-        <v-btn icon color="red"><v-icon>close</v-icon></v-btn>
-      </div>
-    </v-menu>
+    <node-action-selector ref="nodeActionSelector">
+      <v-btn
+        tile
+        @click="
+          if (presentValues[activeId].virtualEvidence === null) {
+            virtualSync = 0; // force watcher to pick up update
+            virtualSync = 0.5;
+          }
+          virtualEvidenceOpen = true;
+        "
+        >Virtual Evidence</v-btn
+      >
+      <v-btn
+        tile
+        @click="
+          if (!presentValues[activeId].evidences.length)
+            presentValues[activeId].evidences = new Array(timeSlices).fill(
+              false
+            );
+          binaryEvidenceOpen = true;
+        "
+      >
+        Binary Evidences
+      </v-btn>
+      <v-btn
+        tile
+        @click="valuesOpen = true"
+        v-if="activeId !== -1 && presentValues[activeId].computed.length"
+        >Values</v-btn
+      >
+    </node-action-selector>
 
     <v-dialog v-model="virtualEvidenceOpen" width="500" v-if="activeId !== -1">
       <v-card>
@@ -188,30 +178,21 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-#mynetwork {
-  width: 100%;
-  height: 100%;
-  max-height: 100vh;
-  border: 1px solid lightgray;
-}
-</style>
-
 <script lang="ts">
 import TestToolbar from "@/components/graph/TestToolbar.vue";
+import NodeActionSelector from "@/components/graph/NodeActionSelector.vue";
 import Vue from "vue";
 import vis, { network } from "vis-network";
 
-// TODO fetch actual graph from backend
-import graph from "@/../tests/resources/graph1.json";
-
-import { generateGraphImage, createVisGraph, dcbn } from "../../utils/graph";
-
 import FileDownload from "js-file-download";
+import { dcbn } from "@/utils/graph/graph";
+import { generateStatsSVG } from "@/utils/graph/generateStatsSVG";
+import { createTestGraph } from "@/utils/graph/graphGenerator";
 
 export default Vue.extend({
   components: {
-    TestToolbar
+    TestToolbar,
+    NodeActionSelector
   },
 
   data() {
@@ -220,9 +201,6 @@ export default Vue.extend({
       graphName: "",
       nodes: null as vis.data.DataSet<vis.Node, "id"> | null,
       nodeIndices: [] as string[],
-      showNodeAction: false,
-      x: 0,
-      y: 0,
 
       virtualSync: 0,
 
@@ -255,8 +233,6 @@ export default Vue.extend({
     },
 
     quickSetValues(nodeId: number, upper: boolean) {
-      this.showNodeAction = false;
-
       const desiredValue = new Array(this.timeSlices).fill(upper);
 
       const resetAction =
@@ -297,7 +273,7 @@ export default Vue.extend({
 
       this.nodes!.update({
         id,
-        image: generateGraphImage(values, type, entry.virtualEvidence)
+        image: generateStatsSVG(values, type, entry.virtualEvidence)
       });
     },
 
@@ -371,37 +347,14 @@ export default Vue.extend({
       .then(res => {
         this.timeSlices = res.data.timeSlices;
         this.graphName = res.data.name;
-        const { nodeData, nodeIndices, network } = createVisGraph(
+        const { nodeData, nodeIndices, network } = createTestGraph(
           container,
           res.data,
           this.quickSetValues
         );
 
-        network.on("click", param => {
-          const nodeId = param.nodes[0];
-
-          if (nodeId !== undefined) {
-            const boundingBox = network.getBoundingBox(nodeId);
-            const position = network.canvasToDOM({
-              x: boundingBox.left,
-              y: boundingBox.top
-            });
-            const containerPos = container.getBoundingClientRect() as DOMRect;
-            this.x = containerPos.x + position.x;
-            this.y = containerPos.y + position.y;
-            this.activeId = nodeId;
-            this.showNodeAction = true;
-          } else {
-            this.showNodeAction = false;
-          }
-        });
-
-        network.on("dragStart", () => {
-          this.showNodeAction = false;
-        });
-        network.on("zoom", () => {
-          this.showNodeAction = false;
-        });
+        (this.$refs.nodeActionSelector as any).register(network);
+        network.on("click", param => (this.activeId = param.nodes[0] || -1));
 
         this.nodes = nodeData;
         this.nodeIndices = nodeIndices;
