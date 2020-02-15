@@ -107,7 +107,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { dcbn } from "@/utils/graph/graph";
+import { dcbn } from "../../utils/graph";
 
 export default Vue.extend({
   props: {
