@@ -6,25 +6,14 @@
       @edgeTAdd="addTEdge()"
     />
     <div id="mynetwork" ref="network"></div>
-    <v-menu
-      v-model="showEditOptions"
-      :position-x="x"
-      :position-y="y"
-      :close-on-click="false"
-      absolute
-    >
-      <div class="white">
-        <v-btn tile @click="editProperties = true">
-          Properties
-        </v-btn>
-        <v-btn tile @click="del()">
-          Delete
-        </v-btn>
-        <v-btn icon color="red">
-          <v-icon>close</v-icon>
-        </v-btn>
-      </div>
-    </v-menu>
+    <node-action-selector ref="nodeActionSelector">
+      <v-btn tile @click="editProperties = true">
+        Properties
+      </v-btn>
+      <v-btn tile @click="del()">
+        Delete
+      </v-btn>
+    </node-action-selector>
 
     <node-properties :open.sync="editProperties" :node="selectedNode" />
     <v-snackbar v-model="hasError" color="error" :timeout="5000">
@@ -36,6 +25,7 @@
 
 <script lang="ts">
 import EditBar from "@/components/graph/EditorToolbar.vue";
+import NodeActionSelector from "@/components/graph/NodeActionSelector.vue";
 import Vue from "vue";
 import vis, { data } from "vis-network";
 import NodeProperties from "@/components/graph/NodeProperties.vue";
@@ -47,6 +37,7 @@ let network = {} as vis.Network;
 export default Vue.extend({
   components: {
     EditBar,
+    NodeActionSelector,
     NodeProperties
   },
 
@@ -57,9 +48,7 @@ export default Vue.extend({
       nodes: null as vis.DataSet<vis.Node, "id"> | null,
       nodeIndecies: [] as string[],
       edges: null as vis.DataSet<vis.Edge, "id"> | null,
-      showEditOptions: false,
-      x: 0,
-      y: 0,
+
       activeId: -1,
       editProperties: false,
       timeEdge: false,
@@ -177,12 +166,6 @@ export default Vue.extend({
         const result = createEditGraph(
           document.getElementById("mynetwork")!,
           this.graph,
-          (nodeId, position) => {
-            this.x = position.x + 10;
-            this.y = position.y - 50;
-            this.activeId = nodeId;
-            this.showEditOptions = true;
-          },
           {
             addNode(data: any, callback: Function) {
               self.graph!.nodes.push({
@@ -276,24 +259,19 @@ export default Vue.extend({
         this.edges = result.edges;
         network = result.network;
 
-        network.on("selectNode", graph => {
-          const nodeVis = this.nodes!.get(graph.nodes[0], {
-            fields: ["label"]
-          });
-          this.selectedNode = this.graph!.nodes.find(
-            node => node.name == nodeVis!.label
-          )!;
-          console.log(this.nodes!.get({ returnType: "Object" }));
-          this.showEditOptions = true;
-        });
+        (this.$refs.nodeActionSelector as any).register(network);
 
-        network.on("deselectNode", () => {
-          this.selectedNode = null;
-          this.showEditOptions = false;
-        });
-
-        network.on("dragStart", () => {
-          this.showEditOptions = false;
+        network.on("click", graph => {
+          if (graph.nodes[0]) {
+            const nodeVis = this.nodes!.get(graph.nodes[0], {
+              fields: ["label"]
+            })!;
+            this.selectedNode = this.graph!.nodes.find(
+              node => node.name == nodeVis.label
+            )!;
+          } else {
+            this.selectedNode = null;
+          }
         });
 
         network.on("dragEnd", event => {

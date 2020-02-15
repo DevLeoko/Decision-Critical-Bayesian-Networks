@@ -7,7 +7,6 @@ export const defaultColor = "#67809f";
 export function createEditGraph(
   container: HTMLElement,
   graph: dcbn.Graph,
-  nodeSelect: (nodeId: number, position: { x: number; y: number }) => void,
   graphManipulationCallbacks: { [name: string]: Function }
 ) {
   var options: vis.Options = {
@@ -21,18 +20,7 @@ export function createEditGraph(
     manipulation: graphManipulationCallbacks
   };
 
-  const result = createGraph(container, graph, options);
-
-  result.network.on("selectNode", param => {
-    param.event.preventDefault();
-    param.event.srcEvent.stopPropagation();
-    param.event.srcEvent.preventDefault();
-    nodeSelect(param.nodes[0], param.event.center);
-
-    return false;
-  });
-
-  return result;
+  return createGraph(container, graph, options);
 }
 
 export function createTestGraph(
