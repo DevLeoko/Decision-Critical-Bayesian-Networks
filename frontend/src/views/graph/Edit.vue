@@ -89,7 +89,7 @@ export default Vue.extend({
     },
 
     addNode: function() {
-      network.addNodeMode;
+      network.addNodeMode();
     },
 
     del: function() {
