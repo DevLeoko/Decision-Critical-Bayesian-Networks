@@ -7,14 +7,20 @@
       @edgeTAdd="addTEdge()"
     />
     <div id="mynetwork" ref="network"></div>
-    <node-action-selector ref="nodeActionSelector">
+    <action-selector ref="nodeActionSelector">
       <v-btn tile @click="editProperties = true">
         Properties
       </v-btn>
       <v-btn tile @click="deleteNode()">
         Delete
       </v-btn>
-    </node-action-selector>
+    </action-selector>
+
+    <action-selector ref="edgeActionSelector" isEdgeSelector>
+      <v-btn tile @click="deleteEdge()">
+        Delete
+      </v-btn>
+    </action-selector>
 
     <node-properties :open.sync="editProperties" :node="selectedNode" />
     <v-snackbar v-model="hasError" color="error" :timeout="5000">
@@ -27,8 +33,8 @@
 <script lang="ts">
 import EditBar from "@/components/graph/EditorToolbar.vue";
 import Vue from "vue";
-import vis, { data } from "vis-network";
-import NodeActionSelector from "@/components/graph/NodeActionSelector.vue";
+import vis, { data, Edge } from "vis-network";
+import ActionSelector from "@/components/graph/ActionSelector.vue";
 import NodeProperties from "@/components/graph/NodeProperties.vue";
 import { dcbn } from "@/utils/graph/graph";
 import {
@@ -44,7 +50,7 @@ export default Vue.extend({
   components: {
     EditBar,
     NodeProperties,
-    NodeActionSelector
+    ActionSelector
   },
 
   data() {
@@ -88,6 +94,10 @@ export default Vue.extend({
       network.addEdgeMode();
     },
 
+    deleteEdge() {
+      network.deleteSelected();
+    },
+
     findPowerOfTwo(toNode: dcbn.Node, nodeName: string): number {
       const totalList = Object.assign(
         [],
@@ -117,13 +127,14 @@ export default Vue.extend({
       }
     },
 
-    removeDependencies(toNode: dcbn.Node, fromName: string) {
+    removeDependencies(
+      toNode: dcbn.Node,
+      fromName: string,
+      isTimeDependency: boolean = false
+    ) {
       if (!toNode) {
         return;
       }
-      const isTimeDependency =
-        toNode.timeTDependency.parentsTm1.includes(fromName) &&
-        !toNode.timeTDependency.parents.includes(fromName);
 
       const powerOfTwo = this.findPowerOfTwo(toNode, fromName);
       if (!isTimeDependency) {
@@ -247,6 +258,12 @@ export default Vue.extend({
     },
 
     deleteEdgeFromGraph(data: any, callback: Function) {
+      const edge = this.edges!.get(data.edges[0] as string)!;
+      const fromName = this.nodeMap.get(edge.from as string)!.name;
+      const toNode = this.nodeMap.get(edge.to as string)!;
+
+      // TODO: Maybe find a better way to determine time edges.
+      this.removeDependencies(toNode, fromName, edge.dashes as boolean);
       callback(data);
     }
   },
@@ -274,6 +291,7 @@ export default Vue.extend({
         network = result.network;
 
         (this.$refs.nodeActionSelector as any).register(network);
+        (this.$refs.edgeActionSelector as any).register(network);
 
         network.on("click", graph => {
           if (graph.nodes[0]) {
@@ -287,10 +305,10 @@ export default Vue.extend({
           if (!event.nodes.length) {
             return;
           }
-          const nodeId = event.nodes[0];
+          const nodeId = event.nodes[0] as string;
           const node = this.nodeMap.get(nodeId)!;
 
-          const newPosition = network.getPositions(nodeId)[0];
+          const newPosition = network.getPositions([nodeId])[nodeId];
           node.position = newPosition;
         });
       })
