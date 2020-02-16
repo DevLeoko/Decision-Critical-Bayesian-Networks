@@ -90,12 +90,6 @@ export default Vue.extend({
 
     addEdge: function() {
       this.timeEdge = false;
-      var options = {
-        edges: {
-          label: " "
-        }
-      };
-      network.setOptions(options);
       network.addEdgeMode();
     },
     addTEdge: function() {
@@ -241,10 +235,12 @@ export default Vue.extend({
 
               self.addToDependencies(toNode.timeTDependency, powerOfTwo);
 
-              data = {
-                ...data,
-                ...timeEdgeOptions
-              };
+              if (self.timeEdge) {
+                data = {
+                  ...data,
+                  ...timeEdgeOptions
+                };
+              }
               callback(data);
             },
 
