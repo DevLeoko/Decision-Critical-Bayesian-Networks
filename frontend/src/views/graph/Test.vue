@@ -178,15 +178,6 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-#mynetwork {
-  width: 100%;
-  height: 100%;
-  max-height: 100vh;
-  border: 1px solid lightgray;
-}
-</style>
-
 <script lang="ts">
 import TestToolbar from "@/components/graph/TestToolbar.vue";
 import NodeActionSelector from "@/components/graph/NodeActionSelector.vue";

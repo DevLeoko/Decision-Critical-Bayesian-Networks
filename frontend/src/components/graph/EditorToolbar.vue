@@ -19,7 +19,12 @@
     <v-text-field class="ml-3" outlined dense label="Timesteps"></v-text-field>
 
     <v-spacer></v-spacer>
-    <v-btn small color="primary" class="ml-3">Switch to Testenvironment</v-btn>
+    <v-btn
+      small
+      color="primary lighten-2"
+      @click="$router.push({ name: 'Test Graph' })"
+      >Switch to Testenvironment</v-btn
+    >
   </v-toolbar>
 </template>
 

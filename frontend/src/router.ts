@@ -53,7 +53,6 @@ export default new Router({
       component: () => import("./views/graph/Index.vue")
     },
     {
-      name: "Graph",
       path: "/graph/:id",
       component: () => import("./views/graph/Index.vue"),
       children: [
