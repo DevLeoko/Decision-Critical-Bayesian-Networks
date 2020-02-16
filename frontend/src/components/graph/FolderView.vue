@@ -41,6 +41,7 @@
       <v-treeview
         :items="treeItems"
         :search="search"
+        :active="active"
         @update:active="arr => selectGraph(arr[0])"
         activatable
         open-on-click
@@ -156,6 +157,11 @@ export default Vue.extend({
 
   components: { FolderActions },
   data() {
+    let active: number[] = [];
+    if (this.$route.params && this.$route.params.id) {
+      active = [this.$route.params.id as any];
+    }
+
     return {
       search: null,
       menu: true,
@@ -164,7 +170,8 @@ export default Vue.extend({
       error: "",
       successBar: false,
       successMessage: "",
-      loading: false
+      loading: false,
+      active: active
     };
   },
 
@@ -257,10 +264,12 @@ export default Vue.extend({
         targetRoute = "GraphBase";
       }
 
-      this.$router.push({
-        name: targetRoute,
-        params: { id }
-      });
+      if (this.$route.params && this.$route.params.id != id) {
+        this.$router.push({
+          name: targetRoute,
+          params: { id }
+        });
+      }
     },
 
     exportGraph(graph: dcbn.DenseGraph) {
@@ -317,6 +326,14 @@ export default Vue.extend({
         if (!this.graphs.filter(graph => graph.name == testName).length) {
           return testName;
         }
+      }
+    }
+  },
+
+  watch: {
+    treeItems() {
+      if (this.$route.params && this.$route.params.id) {
+        this.active = [this.$route.params.id as any];
       }
     }
   },

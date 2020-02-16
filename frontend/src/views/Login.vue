@@ -91,7 +91,9 @@ export default Vue.extend({
   },
 
   methods: {
-    submit() {
+    submit(event: Event) {
+      event.preventDefault();
+
       this.loading = true;
 
       console.log(this.axios);
@@ -106,7 +108,7 @@ export default Vue.extend({
           this.$store.dispatch("setUser", res.data.user);
 
           this.$router.push({
-            name: "Graph"
+            name: "Test Graph"
           });
         })
         .catch(err => {

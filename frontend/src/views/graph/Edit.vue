@@ -24,15 +24,6 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-#mynetwork {
-  width: 100%;
-  height: 100%;
-  border: 1px solid lightgray;
-  max-height: 100vh;
-}
-</style>
-
 <script lang="ts">
 import EditBar from "@/components/graph/EditorToolbar.vue";
 import Vue from "vue";
