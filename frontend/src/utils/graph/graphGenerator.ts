@@ -1,6 +1,7 @@
 import vis, { Edge, Node } from "vis-network";
 import { generateStatsSVG } from "./generateStatsSVG";
 import { dcbn } from "./graph";
+import NodeMap from "../nodeMap";
 
 export const defaultColor = "#67809f";
 
@@ -26,21 +27,26 @@ export function createEditGraph(
 export function createTestGraph(
   container: HTMLElement,
   graph: dcbn.Graph,
-  actionCallback: (nodeId: number, upper: boolean) => void
+  actionCallback: (nodeId: string, upper: boolean) => void
 ) {
-  const { network, nodeIndices, nodes } = createGraph(container, graph, {
+  const { network, nodeMap, nodes } = createGraph(container, graph, {
     nodes: { image: generateStatsSVG(undefined), shape: "image" }
   });
 
   network.on("doubleClick", param => {
-    const nodeId: number = param.nodes[0];
+    const nodeId: string = param.nodes[0];
     const upper =
       network.getPositions([nodeId])[nodeId].y > param.pointer.canvas.y;
 
     actionCallback(nodeId, upper);
   });
 
-  return { nodeData: nodes, nodeIndices, network };
+  const nodeIndices = nodeMap
+    .nodes()
+    .map(node => node.name)
+    .sort((a, b) => a.localeCompare(b));
+
+  return { nodeData: nodes, nodeIndices, nodeMap, network };
 }
 
 export function createGraph(
@@ -49,11 +55,16 @@ export function createGraph(
   options: vis.Options
 ) {
   const nodes: Node[] = [];
-  const nodeIndices: string[] = graph.nodes.map(n => n.name).sort();
   const edges: Edge[] = [];
+  const nodeMap = new NodeMap();
+
+  for (const node of graph.nodes) {
+    const nodeId = vis.util.randomUUID();
+    nodeMap.put(nodeId, node);
+  }
 
   graph.nodes.forEach(node => {
-    const nodeId = nodeIndices.indexOf(node.name);
+    const nodeId = nodeMap.getUuidFromName(node.name);
 
     nodes.push({
       id: nodeId,
@@ -63,7 +74,7 @@ export function createGraph(
 
     edges.push(
       ...(node.timeTDependency.parents as string[]).map(parent => ({
-        from: nodeIndices.indexOf(parent),
+        from: nodeMap.getUuidFromName(parent),
         to: nodeId
       }))
     );
@@ -71,7 +82,7 @@ export function createGraph(
     edges.push(
       ...(node.timeTDependency.parentsTm1 as string[]).map(
         (parent): Edge => ({
-          from: nodeIndices.indexOf(parent),
+          from: nodeMap.getUuidFromName(parent),
           to: nodeId,
           dashes: true,
           label: "time",
@@ -111,5 +122,5 @@ export function createGraph(
 
   const network = new vis.Network(container, data, baseOptions);
 
-  return { network, nodeIndices, ...data };
+  return { network, nodeMap, ...data };
 }

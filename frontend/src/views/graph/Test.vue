@@ -188,6 +188,7 @@ import FileDownload from "js-file-download";
 import { dcbn } from "@/utils/graph/graph";
 import { generateStatsSVG } from "@/utils/graph/generateStatsSVG";
 import { createTestGraph } from "@/utils/graph/graphGenerator";
+import NodeMap from "../../utils/nodeMap";
 
 export default Vue.extend({
   components: {
@@ -199,7 +200,8 @@ export default Vue.extend({
     return {
       timeSlices: 0,
       graphName: "",
-      nodes: null as vis.data.DataSet<vis.Node, "id"> | null,
+      nodes: {} as vis.data.DataSet<vis.Node>,
+      nodeMap: new NodeMap(),
       nodeIndices: [] as string[],
 
       virtualSync: 0,
@@ -232,8 +234,10 @@ export default Vue.extend({
       });
     },
 
-    quickSetValues(nodeId: number, upper: boolean) {
+    quickSetValues(uuid: string, upper: boolean) {
       const desiredValue = new Array(this.timeSlices).fill(upper);
+      const nodeName = this.nodeMap.get(uuid)!.name;
+      const nodeId = this.nodeIndices.indexOf(nodeName);
 
       const resetAction =
         this.presentValues[nodeId].evidences.length &&
@@ -272,7 +276,7 @@ export default Vue.extend({
       }
 
       this.nodes!.update({
-        id,
+        id: this.nodeMap.getUuidFromName(this.nodeIndices[id]),
         image: generateStatsSVG(values, type, entry.virtualEvidence)
       });
     },
@@ -347,17 +351,23 @@ export default Vue.extend({
       .then(res => {
         this.timeSlices = res.data.timeSlices;
         this.graphName = res.data.name;
-        const { nodeData, nodeIndices, network } = createTestGraph(
+        const { nodeData, nodeIndices, nodeMap, network } = createTestGraph(
           container,
           res.data,
           this.quickSetValues
         );
 
         (this.$refs.nodeActionSelector as any).register(network);
-        network.on("click", param => (this.activeId = param.nodes[0] || -1));
+        network.on("click", param => {
+          const node = this.nodeMap.get(param.nodes[0]);
+          if (!node) return;
+          this.activeId =
+            this.nodeIndices.findIndex(name => name === node.name) || -1;
+        });
 
         this.nodes = nodeData;
         this.nodeIndices = nodeIndices;
+        this.nodeMap = nodeMap;
 
         this.clear();
       })

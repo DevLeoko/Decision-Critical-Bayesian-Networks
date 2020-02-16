@@ -14,13 +14,7 @@
     <v-select class="ml-3" outlined flat dense></v-select>
     <v-btn small color="primary" class="ml-3"> <v-icon>undo</v-icon></v-btn>
     <v-btn small color="primary" class="ml-3"> <v-icon>redo</v-icon></v-btn>
-    <v-text-field
-      class="ml-3"
-      outlined
-      dense
-      label="Timesteps"
-      v-model="value"
-    ></v-text-field>
+    <v-text-field class="ml-3" outlined dense label="Timesteps"></v-text-field>
 
     <v-spacer></v-spacer>
     <v-btn small color="primary" class="ml-3">Switch to Testenvironment</v-btn>

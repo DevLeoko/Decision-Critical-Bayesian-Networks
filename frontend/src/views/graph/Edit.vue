@@ -31,6 +31,7 @@ import vis, { data } from "vis-network";
 import NodeProperties from "@/components/graph/NodeProperties.vue";
 import { dcbn } from "@/utils/graph/graph";
 import { createEditGraph, defaultColor } from "@/utils/graph/graphGenerator";
+import NodeMap from "../../utils/nodeMap";
 
 let network = {} as vis.Network;
 
@@ -44,16 +45,16 @@ export default Vue.extend({
   data() {
     return {
       //TODO null problems?
-      graph: null as dcbn.Graph | null,
-      nodes: null as vis.DataSet<vis.Node, "id"> | null,
-      nodeIndecies: [] as string[],
-      edges: null as vis.DataSet<vis.Edge, "id"> | null,
+      graph: {} as dcbn.Graph,
+      nodes: {} as vis.DataSet<vis.Node>,
+      edges: {} as vis.DataSet<vis.Edge>,
+      nodeMap: new NodeMap(),
 
       activeId: -1,
       editProperties: false,
       timeEdge: false,
       //TODO replace with $emit?
-      selectedNode: null as dcbn.Node | null,
+      selectedNode: {} as dcbn.Node,
       hasError: false,
       errorMessage: ""
     };
@@ -61,7 +62,7 @@ export default Vue.extend({
 
   methods: {
     addNode: function() {
-      network.addNodeMode;
+      network.addNodeMode();
     },
 
     del: function() {
@@ -168,7 +169,7 @@ export default Vue.extend({
           this.graph,
           {
             addNode(data: any, callback: Function) {
-              self.graph!.nodes.push({
+              const node = {
                 type: "Node",
                 name: data.label,
                 id: 0,
@@ -193,22 +194,18 @@ export default Vue.extend({
                   x: data.x,
                   y: data.y
                 }
-              });
+              };
+              self.nodeMap.put(data.id, node);
+              self.graph.nodes.push(node);
+
               callback(data);
             },
             addEdge(data: any, callback: Function) {
-              const fromId = data.from as number;
-              const toId = data.to as number;
+              const fromId = data.from as string;
+              const toId = data.to as string;
 
-              const fromName = self.nodeIndecies[fromId];
-              const toName = self.nodeIndecies[toId];
-
-              const fromNode = self.graph!.nodes.find(
-                node => node.name == fromName
-              )!;
-              const toNode = self.graph!.nodes.find(
-                node => node.name === toName
-              )!;
+              const fromName = self.nodeMap.get(fromId)!.name;
+              const toNode = self.nodeMap.get(toId)!;
 
               if (self.timeEdge) {
                 toNode.timeTDependency.parentsTm1.push(fromName);
@@ -223,38 +220,41 @@ export default Vue.extend({
               }
 
               self.addToDependencies(toNode.timeTDependency, powerOfTwo);
+
               callback(data);
             },
+
             deleteNode(data: any, callback: Function) {
               for (let edgeUuid of data.edges as string[]) {
                 const edge = self.edges!.get(edgeUuid);
                 if (!edge) {
                   break;
                 }
-                const toName = self.nodeIndecies[edge.to as number];
-                const fromName = self.nodeIndecies[edge.from as number];
+                const toNode = self.nodeMap.get(edge.to as string)!;
+                const fromName = self.nodeMap.get(edge.from as string)!.name;
 
-                const toNode = self.graph!.nodes.find(
-                  node => node.name === toName
-                )!;
                 self.removeDependencies(toNode, fromName);
               }
               self.graph!.nodes.splice(
                 self.graph!.nodes.findIndex(
                   node =>
-                    node.name === self.nodeIndecies[data.nodes[0] as number]
+                    node.name ===
+                    self.nodeMap.get(data.nodes[0] as string)!.name
                 ),
                 1
               );
+
+              self.nodeMap.remove(data.nodes[0] as string);
               callback(data);
             },
+
             deleteEdge(data: any, callback: Function) {
               callback(data);
             }
           }
         );
 
-        this.nodeIndecies = result.nodeIndices;
+        this.nodeMap = result.nodeMap;
         this.nodes = result.nodes;
         this.edges = result.edges;
         network = result.network;
@@ -263,14 +263,9 @@ export default Vue.extend({
 
         network.on("click", graph => {
           if (graph.nodes[0]) {
-            const nodeVis = this.nodes!.get(graph.nodes[0], {
-              fields: ["label"]
-            })!;
-            this.selectedNode = this.graph!.nodes.find(
-              node => node.name == nodeVis.label
-            )!;
+            this.selectedNode = this.nodeMap.get(graph.nodes[0])!;
           } else {
-            this.selectedNode = null;
+            this.selectedNode = {} as dcbn.Node;
           }
         });
 
@@ -279,12 +274,7 @@ export default Vue.extend({
             return;
           }
           const nodeId = event.nodes[0];
-          const nodeName = this.nodeIndecies[nodeId];
-
-          const node = this.graph!.nodes.find(node => node.name === nodeName);
-          if (!node) {
-            return;
-          }
+          const node = this.nodeMap.get(nodeId)!;
 
           const newPosition = network.getPositions(nodeId)[0];
           node.position = newPosition;

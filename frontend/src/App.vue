@@ -21,8 +21,8 @@ export default Vue.extend({
 
   async created() {
     if (this.$store.state.isUserLoggedIn) {
-      const user = (await this.axios.post("/refreshAccount")).data.user;
-      this.$store.dispatch("setUser", user);
+      /*const user = (await this.axios.post("/refreshAccount")).data.user;
+      this.$store.dispatch("setUser", user);*/
     } else {
       if (!this.$route.meta.unauthorized) {
         this.$router.push({
