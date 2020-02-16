@@ -107,7 +107,8 @@ public class GraphController {
 
         Graph oldGraph = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        oldGraph.setNodes(graph.getNodes());
+        oldGraph.getNodes().clear();
+        oldGraph.getNodes().addAll(graph.getNodes());
         oldGraph.setName(graph.getName());
         oldGraph.setTimeSlices(graph.getTimeSlices());
         repository.save(oldGraph);

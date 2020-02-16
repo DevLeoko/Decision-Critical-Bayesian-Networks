@@ -148,7 +148,7 @@ export interface TreeItem {
 
 import Vue from "vue";
 import FolderActions from "@/components/graph/FolderViewActions.vue";
-import { dcbn } from "../../utils/graph";
+import { dcbn } from "@/utils/graph/graph";
 export default Vue.extend({
   props: {
     graphs: Array as () => Array<dcbn.DenseGraph>
@@ -172,7 +172,7 @@ export default Vue.extend({
     async createGraph() {
       this.loading = true;
       try {
-        const newName = this.generateNewUString("newGraph");
+        const newName = this.generateNewUniqueString("newGraph");
         const res = await this.axios.post("/graphs", {
           id: 0,
           name: newName,
@@ -198,7 +198,7 @@ export default Vue.extend({
         .then(res => {
           const copy = res.data as dcbn.Graph;
           copy.id = 0;
-          copy.name = this.generateNewUString(`${graph.name}_COPY`);
+          copy.name = this.generateNewUniqueString(`${graph.name}_COPY`);
           copy.nodes.forEach(node => {
             node.id = 0;
             node.timeZeroDependency.id = 0;
@@ -310,7 +310,7 @@ export default Vue.extend({
       this.successBar = true;
     },
 
-    generateNewUString(defaultString: string): string {
+    generateNewUniqueString(defaultString: string): string {
       const gefaultGraphCopyName = defaultString;
       for (let i = 0; ; i++) {
         let testName = `${gefaultGraphCopyName}${i === 0 ? "" : i}`;

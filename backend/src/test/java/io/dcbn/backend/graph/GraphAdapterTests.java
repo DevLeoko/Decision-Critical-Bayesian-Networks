@@ -29,7 +29,7 @@ public class GraphAdapterTests {
     private Graph testGraph;
     private DynamicBayesianNetwork generatedDBN;
     private DynamicBayesianNetwork correctDBN;
-    private final Position ZERO_POSITION = new Position(0, 0);
+    private final Position ZERO_POSITION = new Position(0.0, 0.0);
 
 
     /**

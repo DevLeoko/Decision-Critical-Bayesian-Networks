@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import FolderView from "@/components/graph/FolderView.vue";
-import { dcbn } from "@/utils/graph";
+import { dcbn } from "@/utils/graph/graph";
 
 import Vue from "vue";
 export default Vue.extend({

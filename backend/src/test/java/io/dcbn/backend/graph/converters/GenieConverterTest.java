@@ -21,7 +21,7 @@ public class GenieConverterTest {
 
     private static final String RESOURCE_PATH = "src/test/resources";
     private static final int NUM_TIME_SLICES = 5;
-    private static final Position ZERO_POSITION = new Position(0, 0);
+    private static final Position ZERO_POSITION = new Position(0.0, 0.0);
 
 
     private Graph graph;
@@ -31,14 +31,14 @@ public class GenieConverterTest {
 
     @BeforeEach
     public void setUp() {
-        Node smuggling = new Node("Smuggling", null, null, "#e5f6f7", null, StateType.BOOLEAN,
-                new Position(100, 100));
-        Node nullSpeed = new Node("Null Speed", null, null, "#e5f6f7",
-                "nullSpeed", StateType.BOOLEAN, new Position(300, 300));
-        Node inTrajectoryArea = new Node("In Trajectory Area", null, null, "#e5f6f7",
-                "inTrajectory", StateType.BOOLEAN, new Position(500, 500));
-        Node isInReportedArea = new Node("Is in Reported Area", null, null, "#e5f6f7",
-                "inArea", StateType.BOOLEAN, new Position(1000, 1000));
+        Node smuggling = new Node("smuggling", null, null, "#e5f6f7", null, StateType.BOOLEAN,
+                new Position(100.0, 100.0));
+        Node nullSpeed = new Node("nullSpeed", null, null, "#e5f6f7",
+                "nullSpeed", StateType.BOOLEAN,  new Position(300.0, 300.0));
+        Node inTrajectoryArea = new Node("inTrajectoryArea", null, null, "#e5f6f7",
+                "inTrajectory", StateType.BOOLEAN,  new Position(500.0, 500.0));
+        Node isInReportedArea = new Node("isInReportedArea", null, null, "#e5f6f7",
+                "inArea", StateType.BOOLEAN,  new Position(1000.0, 1000.0));
 
         List<Node> smugglingParentsList = Arrays.asList(nullSpeed, inTrajectoryArea, isInReportedArea);
         double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}, {0.4, 0.6}, {0.4, 0.6}, {0.2, 0.8},
