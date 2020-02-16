@@ -11,7 +11,7 @@
       <v-btn tile @click="editProperties = true">
         Properties
       </v-btn>
-      <v-btn tile @click="del()">
+      <v-btn tile @click="deleteNode()">
         Delete
       </v-btn>
     </node-action-selector>
@@ -80,19 +80,19 @@ export default Vue.extend({
       this.axios.put(`/graphs/${this.$route.params.id}`, this.graph);
     },
 
-    addNode: function() {
+    addNode() {
       network.addNodeMode();
     },
 
-    del: function() {
+    deleteNode() {
       network.deleteSelected();
     },
 
-    addEdge: function() {
+    addEdge() {
       this.timeEdge = false;
       network.addEdgeMode();
     },
-    addTEdge: function() {
+    addTEdge() {
       this.timeEdge = true;
       network.addEdgeMode();
     },
@@ -166,6 +166,97 @@ export default Vue.extend({
           return testName;
         }
       }
+    },
+
+    addNodeToGraph(data: any, callback: Function) {
+      data.label = this.generateNewNodeName();
+      const node = {
+        type: "Node",
+        name: data.label,
+        id: 0,
+        timeZeroDependency: {
+          id: 0,
+          parents: [],
+          parentsTm1: [],
+          probabilities: [[0.5, 0.5]]
+        },
+        timeTDependency: {
+          id: 0,
+          parents: [],
+          parentsTm1: [],
+          probabilities: [[0.5, 0.5]]
+        },
+        color: defaultColor,
+        evidenceFormulaName: null,
+        stateType: {
+          states: ["true", "false"]
+        },
+        position: {
+          x: data.x,
+          y: data.y
+        }
+      };
+      this.nodeMap.put(data.id, node);
+      this.graph.nodes.push(node);
+
+      callback(data);
+    },
+
+    addEdgeToGraph(data: any, callback: Function) {
+      const fromId = data.from as string;
+      const toId = data.to as string;
+
+      const fromName = this.nodeMap.get(fromId)!.name;
+      const toNode = this.nodeMap.get(toId)!;
+
+      if (this.timeEdge) {
+        toNode.timeTDependency.parentsTm1.push(fromName);
+      } else {
+        toNode.timeZeroDependency.parents.push(fromName);
+        toNode.timeTDependency.parents.push(fromName);
+      }
+
+      const powerOfTwo = this.findPowerOfTwo(toNode, fromName);
+      if (!this.timeEdge) {
+        this.addToDependencies(toNode.timeZeroDependency, powerOfTwo);
+      }
+
+      this.addToDependencies(toNode.timeTDependency, powerOfTwo);
+
+      if (this.timeEdge) {
+        data = {
+          ...data,
+          ...timeEdgeOptions
+        };
+      }
+      callback(data);
+    },
+
+    deleteNodeFromGraph(data: any, callback: Function) {
+      for (let edgeUuid of data.edges as string[]) {
+        const edge = this.edges!.get(edgeUuid);
+
+        if (!edge) {
+          break;
+        }
+        const toNode = this.nodeMap.get(edge.to as string)!;
+        const fromName = this.nodeMap.get(edge.from as string)!.name;
+
+        this.removeDependencies(toNode, fromName);
+      }
+      this.graph!.nodes.splice(
+        this.graph!.nodes.findIndex(
+          node => node.name === this.nodeMap.get(data.nodes[0] as string)!.name
+        ),
+        1
+      );
+
+      this.nodeMap.remove(data.nodes[0] as string);
+      callback(data);
+    },
+
+    deleteEdgeFromGraph(data: any, callback: Function) {
+      callback(data);
     }
   },
 
@@ -179,98 +270,10 @@ export default Vue.extend({
           document.getElementById("mynetwork")!,
           this.graph!,
           {
-            addNode(data: any, callback: Function) {
-              data.label = self.generateNewNodeName();
-              const node = {
-                type: "Node",
-                name: data.label,
-                id: 0,
-                timeZeroDependency: {
-                  id: 0,
-                  parents: [],
-                  parentsTm1: [],
-                  probabilities: [[0.5, 0.5]]
-                },
-                timeTDependency: {
-                  id: 0,
-                  parents: [],
-                  parentsTm1: [],
-                  probabilities: [[0.5, 0.5]]
-                },
-                color: defaultColor,
-                evidenceFormulaName: null,
-                stateType: {
-                  states: ["true", "false"]
-                },
-                position: {
-                  x: data.x,
-                  y: data.y
-                }
-              };
-              self.nodeMap.put(data.id, node);
-              self.graph.nodes.push(node);
-
-              callback(data);
-            },
-
-            addEdge(data: any, callback: Function) {
-              const fromId = data.from as string;
-              const toId = data.to as string;
-
-              const fromName = self.nodeMap.get(fromId)!.name;
-              const toNode = self.nodeMap.get(toId)!;
-
-              if (self.timeEdge) {
-                toNode.timeTDependency.parentsTm1.push(fromName);
-              } else {
-                toNode.timeZeroDependency.parents.push(fromName);
-                toNode.timeTDependency.parents.push(fromName);
-              }
-
-              const powerOfTwo = self.findPowerOfTwo(toNode, fromName);
-              if (!self.timeEdge) {
-                self.addToDependencies(toNode.timeZeroDependency, powerOfTwo);
-              }
-
-              self.addToDependencies(toNode.timeTDependency, powerOfTwo);
-
-              if (self.timeEdge) {
-                data = {
-                  ...data,
-                  ...timeEdgeOptions
-                };
-              }
-              callback(data);
-            },
-
-            deleteNode(data: any, callback: Function) {
-              for (let edgeUuid of data.edges as string[]) {
-                const edge = self.edges!.get(edgeUuid);
-
-                if (!edge) {
-                  break;
-                }
-                const toNode = self.nodeMap.get(edge.to as string)!;
-                const fromName = self.nodeMap.get(edge.from as string)!.name;
-
-                self.removeDependencies(toNode, fromName);
-              }
-              self.graph!.nodes.splice(
-                self.graph!.nodes.findIndex(
-                  node =>
-                    node.name ===
-                    self.nodeMap.get(data.nodes[0] as string)!.name
-                ),
-                1
-              );
-
-              self.nodeMap.remove(data.nodes[0] as string);
-              callback(data);
-            },
-
-            deleteEdge(data: any, callback: Function) {
-              callback(data);
-            }
+            addNode: this.addNodeToGraph,
+            addEdge: this.addEdgeToGraph,
+            deleteNode: this.deleteNodeFromGraph,
+            deleteEdge: this.deleteEdgeFromGraph
           }
         );
 
