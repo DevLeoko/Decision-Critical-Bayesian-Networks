@@ -1,14 +1,12 @@
 package io.dcbn.backend.core.activemq;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.dcbn.backend.core.AoiHandler;
 import io.dcbn.backend.core.VesselHandler;
 import io.dcbn.backend.datamodel.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-
-import javax.jms.JMSException;
 
 @Service
 public class Listener {
@@ -22,13 +20,13 @@ public class Listener {
         this.vesselHandler = vesselHandler;
     }
 
-    @JmsListener(destination = "aoi.queue", containerFactory = "listenerContainerFactory")
-    public void receiveAoi(@Payload final String json) throws JMSException {
-        aoiHandler.handleAoi(JsonMapper.fromJsonToAreaOfInterest(json));
+    @JmsListener(destination = "${spring.activemq.queue.vessel}", containerFactory="jsaFactory")
+    public void receiveVessel(String vessel) throws JsonProcessingException {
+        vesselHandler.handleVessel(JsonMapper.fromJsonToVessel(vessel));
     }
 
-    @JmsListener(destination = "vessel.queue", containerFactory = "listenerContainerFactory")
-    public void receiveVessel(@Payload final String json) throws JMSException {
-        vesselHandler.handleVessel(JsonMapper.fromJsonToVessel(json));
+    @JmsListener(destination = "${spring.activemq.queue.aoi}", containerFactory="jsaFactory")
+    public void receiveAoi(String aoi) throws JsonProcessingException {
+        aoiHandler.handleAoi(JsonMapper.fromJsonToAreaOfInterest(aoi));
     }
 }

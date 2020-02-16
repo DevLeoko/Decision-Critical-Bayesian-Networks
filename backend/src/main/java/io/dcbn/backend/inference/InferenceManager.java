@@ -67,7 +67,6 @@ public class InferenceManager {
             AmidstGraphAdapter adaptedGraph = new AmidstGraphAdapter(graph);
             Graph calculatedGraph = calculateInference(adaptedGraph, (i, formula) -> {
                 Vessel vessel = vessels[i];
-
                 return evidenceFormulaEvaluator.evaluate(i, vessel, formula) ? "true" : "false";
             }, Algorithm.IMPORTANCE_SAMPLING);
             Set<Vessel> correlatedVessels = evidenceFormulaEvaluator.getCorrelatedVessels();
@@ -97,7 +96,7 @@ public class InferenceManager {
 
         List<Node> nodes = adaptedGraph.getAdaptedGraph().getNodes();
         List<Node> nodesWithFormula = nodes.stream()
-                .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() == null)
+                .filter(var -> !var.isValueNode() && (var.getEvidenceFormulaName() == null  || !var.getEvidenceFormulaName().equals("") || evidenceFormulaRepository.existsByName(var.getEvidenceFormulaName())))
                 .collect(Collectors.toList());
         List<Node> nodesWithVirEvi = nodes.stream()
                 .filter(var -> var.isValueNode() && ((ValueNode) var).getValue().length == 1).collect(Collectors.toList());
@@ -121,7 +120,7 @@ public class InferenceManager {
                 .sampleToDataBase(1, adaptedGraph.getAdaptedGraph().getTimeSlices());
 
         List<Node> nodesToSetValues = nodes.stream()
-                .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() != null)
+                .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() != null && !var.getEvidenceFormulaName().equals("") && evidenceFormulaRepository.existsByName(var.getEvidenceFormulaName()))
                 .collect(Collectors.toList());
         List<Node> nodesToSetValuesFromValueNode = nodes.stream()
                 .filter(var -> var.isValueNode())

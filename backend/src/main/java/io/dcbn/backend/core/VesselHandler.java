@@ -1,5 +1,6 @@
 package io.dcbn.backend.core;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.core.activemq.Producer;
 import io.dcbn.backend.datamodel.Outcome;
@@ -14,20 +15,20 @@ public class VesselHandler {
 
     private final VesselCache vesselCache;
     private final InferenceManager inferenceManager;
-    //private final Producer producer;
+    private final Producer producer;
 
     @Autowired
-    public VesselHandler(VesselCache vesselCache, InferenceManager inferenceManager/*, Producer producer*/) {
+    public VesselHandler(VesselCache vesselCache, InferenceManager inferenceManager, Producer producer) {
         this.inferenceManager = inferenceManager;
         this.vesselCache = vesselCache;
-        //this.producer = producer;
+        this.producer = producer;
     }
 
-    public void handleVessel(Vessel vessel) {
+    public void handleVessel(Vessel vessel) throws JsonProcessingException {
         vesselCache.insert(vessel);
         List<Outcome> outcomes = inferenceManager.calculateInference(vessel.getUuid());
         for (Outcome outcome : outcomes) {
-            Producer.sendOutcome(outcome);
+            producer.send(outcome);
         }
     }
 }

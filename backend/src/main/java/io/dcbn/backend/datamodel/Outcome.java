@@ -16,5 +16,5 @@ public class Outcome {
     private Graph correlatedNetwork;
 
     private Set<Vessel> correlatedVessels;
-    private Set<AreaOfInterest> correlatedAOIs;
+    private Set<String> correlatedAOIs;
 }
