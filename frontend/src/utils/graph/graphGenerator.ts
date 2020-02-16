@@ -49,6 +49,14 @@ export function createTestGraph(
   return { nodeData: nodes, nodeIndices, nodeMap, network };
 }
 
+export const timeEdgeOptions = {
+  dashes: true,
+  label: "time",
+  color: "grey",
+  physics: true,
+  smooth: true
+};
+
 export function createGraph(
   container: HTMLElement,
   graph: dcbn.Graph,
@@ -84,11 +92,7 @@ export function createGraph(
         (parent): Edge => ({
           from: nodeMap.getUuidFromName(parent),
           to: nodeId,
-          dashes: true,
-          label: "time",
-          color: "grey",
-          physics: true,
-          smooth: true
+          ...timeEdgeOptions
         })
       )
     );

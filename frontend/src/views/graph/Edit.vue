@@ -40,7 +40,11 @@ import vis, { data } from "vis-network";
 import NodeActionSelector from "@/components/graph/NodeActionSelector.vue";
 import NodeProperties from "@/components/graph/NodeProperties.vue";
 import { dcbn } from "@/utils/graph/graph";
-import { createEditGraph, defaultColor } from "@/utils/graph/graphGenerator";
+import {
+  createEditGraph,
+  defaultColor,
+  timeEdgeOptions
+} from "@/utils/graph/graphGenerator";
 import NodeMap from "../../utils/nodeMap";
 
 let network = {} as vis.Network;
@@ -96,17 +100,6 @@ export default Vue.extend({
     },
     addTEdge: function() {
       this.timeEdge = true;
-      var optionsT = {
-        edges: {
-          label: "T",
-          smooth: {
-            enabled: true,
-            type: "dynamic",
-            roundness: 0.5
-          }
-        }
-      };
-      network.setOptions(optionsT);
       network.addEdgeMode();
     },
 
@@ -248,6 +241,10 @@ export default Vue.extend({
 
               self.addToDependencies(toNode.timeTDependency, powerOfTwo);
 
+              data = {
+                ...data,
+                ...timeEdgeOptions
+              };
               callback(data);
             },
 
