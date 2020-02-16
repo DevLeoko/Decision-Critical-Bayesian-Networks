@@ -127,13 +127,12 @@ export default Vue.extend({
     },
 
     removeDependencies(toNode: dcbn.Node, fromName: string) {
-      // FIXME: This does not work when a node is both a time parent and a normal parent!!!
       if (!toNode) {
         return;
       }
-      const isTimeDependency = toNode.timeTDependency.parentsTm1.includes(
-        fromName
-      );
+      const isTimeDependency =
+        toNode.timeTDependency.parentsTm1.includes(fromName) &&
+        !toNode.timeTDependency.parents.includes(fromName);
 
       const powerOfTwo = this.findPowerOfTwo(toNode, fromName);
       if (!isTimeDependency) {
