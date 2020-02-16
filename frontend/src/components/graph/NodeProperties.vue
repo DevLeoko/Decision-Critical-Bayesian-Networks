@@ -1,44 +1,33 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="open" width="600">
+    <v-dialog
+      v-model="open"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
       <v-card>
-        <v-card-title class="headline primary lighten-3" primary-title>
-          <div v-if="properties">
-            <v-btn color="primary" @click="properties = false">CPT</v-btn>
-          </div>
-          <div v-else>
-            <v-btn color="primary" @click="properties = true">Properties</v-btn>
-          </div>
-        </v-card-title>
-        <div v-if="properties">
-          <v-col cols="12" sm="6" md="8">
-            <v-text-field
-              label="Node Name"
-              :value="node.name"
-              @change="changeName"
-            ></v-text-field>
-          </v-col>
-
-          <v-card-title primary-title>
-            Color
-          </v-card-title>
-          <v-color-picker
-            class="ma-2"
-            :value="node.color"
-            :mode="'hexa'"
-            v-on:update:color="changeColor"
-          ></v-color-picker>
-        </div>
-
-        <div v-else>
-          <cpt-container :time0="time0" :node="node" />
-        </div>
-
-        <v-spacer></v-spacer>
-        <v-card-actions>
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click="updateOpen(false)">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>Properties</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="updateOpen(false)">Close</v-btn>
-        </v-card-actions>
+          <v-toolbar-items>
+            <v-btn dark text @click="updateOpen(false)">Save</v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-tabs v-model="propertyTabs">
+          <v-tab>General</v-tab>
+          <v-tab>Definition</v-tab>
+          <v-tab>Format</v-tab>
+        </v-tabs>
+
+        <v-tabs-items v-model="propertyTabs">
+          <v-tab-item>General</v-tab-item>
+          <v-tab-item>Definition</v-tab-item>
+          <v-tab-item>Format</v-tab-item>
+        </v-tabs-items>
       </v-card>
     </v-dialog>
   </v-layout>
@@ -46,17 +35,18 @@
 
 <script lang="ts">
 import Vue from "vue";
-import CptContainer from "@/components/graph/CptContainer.vue";
+// import CptContainer from "@/components/graph/CptContainer.vue";
 import { dcbn } from "@/utils/graph/graph";
 
 export default Vue.extend({
   data() {
     return {
       properties: true,
-      time0: true
+      time0: true,
+      propertyTabs: null
     };
   },
-  components: { CptContainer },
+  // components: { CptContainer },
   props: { open: Boolean, node: Object as () => dcbn.Node },
   methods: {
     updateOpen(value: boolean) {
