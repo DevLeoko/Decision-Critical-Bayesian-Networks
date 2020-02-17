@@ -63,6 +63,8 @@ interface EdgeAndNodeData {
 interface GraphState {
   dcbnGraph: dcbn.Graph;
   visGraph: EdgeAndNodeData;
+  timeEdges: string[];
+  nodeMap: NodeMap;
 }
 
 export default Vue.extend({
@@ -209,6 +211,7 @@ export default Vue.extend({
 
     addNodeToGraph(data: any, callback: Function) {
       this.addToUndoStack();
+
       data.label = this.generateNewNodeName();
       const node = {
         type: "Node",
@@ -273,12 +276,12 @@ export default Vue.extend({
           ...timeEdgeOptions
         };
       }
-
       callback(data);
     },
 
     deleteNodeFromGraph(data: any, callback: Function) {
       this.addToUndoStack();
+
       for (let edgeUuid of data.edges as string[]) {
         const edge = this.edges!.get(edgeUuid);
 
@@ -339,18 +342,22 @@ export default Vue.extend({
       this.nodes.add(state.visGraph.nodes);
       this.edges.clear();
       this.edges.add(state.visGraph.edges);
+
+      this.timeEdges = state.timeEdges;
+      this.nodeMap = state.nodeMap;
     },
 
     pushCurrentStateTo(stack: GraphState[]) {
-      stack.push(
-        this.copyState({
-          visGraph: {
-            nodes: this.nodes.get(),
-            edges: this.edges.get()
-          },
-          dcbnGraph: this.graph
-        })
-      );
+      const copy = this.copyState({
+        visGraph: {
+          nodes: this.nodes.get(),
+          edges: this.edges.get()
+        },
+        dcbnGraph: this.graph,
+        timeEdges: this.timeEdges,
+        nodeMap: this.nodeMap
+      });
+      stack.push(copy);
     },
 
     addToUndoStack() {
@@ -359,7 +366,20 @@ export default Vue.extend({
     },
 
     copyState(state: GraphState): GraphState {
-      return JSON.parse(JSON.stringify(state));
+      const visCopy = JSON.parse(JSON.stringify(state.visGraph));
+      const nodeMapCopy = state.nodeMap.clone();
+      const graphCopy = JSON.parse(
+        JSON.stringify(state.dcbnGraph)
+      ) as dcbn.Graph;
+      graphCopy.nodes = nodeMapCopy.nodes();
+      const timeEdgesCopy = Object.assign([], state.timeEdges);
+
+      return {
+        visGraph: visCopy,
+        dcbnGraph: graphCopy,
+        nodeMap: nodeMapCopy,
+        timeEdges: timeEdgesCopy
+      };
     }
   },
 
