@@ -9,7 +9,7 @@
       :presentValues="this.presentValues"
     />
     <div id="mynetwork" ref="network"></div>
-    <node-action-selector ref="nodeActionSelector">
+    <action-selector ref="nodeActionSelector">
       <v-btn
         tile
         @click="
@@ -39,7 +39,7 @@
         v-if="activeId !== -1 && presentValues[activeId].computed.length"
         >Values</v-btn
       >
-    </node-action-selector>
+    </action-selector>
 
     <v-dialog v-model="virtualEvidenceOpen" width="500" v-if="activeId !== -1">
       <v-card>
@@ -180,7 +180,7 @@
 
 <script lang="ts">
 import TestToolbar from "@/components/graph/TestToolbar.vue";
-import NodeActionSelector from "@/components/graph/NodeActionSelector.vue";
+import ActionSelector from "@/components/graph/ActionSelector.vue";
 import Vue from "vue";
 import vis, { network } from "vis-network";
 
@@ -196,7 +196,7 @@ import NodeMap from "../../utils/nodeMap";
 export default Vue.extend({
   components: {
     TestToolbar,
-    NodeActionSelector
+    ActionSelector
   },
 
   data() {

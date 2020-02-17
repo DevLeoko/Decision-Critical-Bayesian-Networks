@@ -29,9 +29,14 @@ export function createTestGraph(
   graph: dcbn.Graph,
   actionCallback: (nodeId: string, upper: boolean) => void
 ) {
-  const { network, nodeMap, nodes } = createGraph(container, graph, {
-    nodes: { image: generateStatsSVG(undefined), shape: "image" }
-  });
+  const { network, nodeMap, nodes } = createGraph(
+    container,
+    graph,
+    {
+      nodes: { image: generateStatsSVG(undefined), shape: "image" }
+    },
+    1.5
+  );
 
   network.on("doubleClick", param => {
     const nodeId: string = param.nodes[0];
@@ -53,18 +58,19 @@ export const timeEdgeOptions = {
   dashes: true,
   label: "time",
   color: "grey",
-  physics: true,
-  smooth: true
+  smooth: { enabled: true, type: "diagonalCross", roundness: 0.3 }
 };
 
 export function createGraph(
   container: HTMLElement,
   graph: dcbn.Graph,
-  options: vis.Options
+  options: vis.Options,
+  scaling = 1
 ) {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
   const nodeMap = new NodeMap();
+  const timeEdges: string[] = [];
 
   for (const node of graph.nodes) {
     const nodeId = vis.util.randomUUID();
@@ -77,7 +83,8 @@ export function createGraph(
     nodes.push({
       id: nodeId,
       label: node.name,
-      ...node.position
+      x: node.position.x * scaling,
+      y: node.position.y * scaling
     });
 
     edges.push(
@@ -89,11 +96,16 @@ export function createGraph(
 
     edges.push(
       ...(node.timeTDependency.parentsTm1 as string[]).map(
-        (parent): Edge => ({
-          from: nodeMap.getUuidFromName(parent),
-          to: nodeId,
-          ...timeEdgeOptions
-        })
+        (parent): Edge => {
+          const uuid = vis.util.randomUUID();
+          timeEdges.push(uuid);
+          return {
+            id: uuid,
+            from: nodeMap.getUuidFromName(parent),
+            to: nodeId,
+            ...timeEdgeOptions
+          };
+        }
       )
     );
   });
@@ -126,5 +138,5 @@ export function createGraph(
 
   const network = new vis.Network(container, data, baseOptions);
 
-  return { network, nodeMap, ...data };
+  return { network, nodeMap, timeEdges, ...data };
 }
