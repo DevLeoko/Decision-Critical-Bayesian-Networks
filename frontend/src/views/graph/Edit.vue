@@ -1,6 +1,9 @@
 <template>
   <div style="max-height: 100%; width: 100% ">
     <edit-bar
+      :timeSteps.sync="graph.timeSlices"
+      :loading="saveLoading"
+      :uptodate="serverGraph == JSON.stringify(this.graph)"
       @save="save()"
       @nodeAdd="addNode()"
       @edgeAdd="addEdge()"
@@ -61,14 +64,24 @@ export default Vue.extend({
       //TODO replace with $emit?
       selectedNode: {} as dcbn.Node,
       hasError: false,
-      errorMessage: ""
+      errorMessage: "",
+
+      saveLoading: false,
+      serverGraph: ""
     };
   },
 
   methods: {
     save() {
-      // TODO: Provide the user with feedback.
-      this.axios.put(`/graphs/${this.$route.params.id}`, this.graph);
+      this.saveLoading = true;
+      this.axios
+        .put(`/graphs/${this.$route.params.id}`, this.graph)
+        .then(() => (this.serverGraph = JSON.stringify(this.graph)))
+        .catch(error => {
+          this.errorMessage = error.response.data.message;
+          this.hasError = true;
+        })
+        .then(() => (this.saveLoading = false));
     },
 
     addNode() {
@@ -256,6 +269,7 @@ export default Vue.extend({
       .get(`/graphs/${this.$route.params.id}`)
       .then(resp => {
         this.graph = resp.data;
+        this.serverGraph = JSON.stringify(this.graph);
         const self = this;
         const result = createEditGraph(
           document.getElementById("mynetwork")!,
