@@ -8,6 +8,7 @@
       @nodeAdd="addNode()"
       @edgeAdd="addEdge()"
       @edgeTAdd="addTEdge()"
+      @formatNetwork="formatGraph()"
     />
     <div id="mynetwork" ref="network"></div>
     <node-action-selector ref="nodeActionSelector">
@@ -40,6 +41,7 @@ import {
   timeEdgeOptions
 } from "@/utils/graph/graphGenerator";
 import NodeMap from "../../utils/nodeMap";
+import { formatGraph } from "../../utils/graph/graphFormatter";
 
 let network = {} as vis.Network;
 
@@ -82,6 +84,10 @@ export default Vue.extend({
           this.hasError = true;
         })
         .then(() => (this.saveLoading = false));
+    },
+
+    formatGraph() {
+      formatGraph(this.nodeMap, this.nodes, this.edges);
     },
 
     addNode() {
