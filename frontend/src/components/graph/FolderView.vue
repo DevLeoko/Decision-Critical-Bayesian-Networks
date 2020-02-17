@@ -191,6 +191,7 @@ export default Vue.extend({
           id: res.data
         });
         this.throwSuccess("The graph has been generated");
+        this.selectGraph(res.data);
       } catch (err) {
         this.throwError(err.response.data.message);
       } finally {
