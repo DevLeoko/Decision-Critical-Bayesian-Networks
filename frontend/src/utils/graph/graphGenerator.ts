@@ -65,6 +65,7 @@ export function createGraph(
   const nodes: Node[] = [];
   const edges: Edge[] = [];
   const nodeMap = new NodeMap();
+  const timeEdges: string[] = [];
 
   for (const node of graph.nodes) {
     const nodeId = vis.util.randomUUID();
@@ -89,11 +90,16 @@ export function createGraph(
 
     edges.push(
       ...(node.timeTDependency.parentsTm1 as string[]).map(
-        (parent): Edge => ({
-          from: nodeMap.getUuidFromName(parent),
-          to: nodeId,
-          ...timeEdgeOptions
-        })
+        (parent): Edge => {
+          const uuid = vis.util.randomUUID();
+          timeEdges.push(uuid);
+          return {
+            id: uuid,
+            from: nodeMap.getUuidFromName(parent),
+            to: nodeId,
+            ...timeEdgeOptions
+          };
+        }
       )
     );
   });
@@ -126,5 +132,5 @@ export function createGraph(
 
   const network = new vis.Network(container, data, baseOptions);
 
-  return { network, nodeMap, ...data };
+  return { network, nodeMap, timeEdges, ...data };
 }

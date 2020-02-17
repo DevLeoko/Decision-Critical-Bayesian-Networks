@@ -59,6 +59,7 @@ export default Vue.extend({
       graph: {} as dcbn.Graph,
       nodes: {} as vis.DataSet<vis.Node>,
       edges: {} as vis.DataSet<vis.Edge>,
+      timeEdges: [] as string[],
       nodeMap: new NodeMap(),
 
       activeId: -1,
@@ -226,11 +227,15 @@ export default Vue.extend({
       this.addToDependencies(toNode.timeTDependency, powerOfTwo);
 
       if (this.timeEdge) {
+        const uuid = vis.util.randomUUID();
+        this.timeEdges.push(uuid);
         data = {
+          id: uuid,
           ...data,
           ...timeEdgeOptions
         };
       }
+
       callback(data);
     },
 
@@ -244,7 +249,8 @@ export default Vue.extend({
         const toNode = this.nodeMap.get(edge.to as string)!;
         const fromName = this.nodeMap.get(edge.from as string)!.name;
 
-        this.removeDependencies(toNode, fromName);
+        this.removeDependencies(toNode, fromName, false);
+        this.removeDependencies(toNode, fromName, true);
       }
       this.graph!.nodes.splice(
         this.graph!.nodes.findIndex(
@@ -262,8 +268,16 @@ export default Vue.extend({
       const fromName = this.nodeMap.get(edge.from as string)!.name;
       const toNode = this.nodeMap.get(edge.to as string)!;
 
-      // TODO: Maybe find a better way to determine time edges.
-      this.removeDependencies(toNode, fromName, edge.dashes as boolean);
+      const isTimeEdge = this.timeEdges.includes(data.edges[0] as string);
+
+      if (isTimeEdge) {
+        this.timeEdges.splice(
+          this.timeEdges.findIndex(str => str === data.edges[0]),
+          1
+        );
+      }
+
+      this.removeDependencies(toNode, fromName, isTimeEdge);
       callback(data);
     }
   },
@@ -288,6 +302,7 @@ export default Vue.extend({
         this.nodeMap = result.nodeMap;
         this.nodes = result.nodes;
         this.edges = result.edges;
+        this.timeEdges = result.timeEdges;
         network = result.network;
 
         (this.$refs.nodeActionSelector as any).register(network);
