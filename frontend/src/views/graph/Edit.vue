@@ -354,20 +354,11 @@ export default Vue.extend({
 
     addToUndoStack() {
       this.redoStack.length = 0;
-      this.undoStack.push(
-        this.copyState({
-          visGraph: {
-            nodes: this.nodes.get(),
-            edges: this.edges.get()
-          },
-          dcbnGraph: this.graph
-        })
-      );
+      this.pushCurrentStateTo(this.undoStack);
     },
 
     copyState(state: GraphState): GraphState {
-      return JSON.parse(JSON.stringify(state));
-      /*const dcbnCopy = Object.assign({}, state.dcbnGraph);
+      const dcbnCopy = Object.assign({}, state.dcbnGraph);
 
       const nodesCopy = state.visGraph.nodes.map(
         node => Object.assign({}, node) as vis.Node
@@ -379,7 +370,7 @@ export default Vue.extend({
       return {
         dcbnGraph: dcbnCopy,
         visGraph: { edges: edgesCopy, nodes: nodesCopy }
-      };*/
+      };
     }
   },
 
@@ -422,6 +413,9 @@ export default Vue.extend({
           if (!event.nodes.length) {
             return;
           }
+          this.addToUndoStack();
+          network.storePositions();
+
           const nodeId = event.nodes[0] as string;
           const node = this.nodeMap.get(nodeId)!;
 
