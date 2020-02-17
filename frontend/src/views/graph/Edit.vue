@@ -320,34 +320,28 @@ export default Vue.extend({
       callback(data);
     },
 
-    // TODO: REFACTOR THIS!
     undo() {
       const state = this.undoStack.pop()!;
-      console.log(this.nodes.get());
-
-      this.redoStack.push(
-        this.copyState({
-          visGraph: {
-            nodes: this.nodes.get(),
-            edges: this.edges.get()
-          },
-          dcbnGraph: this.graph
-        })
-      );
-
-      this.graph = state.dcbnGraph;
-      this.nodes.clear();
-      this.nodes.add(state.visGraph.nodes);
-      this.edges.clear();
-      this.edges.add(state.visGraph.edges);
-
-      console.log(this.redoStack);
+      this.pushCurrentStateTo(this.redoStack);
+      this.updateGraphStates(state);
     },
 
     redo() {
       const state = this.redoStack.pop()!;
+      this.pushCurrentStateTo(this.undoStack);
+      this.updateGraphStates(state);
+    },
 
-      this.undoStack.push(
+    updateGraphStates(state: GraphState) {
+      this.graph = state.dcbnGraph;
+      this.nodes.clear();
+      this.nodes.add(state.visGraph.nodes);
+      this.edges.clear();
+      this.edges.add(state.visGraph.edges);
+    },
+
+    pushCurrentStateTo(stack: GraphState[]) {
+      stack.push(
         this.copyState({
           visGraph: {
             nodes: this.nodes.get(),
@@ -356,19 +350,10 @@ export default Vue.extend({
           dcbnGraph: this.graph
         })
       );
-
-      this.graph = state.dcbnGraph;
-      this.nodes.clear();
-      this.nodes.add(state.visGraph.nodes);
-      this.edges.clear();
-      this.edges.add(state.visGraph.edges);
-
-      console.log(this.undoStack);
     },
 
     addToUndoStack() {
       this.redoStack.length = 0;
-      // ... and add the new state.
       this.undoStack.push(
         this.copyState({
           visGraph: {
