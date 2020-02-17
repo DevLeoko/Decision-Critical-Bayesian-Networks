@@ -41,7 +41,7 @@
       >
     </action-selector>
 
-    <v-dialog v-model="virtualEvidenceOpen" width="500" v-if="activeId !== -1">
+    <v-dialog v-model="virtualEvidenceOpen" width="550" v-if="activeId !== -1">
       <v-card>
         <v-card-title>
           Set virtual evidence
@@ -99,7 +99,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="binaryEvidenceOpen" width="500" v-if="activeId !== -1">
+    <v-dialog v-model="binaryEvidenceOpen" width="550" v-if="activeId !== -1">
       <v-card>
         <v-card-title>
           Set evidences
@@ -134,7 +134,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="valuesOpen" width="500" v-if="activeId !== -1">
+    <v-dialog v-model="valuesOpen" width="550" v-if="activeId !== -1">
       <v-card>
         <v-card-title> Values of {{ nodeIndices[activeId] }} </v-card-title>
 
@@ -375,8 +375,9 @@ export default Vue.extend({
         network.on("click", param => {
           const node = this.nodeMap.get(param.nodes[0]);
           if (!node) return;
-          this.activeId =
-            this.nodeIndices.findIndex(name => name === node.name) || -1;
+          this.activeId = this.nodeIndices.findIndex(
+            name => name === node.name
+          );
         });
 
         this.nodes = nodeData;
@@ -386,8 +387,6 @@ export default Vue.extend({
         this.clear();
       })
       .catch(error => {
-        console.log(error);
-
         this.errorMessage = error.response.data.message;
         this.error = true;
       });
