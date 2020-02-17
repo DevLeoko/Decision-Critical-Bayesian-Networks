@@ -9,6 +9,10 @@
       @edgeAdd="addEdge()"
       @edgeTAdd="addTEdge()"
       @formatNetwork="formatGraph()"
+      @undo="undo()"
+      @redo="redo()"
+      :undoDisabled="!undoStack.length"
+      :redoDisabled="!redoStack.length"
     />
     <div id="mynetwork" ref="network"></div>
     <action-selector ref="nodeActionSelector">
@@ -37,7 +41,7 @@
 <script lang="ts">
 import EditBar from "@/components/graph/EditorToolbar.vue";
 import Vue from "vue";
-import vis, { data, Edge } from "vis-network";
+import vis, { data } from "vis-network";
 import ActionSelector from "@/components/graph/ActionSelector.vue";
 import NodeProperties from "@/components/graph/NodeProperties.vue";
 import { dcbn } from "@/utils/graph/graph";
@@ -50,6 +54,16 @@ import NodeMap from "../../utils/nodeMap";
 import { formatGraph } from "../../utils/graph/graphFormatter";
 
 let network = {} as vis.Network;
+
+interface EdgeAndNodeData {
+  edges: vis.Edge[];
+  nodes: vis.Node[];
+}
+
+interface GraphState {
+  dcbnGraph: dcbn.Graph;
+  visGraph: EdgeAndNodeData;
+}
 
 export default Vue.extend({
   components: {
@@ -76,7 +90,9 @@ export default Vue.extend({
       errorMessage: "",
 
       saveLoading: false,
-      serverGraph: ""
+      serverGraph: "",
+      undoStack: [] as GraphState[],
+      redoStack: [] as GraphState[]
     };
   },
 
@@ -191,6 +207,7 @@ export default Vue.extend({
     },
 
     addNodeToGraph(data: any, callback: Function) {
+      this.addToUndoStack();
       data.label = this.generateNewNodeName();
       const node = {
         type: "Node",
@@ -225,6 +242,7 @@ export default Vue.extend({
     },
 
     addEdgeToGraph(data: any, callback: Function) {
+      this.addToUndoStack();
       const fromId = data.from as string;
       const toId = data.to as string;
 
@@ -259,6 +277,7 @@ export default Vue.extend({
     },
 
     deleteNodeFromGraph(data: any, callback: Function) {
+      this.addToUndoStack();
       for (let edgeUuid of data.edges as string[]) {
         const edge = this.edges!.get(edgeUuid);
 
@@ -283,6 +302,7 @@ export default Vue.extend({
     },
 
     deleteEdgeFromGraph(data: any, callback: Function) {
+      this.addToUndoStack();
       const edge = this.edges!.get(data.edges[0] as string)!;
       const fromName = this.nodeMap.get(edge.from as string)!.name;
       const toNode = this.nodeMap.get(edge.to as string)!;
@@ -298,6 +318,83 @@ export default Vue.extend({
 
       this.removeDependencies(toNode, fromName, isTimeEdge);
       callback(data);
+    },
+
+    // TODO: REFACTOR THIS!
+    undo() {
+      const state = this.undoStack.pop()!;
+      console.log(this.nodes.get());
+
+      this.redoStack.push(
+        this.copyState({
+          visGraph: {
+            nodes: this.nodes.get(),
+            edges: this.edges.get()
+          },
+          dcbnGraph: this.graph
+        })
+      );
+
+      this.graph = state.dcbnGraph;
+      this.nodes.clear();
+      this.nodes.add(state.visGraph.nodes);
+      this.edges.clear();
+      this.edges.add(state.visGraph.edges);
+
+      console.log(this.redoStack);
+    },
+
+    redo() {
+      const state = this.redoStack.pop()!;
+
+      this.undoStack.push(
+        this.copyState({
+          visGraph: {
+            nodes: this.nodes.get(),
+            edges: this.edges.get()
+          },
+          dcbnGraph: this.graph
+        })
+      );
+
+      this.graph = state.dcbnGraph;
+      this.nodes.clear();
+      this.nodes.add(state.visGraph.nodes);
+      this.edges.clear();
+      this.edges.add(state.visGraph.edges);
+
+      console.log(this.undoStack);
+    },
+
+    addToUndoStack() {
+      this.redoStack.length = 0;
+      // ... and add the new state.
+      this.undoStack.push(
+        this.copyState({
+          visGraph: {
+            nodes: this.nodes.get(),
+            edges: this.edges.get()
+          },
+          dcbnGraph: this.graph
+        })
+      );
+    },
+
+    copyState(state: GraphState): GraphState {
+      return JSON.parse(JSON.stringify(state));
+      /*const dcbnCopy = Object.assign({}, state.dcbnGraph);
+
+      const nodesCopy = state.visGraph.nodes.map(
+        node => Object.assign({}, node) as vis.Node
+      );
+      const edgesCopy = state.visGraph.edges.map(
+        edge => Object.assign({}, edge) as vis.Edge
+      );
+
+      return {
+        dcbnGraph: dcbnCopy,
+        visGraph: { edges: edgesCopy, nodes: nodesCopy }
+      };*/
     }
   },
 

@@ -1,4 +1,3 @@
-import { dcbn } from "./graph";
 import dagre from "dagre";
 import NodeMap from "../nodeMap";
 import vis from "vis-network";
