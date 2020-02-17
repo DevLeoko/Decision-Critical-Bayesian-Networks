@@ -358,19 +358,7 @@ export default Vue.extend({
     },
 
     copyState(state: GraphState): GraphState {
-      const dcbnCopy = Object.assign({}, state.dcbnGraph);
-
-      const nodesCopy = state.visGraph.nodes.map(
-        node => Object.assign({}, node) as vis.Node
-      );
-      const edgesCopy = state.visGraph.edges.map(
-        edge => Object.assign({}, edge) as vis.Edge
-      );
-
-      return {
-        dcbnGraph: dcbnCopy,
-        visGraph: { edges: edgesCopy, nodes: nodesCopy }
-      };
+      return JSON.parse(JSON.stringify(state));
     }
   },
 
@@ -414,13 +402,13 @@ export default Vue.extend({
             return;
           }
           this.addToUndoStack();
-          network.storePositions();
 
           const nodeId = event.nodes[0] as string;
           const node = this.nodeMap.get(nodeId)!;
 
           const newPosition = network.getPositions([nodeId])[nodeId];
           node.position = newPosition;
+          network.storePositions();
         });
       })
       .catch(error => {
