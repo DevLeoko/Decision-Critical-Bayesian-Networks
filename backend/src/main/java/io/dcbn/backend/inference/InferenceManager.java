@@ -1,33 +1,33 @@
-package io.dcbn.backend.inference;
+package io.dcbn.backend.inference;
 
-import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
-import eu.amidst.core.datastream.DataStream;
-import eu.amidst.core.inference.InferenceAlgorithm;
-import eu.amidst.core.variables.Variable;
-import eu.amidst.dynamic.datastream.DynamicDataInstance;
-import eu.amidst.dynamic.inference.FactoredFrontierForDBN;
-import eu.amidst.dynamic.inference.InferenceEngineForDBN;
-import eu.amidst.dynamic.utils.DynamicBayesianNetworkSampler;
-import io.dcbn.backend.core.AoiCache;
-import io.dcbn.backend.core.VesselCache;
-import io.dcbn.backend.datamodel.Outcome;
-import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
-import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
-import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
-import io.dcbn.backend.graph.AmidstGraphAdapter;
-import io.dcbn.backend.graph.Graph;
-import io.dcbn.backend.graph.Node;
-import io.dcbn.backend.graph.ValueNode;
-import io.dcbn.backend.graph.repositories.GraphRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
+import eu.amidst.core.datastream.DataStream;
+import eu.amidst.core.inference.InferenceAlgorithm;
+import eu.amidst.core.variables.Variable;
+import eu.amidst.dynamic.datastream.DynamicDataInstance;
+import eu.amidst.dynamic.inference.FactoredFrontierForDBN;
+import eu.amidst.dynamic.inference.InferenceEngineForDBN;
+import eu.amidst.dynamic.utils.DynamicBayesianNetworkSampler;
+import io.dcbn.backend.core.AoiCache;
+import io.dcbn.backend.core.VesselCache;
+import io.dcbn.backend.datamodel.Outcome;
+import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
+import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
+import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
+import io.dcbn.backend.graph.AmidstGraphAdapter;
+import io.dcbn.backend.graph.Graph;
+import io.dcbn.backend.graph.Node;
+import io.dcbn.backend.graph.ValueNode;
+import io.dcbn.backend.graph.repositories.GraphRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 /**
  * This class handles all the calculations with Dynamic Bayesian Networks (DBN).
@@ -35,21 +35,21 @@ import java.util.stream.Collectors;
 @Service
 public class InferenceManager {
 
-    private VesselCache vesselCache;
-    private AoiCache aoiCache;
+    private VesselCache vesselCache;
+    private AoiCache aoiCache;
 
-    private GraphRepository graphRepository;
-    private EvidenceFormulaRepository evidenceFormulaRepository;
-    private EvidenceFormulaEvaluator evidenceFormulaEvaluator;
+    private GraphRepository graphRepository;
+    private EvidenceFormulaRepository evidenceFormulaRepository;
+    private EvidenceFormulaEvaluator evidenceFormulaEvaluator;
 
     @Autowired
     public InferenceManager(VesselCache vesselCache, GraphRepository graphRepository,
                             EvidenceFormulaRepository evidenceFormulaRepository,
                             EvidenceFormulaEvaluator evidenceFormulaEvaluator) {
-        this.vesselCache = vesselCache;
-        this.graphRepository = graphRepository;
-        this.evidenceFormulaRepository = evidenceFormulaRepository;
-        this.evidenceFormulaEvaluator = evidenceFormulaEvaluator;
+        this.vesselCache = vesselCache;
+        this.graphRepository = graphRepository;
+        this.evidenceFormulaRepository = evidenceFormulaRepository;
+        this.evidenceFormulaEvaluator = evidenceFormulaEvaluator;
     }
 
     /**
@@ -59,25 +59,25 @@ public class InferenceManager {
      * @return TODO Complete
      */
     public List<Outcome> calculateInference(String vesselUuid) {
-        Vessel[] vessels = vesselCache.getVesselsByUuid(vesselUuid);
-        List<Outcome> outcomes = new ArrayList<>();
+        Vessel[] vessels = vesselCache.getVesselsByUuid(vesselUuid);
+        List<Outcome> outcomes = new ArrayList<>();
 
         //Iterating over all graphs
         for (Graph graph : graphRepository.findAll()) {
-            AmidstGraphAdapter adaptedGraph = new AmidstGraphAdapter(graph);
+            AmidstGraphAdapter adaptedGraph = new AmidstGraphAdapter(graph);
             Graph calculatedGraph = calculateInference(adaptedGraph, (i, formula) -> {
-                Vessel vessel = vessels[i];
-                return evidenceFormulaEvaluator.evaluate(i, vessel, formula) ? "true" : "false";
-            }, Algorithm.IMPORTANCE_SAMPLING);
-            Set<Vessel> correlatedVessels = evidenceFormulaEvaluator.getCorrelatedVessels();
-            correlatedVessels.add(vessels[0]);
+                Vessel vessel = vessels[i];
+                return evidenceFormulaEvaluator.evaluate(i, vessel, formula) ? "true" : "false";
+            }, Algorithm.IMPORTANCE_SAMPLING);
+            Set<Vessel> correlatedVessels = evidenceFormulaEvaluator.getCorrelatedVessels();
+            correlatedVessels.add(vessels[0]);
             Outcome outcome = new Outcome(UUID.randomUUID().toString(), System.currentTimeMillis(),
                     calculatedGraph, correlatedVessels,
-                    evidenceFormulaEvaluator.getCorrelatedAois());
-            //evidenceFormulaEvaluator.reset();
-            outcomes.add(outcome);
+                    evidenceFormulaEvaluator.getCorrelatedAois());
+            //evidenceFormulaEvaluator.reset();
+            outcomes.add(outcome);
         }
-        return outcomes;
+        return outcomes;
     }
 
     /**
@@ -92,94 +92,94 @@ public class InferenceManager {
     public Graph calculateInference(AmidstGraphAdapter adaptedGraph,
                                     BiFunction<Integer, EvidenceFormula, String> formulaResolver, Algorithm algorithm) {
         DynamicBayesianNetworkSampler dynamicSampler = new DynamicBayesianNetworkSampler(
-                adaptedGraph.getDbn());
+                adaptedGraph.getDbn());
 
-        List<Node> nodes = adaptedGraph.getAdaptedGraph().getNodes();
+        List<Node> nodes = adaptedGraph.getAdaptedGraph().getNodes();
         List<Node> nodesWithFormula = nodes.stream()
                 .filter(var -> !var.isValueNode() && (var.getEvidenceFormulaName() == null  || !var.getEvidenceFormulaName().equals("") || evidenceFormulaRepository.existsByName(var.getEvidenceFormulaName())))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());
         List<Node> nodesWithVirEvi = nodes.stream()
-                .filter(var -> var.isValueNode() && ((ValueNode) var).getValue().length == 1).collect(Collectors.toList());
+                .filter(var -> var.isValueNode() && ((ValueNode) var).getValue().length == 1).collect(Collectors.toList());
 
         //finding all the temporary child nodes fot the
         List<Variable> tempChildVariables = adaptedGraph.getDbn().getDynamicVariables().getListOfDynamicVariables().stream()
                 .filter(var -> var.getName().length() >= 9 && var.getName().substring(0, 9).equals("tempChild"))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());
 
         //Hiding the variables we want to evaluate during inference calculations
 
         nodesWithVirEvi.stream()
                 .map(Node::getName)
                 .map(adaptedGraph::getVariableByName)
-                .forEach(dynamicSampler::setHiddenVar);
+                .forEach(dynamicSampler::setHiddenVar);
         nodesWithFormula.stream()
                 .map(Node::getName)
                 .map(adaptedGraph::getVariableByName)
-                .forEach(dynamicSampler::setHiddenVar);
+                .forEach(dynamicSampler::setHiddenVar);
         DataStream<DynamicDataInstance> dataPredict = dynamicSampler
-                .sampleToDataBase(1, adaptedGraph.getAdaptedGraph().getTimeSlices());
+                .sampleToDataBase(1, adaptedGraph.getAdaptedGraph().getTimeSlices());
 
         List<Node> nodesToSetValues = nodes.stream()
                 .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() != null && !var.getEvidenceFormulaName().equals("") && evidenceFormulaRepository.existsByName(var.getEvidenceFormulaName()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());
         List<Node> nodesToSetValuesFromValueNode = nodes.stream()
                 .filter(var -> var.isValueNode())
                 .filter(var -> ((ValueNode) var).checkValuesAreStates())
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());
 
         //Running inference
-        InferenceAlgorithm inferenceAlgorithm = algorithm.getAlgorithm();
-        inferenceAlgorithm.setParallelMode(true);
-        FactoredFrontierForDBN FFalgorithm = new FactoredFrontierForDBN(inferenceAlgorithm);
-        InferenceEngineForDBN.setInferenceAlgorithmForDBN(FFalgorithm);
-        InferenceEngineForDBN.setModel(adaptedGraph.getDbn());
+        InferenceAlgorithm inferenceAlgorithm = algorithm.getAlgorithm();
+        inferenceAlgorithm.setParallelMode(true);
+        FactoredFrontierForDBN FFalgorithm = new FactoredFrontierForDBN(inferenceAlgorithm);
+        InferenceEngineForDBN.setInferenceAlgorithmForDBN(FFalgorithm);
+        InferenceEngineForDBN.setModel(adaptedGraph.getDbn());
 
         //Creating the output graph
-        List<Node> returnedNodes = new ArrayList<>();
+        List<Node> returnedNodes = new ArrayList<>();
         nodes.forEach(var -> returnedNodes
-                .add(new ValueNode(var, new double[adaptedGraph.getAdaptedGraph().getTimeSlices()][2])));
+                .add(new ValueNode(var, new double[adaptedGraph.getAdaptedGraph().getTimeSlices()][2])));
 
-        int time = 0;
+        int time = 0;
         for (DynamicDataInstance instance : dataPredict) {
             //Setting the results of the evidence formulas
             for (Node node : nodesToSetValues) {
-                Variable variable = adaptedGraph.getVariableByName(node.getName());
+                Variable variable = adaptedGraph.getVariableByName(node.getName());
                 EvidenceFormula formula = evidenceFormulaRepository
-                        .findByName(node.getEvidenceFormulaName()).orElse(null);
+                        .findByName(node.getEvidenceFormulaName()).orElse(null);
                 int state = node.getStateType()
-                        .getIndexOfState(formulaResolver.apply(time, formula));
-                instance.setValue(variable, state);
+                        .getIndexOfState(formulaResolver.apply(time, formula));
+                instance.setValue(variable, state);
             }
 
             //Setting the evidences
             for(Node node : nodesToSetValuesFromValueNode) {
-                int state = ((ValueNode) node).getIndexOfState(time);
-                Variable variable = adaptedGraph.getVariableByName(node.getName());
-                instance.setValue(variable, state);
+                int state = ((ValueNode) node).getIndexOfState(time);
+                Variable variable = adaptedGraph.getVariableByName(node.getName());
+                instance.setValue(variable, state);
             }
 
             //Setting state 0 for every temporary child (JUST FOR 2 STATES)
             for (Variable variable : tempChildVariables) {
-                instance.setValue(variable, 0);
+                instance.setValue(variable, 0);
             }
 
             //We set the evidence.
-            InferenceEngineForDBN.addDynamicEvidence(instance);
+            InferenceEngineForDBN.addDynamicEvidence(instance);
             //Then we run inference
-            InferenceEngineForDBN.runInference();
+            InferenceEngineForDBN.runInference();
 
             //Setting the values calculated by the inference engine
             for (Node node : returnedNodes) {
-                for (int i = 0; i < node.getStateType().getStates().length; i++) {
+                for (int i = 0; i < node.getStateType().getStates().length; i++) {
                     ((ValueNode) node).getValue()[time][i] = InferenceEngineForDBN
                             .getFilteredPosterior(adaptedGraph.getVariableByName(node.getName()))
-                            .getProbability(i);
+                            .getProbability(i);
                 }
             }
-            time++;
+            time++;
         }
         return new Graph(adaptedGraph.getAdaptedGraph().getId(),
                 adaptedGraph.getAdaptedGraph().getName()
-                , adaptedGraph.getAdaptedGraph().getTimeSlices(), returnedNodes);
+                , adaptedGraph.getAdaptedGraph().getTimeSlices(), returnedNodes);
     }
 }
