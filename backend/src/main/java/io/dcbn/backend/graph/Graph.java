@@ -54,16 +54,6 @@ public class Graph {
         if (id !=graph.getId() || !name.equals(graph.getName()) || timeSlices != graph.getTimeSlices() || nodes.size() != graph.getNodes().size()) {
             return false;
         }
-        for (Node node : nodes) {
-            if (!graph.getNodes().contains(node)) {
-                return false;
-            }
-        }
-
-        for (Node node : graph.getNodes()) {
-            System.out.println(node.toString());
-        }
-
-        return true;
+        return graph.getNodes().containsAll(nodes);
     }
 }
