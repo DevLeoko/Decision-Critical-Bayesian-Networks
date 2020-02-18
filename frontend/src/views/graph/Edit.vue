@@ -30,7 +30,11 @@
       </v-btn>
     </action-selector>
 
-    <node-properties :open.sync="editProperties" :node="selectedNode" />
+    <node-properties
+      :open.sync="editProperties"
+      :node="selectedNode"
+      @save="saveProperties($event)"
+    />
     <v-snackbar v-model="hasError" color="error" :timeout="5000">
       {{ errorMessage }}
       <v-btn icon @click="hasError = false"><v-icon>clear</v-icon></v-btn>
@@ -160,6 +164,8 @@ export default Vue.extend({
       dependency: dcbn.TimeZeroDependency,
       powerOfTwo: number
     ) {
+      console.log("Removing from ", dependency);
+
       let index = powerOfTwo;
       while (index <= dependency.probabilities.length) {
         dependency.probabilities.splice(index, powerOfTwo);
@@ -184,19 +190,19 @@ export default Vue.extend({
       this.removeFromDependencies(toNode.timeTDependency, powerOfTwo);
 
       if (isTimeDependency) {
-        toNode.timeTDependency.parentsTm1.splice(
-          toNode.timeTDependency.parentsTm1.indexOf(fromName),
-          1
-        );
+        const index = toNode.timeTDependency.parentsTm1.indexOf(fromName);
+        if (index !== -1) {
+          toNode.timeTDependency.parentsTm1.splice(index, 1);
+        }
       } else {
-        toNode.timeZeroDependency.parents.splice(
-          toNode.timeZeroDependency.parents.indexOf(fromName),
-          1
-        );
-        toNode.timeTDependency.parents.splice(
-          toNode.timeTDependency.parents.indexOf(fromName),
-          1
-        );
+        let index = toNode.timeZeroDependency.parents.indexOf(fromName);
+        if (index !== -1) {
+          toNode.timeZeroDependency.parents.splice(index, 1);
+        }
+        index = toNode.timeTDependency.parents.indexOf(fromName);
+        if (index !== -1) {
+          toNode.timeTDependency.parents.splice(index, 1);
+        }
       }
     },
 
@@ -293,7 +299,9 @@ export default Vue.extend({
         const fromName = this.nodeMap.get(edge.from as string)!.name;
 
         this.removeDependencies(toNode, fromName, false);
-        this.removeDependencies(toNode, fromName, true);
+        if (this.timeEdges.includes(edgeUuid)) {
+          this.removeDependencies(toNode, fromName, true);
+        }
       }
       this.graph!.nodes.splice(
         this.graph!.nodes.findIndex(
@@ -381,6 +389,49 @@ export default Vue.extend({
         nodeMap: nodeMapCopy,
         timeEdges: timeEdgesCopy
       };
+    },
+
+    updateNodeName(oldName: string, newName: string) {
+      for (const node of this.nodeMap.nodes()) {
+        const parents = [
+          node.timeZeroDependency.parents,
+          node.timeZeroDependency.parentsTm1,
+          node.timeTDependency.parents,
+          node.timeTDependency.parentsTm1
+        ];
+        for (const parentList of parents) {
+          const index = parentList.findIndex(name => name === oldName);
+          if (index !== -1) {
+            parentList[index] = newName;
+          }
+        }
+      }
+    },
+
+    saveProperties(event: any) {
+      const name = event.oldName as string;
+      const node = event.node as dcbn.Node;
+      const uuid = this.nodeMap.getUuidFromName(name)!;
+
+      if (name !== node.name) {
+        const nodesWithSameName = this.nodeMap
+          .nodes()
+          .filter(n => n.name === node.name);
+        if (nodesWithSameName.length !== 0) {
+          this.hasError = true;
+          this.errorMessage = `Node with name ${node.name} exists already!`;
+          return;
+        }
+      }
+
+      this.addToUndoStack();
+
+      const nodeToSaveTo = this.nodeMap.get(uuid)!;
+      nodeToSaveTo.color = node.color;
+      nodeToSaveTo.name = node.name;
+
+      this.updateNodeName(name, node.name);
+      this.nodes.update({ id: uuid, color: node.color, label: node.name });
     }
   },
 
@@ -413,7 +464,9 @@ export default Vue.extend({
 
         network.on("click", graph => {
           if (graph.nodes[0]) {
-            this.selectedNode = this.nodeMap.get(graph.nodes[0])!;
+            this.selectedNode = JSON.parse(
+              JSON.stringify(this.nodeMap.get(graph.nodes[0]))
+            );
           } else {
             this.selectedNode = {} as dcbn.Node;
           }

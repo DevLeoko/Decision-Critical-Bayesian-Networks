@@ -15,7 +15,7 @@
           <v-toolbar-title>Properties</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="updateOpen(false)">Save</v-btn>
+            <v-btn dark text @click="save()">Save</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-tabs v-model="propertyTabs">
@@ -43,7 +43,8 @@ export default Vue.extend({
     return {
       properties: true,
       time0: true,
-      propertyTabs: null
+      propertyTabs: null,
+      oldName: ""
     };
   },
   components: {
@@ -60,6 +61,19 @@ export default Vue.extend({
     },
     changeName(name: any) {
       this.node.name = name;
+    },
+
+    save() {
+      this.$emit("save", { oldName: this.oldName, node: this.node });
+      this.updateOpen(false);
+    }
+  },
+
+  watch: {
+    open(val) {
+      if (val) {
+        this.oldName = this.node.name;
+      }
     }
   }
 });
