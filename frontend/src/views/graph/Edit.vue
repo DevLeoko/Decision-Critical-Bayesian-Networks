@@ -43,7 +43,7 @@ import EditBar from "@/components/graph/EditorToolbar.vue";
 import Vue from "vue";
 import vis, { data } from "vis-network";
 import ActionSelector from "@/components/graph/ActionSelector.vue";
-import NodeProperties from "@/components/graph/NodeProperties.vue";
+import NodeProperties from "@/components/graph/properties/NodeProperties.vue";
 import { dcbn } from "@/utils/graph/graph";
 import {
   createEditGraph,
