@@ -4,9 +4,9 @@ import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
-type Role = "ADMIN" | "MODERATOR" | "SUPERADMIN";
+export type Role = "ADMIN" | "MODERATOR" | "SUPERADMIN";
 
-interface User {
+export interface User {
   name: string;
   email: string;
   role: Role;

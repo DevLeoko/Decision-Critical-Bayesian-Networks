@@ -9,7 +9,7 @@
       :presentValues="this.presentValues"
     />
     <div id="mynetwork" ref="network"></div>
-    <node-action-selector ref="nodeActionSelector">
+    <action-selector ref="nodeActionSelector">
       <v-btn
         tile
         @click="
@@ -39,9 +39,9 @@
         v-if="activeId !== -1 && presentValues[activeId].computed.length"
         >Values</v-btn
       >
-    </node-action-selector>
+    </action-selector>
 
-    <v-dialog v-model="virtualEvidenceOpen" width="500" v-if="activeId !== -1">
+    <v-dialog v-model="virtualEvidenceOpen" width="550" v-if="activeId !== -1">
       <v-card>
         <v-card-title>
           Set virtual evidence
@@ -99,7 +99,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="binaryEvidenceOpen" width="500" v-if="activeId !== -1">
+    <v-dialog v-model="binaryEvidenceOpen" width="550" v-if="activeId !== -1">
       <v-card>
         <v-card-title>
           Set evidences
@@ -134,7 +134,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="valuesOpen" width="500" v-if="activeId !== -1">
+    <v-dialog v-model="valuesOpen" width="550" v-if="activeId !== -1">
       <v-card>
         <v-card-title> Values of {{ nodeIndices[activeId] }} </v-card-title>
 
@@ -169,7 +169,7 @@
       ref="stateImport"
       type="file"
       @change="evt => handleFileSelect(evt.target.files[0])"
-      display="none"
+      style="display: none"
     />
     <v-snackbar v-model="error" color="error" :timeout="5000">
       {{ errorMessage }}
@@ -180,7 +180,7 @@
 
 <script lang="ts">
 import TestToolbar from "@/components/graph/TestToolbar.vue";
-import NodeActionSelector from "@/components/graph/NodeActionSelector.vue";
+import ActionSelector from "@/components/graph/ActionSelector.vue";
 import Vue from "vue";
 import vis, { network } from "vis-network";
 
@@ -196,7 +196,7 @@ import NodeMap from "../../utils/nodeMap";
 export default Vue.extend({
   components: {
     TestToolbar,
-    NodeActionSelector
+    ActionSelector
   },
 
   data() {
@@ -375,8 +375,9 @@ export default Vue.extend({
         network.on("click", param => {
           const node = this.nodeMap.get(param.nodes[0]);
           if (!node) return;
-          this.activeId =
-            this.nodeIndices.findIndex(name => name === node.name) || -1;
+          this.activeId = this.nodeIndices.findIndex(
+            name => name === node.name
+          );
         });
 
         this.nodes = nodeData;
@@ -386,8 +387,6 @@ export default Vue.extend({
         this.clear();
       })
       .catch(error => {
-        console.log(error);
-
         this.errorMessage = error.response.data.message;
         this.error = true;
       });

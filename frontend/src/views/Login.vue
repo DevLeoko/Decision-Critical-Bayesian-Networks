@@ -65,6 +65,8 @@ h1 {
 import SmallView from "@/components/SmallView.vue";
 import { mailValidation, required } from "@/utils/validation.ts";
 import Vue from "vue";
+import { AxiosError } from "axios";
+import { Role } from "@/store";
 
 export default Vue.extend({
   components: { SmallView },
@@ -73,7 +75,7 @@ export default Vue.extend({
       mailValidation,
       required,
 
-      error: undefined,
+      error: "",
       hasError: false,
       valid: false,
       loading: false,
@@ -96,8 +98,6 @@ export default Vue.extend({
 
       this.loading = true;
 
-      console.log(this.axios);
-
       this.axios
         .post("/login", {
           username: this.email,
@@ -107,13 +107,21 @@ export default Vue.extend({
           this.$store.dispatch("setToken", res.data.token);
           this.$store.dispatch("setUser", res.data.user);
 
-          this.$router.push({
-            name: "Test Graph"
-          });
+          if ((this.$store.state.user.role as Role) == "SUPERADMIN") {
+            this.$router.push({
+              name: "SuperAdmin"
+            });
+          } else {
+            this.$router.push({
+              name: "GraphBase"
+            });
+          }
         })
-        .catch(err => {
+        .catch((err: AxiosError) => {
           this.hasError = true;
-          this.error = err.response.data.message;
+          if (err.response!.status == 401)
+            this.error = "Invalid username and/or password!";
+          else this.error = err.response!.data.message;
         })
         .then(() => {
           this.loading = false;
