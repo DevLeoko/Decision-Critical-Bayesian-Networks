@@ -99,22 +99,25 @@
         <v-divider></v-divider>
         <v-progress-linear indeterminate v-if="loading" />
         <v-row justify="center">
-          <v-col class="flex-grow-0 my-4">
-            <v-btn color="primary" @click="createGraph()">
+          <v-col class="flex-grow-0 mt-4 pb-0">
+            <v-btn medium color="primary" @click="createGraph()">
               <v-icon>add</v-icon> Add new graph
             </v-btn>
-            <v-file-input
-              hide-details
-              label="Import"
-              outlined
-              dense
-              class="ma-1"
-              @change="importGraph($event)"
-            ></v-file-input>
+          </v-col>
+          <v-col class="flex-grow-0 mb-4">
+            <v-btn small color="primary lighten-2" @click="triggerImport()">
+              <v-icon small class="mr-2">cloud_upload</v-icon> Import graph
+            </v-btn>
           </v-col>
         </v-row>
       </template>
     </v-navigation-drawer>
+    <input
+      ref="networkFileSelect"
+      type="file"
+      @change="event => importGraph(event.target.files[0])"
+      style="display: none"
+    />
     <folder-actions
       ref="actions"
       :folders="
@@ -287,9 +290,14 @@ export default Vue.extend({
         .then(() => (this.loading = false));
     },
 
+    triggerImport() {
+      (this.$refs.networkFileSelect as HTMLInputElement).value = "";
+      (this.$refs.networkFileSelect as any).click();
+    },
+
     importGraph(file: any) {
-      this.loading = true;
       if (file != null) {
+        this.loading = true;
         const formData = new FormData();
         formData.append("graph", file);
         this.axios
@@ -306,8 +314,6 @@ export default Vue.extend({
             this.throwError(error.response.data.message);
           })
           .then(() => (this.loading = false));
-      } else {
-        this.loading = false;
       }
     },
 

@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
+import store, { Role } from "./store";
 
 Vue.use(Router);
 
@@ -12,7 +13,7 @@ function generateDefaultRoute(name: String, children = undefined) {
   };
 }
 
-export default new Router({
+export const router = new Router({
   routes: [
     {
       name: "SuperAdmin",
@@ -74,4 +75,32 @@ export default new Router({
       ]
     }
   ]
+});
+
+// Make sure to not add any redirect loops!
+router.beforeEach((to, from, next) => {
+  if (store.state.isUserLoggedIn) {
+    if (!to.name) {
+      if ((store.state.user.role as Role) == "SUPERADMIN") {
+        next({
+          name: "SuperAdmin"
+        });
+        return;
+      } else {
+        next({
+          name: "GraphBase"
+        });
+        return;
+      }
+    }
+  } else {
+    if (!to.meta.unauthorized) {
+      next({
+        name: "Login"
+      });
+      return;
+    }
+  }
+
+  next();
 });
