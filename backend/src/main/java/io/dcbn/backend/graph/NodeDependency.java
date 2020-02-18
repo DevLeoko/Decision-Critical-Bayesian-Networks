@@ -55,15 +55,11 @@ public class NodeDependency {
                 || probabilities[0].length != dependency.getProbabilities()[0].length) {
             return false;
         }
-        for (Node parent : parents) {
-            if (!dependency.getParents().contains(parent)) {
-                return false;
-            }
+        if (!dependency.getParents().containsAll(parents)) {
+            return false;
         }
-        for (Node parent : parentsTm1) {
-            if (!dependency.getParentsTm1().contains(parent)) {
-                return false;
-            }
+        if (!dependency.getParentsTm1().containsAll(parentsTm1)) {
+            return false;
         }
         for (int i = 0; i < probabilities.length; i++) {
             for (int j = 0; j < probabilities[0].length; j++) {
