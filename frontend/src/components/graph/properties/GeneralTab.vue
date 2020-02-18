@@ -1,8 +1,7 @@
 <template>
-  <div>
-    <v-layout>
-      <v-col cols="3" />
-      <v-col cols="6">
+  <v-container>
+    <v-row>
+      <v-col cols="6" offset="3">
         <v-card-title>Name</v-card-title>
         <v-text-field
           outlined
@@ -19,9 +18,9 @@
           @update:color="updateColor"
         />
       </v-col>
-      <v-col cols="3" />
-    </v-layout></div
-></template>
+    </v-row>
+  </v-container>
+</template>
 
 <script lang="ts">
 import Vue from "vue";
