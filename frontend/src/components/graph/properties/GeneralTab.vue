@@ -5,7 +5,6 @@
         <v-card-title>Name</v-card-title>
         <v-text-field
           outlined
-          clearable
           color="primary"
           label="Name"
           v-model="node.name"

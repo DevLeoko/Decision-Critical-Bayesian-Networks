@@ -413,6 +413,11 @@ export default Vue.extend({
       const node = event.node as dcbn.Node;
       const uuid = this.nodeMap.getUuidFromName(name)!;
 
+      if (/^\s*$/.test(node.name)) {
+        this.hasError = true;
+        this.errorMessage = "Node name cannot be empty!";
+        return;
+      }
       if (name !== node.name) {
         const nodesWithSameName = this.nodeMap
           .nodes()
