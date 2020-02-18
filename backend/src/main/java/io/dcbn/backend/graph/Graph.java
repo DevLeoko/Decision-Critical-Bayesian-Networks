@@ -55,7 +55,6 @@ public class Graph {
             return false;
         }
         for (Node node : nodes) {
-            System.out.println(node.toString());
             if (!graph.getNodes().contains(node)) {
                 return false;
             }
