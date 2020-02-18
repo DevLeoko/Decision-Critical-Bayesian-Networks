@@ -20,14 +20,20 @@
 
 <script lang="ts">
 import Vue from "vue";
-import ProbTable from "@/components/graph/ProbTable.vue";
+import ProbTable from "@/components/graph/properties/ProbTable.vue";
 import { dcbn } from "@/utils/graph/graph";
 
 export default Vue.extend({
   components: {
     ProbTable
   },
-  props: { time0: Boolean, node: Object as () => dcbn.Node },
+  props: { node: Object as () => dcbn.Node },
+
+  data() {
+    return {
+      time0: true
+    };
+  },
 
   computed: {
     tableNum(): number {
