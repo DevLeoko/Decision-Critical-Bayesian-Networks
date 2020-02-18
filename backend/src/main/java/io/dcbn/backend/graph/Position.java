@@ -24,6 +24,6 @@ public class Position {
         }
         Position position = (Position) o;
 
-        return !(Math.abs(x - position.getX()) > 0.01) && !(Math.abs(y - position.getY()) > 0.01);
+        return Math.abs(x - position.getX()) <= 0.01 && Math.abs(y - position.getY()) <= 0.01;
     }
 }

@@ -33,29 +33,29 @@ public class NodeTest {
                 {0.2, 0.8}, {0.001, 0.999}, {0.001, 0.999}};
 
         NodeDependency smuggling0Dep = new NodeDependency(smugglingParentsList,
-                new ArrayList<>(), probabilities);
-        NodeDependency smugglingTDep = new NodeDependency(smugglingParentsList, new ArrayList<>(),
+                Collections.emptyList(), probabilities);
+        NodeDependency smugglingTDep = new NodeDependency(smugglingParentsList, Collections.emptyList(),
                 probabilities);
         smuggling.setTimeZeroDependency(smuggling0Dep);
         smuggling.setTimeTDependency(smugglingTDep);
 
-        NodeDependency nS0Dep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
+        NodeDependency nS0Dep = new NodeDependency(Collections.emptyList(), Collections.emptyList(),
                 new double[][]{{0.7, 0.3}});
-        NodeDependency nSTDep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
+        NodeDependency nSTDep = new NodeDependency(Collections.emptyList(), Collections.emptyList(),
                 new double[][]{{0.7, 0.3}});
         nullSpeed.setTimeZeroDependency(nS0Dep);
         nullSpeed.setTimeTDependency(nSTDep);
 
-        NodeDependency iTA0Dep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
+        NodeDependency iTA0Dep = new NodeDependency(Collections.emptyList(), Collections.emptyList(),
                 new double[][]{{0.8, 0.2}});
-        NodeDependency iTATDep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
+        NodeDependency iTATDep = new NodeDependency(Collections.emptyList(), Collections.emptyList(),
                 new double[][]{{0.8, 0.2}});
         inTrajectoryArea.setTimeZeroDependency(iTA0Dep);
         inTrajectoryArea.setTimeTDependency(iTATDep);
 
-        NodeDependency iIRA0Dep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
+        NodeDependency iIRA0Dep = new NodeDependency(Collections.emptyList(), Collections.emptyList(),
                 new double[][]{{0.8, 0.2}});
-        NodeDependency iIRATDep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
+        NodeDependency iIRATDep = new NodeDependency(Collections.emptyList(), Collections.emptyList(),
                 new double[][]{{0.8, 0.2}});
         isInReportedArea.setTimeZeroDependency(iIRA0Dep);
         isInReportedArea.setTimeTDependency(iIRATDep);
@@ -83,7 +83,7 @@ public class NodeTest {
 
     @Test
     public void notEqualsTest() {
-        NodeDependency nS0Dep = new NodeDependency(new ArrayList<>(), new ArrayList<>(),
+        NodeDependency nS0Dep = new NodeDependency(Collections.emptyList(), Collections.emptyList(),
                 new double[][]{{0.7, 0.3}});
         Node n1 = new Node("node1", nS0Dep, nS0Dep, "", null, StateType.BOOLEAN, ZERO_POSITION);
         Node n2 = new Node("node1", nS0Dep, nS0Dep, "", null, StateType.BOOLEAN, ZERO_POSITION);
@@ -105,16 +105,16 @@ public class NodeTest {
         assertNotEquals(n1, n2);
         n1.setPosition(ZERO_POSITION);
 
-        n1.setTimeTDependency(new NodeDependency(new ArrayList<>(), new ArrayList<>(), new double[][]{{0,6,0,4}}));
+        n1.setTimeTDependency(new NodeDependency(Collections.emptyList(), Collections.emptyList(), new double[][]{{0,6,0,4}}));
         assertNotEquals(n1, n2);
         n1.setTimeTDependency(nS0Dep);
 
-        n1.setTimeZeroDependency(new NodeDependency(new ArrayList<>(), new ArrayList<>(), new double[][]{{0,6,0,4}}));
+        n1.setTimeZeroDependency(new NodeDependency(Collections.emptyList(), Collections.emptyList(), new double[][]{{0,6,0,4}}));
         assertNotEquals(n1, n2);
         n1.setTimeZeroDependency(nS0Dep);
 
-        NodeDependency testDependency = new NodeDependency(Collections.singletonList(smuggling), new ArrayList<>() , new double[][]{{0.7, 0.3}});
-        NodeDependency testDependency2 = new NodeDependency(new ArrayList<>(), Collections.singletonList(smuggling), new double[][]{{0.7, 0.3}});
+        NodeDependency testDependency = new NodeDependency(Collections.singletonList(smuggling), Collections.emptyList() , new double[][]{{0.7, 0.3}});
+        NodeDependency testDependency2 = new NodeDependency(Collections.emptyList(), Collections.singletonList(smuggling), new double[][]{{0.7, 0.3}});
 
         n1.setTimeTDependency(testDependency);
         assertNotEquals(n1, n2);
