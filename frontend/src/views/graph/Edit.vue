@@ -3,7 +3,7 @@
     <edit-bar
       :timeSteps.sync="graph.timeSlices"
       :loading="saveLoading"
-      :uptodate="serverGraph == JSON.stringify(this.graph)"
+      :upToDate="serverGraph == JSON.stringify(this.graph)"
       @save="save()"
       @nodeAdd="addNode()"
       @edgeAdd="addEdge()"
