@@ -142,16 +142,18 @@ export default Vue.extend({
       network.deleteSelected();
     },
 
-    findPowerOfTwo(toNode: dcbn.Node, nodeName: string): number {
-      const totalList = Object.assign(
-        [],
-        toNode.timeTDependency.parents
-      ) as string[];
-      totalList.push(...toNode.timeTDependency.parentsTm1);
+    findPowerOfTwo(
+      dependency: dcbn.TimeZeroDependency,
+      nodeName: string
+    ): number {
+      const totalList = Object.assign([], dependency.parents) as string[];
+      totalList.push(...dependency.parentsTm1);
       return 2 ** (totalList.length - totalList.indexOf(nodeName) - 1);
     },
 
-    addToDependencies(dependency: dcbn.TimeZeroDependency, powerOfTwo: number) {
+    addToDependencies(dependency: dcbn.TimeZeroDependency, fromName: string) {
+      const powerOfTwo = this.findPowerOfTwo(dependency, fromName);
+
       let index = powerOfTwo;
       while (index <= dependency.probabilities.length) {
         const toAdd = dependency.probabilities.slice(index - powerOfTwo, index);
@@ -162,9 +164,9 @@ export default Vue.extend({
 
     removeFromDependencies(
       dependency: dcbn.TimeZeroDependency,
-      powerOfTwo: number
+      fromName: string
     ) {
-      console.log("Removing from ", dependency);
+      const powerOfTwo = this.findPowerOfTwo(dependency, fromName);
 
       let index = powerOfTwo;
       while (index <= dependency.probabilities.length) {
@@ -182,12 +184,10 @@ export default Vue.extend({
         return;
       }
 
-      const powerOfTwo = this.findPowerOfTwo(toNode, fromName);
       if (!isTimeDependency) {
-        this.removeFromDependencies(toNode.timeZeroDependency, powerOfTwo);
+        this.removeFromDependencies(toNode.timeZeroDependency, fromName);
       }
-
-      this.removeFromDependencies(toNode.timeTDependency, powerOfTwo);
+      this.removeFromDependencies(toNode.timeTDependency, fromName);
 
       if (isTimeDependency) {
         const index = toNode.timeTDependency.parentsTm1.indexOf(fromName);
@@ -267,12 +267,11 @@ export default Vue.extend({
         toNode.timeTDependency.parents.push(fromName);
       }
 
-      const powerOfTwo = this.findPowerOfTwo(toNode, fromName);
       if (!this.timeEdge) {
-        this.addToDependencies(toNode.timeZeroDependency, powerOfTwo);
+        this.addToDependencies(toNode.timeZeroDependency, fromName);
       }
 
-      this.addToDependencies(toNode.timeTDependency, powerOfTwo);
+      this.addToDependencies(toNode.timeTDependency, fromName);
 
       if (this.timeEdge) {
         const uuid = vis.util.randomUUID();
