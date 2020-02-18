@@ -282,6 +282,11 @@ export default Vue.extend({
           ...data,
           ...timeEdgeOptions
         };
+      } else {
+        data = {
+          ...data,
+          color: defaultColor
+        };
       }
       callback(data);
     },
