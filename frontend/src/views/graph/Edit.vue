@@ -3,12 +3,16 @@
     <edit-bar
       :timeSteps.sync="graph.timeSlices"
       :loading="saveLoading"
-      :uptodate="serverGraph == JSON.stringify(this.graph)"
+      :upToDate="serverGraph == JSON.stringify(this.graph)"
       @save="save()"
       @nodeAdd="addNode()"
       @edgeAdd="addEdge()"
       @edgeTAdd="addTEdge()"
       @formatNetwork="formatGraph()"
+      @undo="undo()"
+      @redo="redo()"
+      :undoDisabled="!undoStack.length"
+      :redoDisabled="!redoStack.length"
     />
     <div id="mynetwork" ref="network"></div>
     <action-selector ref="nodeActionSelector">
@@ -37,7 +41,7 @@
 <script lang="ts">
 import EditBar from "@/components/graph/EditorToolbar.vue";
 import Vue from "vue";
-import vis, { data, Edge } from "vis-network";
+import vis, { data } from "vis-network";
 import ActionSelector from "@/components/graph/ActionSelector.vue";
 import NodeProperties from "@/components/graph/NodeProperties.vue";
 import { dcbn } from "@/utils/graph/graph";
@@ -50,6 +54,18 @@ import NodeMap from "../../utils/nodeMap";
 import { formatGraph } from "../../utils/graph/graphFormatter";
 
 let network = {} as vis.Network;
+
+interface EdgeAndNodeData {
+  edges: vis.Edge[];
+  nodes: vis.Node[];
+}
+
+interface GraphState {
+  dcbnGraph: dcbn.Graph;
+  visGraph: EdgeAndNodeData;
+  timeEdges: string[];
+  nodeMap: NodeMap;
+}
 
 export default Vue.extend({
   components: {
@@ -76,7 +92,9 @@ export default Vue.extend({
       errorMessage: "",
 
       saveLoading: false,
-      serverGraph: ""
+      serverGraph: "",
+      undoStack: [] as GraphState[],
+      redoStack: [] as GraphState[]
     };
   },
 
@@ -94,6 +112,7 @@ export default Vue.extend({
     },
 
     formatGraph() {
+      this.addToUndoStack();
       formatGraph(this.nodeMap, this.nodes, this.edges);
     },
 
@@ -191,6 +210,8 @@ export default Vue.extend({
     },
 
     addNodeToGraph(data: any, callback: Function) {
+      this.addToUndoStack();
+
       data.label = this.generateNewNodeName();
       const node = {
         type: "Node",
@@ -225,6 +246,7 @@ export default Vue.extend({
     },
 
     addEdgeToGraph(data: any, callback: Function) {
+      this.addToUndoStack();
       const fromId = data.from as string;
       const toId = data.to as string;
 
@@ -254,11 +276,12 @@ export default Vue.extend({
           ...timeEdgeOptions
         };
       }
-
       callback(data);
     },
 
     deleteNodeFromGraph(data: any, callback: Function) {
+      this.addToUndoStack();
+
       for (let edgeUuid of data.edges as string[]) {
         const edge = this.edges!.get(edgeUuid);
 
@@ -283,6 +306,7 @@ export default Vue.extend({
     },
 
     deleteEdgeFromGraph(data: any, callback: Function) {
+      this.addToUndoStack();
       const edge = this.edges!.get(data.edges[0] as string)!;
       const fromName = this.nodeMap.get(edge.from as string)!.name;
       const toNode = this.nodeMap.get(edge.to as string)!;
@@ -298,6 +322,64 @@ export default Vue.extend({
 
       this.removeDependencies(toNode, fromName, isTimeEdge);
       callback(data);
+    },
+
+    undo() {
+      const state = this.undoStack.pop()!;
+      this.pushCurrentStateTo(this.redoStack);
+      this.updateGraphStates(state);
+    },
+
+    redo() {
+      const state = this.redoStack.pop()!;
+      this.pushCurrentStateTo(this.undoStack);
+      this.updateGraphStates(state);
+    },
+
+    updateGraphStates(state: GraphState) {
+      this.graph = state.dcbnGraph;
+      this.nodes.clear();
+      this.nodes.add(state.visGraph.nodes);
+      this.edges.clear();
+      this.edges.add(state.visGraph.edges);
+
+      this.timeEdges = state.timeEdges;
+      this.nodeMap = state.nodeMap;
+    },
+
+    pushCurrentStateTo(stack: GraphState[]) {
+      const copy = this.copyState({
+        visGraph: {
+          nodes: this.nodes.get(),
+          edges: this.edges.get()
+        },
+        dcbnGraph: this.graph,
+        timeEdges: this.timeEdges,
+        nodeMap: this.nodeMap
+      });
+      stack.push(copy);
+    },
+
+    addToUndoStack() {
+      this.redoStack.length = 0;
+      this.pushCurrentStateTo(this.undoStack);
+    },
+
+    copyState(state: GraphState): GraphState {
+      const visCopy = JSON.parse(JSON.stringify(state.visGraph));
+      const nodeMapCopy = state.nodeMap.clone();
+      const graphCopy = JSON.parse(
+        JSON.stringify(state.dcbnGraph)
+      ) as dcbn.Graph;
+      graphCopy.nodes = nodeMapCopy.nodes();
+      const timeEdgesCopy = Object.assign([], state.timeEdges);
+
+      return {
+        visGraph: visCopy,
+        dcbnGraph: graphCopy,
+        nodeMap: nodeMapCopy,
+        timeEdges: timeEdgesCopy
+      };
     }
   },
 
@@ -340,11 +422,14 @@ export default Vue.extend({
           if (!event.nodes.length) {
             return;
           }
+          this.addToUndoStack();
+
           const nodeId = event.nodes[0] as string;
           const node = this.nodeMap.get(nodeId)!;
 
           const newPosition = network.getPositions([nodeId])[nodeId];
           node.position = newPosition;
+          network.storePositions();
         });
       })
       .catch(error => {

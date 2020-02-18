@@ -32,4 +32,12 @@ export default class NodeMap {
   nodes(): dcbn.Node[] {
     return Object.values(this.map);
   }
+
+  clone(): NodeMap {
+    const map = new NodeMap();
+    for (const entry of Object.entries(this.map)) {
+      map.put(entry[0], JSON.parse(JSON.stringify(entry[1])));
+    }
+    return map;
+  }
 }
