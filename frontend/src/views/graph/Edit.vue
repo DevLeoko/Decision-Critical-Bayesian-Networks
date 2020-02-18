@@ -114,6 +114,7 @@ export default Vue.extend({
     formatGraph() {
       this.addToUndoStack();
       formatGraph(this.nodeMap, this.nodes, this.edges);
+      network.stabilize(0);
     },
 
     addNode() {
