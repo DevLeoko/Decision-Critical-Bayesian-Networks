@@ -33,13 +33,13 @@
         </v-col>
       </v-row>
       <v-row
-        v-for="nodeStates in stateType.states.length"
-        :key="nodeStates"
+        v-for="nodeState in stateType.states.length"
+        :key="nodeState"
         style="outline-width: 2px;
   outline-style: solid;
   outline-color: black;"
       >
-        <v-col cols="3"> {{ stateType.states[nodeStates - 1] }}</v-col>
+        <v-col cols="3"> {{ stateType.states[nodeState - 1] }}</v-col>
         <v-col
           v-for="inputFields in Math.pow(
             2,
@@ -50,8 +50,12 @@
   outline-style: solid;
   outline-color: black;"
         >
-          <v-text-field dense outlined solo></v-text-field
-        ></v-col>
+          <v-text-field
+            dense
+            outlined
+            solo
+            v-model="dependency.probabilities[inputFields - 1][nodeState - 1]"
+        /></v-col>
       </v-row>
     </v-container>
   </div>
