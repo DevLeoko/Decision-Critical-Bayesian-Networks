@@ -169,7 +169,7 @@
       ref="stateImport"
       type="file"
       @change="evt => handleFileSelect(evt.target.files[0])"
-      display="none"
+      style="display: none"
     />
     <v-snackbar v-model="error" color="error" :timeout="5000">
       {{ errorMessage }}
