@@ -42,4 +42,36 @@ public class NodeDependency {
         this.parentsTm1 = parentsTm1;
         this.probabilities = probabilities;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof NodeDependency)) {
+            return false;
+        }
+        NodeDependency dependency = (NodeDependency) o;
+        if (id != dependency.getId() || parents.size() != dependency.getParents().size()
+                || parentsTm1.size() != dependency.getParentsTm1().size()
+                || probabilities.length != dependency.getProbabilities().length
+                || probabilities[0].length != dependency.getProbabilities()[0].length) {
+            return false;
+        }
+        for (Node parent : parents) {
+            if (!dependency.getParents().contains(parent)) {
+                return false;
+            }
+        }
+        for (Node parent : parentsTm1) {
+            if (!dependency.getParentsTm1().contains(parent)) {
+                return false;
+            }
+        }
+        for (int i = 0; i < probabilities.length; i++) {
+            for (int j = 0; j < probabilities[0].length; j++) {
+                if (Math.abs(probabilities[i][j] - dependency.getProbabilities()[i][j]) > 0.01) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

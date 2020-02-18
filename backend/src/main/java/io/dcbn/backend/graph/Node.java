@@ -74,4 +74,21 @@ public class Node {
     public boolean isValueNode() {
         return false;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Node)) {
+            return false;
+        }
+        Node node = (Node) o;
+        if (id != node.getId() || !name.equals(node.getName()) || !timeTDependency.equals(node.getTimeTDependency())
+                || !timeZeroDependency.equals(node.getTimeZeroDependency()) || !color.equals(node.getColor())
+                || stateType != node.stateType
+                || !position.equals(node.position)) {
+            return false;
+        }
+        return (evidenceFormulaName == null || node.getEvidenceFormulaName() == null || evidenceFormulaName.equals(node.getEvidenceFormulaName()))
+                && (evidenceFormulaName != null || node.getEvidenceFormulaName() == null)
+                && (evidenceFormulaName == null || node.getEvidenceFormulaName() != null);
+    }
 }
