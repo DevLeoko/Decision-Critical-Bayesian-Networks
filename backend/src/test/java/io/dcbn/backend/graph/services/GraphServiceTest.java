@@ -8,10 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -55,11 +52,32 @@ public class GraphServiceTest {
     }
 
     @Test
-    public void extendLock() {
+    public void extendLockTest() {
         service.updateLock(1, "user1");
         assertThrows(IllegalArgumentException.class, () -> service.updateLock(1, "user2"));
         service.updateLock(1, "user1");
         assertThrows(IllegalArgumentException.class, () -> service.updateLock(1, "user2"));
+    }
+
+    @Test
+    public void hasCycleToItselfTest() {
+        Node nodeOne = new Node("nodeOne", null, null, "", null,
+                StateType.BOOLEAN, ZERO_POSITION);
+
+        List<Node> nodeOneParentsList = new ArrayList<>();
+        nodeOneParentsList.add(nodeOne);
+        double[][] probabilities = {{0.8, 0.2}, {0.6, 0.4}};
+        NodeDependency nodeOne0Dep = new NodeDependency(nodeOneParentsList,
+                new ArrayList<>(), probabilities);
+        NodeDependency nodeOneTDep = new NodeDependency(nodeOneParentsList, new ArrayList<>(),
+                probabilities);
+        nodeOne.setTimeZeroDependency(nodeOne0Dep);
+        nodeOne.setTimeTDependency(nodeOneTDep);
+
+        Graph graph = new Graph(0, "testGraph", NUM_TIME_SLICES,
+                Collections.singletonList(nodeOne));
+
+        assertTrue(service.hasCycles(graph));
     }
 
     @Test

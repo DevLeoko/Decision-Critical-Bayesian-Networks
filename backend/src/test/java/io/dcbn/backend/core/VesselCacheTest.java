@@ -25,6 +25,14 @@ public class VesselCacheTest {
     }
 
     @Test
+    public void getAllVesselsInTimeSliceByTypeExceptionTest() {
+        assertThrows(IllegalArgumentException.class,
+                () -> vesselCache.getAllVesselsInTimeSliceByType(-1, VesselType.CARGO));
+        assertThrows(IllegalArgumentException.class,
+                () -> vesselCache.getAllVesselsInTimeSliceByType(5, VesselType.CARGO));
+    }
+
+    @Test
     public void getAllVesselsInTimeSliceExceptionTest() {
         assertThrows(IllegalArgumentException.class,
                 () -> vesselCache.getAllVesselsInTimeSlice(-1));
