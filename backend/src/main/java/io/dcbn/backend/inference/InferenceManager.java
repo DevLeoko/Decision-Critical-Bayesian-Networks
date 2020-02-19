@@ -8,7 +8,6 @@ import eu.amidst.dynamic.datastream.DynamicDataInstance;
 import eu.amidst.dynamic.inference.FactoredFrontierForDBN;
 import eu.amidst.dynamic.inference.InferenceEngineForDBN;
 import eu.amidst.dynamic.utils.DynamicBayesianNetworkSampler;
-import io.dcbn.backend.core.AoiCache;
 import io.dcbn.backend.core.VesselCache;
 import io.dcbn.backend.datamodel.Outcome;
 import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
@@ -36,11 +35,12 @@ import java.util.stream.Collectors;
 public class InferenceManager {
 
     private VesselCache vesselCache;
-    private AoiCache aoiCache;
 
     private GraphRepository graphRepository;
     private EvidenceFormulaRepository evidenceFormulaRepository;
     private EvidenceFormulaEvaluator evidenceFormulaEvaluator;
+
+    private final Vessel defaultVessel;
 
     @Autowired
     public InferenceManager(VesselCache vesselCache, GraphRepository graphRepository,
@@ -50,6 +50,7 @@ public class InferenceManager {
         this.graphRepository = graphRepository;
         this.evidenceFormulaRepository = evidenceFormulaRepository;
         this.evidenceFormulaEvaluator = evidenceFormulaEvaluator;
+        defaultVessel = new Vessel("", 0);
     }
 
     /**
@@ -59,25 +60,27 @@ public class InferenceManager {
      * @return TODO Complete
      */
     public List<Outcome> calculateInference(String vesselUuid) {
-        Vessel[] vessels = vesselCache.getVesselsByUuid(vesselUuid);
         List<Outcome> outcomes = new ArrayList<>();
+        for (Graph graph : graphRepository.findAll()) {
+            outcomes.add(calculateInference(graph, vesselUuid));
+        }
+        return outcomes;
+    }
+
+    public Outcome calculateInference(Graph graph, String vesselUuid) {
+        Vessel[] vessels = vesselCache.getVesselsByUuid(vesselUuid);
 
         //Iterating over all graphs
-        for (Graph graph : graphRepository.findAll()) {
             AmidstGraphAdapter adaptedGraph = new AmidstGraphAdapter(graph);
             Graph calculatedGraph = calculateInference(adaptedGraph, (i, formula) -> {
-                Vessel vessel = vessels[i];
+                Vessel vessel = vessels != null ? vessels[i] : defaultVessel;
                 return evidenceFormulaEvaluator.evaluate(i, vessel, formula) ? "true" : "false";
             }, Algorithm.IMPORTANCE_SAMPLING);
             Set<Vessel> correlatedVessels = evidenceFormulaEvaluator.getCorrelatedVessels();
-            correlatedVessels.add(vessels[0]);
-            Outcome outcome = new Outcome(UUID.randomUUID().toString(), System.currentTimeMillis(),
+            correlatedVessels.add(vessels != null ? vessels[0] : defaultVessel);
+            return new Outcome(UUID.randomUUID().toString(), System.currentTimeMillis(),
                     calculatedGraph, correlatedVessels,
                     evidenceFormulaEvaluator.getCorrelatedAois());
-            //evidenceFormulaEvaluator.reset();
-            outcomes.add(outcome);
-        }
-        return outcomes;
     }
 
     /**
@@ -123,7 +126,7 @@ public class InferenceManager {
                 .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() != null && !var.getEvidenceFormulaName().equals("") && evidenceFormulaRepository.existsByName(var.getEvidenceFormulaName()))
                 .collect(Collectors.toList());
         List<Node> nodesToSetValuesFromValueNode = nodes.stream()
-                .filter(var -> var.isValueNode())
+                .filter(Node::isValueNode)
                 .filter(var -> ((ValueNode) var).checkValuesAreStates())
                 .collect(Collectors.toList());
 
@@ -182,4 +185,5 @@ public class InferenceManager {
                 adaptedGraph.getAdaptedGraph().getName()
                 , adaptedGraph.getAdaptedGraph().getTimeSlices(), returnedNodes);
     }
+
 }

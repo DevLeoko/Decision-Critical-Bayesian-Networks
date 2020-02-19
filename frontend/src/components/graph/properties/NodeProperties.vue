@@ -15,7 +15,7 @@
           <v-toolbar-title>Properties</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="updateOpen(false)">Save</v-btn>
+            <v-btn dark text @click="save()">Save</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-tabs v-model="propertyTabs">
@@ -25,7 +25,16 @@
 
         <v-tabs-items v-model="propertyTabs">
           <v-tab-item><general-tab :node="node"/></v-tab-item>
-          <v-tab-item><cpt-container :node="node"/></v-tab-item>
+          <v-tab-item>
+            <cpt-container :node="node" />
+            <v-select
+              :items="evidenceFormulas"
+              style="max-width: 300px; margin: auto"
+              label="Evidence Formula"
+              v-model="node.evidenceFormulaName"
+              clearable
+            />
+          </v-tab-item>
         </v-tabs-items>
       </v-card>
     </v-dialog>
@@ -43,7 +52,9 @@ export default Vue.extend({
     return {
       properties: true,
       time0: true,
-      propertyTabs: null
+      propertyTabs: null,
+      oldName: "",
+      evidenceFormulas: [] as string[]
     };
   },
   components: {
@@ -61,7 +72,32 @@ export default Vue.extend({
     },
     changeName(name: any) {
       this.node.name = name;
+    },
+
+    save() {
+      this.$emit("save", { oldName: this.oldName, node: this.node });
+      this.updateOpen(false);
     }
+  },
+
+  watch: {
+    open(val) {
+      if (val) {
+        this.oldName = this.node.name;
+      }
+    }
+  },
+
+  mounted() {
+    this.axios
+      .get("/evidence-formulas")
+      .then(resp => {
+        this.evidenceFormulas = resp.data.map((formula: any) => formula.name);
+      })
+      .catch(err => {
+        //TODO: DISPLAY ERROR.
+        console.log(err);
+      });
   }
 });
 </script>
