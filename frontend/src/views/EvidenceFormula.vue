@@ -18,7 +18,7 @@
       <v-layout v-else row wrap>
         <v-flex xs6 offset-xs3>
           <v-alert type="info" :value="true">
-            Please select an evidence formula or create a new one!
+            {{ $t("evidenceFormula.selectOrCreate") }}
           </v-alert>
         </v-flex>
       </v-layout>

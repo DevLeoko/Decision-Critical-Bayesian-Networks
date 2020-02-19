@@ -17,16 +17,16 @@
     <div id="mynetwork" ref="network"></div>
     <action-selector ref="nodeActionSelector">
       <v-btn tile @click="editProperties = true">
-        Properties
+        {{ $t("edit.properties") }}
       </v-btn>
       <v-btn tile @click="deleteNode()">
-        Delete
+        {{ $t("edit.delete") }}
       </v-btn>
     </action-selector>
 
     <action-selector ref="edgeActionSelector" isEdgeSelector>
       <v-btn tile @click="deleteEdge()">
-        Delete
+        {{ $t("edit.delete") }}
       </v-btn>
     </action-selector>
 

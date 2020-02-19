@@ -19,7 +19,7 @@
           }
           virtualEvidenceOpen = true;
         "
-        >Virtual Evidence</v-btn
+        >{{ $t("test.virtualEvidence") }}</v-btn
       >
       <v-btn
         tile
@@ -31,7 +31,7 @@
           binaryEvidenceOpen = true;
         "
       >
-        Binary Evidences
+        {{ $t("test.binaryEvidence") }}
       </v-btn>
       <v-btn
         tile
@@ -44,7 +44,7 @@
     <v-dialog v-model="virtualEvidenceOpen" width="550" v-if="activeId !== -1">
       <v-card>
         <v-card-title>
-          Set virtual evidence
+          {{ $t("graphTest.setVirtualEvidence") }}
         </v-card-title>
 
         <v-card-text class="py-3">
@@ -86,14 +86,14 @@
               presentValues[activeId].virtualEvidence = null;
             "
           >
-            Reset
+            {{ $t("graphTest.reset") }}
           </v-btn>
           <v-btn
             color="grey darken-2"
             text
             @click="virtualEvidenceOpen = false"
           >
-            Done
+            {{ $t("graphTest.done") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -102,7 +102,7 @@
     <v-dialog v-model="binaryEvidenceOpen" width="550" v-if="activeId !== -1">
       <v-card>
         <v-card-title>
-          Set evidences
+          {{ $t("graphTest.setEvidences") }}
         </v-card-title>
 
         <v-card-text>
@@ -126,10 +126,10 @@
               presentValues[activeId].evidences = [];
             "
           >
-            RESET
+            {{ $t("graphTest.reset") }}
           </v-btn>
           <v-btn color="grey darken-2" text @click="binaryEvidenceOpen = false">
-            Done
+            {{ $t("graphTest.done") }}
           </v-btn>
         </v-card-actions>
       </v-card>
