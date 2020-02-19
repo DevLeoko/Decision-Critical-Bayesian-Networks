@@ -1,6 +1,5 @@
 package io.dcbn.backend.graph;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -34,6 +33,7 @@ public class NodeDependency {
     private List<Node> parentsTm1;
 
     @Convert(converter = ProbabilityConverter.class)
+    @Column(length = 65536)
     private double[][] probabilities;
 
     public NodeDependency(List<Node> parents, List<Node> parentsTm1, double[][] probabilities) {

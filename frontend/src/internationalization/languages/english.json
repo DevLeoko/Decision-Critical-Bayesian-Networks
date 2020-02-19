@@ -125,7 +125,8 @@
     },
     "cptContainer": {
       "conditionalProbabilityTable": "Conditional Probability Table",
-      "currentTime": "Current: Time"
+      "currentTime": "Current: Time",
+      "autocomplete": "Press ENTER within an input field to autocomplete propabilities"
     },
     "generalTab": {
       "name": "Name",

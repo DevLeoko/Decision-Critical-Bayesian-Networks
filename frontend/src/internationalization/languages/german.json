@@ -125,7 +125,8 @@
     },
     "cptContainer": {
       "conditionalProbabilityTable": "Bedingte Wahrscheinlichkeitstabelle",
-      "currentTime": "Aktuell: Zeit "
+      "currentTime": "Aktuell: Zeit ",
+      "autocomplete": "Drücke in einem Eingabefeld ENTER um Wahrscheinlichkeiten automatisch zu ergänzen"
     },
     "generalTab": {
       "name": "Name",

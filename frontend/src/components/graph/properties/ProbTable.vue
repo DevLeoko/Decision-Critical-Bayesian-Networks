@@ -49,9 +49,16 @@
               0
             ) == 1 || 'failed'
           "
+          @keydown.enter="
+            fillProps(dependency.probabilities[inputFields - 1], nodeState - 1);
+            $event.target.blur();
+          "
         />
       </v-col>
     </v-row>
+    <span class="grey--text font-weight-light">
+      ({{ $t("cptContainer.autocomplete") }})
+    </span>
   </v-container>
 </template>
 
@@ -116,6 +123,18 @@ export default Vue.extend({
   props: {
     dependency: Object as () => dcbn.TimeZeroDependency | dcbn.TimeTDependency,
     stateType: Object as () => dcbn.StateType
+  },
+
+  methods: {
+    fillProps(prop: number[], index: number) {
+      const fill =
+        Math.round(((1 - prop[index]) / (prop.length - 1)) * 100) / 100;
+      for (let i = 0; i < prop.length; i++) {
+        if (i != index) prop[i] = fill;
+      }
+
+      prop[index] = Math.round(prop[index] * 100) / 100;
+    }
   }
 });
 </script>
