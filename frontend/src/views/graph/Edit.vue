@@ -3,7 +3,7 @@
     <edit-bar
       :timeSteps.sync="graph.timeSlices"
       :loading="saveLoading"
-      :upToDate="serverGraph == JSON.stringify(this.graph)"
+      :upToDate="upToDate"
       @save="save()"
       @nodeAdd="addNode()"
       @edgeAdd="addEdge()"
@@ -35,6 +35,34 @@
       {{ errorMessage }}
       <v-btn icon @click="hasError = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
+
+    <v-dialog :value="saveAlert.value" width="400" persistent>
+      <v-card>
+        <v-card-title>
+          Unsaved changes!
+        </v-card-title>
+        <v-card-text>
+          You have made changes to the current graph that have not been saved
+          yet. If you decide to leave anyway those changes will be discarded!
+        </v-card-text>
+        <v-card-actions class="px-4 pb-4">
+          <v-btn @click="saveAlert.value = false" color="grey" text>
+            Cancel
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            @click="
+              saveAlert.value = false;
+              saveAlert.proceedAction();
+            "
+            color="error"
+            text
+          >
+            Discard changes
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -52,8 +80,25 @@ import {
 } from "@/utils/graph/graphGenerator";
 import NodeMap from "../../utils/nodeMap";
 import { formatGraph } from "../../utils/graph/graphFormatter";
+import { router } from "../../router";
 
 let network = {} as vis.Network;
+let upToDate = true;
+let saveAlert = {
+  value: false,
+  proceedAction: null as Function | null
+};
+
+router.beforeEach((to, from, next) => {
+  if (from.name == "Edit Graph") {
+    if (!upToDate) {
+      saveAlert.value = true;
+      saveAlert.proceedAction = next;
+      return;
+    }
+  }
+  next();
+});
 
 interface EdgeAndNodeData {
   edges: vis.Edge[];
@@ -82,6 +127,8 @@ export default Vue.extend({
       edges: {} as vis.DataSet<vis.Edge>,
       timeEdges: [] as string[],
       nodeMap: new NodeMap(),
+
+      saveAlert,
 
       activeId: -1,
       editProperties: false,
@@ -437,6 +484,13 @@ export default Vue.extend({
         this.errorMessage = error.response.data.message;
         this.hasError = true;
       });
+  },
+
+  computed: {
+    upToDate(): Boolean {
+      upToDate = this.serverGraph == JSON.stringify(this.graph);
+      return upToDate;
+    }
   }
 });
 </script>

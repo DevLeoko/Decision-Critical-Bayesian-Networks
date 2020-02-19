@@ -41,7 +41,7 @@
       <v-treeview
         :items="treeItems"
         :search="search"
-        :active="active"
+        :active.sync="active"
         @update:active="arr => selectGraph(arr[0])"
         activatable
         open-on-click
@@ -343,6 +343,21 @@ export default Vue.extend({
       if (this.$route.params && this.$route.params.id) {
         this.active = [this.$route.params.id as any];
       }
+    },
+
+    active() {
+      if (this.$route.params && this.$route.params.id) {
+        if (this.active[0] != (this.$route.params.id as any))
+          this.active = [this.$route.params.id as any];
+        return;
+      }
+      if (this.active.length != 0) this.active = [];
+    },
+
+    "$route.params.id": function() {
+      if (this.$route.params && this.$route.params.id)
+        this.active = [this.$route.params.id as any];
+      else this.active = [];
     }
   },
 
