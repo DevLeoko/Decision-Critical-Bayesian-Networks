@@ -25,7 +25,16 @@
 
         <v-tabs-items v-model="propertyTabs">
           <v-tab-item><general-tab :node="node"/></v-tab-item>
-          <v-tab-item><cpt-container :node="node"/></v-tab-item>
+          <v-tab-item>
+            <cpt-container :node="node" />
+            <v-select
+              :items="evidenceFormulas"
+              style="max-width: 300px; margin: auto"
+              label="Evidence Formula"
+              v-model="node.evidenceFormulaName"
+              clearable
+            />
+          </v-tab-item>
         </v-tabs-items>
       </v-card>
     </v-dialog>
@@ -44,7 +53,8 @@ export default Vue.extend({
       properties: true,
       time0: true,
       propertyTabs: null,
-      oldName: ""
+      oldName: "",
+      evidenceFormulas: [] as string[]
     };
   },
   components: {
@@ -76,6 +86,18 @@ export default Vue.extend({
         this.oldName = this.node.name;
       }
     }
+  },
+
+  mounted() {
+    this.axios
+      .get("/evidence-formulas")
+      .then(resp => {
+        this.evidenceFormulas = resp.data.map((formula: any) => formula.name);
+      })
+      .catch(err => {
+        //TODO: DISPLAY ERROR.
+        console.log(err);
+      });
   }
 });
 </script>

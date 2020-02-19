@@ -156,7 +156,11 @@ export default Vue.extend({
 
       let index = powerOfTwo;
       while (index <= dependency.probabilities.length) {
-        const toAdd = dependency.probabilities.slice(index - powerOfTwo, index);
+        const toAdd = JSON.parse(
+          JSON.stringify(
+            dependency.probabilities.slice(index - powerOfTwo, index)
+          )
+        );
         dependency.probabilities.splice(index, 0, ...toAdd);
         index += 2 * powerOfTwo;
       }
@@ -438,6 +442,11 @@ export default Vue.extend({
       const nodeToSaveTo = this.nodeMap.get(uuid)!;
       nodeToSaveTo.color = node.color;
       nodeToSaveTo.name = node.name;
+      nodeToSaveTo.timeZeroDependency.probabilities =
+        node.timeZeroDependency.probabilities;
+      nodeToSaveTo.timeTDependency.probabilities =
+        node.timeTDependency.probabilities;
+      nodeToSaveTo.evidenceFormulaName = node.evidenceFormulaName;
 
       this.updateNodeName(name, node.name);
       this.nodes.update({ id: uuid, color: node.color, label: node.name });
@@ -476,8 +485,6 @@ export default Vue.extend({
             this.selectedNode = JSON.parse(
               JSON.stringify(this.nodeMap.get(graph.nodes[0]))
             );
-          } else {
-            this.selectedNode = {} as dcbn.Node;
           }
         });
 
