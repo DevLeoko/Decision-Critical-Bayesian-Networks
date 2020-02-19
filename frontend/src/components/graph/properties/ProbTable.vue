@@ -41,7 +41,7 @@
           "
           min="0"
           max="1"
-          step="0.05"
+          step="any"
           type="number"
           :class="
             dependency.probabilities[inputFields - 1].reduce(
