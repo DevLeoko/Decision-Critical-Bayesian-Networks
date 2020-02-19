@@ -17,20 +17,24 @@
     <div id="mynetwork" ref="network"></div>
     <action-selector ref="nodeActionSelector">
       <v-btn tile @click="editProperties = true">
-        Properties
+        {{ $t("edit.properties") }}
       </v-btn>
       <v-btn tile @click="deleteNode()">
-        Delete
+        {{ $t("edit.delete") }}
       </v-btn>
     </action-selector>
 
     <action-selector ref="edgeActionSelector" isEdgeSelector>
       <v-btn tile @click="deleteEdge()">
-        Delete
+        {{ $t("edit.delete") }}
       </v-btn>
     </action-selector>
 
-    <node-properties :open.sync="editProperties" :node="selectedNode" />
+    <node-properties
+      :open.sync="editProperties"
+      :node="selectedNode"
+      @save="saveProperties($event)"
+    />
     <v-snackbar v-model="hasError" color="error" :timeout="5000">
       {{ errorMessage }}
       <v-btn icon @click="hasError = false"><v-icon>clear</v-icon></v-btn>
@@ -185,19 +189,25 @@ export default Vue.extend({
       network.deleteSelected();
     },
 
-    findPowerOfTwo(toNode: dcbn.Node, nodeName: string): number {
-      const totalList = Object.assign(
-        [],
-        toNode.timeTDependency.parents
-      ) as string[];
-      totalList.push(...toNode.timeTDependency.parentsTm1);
+    findPowerOfTwo(
+      dependency: dcbn.TimeZeroDependency,
+      nodeName: string
+    ): number {
+      const totalList = Object.assign([], dependency.parents) as string[];
+      totalList.push(...dependency.parentsTm1);
       return 2 ** (totalList.length - totalList.indexOf(nodeName) - 1);
     },
 
-    addToDependencies(dependency: dcbn.TimeZeroDependency, powerOfTwo: number) {
+    addToDependencies(dependency: dcbn.TimeZeroDependency, fromName: string) {
+      const powerOfTwo = this.findPowerOfTwo(dependency, fromName);
+
       let index = powerOfTwo;
       while (index <= dependency.probabilities.length) {
-        const toAdd = dependency.probabilities.slice(index - powerOfTwo, index);
+        const toAdd = JSON.parse(
+          JSON.stringify(
+            dependency.probabilities.slice(index - powerOfTwo, index)
+          )
+        );
         dependency.probabilities.splice(index, 0, ...toAdd);
         index += 2 * powerOfTwo;
       }
@@ -205,8 +215,10 @@ export default Vue.extend({
 
     removeFromDependencies(
       dependency: dcbn.TimeZeroDependency,
-      powerOfTwo: number
+      fromName: string
     ) {
+      const powerOfTwo = this.findPowerOfTwo(dependency, fromName);
+
       let index = powerOfTwo;
       while (index <= dependency.probabilities.length) {
         dependency.probabilities.splice(index, powerOfTwo);
@@ -223,27 +235,25 @@ export default Vue.extend({
         return;
       }
 
-      const powerOfTwo = this.findPowerOfTwo(toNode, fromName);
       if (!isTimeDependency) {
-        this.removeFromDependencies(toNode.timeZeroDependency, powerOfTwo);
+        this.removeFromDependencies(toNode.timeZeroDependency, fromName);
       }
-
-      this.removeFromDependencies(toNode.timeTDependency, powerOfTwo);
+      this.removeFromDependencies(toNode.timeTDependency, fromName);
 
       if (isTimeDependency) {
-        toNode.timeTDependency.parentsTm1.splice(
-          toNode.timeTDependency.parentsTm1.indexOf(fromName),
-          1
-        );
+        const index = toNode.timeTDependency.parentsTm1.indexOf(fromName);
+        if (index !== -1) {
+          toNode.timeTDependency.parentsTm1.splice(index, 1);
+        }
       } else {
-        toNode.timeZeroDependency.parents.splice(
-          toNode.timeZeroDependency.parents.indexOf(fromName),
-          1
-        );
-        toNode.timeTDependency.parents.splice(
-          toNode.timeTDependency.parents.indexOf(fromName),
-          1
-        );
+        let index = toNode.timeZeroDependency.parents.indexOf(fromName);
+        if (index !== -1) {
+          toNode.timeZeroDependency.parents.splice(index, 1);
+        }
+        index = toNode.timeTDependency.parents.indexOf(fromName);
+        if (index !== -1) {
+          toNode.timeTDependency.parents.splice(index, 1);
+        }
       }
     },
 
@@ -301,6 +311,16 @@ export default Vue.extend({
       const fromName = this.nodeMap.get(fromId)!.name;
       const toNode = this.nodeMap.get(toId)!;
 
+      if (
+        (this.timeEdge &&
+          toNode.timeTDependency.parentsTm1.includes(fromName)) ||
+        (!this.timeEdge && toNode.timeZeroDependency.parents.includes(fromName))
+      ) {
+        this.hasError = true;
+        this.errorMessage = `Trying to add duplicate edge between ${fromName} and ${toNode.name}!`;
+        return;
+      }
+
       if (this.timeEdge) {
         toNode.timeTDependency.parentsTm1.push(fromName);
       } else {
@@ -308,12 +328,11 @@ export default Vue.extend({
         toNode.timeTDependency.parents.push(fromName);
       }
 
-      const powerOfTwo = this.findPowerOfTwo(toNode, fromName);
       if (!this.timeEdge) {
-        this.addToDependencies(toNode.timeZeroDependency, powerOfTwo);
+        this.addToDependencies(toNode.timeZeroDependency, fromName);
       }
 
-      this.addToDependencies(toNode.timeTDependency, powerOfTwo);
+      this.addToDependencies(toNode.timeTDependency, fromName);
 
       if (this.timeEdge) {
         const uuid = vis.util.randomUUID();
@@ -322,6 +341,11 @@ export default Vue.extend({
           id: uuid,
           ...data,
           ...timeEdgeOptions
+        };
+      } else {
+        data = {
+          ...data,
+          color: defaultColor
         };
       }
       callback(data);
@@ -340,7 +364,9 @@ export default Vue.extend({
         const fromName = this.nodeMap.get(edge.from as string)!.name;
 
         this.removeDependencies(toNode, fromName, false);
-        this.removeDependencies(toNode, fromName, true);
+        if (this.timeEdges.includes(edgeUuid)) {
+          this.removeDependencies(toNode, fromName, true);
+        }
       }
       this.graph!.nodes.splice(
         this.graph!.nodes.findIndex(
@@ -428,6 +454,59 @@ export default Vue.extend({
         nodeMap: nodeMapCopy,
         timeEdges: timeEdgesCopy
       };
+    },
+
+    updateNodeName(oldName: string, newName: string) {
+      for (const node of this.nodeMap.nodes()) {
+        const parents = [
+          node.timeZeroDependency.parents,
+          node.timeZeroDependency.parentsTm1,
+          node.timeTDependency.parents,
+          node.timeTDependency.parentsTm1
+        ];
+        for (const parentList of parents) {
+          const index = parentList.findIndex(name => name === oldName);
+          if (index !== -1) {
+            parentList[index] = newName;
+          }
+        }
+      }
+    },
+
+    saveProperties(event: any) {
+      const name = event.oldName as string;
+      const node = event.node as dcbn.Node;
+      const uuid = this.nodeMap.getUuidFromName(name)!;
+
+      if (/^\s*$/.test(node.name)) {
+        this.hasError = true;
+        this.errorMessage = "Node name cannot be empty!";
+        return;
+      }
+      if (name !== node.name) {
+        const nodesWithSameName = this.nodeMap
+          .nodes()
+          .filter(n => n.name === node.name);
+        if (nodesWithSameName.length !== 0) {
+          this.hasError = true;
+          this.errorMessage = `Node with name ${node.name} exists already!`;
+          return;
+        }
+      }
+
+      this.addToUndoStack();
+
+      const nodeToSaveTo = this.nodeMap.get(uuid)!;
+      nodeToSaveTo.color = node.color;
+      nodeToSaveTo.name = node.name;
+      nodeToSaveTo.timeZeroDependency.probabilities =
+        node.timeZeroDependency.probabilities;
+      nodeToSaveTo.timeTDependency.probabilities =
+        node.timeTDependency.probabilities;
+      nodeToSaveTo.evidenceFormulaName = node.evidenceFormulaName;
+
+      this.updateNodeName(name, node.name);
+      this.nodes.update({ id: uuid, color: node.color, label: node.name });
     }
   },
 
@@ -460,9 +539,9 @@ export default Vue.extend({
 
         network.on("click", graph => {
           if (graph.nodes[0]) {
-            this.selectedNode = this.nodeMap.get(graph.nodes[0])!;
-          } else {
-            this.selectedNode = {} as dcbn.Node;
+            this.selectedNode = JSON.parse(
+              JSON.stringify(this.nodeMap.get(graph.nodes[0]))
+            );
           }
         });
 

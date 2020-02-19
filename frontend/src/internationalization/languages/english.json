@@ -1,0 +1,148 @@
+{
+  "en": {
+    "formulaList": {
+      "confirmDeletion": "Confirm deletion",
+      "sureToDelete1": "You are about to delete the evidence formula '",
+      "sureToDelete2": "'. Are you sure you want to do this? This action can not be undone, please confirm.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "newExpression": "New Expression"
+    },
+    "formulaView": {
+      "name": "Name",
+      "formula": "Formula",
+      "test": "Test",
+      "testData": "Test data",
+      "save": "Save"
+    },
+    "infoDialog": {
+      "title": "How to use the Evidence-Formula Editor",
+      "introduction": "The Evidence-Formula Editor currently supports boolean expressions including number comparisons, variables and function calls. More complex behaviour has to be done in pre-defined functions.",
+      "availableFunctions": "Currently available functions are:",
+      "variable": "The available variables can be seen on the right. Keep in mind that currently only Boolean and Number type variables can be used directly inside the Evidence-Formula all others are instead used when evaluating functions.",
+      "testing": "The formulas can be tested by pressing the 'Test' button at the bottom. When testing an Evidence-Formula the variables in the gray box on the right are used.",
+      "example": "An expression could for example look like this: 'speed > 10 &amp; inArea(WRECKAGE)'.",
+      "gotIt": "Got it!"
+    },
+    "editorToolbar": {
+      "switchToTest": "Switch to Testenvironment",
+      "time": "Time",
+      "format": "Format",
+      "timeSteps": "Time Steps"
+    },
+    "folderView": {
+      "duplicate": "Duplicate",
+      "rename": "Rename",
+      "move": "Move",
+      "delete": "Delete",
+      "export": "Export",
+      "import": "Import",
+      "addNewGraph": "Add new graph",
+      "importGraph": "Import graph",
+      "searchForGraph": "Search for Graph"
+    },
+    "folderViewActions": {
+      "confirmDeletion": "Confirm deletion",
+      "sureToDelete1": "You are about to delete graph '",
+      "sureToDelete2": "'. Are you sure you want to do this? This action can not be undone, please confirm.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "changeName": "Change name",
+      "rename": "Rename",
+      "moveTo": "Move to"
+    },
+    "testToolbar": {
+      "test": "Test",
+      "clearGraph": "Clear graph",
+      "exportState": "Export state",
+      "importState": "Import state",
+      "switchToEditor": "Switch to Editor"
+    },
+    "menuBar": {
+      "logout": "Logout",
+      "evidenceFormulas": "Evidence-Formulas",
+      "graphView": "Graphview"
+    },
+    "graphIndex": {
+      "selectOrCreate": "Please select a graph or create a new one!"
+    },
+    "graphTest": {
+      "virtualEvidence": "Virtual Evidence",
+      "binaryEvidence": "Binary Evidence",
+      "setVirtualEvidence": "Set virtual evidence",
+      "reset": "Reset",
+      "done": "Done",
+      "setEvidences": "Set evidences"
+    },
+    "evidenceFormula": {
+      "selectOrCreate": "Please select an evidence formula or create a new one!"
+    },
+    "forgotPassword": {
+      "forgotPwQ": "Forgot your password?",
+      "resetInstruction": "No worries! Just enter your email address and we will send you a link to reset you password.",
+      "email": "email",
+      "reset": "Reset password",
+      "backToLogin": "Back to login",
+      "resetEmailSent": "All done! Check your emails for the reset-link."
+    },
+    "login": {
+      "signIn": "Sign In",
+      "email": "email",
+      "password": "password",
+      "passwordRequired": "Please enter a password!",
+      "forgotPwQ": "Forgot your password?",
+      "invalidUserNameOrPassword": "Invalid username and/or password!"
+    },
+    "resetPassword": {
+      "newPassword": "new password",
+      "retypeNewPassword": "retype new password",
+      "resetPassword": "Reset password",
+      "backToLogin": "Back to login",
+      "missingResetToken": "Missing reset-token! Visit 'forgot your password?' first.",
+      "passwordChanged": "Password changed! You can sign in now."
+    },
+    "superAdmin": {
+      "username": "Username",
+      "email": "Email",
+      "role": "Role",
+      "cancel": "Cancel",
+      "save": "Save",
+      "users": "Users",
+      "noUsersFound": "No users found!",
+      "createUser": "Create user",
+      "failedToCreateUser": "Failed to create user!",
+      "editUser": "Edit user",
+      "searchUsers": "Search users"
+    },
+    "validation": {
+      "emailRequired": "Please enter an email!",
+      "emailInvalid": "This is not a valid email!",
+      "passwordRequired": "Please enter a password!",
+      "passwordRequirements": "The password requires a min. length of 8 and has to contain at least one letter and one number",
+      "nameRequired": "Name is required",
+      "nameInvalid": "Invalid name"
+    },
+    "cptContainer": {
+      "conditionalProbabilityTime0": "Conditional Probability Table",
+      "currentTime": "Current: Time"
+    },
+    "generalTab": {
+      "name": "Name",
+      "color": "Color"
+    },
+    "nodeProperties": {
+      "properties": "Properties",
+      "save": "Save",
+      "general": "General",
+      "definition": "Definition"
+    },
+    "test": {
+      "virtualEvidence": "Virtual Evidence",
+      "binaryEvidence": "Binary Evidences"
+    },
+    "edit": {
+      "properties": "Properties",
+      "delete": "Delete"
+    }
+  }
+}
