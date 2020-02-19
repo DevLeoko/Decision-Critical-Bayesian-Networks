@@ -36,7 +36,19 @@
         class="inputEntry"
       >
         <input
-          v-model="dependency.probabilities[inputFields - 1][nodeState - 1]"
+          v-model.number="
+            dependency.probabilities[inputFields - 1][nodeState - 1]
+          "
+          min="0"
+          max="1"
+          step="0.05"
+          type="number"
+          :class="
+            dependency.probabilities[inputFields - 1].reduce(
+              (a, b) => a + b,
+              0
+            ) == 1 || 'failed'
+          "
         />
       </v-col>
     </v-row>
@@ -46,7 +58,6 @@
 <style lang="scss" scoped>
 .col {
   border: solid white 2px;
-  // border-radius: 5px;
   background-color: #e9edf1;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -65,18 +76,29 @@
     padding: 5px;
 
     border: solid #e9edf1 3px;
-    // border-radius: 5px;
     outline: none !important;
+  }
+
+  input.failed {
+    border-color: #ff7b7b;
+  }
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
   }
 }
 
 .leftName {
   flex-grow: 0;
-  // border-top-left-radius: 25px;
-  // border-bottom-left-radius: 25px;
-  // border-right-width: 5px;
   font-weight: bold;
-  // border-left: none;
 
   div {
     margin-left: 10px;
