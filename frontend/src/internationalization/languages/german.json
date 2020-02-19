@@ -49,7 +49,8 @@
       "delete": "Löschen",
       "changeName": "Name ändern",
       "rename": "Umbenennen",
-      "moveTo": "Verschieben nach"
+      "moveTo": "Verschieben nach",
+      "newFolder": "Neuer Ordner"
     },
     "testToolbar": {
       "test": "Testen",
@@ -142,7 +143,11 @@
     },
     "edit": {
       "properties": "Einstellungen",
-      "delete": "Löschen"
+      "delete": "Löschen",
+      "unsavedChanges": "Speichern vergessen?",
+      "unsavedChangesText": "Im aktuellen Graph sind noch ungepseicherte Änderungen. Wenn du die Seite wechselst gehen diese verloren!",
+      "unsavedChangesCancel": "Abbrechen",
+      "unsavedChangesDiscard": "Änderungen verwerfen"
     }
   }
 }

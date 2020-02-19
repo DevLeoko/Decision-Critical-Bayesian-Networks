@@ -17,7 +17,9 @@
           }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="save()">$t("nodeProperties.save")</v-btn>
+            <v-btn dark text @click="save()">{{
+              $t("nodeProperties.save")
+            }}</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-tabs v-model="propertyTabs">

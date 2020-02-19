@@ -43,15 +43,14 @@
     <v-dialog :value="saveAlert.value" width="400" persistent>
       <v-card>
         <v-card-title>
-          Unsaved changes!
+          {{ $t("edit.unsavedChanges") }}
         </v-card-title>
         <v-card-text>
-          You have made changes to the current graph that have not been saved
-          yet. If you decide to leave anyway those changes will be discarded!
+          {{ $t("edit.unsavedChangesText") }}
         </v-card-text>
         <v-card-actions class="px-4 pb-4">
           <v-btn @click="saveAlert.value = false" color="grey" text>
-            Cancel
+            {{ $t("edit.unsavedChangesCancel") }}
           </v-btn>
           <v-spacer />
           <v-btn
@@ -62,7 +61,7 @@
             color="error"
             text
           >
-            Discard changes
+            {{ $t("edit.unsavedChangesDiscard") }}
           </v-btn>
         </v-card-actions>
       </v-card>

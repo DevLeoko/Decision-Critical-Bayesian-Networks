@@ -49,7 +49,8 @@
       "delete": "Delete",
       "changeName": "Change name",
       "rename": "Rename",
-      "moveTo": "Move to"
+      "moveTo": "Move to",
+      "newFolder": "New folder"
     },
     "testToolbar": {
       "test": "Test",
@@ -123,7 +124,7 @@
       "nameInvalid": "Invalid name"
     },
     "cptContainer": {
-      "conditionalProbabilityTime0": "Conditional Probability Table",
+      "conditionalProbabilityTable": "Conditional Probability Table",
       "currentTime": "Current: Time"
     },
     "generalTab": {
@@ -142,7 +143,11 @@
     },
     "edit": {
       "properties": "Properties",
-      "delete": "Delete"
+      "delete": "Delete",
+      "unsavedChanges": "Unsaved changes!",
+      "unsavedChangesText": "You have made changes to the current graph that have not been saved yet. If you decide to leave anyway those changes will be discarded!",
+      "unsavedChangesCancel": "Cancel",
+      "unsavedChangesDiscard": "Discard changes"
     }
   }
 }

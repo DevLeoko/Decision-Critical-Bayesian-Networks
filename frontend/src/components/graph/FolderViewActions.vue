@@ -127,7 +127,7 @@
               <v-text-field
                 hide-details
                 v-model="newFolder"
-                placeholder="New folder"
+                :placeholder="$t('folderViewActions.newFolder')"
                 dense
               ></v-text-field>
             </v-list-item>
