@@ -105,12 +105,13 @@
         <v-row justify="center">
           <v-col class="flex-grow-0 mt-4 pb-0">
             <v-btn medium color="primary" @click="createGraph()">
-              <v-icon>add</v-icon> Add new graph
+              <v-icon>add</v-icon> {{ $t("folderView.addNewGraph") }}
             </v-btn>
           </v-col>
           <v-col class="flex-grow-0 mb-4">
             <v-btn small color="primary lighten-2" @click="triggerImport()">
-              <v-icon small class="mr-2">cloud_upload</v-icon> Import graph
+              <v-icon small class="mr-2">cloud_upload</v-icon>
+              {{ $t("folderView.importGraph") }}
             </v-btn>
           </v-col>
         </v-row>

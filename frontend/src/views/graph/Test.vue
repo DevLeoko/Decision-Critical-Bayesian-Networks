@@ -19,7 +19,7 @@
           }
           virtualEvidenceOpen = true;
         "
-        >Virtual Evidence</v-btn
+        >{{ $t("test.virtualEvidence") }}</v-btn
       >
       <v-btn
         tile
@@ -31,7 +31,7 @@
           binaryEvidenceOpen = true;
         "
       >
-        Binary Evidences
+        {{ $t("test.binaryEvidence") }}
       </v-btn>
       <v-btn
         tile

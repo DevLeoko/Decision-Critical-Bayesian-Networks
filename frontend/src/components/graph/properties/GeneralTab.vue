@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="6" offset="3">
-        <v-card-title>Name</v-card-title>
+        <v-card-title>{{ $t("generalTab.name") }}</v-card-title>
         <v-text-field
           outlined
           clearable
@@ -10,7 +10,7 @@
           label="Name"
           v-model="node.name"
         />
-        <v-card-title>Color</v-card-title>
+        <v-card-title>{{ $t("generalTab.color") }}</v-card-title>
         <v-color-picker
           class="ma-2"
           hide-inputs

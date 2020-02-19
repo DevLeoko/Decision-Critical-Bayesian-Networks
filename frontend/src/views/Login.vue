@@ -116,7 +116,7 @@ export default Vue.extend({
         .catch((err: AxiosError) => {
           this.hasError = true;
           if (err.response!.status == 401)
-            this.error = "Invalid username and/or password!";
+            this.error = this.$t("login.invalidUserNameOrPassword").toString();
           else this.error = err.response!.data.message;
         })
         .then(() => {

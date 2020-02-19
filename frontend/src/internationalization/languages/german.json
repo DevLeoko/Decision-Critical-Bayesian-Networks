@@ -25,7 +25,10 @@
       "gotIt": "Verstanden!"
     },
     "editorToolbar": {
-      "switchToTest": "Zur Testumgebung wechseln"
+      "switchToTest": "Zur Testumgebung wechseln",
+      "time": "Zeit",
+      "format": "Formatieren",
+      "timeSteps": "Zeitschritte"
     },
     "folderView": {
       "duplicate": "Duplizieren",
@@ -35,6 +38,7 @@
       "export": "Exportieren",
       "import": "Importieren",
       "addNewGraph": "Neuen Graph hinzufügen",
+      "importGraph": "Graph importieren",
       "searchForGraph": "Graph suchen"
     },
     "folderViewActions": {
@@ -50,8 +54,8 @@
     "testToolbar": {
       "test": "Testen",
       "clearGraph": "Graph säubern",
-      "exportState": "State exportieren",
-      "importState": "State importieren",
+      "exportState": "Zustand exportieren",
+      "importState": "Zustand importieren",
       "switchToEditor": "Zum Editor wechseln"
     },
     "menuBar": {
@@ -86,7 +90,8 @@
       "email": "Email",
       "password": "Passwort",
       "passwordRequired": "Bitte ein Passwort eingeben!",
-      "forgotPwQ": "Passwort vergessen?"
+      "forgotPwQ": "Passwort vergessen?",
+      "invalidUserNameOrPassword": "Ungültiger Benutzername und/oder Passwort!"
     },
     "resetPassword": {
       "newPassword": "neues Passwort",
@@ -115,6 +120,26 @@
       "passwordRequirements": "Das Passwort muss eine Mindestlänge von 8 Zeichen haben und mindestens einen Buchstaben und eine Zahl beinhalten.",
       "nameRequired": "Name ist notwendig",
       "nameInvalid": "Ungültiger name"
+    },
+    "cptContainer": {
+      "conditionalProbabilityTime0": "Bedingte Wahrscheinlichkeitstabelle Zeit 0",
+      "conditionalProbabilityTimeT": "Bedingte Wahrscheinlichkeitstabelle Zeit T",
+      "timeT": "Zeit T",
+      "time0": "Zeit 0"
+    },
+    "generalTab": {
+      "name": "Name",
+      "color": "Farbe"
+    },
+    "nodeProperties": {
+      "properties": "Einstellungen",
+      "save": "Speichern",
+      "general": "Allgemein",
+      "definition": "Definition"
+    },
+    "test": {
+      "virtualEvidence": "Virtuelle Evidenz",
+      "binaryEvidence": "Binäre Evidenzen"
     }
   }
 }

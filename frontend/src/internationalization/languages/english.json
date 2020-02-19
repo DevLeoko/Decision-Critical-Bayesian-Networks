@@ -25,7 +25,10 @@
       "gotIt": "Got it!"
     },
     "editorToolbar": {
-      "switchToTest": "Switch to Testenvironment"
+      "switchToTest": "Switch to Testenvironment",
+      "time": "Time",
+      "format": "Format",
+      "timeSteps": "Time Steps"
     },
     "folderView": {
       "duplicate": "Duplicate",
@@ -35,6 +38,7 @@
       "export": "Export",
       "import": "Import",
       "addNewGraph": "Add new graph",
+      "importGraph": "Import graph",
       "searchForGraph": "Search for Graph"
     },
     "folderViewActions": {
@@ -86,7 +90,8 @@
       "email": "email",
       "password": "password",
       "passwordRequired": "Please enter a password!",
-      "forgotPwQ": "Forgot your password?"
+      "forgotPwQ": "Forgot your password?",
+      "invalidUserNameOrPassword": "Invalid username and/or password!"
     },
     "resetPassword": {
       "newPassword": "new password",
@@ -115,6 +120,26 @@
       "passwordRequirements": "The password requires a min. length of 8 and has to contain at least one letter and one number",
       "nameRequired": "Name is required",
       "nameInvalid": "Invalid name"
+    },
+    "cptContainer": {
+      "conditionalProbabilityTime0": "Conditional Probability Table Time 0",
+      "conditionalProbabilityTimeT": "Conditional Probability Table Time T",
+      "timeT": "Time T",
+      "time0": "Time 0"
+    },
+    "generalTab": {
+      "name": "Name",
+      "color": "Color"
+    },
+    "nodeProperties": {
+      "properties": "Properties",
+      "save": "Save",
+      "general": "General",
+      "definition": "Definition"
+    },
+    "test": {
+      "virtualEvidence": "Virtual Evidence",
+      "binaryEvidence": "Binary Evidences"
     }
   }
 }

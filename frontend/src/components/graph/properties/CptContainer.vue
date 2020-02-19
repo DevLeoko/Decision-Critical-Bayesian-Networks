@@ -2,11 +2,17 @@
   <div>
     <v-row>
       <v-card-title class="headline">
-        <div v-if="time0">Conditional Probability Table Time 0</div>
-        <div v-else>Conditional Probability Table Time T</div>
+        <div v-if="time0">
+          {{ $t("cptContainer.conditionalProbabilityTime0") }}
+        </div>
+        <div v-else>{{ $t("cptContainer.conditionalProbabilityTimeT") }}</div>
       </v-card-title>
-      <v-btn v-if="time0" class="ma-3" @click="time0 = false">Time T</v-btn>
-      <v-btn v-else class="ma-3" @click="time0 = true">Time 0</v-btn>
+      <v-btn v-if="time0" class="ma-3" @click="time0 = false">{{
+        $t("cptContainer.timeT")
+      }}</v-btn>
+      <v-btn v-else class="ma-3" @click="time0 = true">{{
+        $t("cptContainer.time0")
+      }}</v-btn>
     </v-row>
     <div style="max-width: 100%; overflow-x: auto">
       <prob-table
