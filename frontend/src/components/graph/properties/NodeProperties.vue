@@ -28,8 +28,8 @@
         </v-tabs>
 
         <v-tabs-items v-model="propertyTabs">
-          <v-tab-item><general-tab :node="node"></general-tab></v-tab-item>
-          <v-tab-item>{{ $t("nodeProperties.definition") }}</v-tab-item>
+          <v-tab-item><general-tab :node="node"/></v-tab-item>
+          <v-tab-item><cpt-container :node="node"/></v-tab-item>
         </v-tabs-items>
       </v-card>
     </v-dialog>
@@ -39,7 +39,7 @@
 <script lang="ts">
 import Vue from "vue";
 import GeneralTab from "@/components/graph/properties/GeneralTab.vue";
-// import CptContainer from "@/components/graph/CptContainer.vue";
+import CptContainer from "@/components/graph/properties/CptContainer.vue";
 import { dcbn } from "@/utils/graph/graph";
 
 export default Vue.extend({
@@ -51,7 +51,8 @@ export default Vue.extend({
     };
   },
   components: {
-    GeneralTab
+    GeneralTab,
+    CptContainer
   },
   // components: { CptContainer },
   props: { open: Boolean, node: Object as () => dcbn.Node },

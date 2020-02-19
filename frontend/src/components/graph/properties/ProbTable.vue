@@ -1,109 +1,90 @@
 <template>
-  <div>
-    <!-- time 0 -->
-    <v-container v-if="time0" fill-height class="mx-3">
-      <v-row v-for="i in node.timeZeroDependency.parents.length" :key="i">
-        <v-col
-          cols="3"
-          style="outline-width: 2px;
-  outline-style: solid;
-  outline-color: black;"
-        >
-          {{ node.timeZeroDependency.parents[i - 1] }}
-        </v-col>
-        <v-col
-          style="outline-width: 2px;
-  outline-style: solid;
-  outline-color: black;"
-          v-for="j in Math.pow(2, i)"
-          :key="j"
-        >
-          <v-col>
-            {{ node.stateType.states[(j + 1) % 2] }}
-          </v-col>
-        </v-col>
-      </v-row>
-      <v-row
-        v-for="i in node.stateType.states.length"
-        :key="i"
-        style="outline-width: 2px;
-  outline-style: solid;
-  outline-color: black;"
+  <v-container fill-height class="">
+    <v-row
+      v-for="parents in dependency.parents.length +
+        dependency.parentsTm1.length"
+      :key="`par${parents}`"
+      no-gutters
+    >
+      <v-col class="leftName">
+        <div v-if="parents - 1 < dependency.parents.length">
+          {{ dependency.parents[parents - 1] }}
+        </div>
+        <div v-else>
+          {{ dependency.parentsTm1[parents - 1 - dependency.parents.length] }}
+          (T-1)
+        </div>
+      </v-col>
+      <v-col v-for="parentStates in Math.pow(2, parents)" :key="parentStates">
+        {{ stateType.states[(parentStates + 1) % 2] }}
+      </v-col>
+    </v-row>
+    <v-row
+      v-for="nodeState in stateType.states.length"
+      :key="`nS${nodeState}`"
+      no-gutters
+    >
+      <v-col class="leftName">
+        <div>{{ stateType.states[nodeState - 1] }}</div>
+      </v-col>
+      <v-col
+        v-for="inputFields in Math.pow(
+          2,
+          dependency.parents.length + dependency.parentsTm1.length
+        )"
+        :key="inputFields"
+        class="inputEntry"
       >
-        <v-col cols="3"> {{ node.stateType.states[i - 1] }}</v-col>
-        <v-col
-          v-for="k in Math.pow(2, node.timeZeroDependency.parents.length)"
-          :key="k"
-          style="outline-width: 2px;
-  outline-style: solid;
-  outline-color: black;"
-        >
-          <v-text-field dense outlined solo></v-text-field
-        ></v-col>
-      </v-row>
-    </v-container>
-    <!-- time t -->
-    <v-container v-else fill-height class="mx-3">
-      <v-row
-        v-for="k in node.timeTDependency.parents.length +
-          node.timeTDependency.parentsTm1.length"
-        :key="k"
-      >
-        <v-col
-          cols="3"
-          style="outline-width: 2px;
-  outline-style: solid;
-  outline-color: black;"
-        >
-          <div v-if="k - 1 < node.timeTDependency.parents.length">
-            {{ node.timeTDependency.parents[k - 1] }}
-          </div>
-          <div v-else>
-            {{
-              node.timeTDependency.parentsTm1[
-                k - 1 - node.timeTDependency.parents.length
-              ]
-            }}
-            (T-1)
-          </div>
-        </v-col>
-        <v-col
-          style="outline-width: 2px;
-  outline-style: solid;
-  outline-color: black;"
-          v-for="j in Math.pow(2, k)"
-          :key="j"
-        >
-          <v-col>
-            {{ node.stateType.states[(j + 1) % 2] }}
-          </v-col>
-        </v-col>
-      </v-row>
-      <v-row
-        v-for="i in node.stateType.states.length"
-        :key="i"
-        style="outline-width: 2px;
-  outline-style: solid;
-  outline-color: black;"
-      >
-        <v-col cols="3"> {{ node.stateType.states[i - 1] }}</v-col>
-        <v-col
-          v-for="l in Math.pow(
-            2,
-            node.timeZeroDependency.parents.length +
-              node.timeTDependency.parentsTm1.length
-          )"
-          :key="l"
-          style="outline-width: 2px;
-  outline-style: solid;
-  outline-color: black;"
-        >
-          <v-text-field dense outlined solo></v-text-field
-        ></v-col>
-      </v-row>
-    </v-container>
-  </div>
+        <input
+          v-model="dependency.probabilities[inputFields - 1][nodeState - 1]"
+        />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
+
+<style lang="scss" scoped>
+.col {
+  border: solid white 2px;
+  // border-radius: 5px;
+  background-color: #e9edf1;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+  margin-top: -2px;
+  margin-left: -2px;
+}
+
+.inputEntry {
+  padding: 0px;
+  background-color: white;
+
+  input {
+    height: 100%;
+    width: 100%;
+    padding: 5px;
+
+    border: solid #e9edf1 3px;
+    // border-radius: 5px;
+    outline: none !important;
+  }
+}
+
+.leftName {
+  flex-grow: 0;
+  // border-top-left-radius: 25px;
+  // border-bottom-left-radius: 25px;
+  // border-right-width: 5px;
+  font-weight: bold;
+  // border-left: none;
+
+  div {
+    margin-left: 10px;
+    text-align: left;
+    width: 150px;
+  }
+}
+</style>
 
 <script lang="ts">
 import Vue from "vue";
@@ -111,11 +92,8 @@ import { dcbn } from "@/utils/graph/graph";
 
 export default Vue.extend({
   props: {
-    node: Object as () => dcbn.Node,
-    time0: Boolean
-  },
-  data() {
-    return {};
+    dependency: Object as () => dcbn.TimeZeroDependency | dcbn.TimeTDependency,
+    stateType: Object as () => dcbn.StateType
   }
 });
 </script>

@@ -108,6 +108,7 @@
               <v-icon>add</v-icon> {{ $t("folderView.addNewGraph") }}
             </v-btn>
           </v-col>
+          <br />
           <v-col class="flex-grow-0 mb-4">
             <v-btn small color="primary lighten-2" @click="triggerImport()">
               <v-icon small class="mr-2">cloud_upload</v-icon>
