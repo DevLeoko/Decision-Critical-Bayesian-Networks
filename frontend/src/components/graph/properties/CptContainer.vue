@@ -1,23 +1,27 @@
 <template>
-  <div>
-    <v-row>
-      <v-card-title class="headline" @load="test()">
-        <div v-if="time0">Conditional Probability Table Time 0</div>
-        <div v-else>Conditional Probability Table Time T</div>
-      </v-card-title>
-      <v-btn v-if="time0" class="ma-3" @click="changeTimeInTable()"
-        >Time T</v-btn
-      >
-      <v-btn v-else class="ma-3" @click="changeTimeInTable()">Time 0</v-btn>
+  <v-container>
+    <v-row class="mb-3">
+      <v-col>
+        <h2 class="headline">
+          Conditional Probability Table
+        </h2>
+      </v-col>
+      <v-col class="flex-grow-0">
+        <v-btn @click="time0 = !time0">
+          Current: Time {{ time0 ? "0" : "T" }}
+        </v-btn>
+      </v-col>
     </v-row>
-    <div style="max-width: 100%; overflow-x: auto">
+    <div style="overflow-x: auto">
       <prob-table
-        :dependency="dependency"
+        :dependency="time0 ? node.timeZeroDependency : node.timeTDependency"
         :stateType="node.stateType"
-        :style="`width: ${Math.pow(2, tableNum) * 150 + 150}px`"
+        :style="
+          `max-width: unset; width: ${Math.pow(2, tableNum) * 80 + 150}px`
+        "
       />
     </div>
-  </div>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -38,17 +42,6 @@ export default Vue.extend({
         | dcbn.TimeZeroDependency
         | dcbn.TimeTDependency
     };
-  },
-
-  methods: {
-    changeTimeInTable() {
-      if (this.time0) {
-        this.dependency = this.node.timeTDependency;
-      } else {
-        this.dependency = this.node.timeZeroDependency;
-      }
-      this.time0 = !this.time0;
-    }
   },
 
   computed: {
