@@ -44,4 +44,16 @@ public class Graph {
         this.timeSlices = timeSlices;
         this.nodes = nodes;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Graph)) {
+            return false;
+        }
+        Graph graph = (Graph) o;
+        if (id !=graph.getId() || !name.equals(graph.getName()) || timeSlices != graph.getTimeSlices() || nodes.size() != graph.getNodes().size()) {
+            return false;
+        }
+        return graph.getNodes().containsAll(nodes);
+    }
 }

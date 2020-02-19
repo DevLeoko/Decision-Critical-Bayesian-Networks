@@ -1,39 +1,54 @@
 <template>
-  <div>
-    <v-row>
-      <v-card-title class="headline">
-        <div v-if="time0">Conditional Probability Table Time 0</div>
-        <div v-else>Conditional Probability Table Time T</div>
-      </v-card-title>
-      <v-btn v-if="time0" class="ma-3" @click="time0 = false">Time T</v-btn>
-      <v-btn v-else class="ma-3" @click="time0 = true">Time 0</v-btn>
+  <v-container>
+    <v-row class="mb-3">
+      <v-col>
+        <h2 class="headline">
+          Conditional Probability Table
+        </h2>
+      </v-col>
+      <v-col class="flex-grow-0">
+        <v-btn @click="time0 = !time0">
+          Current: Time {{ time0 ? "0" : "T" }}
+        </v-btn>
+      </v-col>
     </v-row>
-    <div style="max-width: 100%; overflow-x: auto">
+    <div style="overflow-x: auto">
       <prob-table
-        :node="node"
-        :time0="time0"
-        :style="`width: ${Math.pow(2, tableNum) * 150 + 150}px`"
+        :dependency="time0 ? node.timeZeroDependency : node.timeTDependency"
+        :stateType="node.stateType"
+        :style="
+          `max-width: unset; width: ${Math.pow(2, tableNum) * 80 + 150}px`
+        "
       />
     </div>
-  </div>
+  </v-container>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import ProbTable from "@/components/graph/ProbTable.vue";
+import ProbTable from "@/components/graph/properties/ProbTable.vue";
 import { dcbn } from "@/utils/graph/graph";
 
 export default Vue.extend({
   components: {
     ProbTable
   },
-  props: { time0: Boolean, node: Object as () => dcbn.Node },
+  props: { node: Object as () => dcbn.Node },
+
+  data() {
+    return {
+      time0: true,
+      dependency: this.node.timeZeroDependency as
+        | dcbn.TimeZeroDependency
+        | dcbn.TimeTDependency
+    };
+  },
 
   computed: {
     tableNum(): number {
       return this.time0
         ? this.node.timeZeroDependency.parents.length
-        : this.node.timeZeroDependency.parents.length +
+        : this.node.timeTDependency.parents.length +
             this.node.timeTDependency.parentsTm1.length;
     }
   }
