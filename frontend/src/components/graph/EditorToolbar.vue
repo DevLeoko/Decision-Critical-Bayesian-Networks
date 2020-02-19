@@ -17,7 +17,7 @@
       <v-icon>arrow_right_alt</v-icon>
     </v-btn>
     <v-btn small color="primary" class="ml-3" @click="$emit('edgeTAdd')">
-      <v-icon>arrow_right_alt</v-icon>Time
+      <v-icon>arrow_right_alt</v-icon>{{ $t("editorToolbar.time") }}
     </v-btn>
     <v-btn
       small
@@ -43,13 +43,13 @@
       outlined
       hide-details
       dense
-      label="Timesteps"
+      :label="this.$t('editorToolbar.timeSteps')"
       :value="timeSteps"
       @change="value => $emit('update:timeSteps', value)"
       style="max-width: 120px"
     ></v-text-field>
     <v-btn small color="primary" @click="$emit('formatNetwork')" class="ml-3">
-      Format
+      {{ $t("editorToolbar.format") }}
     </v-btn>
 
     <v-spacer></v-spacer>
@@ -57,7 +57,7 @@
       small
       color="primary lighten-2"
       @click="$router.push({ name: 'Test Graph' })"
-      >Switch to Testenvironment</v-btn
+      >{{ $t("editorToolbar.switchToTest") }}</v-btn
     >
   </v-toolbar>
 </template>

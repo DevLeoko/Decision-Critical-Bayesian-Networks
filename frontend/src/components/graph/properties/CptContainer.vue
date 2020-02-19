@@ -3,7 +3,7 @@
     <v-row class="mb-3">
       <v-col>
         <h2 class="headline">
-          Conditional Probability Table
+          {{ $t("cptContainer.conditionalProbabilityTable") }}
         </h2>
       </v-col>
       <v-col class="flex-grow-0">
@@ -11,7 +11,7 @@
           @click="time0 = !time0"
           v-if="node.timeTDependency.parentsTm1.length !== 0"
         >
-          Current: Time {{ time0 ? "0" : "T" }}
+          {{ $t("cptContainer.currentTime") }} {{ time0 ? "0" : "T" }}
         </v-btn>
       </v-col>
     </v-row>

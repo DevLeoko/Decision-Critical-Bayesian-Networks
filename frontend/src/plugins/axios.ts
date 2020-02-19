@@ -23,7 +23,9 @@ axiosInstance.interceptors.response.use(
   function(error) {
     if (error.response !== undefined && error.response.status == 403) {
       store.dispatch("logout");
-      router.push({ name: "login" });
+      router.push({
+        name: "Login"
+      });
     } else {
       return Promise.reject(error);
     }

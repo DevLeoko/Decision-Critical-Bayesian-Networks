@@ -12,15 +12,17 @@
           <v-btn icon dark @click="updateOpen(false)">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Properties</v-toolbar-title>
+          <v-toolbar-title>{{
+            $t("nodeProperties.properties")
+          }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="save()">Save</v-btn>
+            <v-btn dark text @click="save()">$t("nodeProperties.save")</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-tabs v-model="propertyTabs">
-          <v-tab>General</v-tab>
-          <v-tab>Definition</v-tab>
+          <v-tab>{{ $t("nodeProperties.general") }}</v-tab>
+          <v-tab>{{ $t("nodeProperties.definition") }}</v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="propertyTabs">

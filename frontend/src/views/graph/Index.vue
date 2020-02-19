@@ -9,7 +9,7 @@
       align-self="center"
     >
       <v-alert type="info" color="grey darken-1" :value="true">
-        Please select a graph or create a new one!
+        {{ $t("graphIndex.selectOrCreate") }}
       </v-alert>
     </v-col>
     <router-view v-else :key="$route.name + $route.params.id"></router-view>

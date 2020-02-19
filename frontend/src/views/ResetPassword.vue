@@ -1,12 +1,10 @@
 <template>
   <small-view>
-    <h1 class="font-weight-light">
-      Reset password.
-    </h1>
+    <h1 class="font-weight-light">Reset password.</h1>
 
-    <v-alert type="error" v-model="hasError" dismissible outlined dense>
-      {{ error }}
-    </v-alert>
+    <v-alert type="error" v-model="hasError" dismissible outlined dense>{{
+      error
+    }}</v-alert>
 
     <v-form ref="form" v-model="valid" @submit="submit">
       <v-text-field
@@ -14,14 +12,14 @@
         @change="$refs.form.validate()"
         v-model="password"
         solo
-        label="new password"
+        :label="$t('resetPassword.newPassword')"
         type="password"
       ></v-text-field>
 
       <v-text-field
         :rules="[v => v == password || 'Passwords do not match']"
         solo
-        label="retype new password"
+        :label="$t('resetPassword.retypeNewPassword')"
         type="password"
       ></v-text-field>
 
@@ -31,13 +29,12 @@
         :loading="loading"
         color="primary"
         class="mt-2 ml-2"
+        >{{ $t("resetPassword.resetPassword") }}</v-btn
       >
-        Reset password
-      </v-btn>
 
-      <v-btn color="primary" depressed class="ml-4 mt-2" dark to="login">
-        Back to login
-      </v-btn>
+      <v-btn color="primary" depressed class="ml-4 mt-2" dark to="login">{{
+        $t("resetPassword.backToLogin")
+      }}</v-btn>
     </v-form>
   </small-view>
 </template>
@@ -76,7 +73,8 @@ export default Vue.extend({
       this.$router.push({
         name: "login",
         params: {
-          info: "Missing reset-token! Visit 'forgot your password?' first."
+          lang: this.$i18n.locale,
+          info: this.$t("passwordReset.missingResetToken").toString()
         }
       });
     }
@@ -95,7 +93,8 @@ export default Vue.extend({
           this.$router.push({
             name: "login",
             params: {
-              info: "Password changed! You can sign in now."
+              lang: this.$i18n.locale,
+              info: this.$t("passwordReset.passwordChanged").toString()
             }
           });
         })

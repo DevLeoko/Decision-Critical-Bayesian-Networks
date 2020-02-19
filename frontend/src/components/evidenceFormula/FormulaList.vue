@@ -3,19 +3,19 @@
     <v-dialog v-model="deleteWarning" persistent max-width="400">
       <v-card>
         <v-card-title>
-          <v-icon class="mr-2">delete_sweep</v-icon> Confirm deletion
+          <v-icon class="mr-2">delete_sweep</v-icon>
+          {{ $t("formulaList.confirmDeletion") }}
         </v-card-title>
         <v-card-text>
-          You are about to delete the evidence formula '{{
-            deletedFormula.name
-          }}'. Are you sure you want to do this? This action can not be undone,
-          please confirm.
+          {{ $t("formulaList.sureToDelete1") }}
+          {{ deletedFormula.name }}
+          {{ $t("formulaList.sureToDelete2") }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
 
           <v-btn color="gray" text @click="deleteWarning = false">
-            Cancel
+            {{ $t("formulaList.cancel") }}
           </v-btn>
 
           <v-btn
@@ -26,7 +26,7 @@
               deleteFormula(deletedFormula);
             "
           >
-            Delete
+            {{ $t("formulaList.delete") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -63,7 +63,7 @@
       <v-flex class="pa-4" style="text-align: center">
         <v-btn small color="primary" @click="addFormula()">
           <v-icon class="mr-1" color="white">add_box</v-icon>
-          New Expression
+          {{ $t("formulaList.newExpression") }}
         </v-btn>
       </v-flex>
     </template>
@@ -131,6 +131,7 @@ export default Vue.extend({
       this.$router.push({
         name: "EvidenceFormula",
         params: {
+          lang: this.$i18n.locale,
           id: `${formula.id}`
         }
       });

@@ -1,27 +1,30 @@
+import { i18n } from "@/internationalization/translation";
+
 // eslint-disable-next-line no-useless-escape
 export const mailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export const passwordRegex = /^.*(?=.{8,})(?=.*\d)((?=.*[a-zA-Z]){1}).*$/;
 
 export const mailValidation = [
-  (v: string) => !!v || "An email is required",
-  (v: string) => mailRegex.test(v) || "This is not a valid email"
+  (v: string) => !!v || i18n.t("validation.emailRequired"),
+  (v: string) => mailRegex.test(v) || i18n.t("validation.emailInvalid")
 ];
 
 export const passwordValidation = [
-  (v: string) => !!v || "Please enter a password",
+  (v: string) => !!v || i18n.t("validation.passwordRequired"),
   (v: string) =>
-    passwordRegex.test(v) ||
-    "The password requires a min. length of 8 and has to contain at least one letter and one number"
+    passwordRegex.test(v) || i18n.t("validation.passwordRequirements")
 ];
 
 export const nameValidation = [
-  (v: string) => !!v || "Name is required",
-  (v: string) => /^.{1,16}$/.test(v) || "Invalid name",
-  (v: string) => /^.*[a-zA-Z].*$/.test(v) || "Invalid name"
+  (v: string) => !!v || i18n.t("validation.nameRequired"),
+  (v: string) => /^.{1,16}$/.test(v) || i18n.t("validation.nameInvalid"),
+  (v: string) => /^.*[a-zA-Z].*$/.test(v) || i18n.t("validation.nameInvalid")
 ];
 
-export const required = (message: string) => [(v: any) => !!v || message];
+export const required = (message: string) => [
+  (v: any) => !!v || i18n.t(message)
+];
 
 export const matchValidation = (message: string, match: any) => [
-  (v: any) => v == match || message
+  (v: any) => v == match || i18n.t(message)
 ];

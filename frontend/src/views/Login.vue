@@ -2,18 +2,16 @@
   <small-view>
     <v-layout row wrap>
       <v-flex xs12>
-        <h1 class="font-weight-light ml-2 mb-2">
-          Sign In.
-        </h1>
-        <v-alert type="info" v-if="info" dismissible outlined>
-          {{ info }}
-        </v-alert>
-        <v-alert type="error" v-model="hasError" dismissible outlined dense>
-          {{ error }}
-        </v-alert>
+        <h1 class="font-weight-light ml-2 mb-2">{{ $t("login.signIn") }}</h1>
+        <v-alert type="info" v-if="info" dismissible outlined>{{
+          info
+        }}</v-alert>
+        <v-alert type="error" v-model="hasError" dismissible outlined dense>{{
+          error
+        }}</v-alert>
         <v-form v-model="valid" @submit="submit">
           <v-text-field
-            label="email"
+            :label="$t('login.email')"
             v-model="email"
             solo
             :rules="mailValidation"
@@ -21,11 +19,11 @@
           ></v-text-field>
 
           <v-text-field
-            label="password"
+            :label="$t('login.password')"
             type="password"
             v-model="password"
             solo
-            :rules="required('Please enter a password!')"
+            :rules="required('login.passwordRequired')"
             required
           ></v-text-field>
 
@@ -35,17 +33,15 @@
             :loading="loading"
             color="primary"
             class="mt-2 ml-2"
+            >{{ $t("login.signIn") }}</v-btn
           >
-            Sign in
-          </v-btn>
           <v-btn
             color="primary"
             class="mt-2 ml-4"
             text
             :to="{ name: 'ForgotPassword' }"
+            >{{ $t("login.forgotPwQ") }}</v-btn
           >
-            Forgot your password?
-          </v-btn>
         </v-form>
       </v-flex>
     </v-layout>
@@ -120,7 +116,7 @@ export default Vue.extend({
         .catch((err: AxiosError) => {
           this.hasError = true;
           if (err.response!.status == 401)
-            this.error = "Invalid username and/or password!";
+            this.error = this.$t("login.invalidUserNameOrPassword").toString();
           else this.error = err.response!.data.message;
         })
         .then(() => {

@@ -7,16 +7,17 @@
         @click="evaluate($route.params.id)"
         :loading="loading"
       >
-        <v-icon class="mr-1">check</v-icon>Test
+        <v-icon class="mr-1">check</v-icon> {{ $t("testToolbar.test") }}
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn small color="primary" class="ml-3" @click="$emit('clear')"
-        >Clear graph</v-btn
-      >
-      <v-btn small color="primary" class="ml-3" @click="$emit('export')"
-        >Export state</v-btn
+      <v-btn small color="primary" class="ml-3" @click="$emit('clear')">{{
+        $t("testToolbar.clearGraph")
+      }}</v-btn>
+      <v-btn small color="primary" class="ml-3" @click="$emit('export')">{{
+        $t("testToolbar.exportState")
+      }}</v-btn
       ><v-btn small color="primary" class="ml-3" @click="$emit('import')">
-        Import state</v-btn
+        {{ $t("testToolbar.importState") }}</v-btn
       >
       <v-spacer></v-spacer>
       <v-btn
@@ -24,7 +25,7 @@
         small
         color="primary lighten-2"
         @click="$router.push({ name: 'Edit Graph' })"
-        >Switch to Editor</v-btn
+        >{{ $t("testToolbar.switchToEditor") }}</v-btn
       >
     </v-toolbar>
     <v-snackbar v-model="hasErrorBar" color="error" :timeout="5000">
