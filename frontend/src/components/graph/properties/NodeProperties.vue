@@ -34,7 +34,7 @@
             <v-select
               :items="evidenceFormulas"
               style="max-width: 300px; margin: auto"
-              label="Evidence Formula"
+              :label="this.$t('nodeProperties.evidenceFormula')"
               v-model="node.evidenceFormulaName"
               clearable
             />

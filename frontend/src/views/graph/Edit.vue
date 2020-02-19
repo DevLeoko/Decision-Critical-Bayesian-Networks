@@ -254,6 +254,12 @@ export default Vue.extend({
           toNode.timeTDependency.parents.splice(index, 1);
         }
       }
+
+      if (!toNode.timeTDependency.parentsTm1.length) {
+        toNode.timeTDependency.probabilities = JSON.parse(
+          JSON.stringify(toNode.timeZeroDependency.probabilities)
+        );
+      }
     },
 
     generateNewNodeName() {
@@ -332,6 +338,12 @@ export default Vue.extend({
       }
 
       this.addToDependencies(toNode.timeTDependency, fromName);
+
+      if (!toNode.timeTDependency.parentsTm1.length) {
+        toNode.timeTDependency.probabilities = JSON.parse(
+          JSON.stringify(toNode.timeZeroDependency.probabilities)
+        );
+      }
 
       if (this.timeEdge) {
         const uuid = vis.util.randomUUID();
@@ -500,8 +512,10 @@ export default Vue.extend({
       nodeToSaveTo.name = node.name;
       nodeToSaveTo.timeZeroDependency.probabilities =
         node.timeZeroDependency.probabilities;
-      nodeToSaveTo.timeTDependency.probabilities =
-        node.timeTDependency.probabilities;
+      nodeToSaveTo.timeTDependency.probabilities = node.timeTDependency
+        .parentsTm1.length
+        ? node.timeTDependency.probabilities
+        : node.timeZeroDependency.probabilities;
       nodeToSaveTo.evidenceFormulaName = node.evidenceFormulaName;
 
       this.updateNodeName(name, node.name);

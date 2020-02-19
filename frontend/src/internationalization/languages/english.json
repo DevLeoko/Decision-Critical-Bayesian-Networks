@@ -135,11 +135,15 @@
       "properties": "Properties",
       "save": "Save",
       "general": "General",
-      "definition": "Definition"
+      "definition": "Definition",
+      "evidenceFormula": "Evidence Formula"
     },
     "test": {
       "virtualEvidence": "Virtual Evidence",
-      "binaryEvidence": "Binary Evidences"
+      "binaryEvidence": "Binary Evidences",
+      "values": "Values",
+      "valuesOf": "Values of ",
+      "close": "Close"
     },
     "edit": {
       "properties": "Properties",
