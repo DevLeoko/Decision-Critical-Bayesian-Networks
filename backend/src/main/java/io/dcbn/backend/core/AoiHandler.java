@@ -5,6 +5,9 @@ import io.dcbn.backend.core.activemq.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Handles a new AreaOfInterest
+ */
 @Service
 public class AoiHandler {
 
@@ -17,8 +20,12 @@ public class AoiHandler {
         this.producer = producer;
     }
 
+    /**
+     * Takes an Aoi and inserts it into the AoiCache
+     *
+     * @param aoi Aoi to be inserted
+     */
     public void handleAoi(AreaOfInterest aoi) {
         aoiCache.insert(aoi.getName(), aoi);
-        System.out.println(aoiCache.getAllAois());
     }
 }

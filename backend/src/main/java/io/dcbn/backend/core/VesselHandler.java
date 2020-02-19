@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Handles a new Vessel
+ */
 @Service
 public class VesselHandler {
 
@@ -24,6 +27,13 @@ public class VesselHandler {
         this.producer = producer;
     }
 
+    /**
+     * Inserts the given vessel into the cache. Calculates the inference for the given vessel and sends the Outcomes
+     * to the producer
+     *
+     * @param vessel New Vessel to be handled
+     * @throws JsonProcessingException
+     */
     public void handleVessel(Vessel vessel) throws JsonProcessingException {
         vesselCache.insert(vessel);
         List<Outcome> outcomes = inferenceManager.calculateInference(vessel.getUuid());
