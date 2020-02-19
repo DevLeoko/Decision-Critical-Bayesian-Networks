@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Transactional
 @RestController
@@ -72,20 +70,20 @@ public class EvidenceFormulaController {
 
     @DeleteMapping("/evidence-formulas/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public boolean deleteEvidenceFormulaById(@PathVariable long id) {
+    public List<String> deleteEvidenceFormulaById(@PathVariable long id) {
         EvidenceFormula formula = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND));
 
-        boolean hasDeletedFromGraph = false;
+        List<String> changedGraphs = new ArrayList<>();
         for (Graph graph : graphRepository.findAll()) {
             for (Node node : graph.getNodes()) {
                 if (formula.getName().equals(node.getEvidenceFormulaName())) {
                     node.setEvidenceFormulaName(null);
-                    hasDeletedFromGraph = true;
+                    changedGraphs.add(graph.getName());
                 }
             }
         }
         repository.deleteById(id);
-        return hasDeletedFromGraph;
+        return changedGraphs;
     }
 
     @PutMapping("/evidence-formulas/{id}")

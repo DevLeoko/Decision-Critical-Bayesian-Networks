@@ -120,8 +120,8 @@ export default Vue.extend({
         .delete(`/evidence-formulas/${formula.id}`)
         .then(resp => {
           this.$emit("update-list");
-          if (resp.data) {
-            this.$emit("graphs-changed");
+          if (resp.data.length > 0) {
+            this.$emit("graphs-changed", resp.data);
           }
         })
         .then(() => this.$emit("update:loading", false));

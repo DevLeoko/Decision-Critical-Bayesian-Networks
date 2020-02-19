@@ -5,7 +5,7 @@
         :loading.sync="loading"
         :formulas="formulas"
         @update-list="updateList()"
-        @graphs-changed="graphsChanged = true"
+        @graphs-changed="updateChangedGraphs($event)"
       />
     </v-flex>
     <v-flex xs9 pa-3>
@@ -23,8 +23,9 @@
         </v-flex>
       </v-layout>
     </v-flex>
-    <v-snackbar color="error" v-model="graphsChanged" timeout="5000">
-      Graphs that where using this evidence formula have been changed!
+    <v-snackbar color="orange darker-2" v-model="graphsChanged" timeout="7500">
+      The graphs {{ changedGraphs }} that where using this evidence formula have
+      been changed!
     </v-snackbar>
   </v-layout>
 </template>
@@ -45,7 +46,8 @@ export default Vue.extend({
     return {
       formulas: [] as Formula[],
       loading: false,
-      graphsChanged: false
+      graphsChanged: false,
+      changedGraphs: ""
     };
   },
   components: {
@@ -66,6 +68,11 @@ export default Vue.extend({
         }
       }
       return null;
+    },
+
+    updateChangedGraphs(graphs: string[]) {
+      this.graphsChanged = true;
+      this.changedGraphs = graphs.join(", ");
     }
   },
 
