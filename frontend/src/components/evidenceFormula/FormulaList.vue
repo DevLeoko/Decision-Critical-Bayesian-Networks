@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer permanent width="100%">
-    <v-dialog v-model="deleteWarning" persistent="true" max-width="400">
+    <v-dialog v-model="deleteWarning" persistent max-width="400">
       <v-card>
         <v-card-title>
           <v-icon class="mr-2">delete_sweep</v-icon>
@@ -94,10 +94,6 @@ export default Vue.extend({
   methods: {
     generateNewName(): string {
       const defaultFormulaName = "newFormula";
-      if (this.formulas.length == 0) {
-        return defaultFormulaName;
-      }
-
       for (let i = 0; ; i++) {
         let testName = `${defaultFormulaName}${i === 0 ? "" : i}`;
         if (!this.formulas.filter(formula => formula.name == testName).length) {

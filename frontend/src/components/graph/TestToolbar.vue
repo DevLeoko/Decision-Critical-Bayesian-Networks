@@ -1,35 +1,89 @@
 <template>
-  <v-toolbar small bottom style="width: 100%">
-    <v-btn color="success" class="ml-3" @click="$emit('test', graphResp)">
-      <v-icon class="mr-1">check</v-icon>{{ $t("testToolbar.test") }}
-    </v-btn>
-    <v-spacer></v-spacer>
-    <v-btn small color="primary" class="ml-3">{{
-      $t("testToolbar.clearGraph")
-    }}</v-btn>
-    <v-btn small color="primary" class="ml-3">{{
-      $t("testToolbar.exportState")
-    }}</v-btn
-    ><v-btn small color="primary" class="ml-3">{{
-      $t("testToolbar.importState")
-    }}</v-btn>
-    <v-spacer></v-spacer>
-    <v-btn small color="primary lighten-2">{{
-      $t("testToolbar.switchToEditor")
-    }}</v-btn>
-  </v-toolbar>
+  <div>
+    <v-toolbar small bottom style="width: 100%">
+      <v-btn color="success" class="ml-3" @click="evaluate($route.params.id)">
+        <v-icon class="mr-1">check</v-icon>Test
+      </v-btn>
+      <v-spacer></v-spacer>
+      <v-btn small color="primary" class="ml-3" @click="$emit('clear')"
+        >Clear graph</v-btn
+      >
+      <v-btn small color="primary" class="ml-3" @click="$emit('export')"
+        >Export state</v-btn
+      ><v-btn small color="primary" class="ml-3" @click="$emit('import')">
+        Import state</v-btn
+      >
+      <v-spacer></v-spacer>
+      <v-btn
+        v-if="$store.state.user.role == 'ADMIN'"
+        small
+        color="primary lighten-2"
+        @click="$router.push({ name: 'Edit Graph' })"
+        >Switch to Editor</v-btn
+      >
+    </v-toolbar>
+    <v-snackbar v-model="hasErrorBar" color="error" :timeout="5000">
+      {{ errorMessage }}
+      <v-btn icon @click="hasErrorBar = false"><v-icon>clear</v-icon></v-btn>
+    </v-snackbar>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 
 // TODO fetch actual response from backend
-import graphResp from "@/../tests/resources/graph1_resp.json";
+// import graphResp from "@/../tests/resources/graph1_resp.json";
 export default Vue.extend({
+  props: {
+    nodeIndices: {
+      type: Array as () => string[]
+    },
+    presentValues: {
+      type: Array as () => {
+        evidences: boolean[];
+        //Assuming its the true value
+        virtualEvidence: number | null;
+        computed: number[];
+      }[]
+    }
+  },
+
   data() {
     return {
-      graphResp
+      hasErrorBar: false,
+      errorMessage: ""
     };
+  },
+
+  methods: {
+    evaluate(id: number) {
+      let valueMap = {} as { [key: string]: number[][] };
+      this.nodeIndices.forEach(node => {
+        const index = this.nodeIndices.indexOf(node);
+        //If evidences are present
+        if (this.presentValues[index].evidences.length) {
+          valueMap[node] = this.presentValues[index].evidences.map(evid =>
+            evid ? [1, 0] : [0, 1]
+          );
+          //If virtual evidence is present
+        } else if (this.presentValues[index].virtualEvidence != null) {
+          let valueArray = [] as number[][];
+          let virEvi = this.presentValues[index].virtualEvidence!;
+          valueArray.push([virEvi, 1 - virEvi]);
+          valueMap[node] = valueArray;
+        }
+      });
+      this.axios
+        .post(`/graphs/${id}/evaluate`, valueMap)
+        .then(res => {
+          this.$emit("test", res.data);
+        })
+        .catch(error => {
+          this.errorMessage = error.response.data.message;
+          this.hasErrorBar = true;
+        });
+    }
   }
 });
 </script>

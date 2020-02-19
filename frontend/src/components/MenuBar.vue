@@ -19,6 +19,7 @@
 
       <language-selector />
       <v-btn
+        v-if="$store.state.user.role == 'ADMIN'"
         class="ml-4"
         :to="{ name: graphView ? 'EvidenceFormulaBase' : 'GraphBase' }"
         >{{

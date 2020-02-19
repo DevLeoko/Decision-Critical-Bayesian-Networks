@@ -32,7 +32,7 @@ class EvidenceFormulaEvaluatorTest {
 
     private static Object inArea(List<Object> parameters) {
         if ("TEST_AREA".equals(parameters.get(0))) {
-            testFunctions.correlatedAois.add(area);
+            testFunctions.correlatedAois.add(area.getName());
             return true;
         }
         return false;
@@ -47,6 +47,8 @@ class EvidenceFormulaEvaluatorTest {
         vessel = new Vessel(null, 0);
         vessel.setSpeed(5.0);
         vessel.setLongitude(12.0);
+
+        area.setName("TEST_AREA");
 
         Map<String, FunctionWrapper> functions = new HashMap<>();
         functions.put("inArea", new FunctionWrapper(Collections.singletonList(String.class), EvidenceFormulaEvaluatorTest::inArea));
@@ -286,8 +288,8 @@ class EvidenceFormulaEvaluatorTest {
         formula.setFormula("inArea(TEST_AREA)");
         assertTrue(evaluator.evaluate(vessel, formula));
         assertEquals(1, evaluator.getCorrelatedAois().size());
-
-        assertTrue(evaluator.getCorrelatedAois().contains(area));
+        System.out.println(evaluator.getCorrelatedAois().toArray()[0]);
+        assertTrue(evaluator.getCorrelatedAois().contains("TEST_AREA"));
     }
 
     @Test

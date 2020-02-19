@@ -10,6 +10,7 @@
         large
         elevation="4"
         class="ml-3"
+        style="z-index: 10"
         @click="menu = true"
         ><v-icon>chevron_right</v-icon>
       </v-btn>
@@ -40,6 +41,7 @@
       <v-treeview
         :items="treeItems"
         :search="search"
+        :active="active"
         @update:active="arr => selectGraph(arr[0])"
         activatable
         open-on-click
@@ -101,24 +103,25 @@
         <v-divider></v-divider>
         <v-progress-linear indeterminate v-if="loading" />
         <v-row justify="center">
-          <v-col class="flex-grow-0 my-4">
-            <v-btn
-              color="primary"
-              @click="graphs.push({ name: 'TestGraph' + i++, id: 10 + i })"
-            >
-              <v-icon>add</v-icon> {{ $t("folderView.addNewGraph") }}
+          <v-col class="flex-grow-0 mt-4 pb-0">
+            <v-btn medium color="primary" @click="createGraph()">
+              <v-icon>add</v-icon> Add new graph
             </v-btn>
-            <v-file-input
-              :label="$t('folderView.import')"
-              outlined
-              dense
-              class="ma-3"
-              @change="importGraph($event)"
-            ></v-file-input>
+          </v-col>
+          <v-col class="flex-grow-0 mb-4">
+            <v-btn small color="primary lighten-2" @click="triggerImport()">
+              <v-icon small class="mr-2">cloud_upload</v-icon> Import graph
+            </v-btn>
           </v-col>
         </v-row>
       </template>
     </v-navigation-drawer>
+    <input
+      ref="networkFileSelect"
+      type="file"
+      @change="event => importGraph(event.target.files[0])"
+      style="display: none"
+    />
     <folder-actions
       ref="actions"
       :folders="
@@ -132,11 +135,11 @@
       @rename="renameGraph"
       @delete="deleteGraph"
     ></folder-actions>
-    <v-snackbar v-model="hasErrorBar" color="error" timeout="5000">
+    <v-snackbar v-model="hasErrorBar" color="error" :timeout="5000">
       {{ error }}
       <v-btn icon @click="hasErrorBar = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
-    <v-snackbar v-model="successBar" color="success" timeout="3000">
+    <v-snackbar v-model="successBar" color="success" :timeout="3000">
       {{ successMessage }}
       <v-btn icon @click="successBar = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
@@ -144,27 +147,28 @@
 </template>
 
 <script lang="ts">
-interface DenseGraph {
-  name: string;
-  id: number;
-}
-
 export interface TreeItem {
   name: string;
   id: string | number;
-  graph?: DenseGraph;
+  graph?: dcbn.DenseGraph;
   children: TreeItem[];
 }
 
 import Vue from "vue";
 import FolderActions from "@/components/graph/FolderViewActions.vue";
+import { dcbn } from "@/utils/graph/graph";
 export default Vue.extend({
   props: {
-    graphs: Array as () => Array<DenseGraph>
+    graphs: Array as () => Array<dcbn.DenseGraph>
   },
 
   components: { FolderActions },
   data() {
+    let active: number[] = [];
+    if (this.$route.params && this.$route.params.id) {
+      active = [this.$route.params.id as any];
+    }
+
     return {
       search: null,
       menu: true,
@@ -173,30 +177,89 @@ export default Vue.extend({
       error: "",
       successBar: false,
       successMessage: "",
-      loading: false
+      loading: false,
+      active: active
     };
   },
 
   methods: {
-    duplicateGraph(graph: DenseGraph) {
-      let copy = JSON.parse(JSON.stringify(graph));
-
-      copy.name += "_COPY";
-      copy.id *= 21 + this.graphs.length;
-
-      this.graphs.push(copy);
-      // TDOD send /create request
+    async createGraph() {
+      this.loading = true;
+      try {
+        const newName = this.generateNewUniqueString("newGraph");
+        const res = await this.axios.post("/graphs", {
+          id: 0,
+          name: newName,
+          timeSlices: 5,
+          nodes: []
+        });
+        this.graphs.push({
+          name: newName,
+          id: res.data
+        });
+        this.throwSuccess("The graph has been generated");
+        this.selectGraph(res.data);
+      } catch (err) {
+        this.throwError(err.response.data.message);
+      } finally {
+        this.loading = false;
+      }
     },
 
-    renameGraph({ graph, name }: { graph: DenseGraph; name: string }) {
-      graph.name = name;
-      // TDOD send /rename request
+    duplicateGraph(graph: dcbn.DenseGraph) {
+      this.loading = true;
+      this.axios
+        .get(`/graphs/${graph.id}`)
+        .then(res => {
+          const copy = res.data as dcbn.Graph;
+          copy.id = 0;
+          copy.name = this.generateNewUniqueString(`${graph.name}_COPY`);
+          copy.nodes.forEach(node => {
+            node.id = 0;
+            node.timeZeroDependency.id = 0;
+            node.timeTDependency.id = 0;
+          });
+          this.axios
+            .post("/graphs", copy)
+            .then(resp => {
+              copy.id = resp.data;
+              this.graphs.push({ name: copy.name, id: copy.id });
+              this.throwSuccess(
+                `Graph ${graph.name} duplicated to ${copy.name}`
+              );
+            })
+            .catch(error => this.throwError(error.response.data.message));
+        })
+        .catch(error => this.throwError(error.response.data.message))
+        .then(() => (this.loading = false));
     },
 
-    deleteGraph({ graph }: { graph: DenseGraph }) {
-      this.graphs.splice(this.graphs.indexOf(graph), 1);
+    renameGraph({ graph, name }: { graph: dcbn.DenseGraph; name: string }) {
+      this.loading = true;
+      this.axios
+        .post(`/graphs/${graph.id}/name`, name, {
+          headers: {
+            "Content-Type": "text/plain"
+          }
+        })
+        .then(() => {
+          graph.name = name;
+          this.throwSuccess(`Graph renamed to ${name}`);
+        })
+        .catch(error => this.throwError(error.response.data.message))
+        .then(() => (this.loading = false));
+    },
 
-      // TDOD send /delete request
+    deleteGraph({ graph }: { graph: dcbn.DenseGraph }) {
+      this.loading = true;
+      this.axios
+        .delete(`/graphs/${graph.id}`)
+        .then(() => {
+          this.graphs.splice(this.graphs.indexOf(graph), 1);
+          this.throwSuccess("Graph deleted");
+        })
+        .catch(error => this.throwError(error.response.data.message))
+        .then(() => (this.loading = false));
     },
 
     // graphId is actually an int ._.
@@ -209,13 +272,15 @@ export default Vue.extend({
         targetRoute = "GraphBase";
       }
 
-      this.$router.push({
-        name: targetRoute,
-        params: { id }
-      });
+      if (this.$route.params && this.$route.params.id != id) {
+        this.$router.push({
+          name: targetRoute,
+          params: { id }
+        });
+      }
     },
 
-    exportGraph(graph: DenseGraph) {
+    exportGraph(graph: dcbn.DenseGraph) {
       this.loading = true;
       const FileDownload = require("js-file-download");
       this.axios
@@ -229,9 +294,14 @@ export default Vue.extend({
         .then(() => (this.loading = false));
     },
 
+    triggerImport() {
+      (this.$refs.networkFileSelect as HTMLInputElement).value = "";
+      (this.$refs.networkFileSelect as any).click();
+    },
+
     importGraph(file: any) {
-      this.loading = true;
       if (file != null) {
+        this.loading = true;
         const formData = new FormData();
         formData.append("graph", file);
         this.axios
@@ -241,15 +311,13 @@ export default Vue.extend({
             }
           })
           .then(res => {
-            this.graphs.push(res.data);
+            this.graphs.push({ name: res.data.name, id: res.data.id });
             this.throwSuccess("Graph imported");
           })
           .catch(error => {
             this.throwError(error.response.data.message);
           })
           .then(() => (this.loading = false));
-      } else {
-        this.loading = false;
       }
     },
 
@@ -260,6 +328,24 @@ export default Vue.extend({
     throwSuccess(message: string) {
       this.successMessage = message;
       this.successBar = true;
+    },
+
+    generateNewUniqueString(defaultString: string): string {
+      const gefaultGraphCopyName = defaultString;
+      for (let i = 0; ; i++) {
+        let testName = `${gefaultGraphCopyName}${i === 0 ? "" : i}`;
+        if (!this.graphs.filter(graph => graph.name == testName).length) {
+          return testName;
+        }
+      }
+    }
+  },
+
+  watch: {
+    treeItems() {
+      if (this.$route.params && this.$route.params.id) {
+        this.active = [this.$route.params.id as any];
+      }
     }
   },
 

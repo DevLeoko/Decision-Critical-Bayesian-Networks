@@ -13,24 +13,11 @@
 <script lang="ts">
 import MenuBar from "@/components/MenuBar.vue";
 import Vue from "vue";
+import { Role } from "./store";
 
 export default Vue.extend({
   name: "App",
   components: { MenuBar },
-  data: () => ({}),
-
-  async created() {
-    if (this.$store.state.isUserLoggedIn) {
-      const user = (await this.axios.post("/refreshAccount")).data.user;
-      this.$store.dispatch("setUser", user);
-    } else {
-      if (!this.$route.meta.unauthorized) {
-        this.$router.push({
-          name: "Login",
-          params: { lang: this.$i18n.locale }
-        });
-      }
-    }
-  }
+  data: () => ({})
 });
 </script>

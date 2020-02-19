@@ -1,5 +1,5 @@
 import store from "@/store";
-import router from "@/router";
+import { router } from "@/router";
 import Axios from "axios";
 
 const axiosInstance = Axios.create({

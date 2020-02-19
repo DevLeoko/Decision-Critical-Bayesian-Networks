@@ -9,17 +9,16 @@ import org.springframework.stereotype.Service;
 public class AoiHandler {
 
     private final AoiCache aoiCache;
+    private final Producer producer;
 
     @Autowired
-    public AoiHandler(AoiCache aoiCache) {
+    public AoiHandler(AoiCache aoiCache, Producer producer) {
         this.aoiCache = aoiCache;
+        this.producer = producer;
     }
 
     public void handleAoi(AreaOfInterest aoi) {
-        try {
-            aoiCache.insert(aoi.getName(), aoi);
-        } catch (IllegalArgumentException e) {
-            Producer.sendErrorMessage(e.getMessage());
-        }
+        aoiCache.insert(aoi.getName(), aoi);
+        System.out.println(aoiCache.getAllAois());
     }
 }

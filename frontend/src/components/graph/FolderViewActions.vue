@@ -1,6 +1,15 @@
 <template>
   <div v-if="currentGraph.name">
-    <v-dialog v-model="deleteOpen" max-width="400">
+    <v-dialog
+      v-model="deleteOpen"
+      max-width="400"
+      @keydown.enter="
+        if (deleteOpen) {
+          deleteOpen = false;
+          $emit('delete', currentGraph);
+        }
+      "
+    >
       <v-card>
         <v-card-title>
           <v-icon class="mr-2">delete_sweep</v-icon>

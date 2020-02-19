@@ -102,11 +102,11 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-snackbar v-model="hasError" color="error" timeout="5000">
+    <v-snackbar v-model="hasError" color="error" :timeout="5000">
       {{ errorMessage }}
       <v-btn icon @click="hasError = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
-    <v-snackbar v-model="success" color="success" timeout="3000">
+    <v-snackbar v-model="success" color="success" :timeout="3000">
       {{ successMessage }}
       <v-btn icon @click="success = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
@@ -114,7 +114,7 @@
     <v-snackbar
       v-model="successfulEvaluation"
       :color="evaluationResult ? 'success' : 'error'"
-      timeout="3000"
+      :timeout="3000"
     >
       {{ evaluationResult ? "true" : "false" }}
       <v-btn icon @click="successfulEvaluation = false"

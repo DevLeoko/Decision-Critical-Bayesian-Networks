@@ -17,15 +17,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @SpringBootApplication
+@EnableScheduling
 public class DcbnApplication {
 
     public static void main(String[] args) {
@@ -61,16 +64,14 @@ public class DcbnApplication {
                     new DcbnUser("superadmin", "superadmin@dcbn.io", passwordEncoder().encode("superadmin"),
                             Role.SUPERADMIN));
 
-            Position ZERO_POSITION = new Position(0.0, 0.0);
-
             Node smuggling = new Node("smuggling", null, null, "#ffffff", null, StateType.BOOLEAN,
-                    ZERO_POSITION);
+                    new Position(0.0, 0.0));
             Node nullSpeed = new Node("nullSpeed", null, null, "#ffffff",
-                    "nullSpeed", StateType.BOOLEAN, ZERO_POSITION);
+                    "nullSpeed", StateType.BOOLEAN, new Position(200.0, 0.0));
             Node inTrajectoryArea = new Node("inTrajectoryArea", null, null, "#ffffff",
-                    "inTrajectory", StateType.BOOLEAN, ZERO_POSITION);
+                    "inTrajectory", StateType.BOOLEAN, new Position(0.0, 200.0));
             Node isInReportedArea = new Node("isInReportedArea", null, null, "#ffffff",
-                    "inArea", StateType.BOOLEAN, ZERO_POSITION);
+                    "inArea", StateType.BOOLEAN, new Position(-200.0, 0.0));
 
             List<Node> smugglingParentsList = Arrays
                     .asList(nullSpeed, inTrajectoryArea, isInReportedArea);
@@ -78,7 +79,7 @@ public class DcbnApplication {
                     {0.2, 0.8}, {0.001, 0.999}, {0.001, 0.999}};
             NodeDependency smuggling0Dep = new NodeDependency(smugglingParentsList,
                     new ArrayList<>(), probabilities);
-            NodeDependency smugglingTDep = new NodeDependency(smugglingParentsList, new ArrayList<>(),
+            NodeDependency smugglingTDep = new NodeDependency(smugglingParentsList, Collections.singletonList(isInReportedArea),
                     probabilities);
             smuggling.setTimeZeroDependency(smuggling0Dep);
             smuggling.setTimeTDependency(smugglingTDep);

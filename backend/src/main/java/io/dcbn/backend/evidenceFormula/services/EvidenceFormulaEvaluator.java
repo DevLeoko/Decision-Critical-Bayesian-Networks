@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Service to evaluate {@link EvidenceFormula}.
@@ -89,7 +90,7 @@ public class EvidenceFormulaEvaluator {
         Map<String, Object> variables = mapper.convertValue(object,
                 new TypeReference<Map<String, Object>>() {
                 });
-        return evaluateInternal(variables, evidenceFormula);
+        return evaluateInternal(variables.entrySet().stream().filter(entry -> entry.getValue() != null).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)), evidenceFormula);
     }
 
     // Does the actual evaluation.
@@ -107,7 +108,7 @@ public class EvidenceFormulaEvaluator {
         return functions.getCorrelatedVessels();
     }
 
-    public Set<AreaOfInterest> getCorrelatedAois() {
+    public Set<String> getCorrelatedAois() {
         return functions.getCorrelatedAois();
     }
 

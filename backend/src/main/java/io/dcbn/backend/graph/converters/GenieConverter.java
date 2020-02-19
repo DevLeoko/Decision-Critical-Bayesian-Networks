@@ -6,7 +6,6 @@ import io.dcbn.backend.graph.Position;
 import io.dcbn.backend.graph.StateType;
 import io.dcbn.backend.utils.Pair;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,12 +21,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +36,7 @@ public class  GenieConverter {
 
     private static final String ID = "id";
     private static final List<io.dcbn.backend.graph.Node> EMPTY_NODE_LIST = new ArrayList<>();
-    private static final Position ZERO_POSITION = new Position(0, 0);
+    private static final Position ZERO_POSITION = new Position(0.0, 0.0);
 
 
     /**
@@ -59,16 +56,14 @@ public class  GenieConverter {
         List<io.dcbn.backend.graph.Node> dcbnNodes = new ArrayList<>();
 
         //Creating all nodes to avoid reference problems
-        for (int i = 0; i < nodesFile.size(); i++) {
-            Node node = nodesFile.get(i);
+        for (Node node : nodesFile) {
             String nodeID = node.getAttributes().getNamedItem(ID).getNodeValue();
             io.dcbn.backend.graph.Node dcbnNode = new io.dcbn.backend.graph.Node(nodeID, null,
                     null, null, null, null, ZERO_POSITION);
             dcbnNodes.add(dcbnNode);
         }
 
-        for (int i = 0; i < nodesFile.size(); i++) {
-            Node node = nodesFile.get(i);
+        for (Node node : nodesFile) {
             String nodeID = node.getAttributes().getNamedItem(ID).getNodeValue();
             Node nodeAttribute = getNodeWithID(nodesAttributes, nodeID);
             //------Setting the state for this node-------
@@ -145,8 +140,7 @@ public class  GenieConverter {
         int timeSlices = Integer.parseInt(root.getElementsByTagName("dynamic").item(0)
                 .getAttributes().getNamedItem("numslices").getNodeValue());
         //--------Setting the real names for the nodes---------
-        for (int i = 0; i < nodesFile.size(); i++) {
-            Node node = nodesFile.get(i);
+        for (Node node : nodesFile) {
             String nodeID = node.getAttributes().getNamedItem(ID).getNodeValue();
             Node nodeAttribute = getNodeWithID(nodesAttributes, nodeID);
             String name = extractChildren(nodeAttribute, "name").get(0).getTextContent();
@@ -186,8 +180,8 @@ public class  GenieConverter {
         plateElement.setAttribute("leftwidth", "120");
         plateElement.setAttribute("rightwidth", "120");
         Position platePosition = findOutMaxPos(graph.getNodes());
-        int plateX = (int) platePosition.getX() + 200; //200 is default offset
-        int plateY = (int) platePosition.getY() + 200; //200 is default offset
+        int plateX = platePosition.getX().intValue() + 200; //200 is default offset
+        int plateY = platePosition.getY().intValue() + 200; //200 is default offset
         plateElement.setTextContent("0 0 " + plateX + " " + plateY);
         genieElement.appendChild(plateElement);
 
@@ -288,8 +282,7 @@ public class  GenieConverter {
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
         transformer.setOutputProperty(OutputKeys.METHOD, "xml");
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-
+        transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
         transformer.transform(new DOMSource(document), new StreamResult(sw));
         return sw.toString();
 
@@ -322,8 +315,8 @@ public class  GenieConverter {
 
         }
         List<io.dcbn.backend.graph.Node> sortedNodes = new ArrayList<>();
-        for (Pair pair : sortedNodePair) {
-            sortedNodes.add((io.dcbn.backend.graph.Node) pair.getKey());
+        for (Pair<io.dcbn.backend.graph.Node, Integer> pair : sortedNodePair) {
+            sortedNodes.add(pair.getKey());
         }
         return sortedNodes;
     }
@@ -382,9 +375,9 @@ public class  GenieConverter {
     private void createProbString(Document document, Element cptElement, NodeDependency timeTDependency) {
         StringBuilder probabilitiesStringTime = new StringBuilder();
         double[][] probabilitiesTime = timeTDependency.getProbabilities();
-        for (int i = 0; i < probabilitiesTime.length; i++) {
-            for (int j = 0; j < probabilitiesTime[i].length; j++) {
-                probabilitiesStringTime.append(probabilitiesTime[i][j]).append(" ");
+        for (double[] doubles : probabilitiesTime) {
+            for (double aDouble : doubles) {
+                probabilitiesStringTime.append(aDouble).append(" ");
             }
         }
         Element probabilitiesElementTime = document.createElement("probabilities");
@@ -455,15 +448,15 @@ public class  GenieConverter {
      *
      * @param node              the {@link Node} to inspect.
      * @param existingDcbnNodes a {@link List<io.dcbn.backend.graph.Node>} of the already existing {@link io.dcbn.backend.graph.Node} objects.
-     * @return
+     * @return the {@link List<io.dcbn.backend.graph.Node>} of parents described in the "parent" sub node of the given {@link Node}.
      */
     private List<io.dcbn.backend.graph.Node> extractParentNodes(Node node, List<io.dcbn.backend.graph.Node> existingDcbnNodes) {
         if (extractChildren(node, "parents").size() != 0) {
             String[] parentsT0TTString = extractChildren(node, "parents")
                     .get(0).getTextContent().split(" ");
             List<io.dcbn.backend.graph.Node> parentNodes = new ArrayList<>();
-            for (int i = 0; i < parentsT0TTString.length; i++) {
-                parentNodes.add(findDcbnNodeByName(existingDcbnNodes, parentsT0TTString[i]));
+            for (String s : parentsT0TTString) {
+                parentNodes.add(findDcbnNodeByName(existingDcbnNodes, s));
             }
             return parentNodes;
         }
