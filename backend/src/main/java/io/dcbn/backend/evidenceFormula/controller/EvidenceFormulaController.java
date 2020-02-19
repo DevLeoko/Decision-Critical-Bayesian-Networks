@@ -2,7 +2,6 @@ package io.dcbn.backend.evidenceFormula.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
@@ -10,6 +9,9 @@ import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
 import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
 import io.dcbn.backend.evidenceFormula.services.exceptions.EvaluationException;
+import io.dcbn.backend.graph.Graph;
+import io.dcbn.backend.graph.Node;
+import io.dcbn.backend.graph.repositories.GraphRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +21,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Transactional
 @RestController
@@ -36,12 +36,15 @@ public class EvidenceFormulaController {
     private final EvidenceFormulaRepository repository;
     private final EvidenceFormulaEvaluator evaluator;
 
+    private final GraphRepository graphRepository;
+
     @Autowired
     public EvidenceFormulaController(
             EvidenceFormulaRepository repository,
-            EvidenceFormulaEvaluator evaluator) {
+            EvidenceFormulaEvaluator evaluator, GraphRepository graphRepository) {
         this.repository = repository;
         this.evaluator = evaluator;
+        this.graphRepository = graphRepository;
     }
 
     @GetMapping("/evidence-formulas")
@@ -69,11 +72,20 @@ public class EvidenceFormulaController {
 
     @DeleteMapping("/evidence-formulas/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteEvidenceFormulaById(@PathVariable long id) {
-        if (!repository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND);
+    public boolean deleteEvidenceFormulaById(@PathVariable long id) {
+        EvidenceFormula formula = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND));
+
+        boolean hasDeletedFromGraph = false;
+        for (Graph graph : graphRepository.findAll()) {
+            for (Node node : graph.getNodes()) {
+                if (formula.getName().equals(node.getEvidenceFormulaName())) {
+                    node.setEvidenceFormulaName(null);
+                    hasDeletedFromGraph = true;
+                }
+            }
         }
         repository.deleteById(id);
+        return hasDeletedFromGraph;
     }
 
     @PutMapping("/evidence-formulas/{id}")

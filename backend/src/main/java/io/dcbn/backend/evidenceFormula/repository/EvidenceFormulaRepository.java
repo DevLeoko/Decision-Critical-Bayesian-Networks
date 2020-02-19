@@ -10,7 +10,6 @@ import java.util.Optional;
 public interface EvidenceFormulaRepository extends CrudRepository<EvidenceFormula, Long> {
 
     boolean existsByName(String name);
-
     Optional<EvidenceFormula> findByName(String name);
 
 }
