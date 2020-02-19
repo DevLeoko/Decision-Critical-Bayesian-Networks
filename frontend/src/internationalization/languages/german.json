@@ -111,7 +111,8 @@
       "noUsersFound": "Keine Nutzer gefunden!",
       "createUser": "Nutzer erstellen",
       "failedToCreateUser": "Erstellen von neuem Nutzer fehlgeschlagen!",
-      "editUser": "Nutzer bearbeiten"
+      "editUser": "Nutzer bearbeiten",
+      "searchUsers": "Nutzer suchen"
     },
     "validation": {
       "emailRequired": "Bitte eine Email eingeben!",
@@ -122,10 +123,8 @@
       "nameInvalid": "Ungültiger name"
     },
     "cptContainer": {
-      "conditionalProbabilityTime0": "Bedingte Wahrscheinlichkeitstabelle Zeit 0",
-      "conditionalProbabilityTimeT": "Bedingte Wahrscheinlichkeitstabelle Zeit T",
-      "timeT": "Zeit T",
-      "time0": "Zeit 0"
+      "conditionalProbabilityTable": "Bedingte Wahrscheinlichkeitstabelle",
+      "currentTime": "Aktuell: Zeit "
     },
     "generalTab": {
       "name": "Name",
@@ -140,6 +139,10 @@
     "test": {
       "virtualEvidence": "Virtuelle Evidenz",
       "binaryEvidence": "Binäre Evidenzen"
+    },
+    "edit": {
+      "properties": "Einstellungen",
+      "delete": "Löschen"
     }
   }
 }

@@ -24,7 +24,7 @@
                 <v-col>
                   <v-text-field
                     v-model="editedUser.username"
-                    :label="$t('superAdmin.userName')"
+                    :label="$t('superAdmin.username')"
                     :rules="nameValidation"
                   ></v-text-field>
                 </v-col>
@@ -76,7 +76,7 @@
           clearable
           clear-icon="clear"
           solo
-          label="Search users"
+          :label="this.$t('superAdmin.searchUsers')"
           hide-details
         />
         <v-list elevation="4" class="py-0">

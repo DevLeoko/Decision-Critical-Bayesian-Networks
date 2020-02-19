@@ -111,7 +111,8 @@
       "noUsersFound": "No users found!",
       "createUser": "Create user",
       "failedToCreateUser": "Failed to create user!",
-      "editUser": "Edit user"
+      "editUser": "Edit user",
+      "searchUsers": "Search users"
     },
     "validation": {
       "emailRequired": "Please enter an email!",
@@ -122,10 +123,8 @@
       "nameInvalid": "Invalid name"
     },
     "cptContainer": {
-      "conditionalProbabilityTime0": "Conditional Probability Table Time 0",
-      "conditionalProbabilityTimeT": "Conditional Probability Table Time T",
-      "timeT": "Time T",
-      "time0": "Time 0"
+      "conditionalProbabilityTime0": "Conditional Probability Table",
+      "currentTime": "Current: Time"
     },
     "generalTab": {
       "name": "Name",
@@ -140,6 +139,10 @@
     "test": {
       "virtualEvidence": "Virtual Evidence",
       "binaryEvidence": "Binary Evidences"
+    },
+    "edit": {
+      "properties": "Properties",
+      "delete": "Delete"
     }
   }
 }
