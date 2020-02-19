@@ -37,7 +37,7 @@
         tile
         @click="valuesOpen = true"
         v-if="activeId !== -1 && presentValues[activeId].computed.length"
-        >Values</v-btn
+        >{{ $t("test.values") }}</v-btn
       >
     </action-selector>
 
@@ -136,7 +136,9 @@
     </v-dialog>
     <v-dialog v-model="valuesOpen" width="550" v-if="activeId !== -1">
       <v-card>
-        <v-card-title> Values of {{ nodeIndices[activeId] }} </v-card-title>
+        <v-card-title>
+          {{ $t("test.valuesOf") }} {{ nodeIndices[activeId] }}
+        </v-card-title>
 
         <v-card-text>
           <v-row
@@ -160,7 +162,7 @@
           <v-spacer></v-spacer>
 
           <v-btn color="primary" text @click="valuesOpen = false">
-            Close
+            {{ $t("test.close") }}
           </v-btn>
         </v-card-actions>
       </v-card>

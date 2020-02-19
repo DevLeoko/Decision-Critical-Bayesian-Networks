@@ -17,7 +17,9 @@
           }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="save()">$t("nodeProperties.save")</v-btn>
+            <v-btn dark text @click="save()">{{
+              $t("nodeProperties.save")
+            }}</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-tabs v-model="propertyTabs">
@@ -32,7 +34,7 @@
             <v-select
               :items="evidenceFormulas"
               style="max-width: 300px; margin: auto"
-              label="Evidence Formula"
+              :label="this.$t('nodeProperties.evidenceFormula')"
               v-model="node.evidenceFormulaName"
               clearable
             />

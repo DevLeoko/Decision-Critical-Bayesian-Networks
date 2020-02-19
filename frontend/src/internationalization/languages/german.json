@@ -134,11 +134,15 @@
       "properties": "Einstellungen",
       "save": "Speichern",
       "general": "Allgemein",
-      "definition": "Definition"
+      "definition": "Definition",
+      "evidenceFormula": "Evidenzformel"
     },
     "test": {
       "virtualEvidence": "Virtuelle Evidenz",
-      "binaryEvidence": "Binäre Evidenzen"
+      "binaryEvidence": "Binäre Evidenzen",
+      "values": "Werte",
+      "valuesOf": "Werte von ",
+      "close": "Schließen"
     },
     "edit": {
       "properties": "Einstellungen",
