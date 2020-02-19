@@ -2,6 +2,7 @@ package io.dcbn.backend.graph.services;
 
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
 import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
+import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
 import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.Node;
@@ -50,9 +51,8 @@ public class GraphService {
     }
 
     public Graph evaluateGraph(Graph graph) {
-        AmidstGraphAdapter adaptedGraph = new AmidstGraphAdapter(graph);
         return manager
-                .calculateInference(adaptedGraph, (i, formula) -> "false", Algorithm.IMPORTANCE_SAMPLING);
+                .calculateInference(graph, "").getCorrelatedNetwork();
     }
 
     public boolean notAllEvidenceFormulasExist(Graph graph) {
