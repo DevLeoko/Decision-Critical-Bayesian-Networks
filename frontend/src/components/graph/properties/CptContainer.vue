@@ -7,7 +7,10 @@
         </h2>
       </v-col>
       <v-col class="flex-grow-0">
-        <v-btn @click="time0 = !time0">
+        <v-btn
+          @click="time0 = !time0"
+          v-if="node.timeTDependency.parentsTm1.length !== 0"
+        >
           Current: Time {{ time0 ? "0" : "T" }}
         </v-btn>
       </v-col>
