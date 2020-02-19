@@ -264,6 +264,16 @@ export default Vue.extend({
       const fromName = this.nodeMap.get(fromId)!.name;
       const toNode = this.nodeMap.get(toId)!;
 
+      if (
+        (this.timeEdge &&
+          toNode.timeTDependency.parentsTm1.includes(fromName)) ||
+        (!this.timeEdge && toNode.timeZeroDependency.parents.includes(fromName))
+      ) {
+        this.hasError = true;
+        this.errorMessage = `Trying to add duplicate edge between ${fromName} and ${toNode.name}!`;
+        return;
+      }
+
       if (this.timeEdge) {
         toNode.timeTDependency.parentsTm1.push(fromName);
       } else {
