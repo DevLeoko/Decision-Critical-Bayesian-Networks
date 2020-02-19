@@ -197,9 +197,11 @@ public class GraphControllerTest {
         String graphName = "graph1";
         Graph graph = new Graph(graphName, 5, Collections.emptyList());
         long id = createGraph(graph);
+        graph.setId(id);
 
         renameGraph(id);
-        assertEquals(graph, getGraphById(id));
+        assertNotEquals(graph, getGraphById(id));
+        assertEquals("graph2", getGraphById(id).getName());
     }
 
     @Test
@@ -213,19 +215,23 @@ public class GraphControllerTest {
     public void getGraphsTest() throws Exception {
         String graphName = "graph1";
         Graph graph = new Graph(graphName, 5, Collections.emptyList());
-        createGraph(graph);
+        long id = createGraph(graph);
+        graph.setId(id);
 
         List<Graph> graphs = getAllGraphs();
-        assertTrue(graphs.get(0).equals(graph) || graphs.get(1).equals(graph));
+
+        assertTrue(graphs.contains(graph));
     }
 
     @Test
     public void getGraphByIdTest() throws Exception {
         String graphName = "graph1";
         Graph graph = new Graph(graphName, 5, Collections.emptyList());
-        createGraph(graph);
+        long id = createGraph(graph);
+        graph.setId(id);
 
         Graph resultGraph = getGraphById(getIdByName(graphName));
+
         assertEquals(graph, resultGraph);
     }
 
