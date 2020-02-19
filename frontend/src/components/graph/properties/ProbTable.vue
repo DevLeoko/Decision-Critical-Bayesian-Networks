@@ -3,7 +3,7 @@
     <v-row
       v-for="parents in dependency.parents.length +
         dependency.parentsTm1.length"
-      :key="parents"
+      :key="`par${parents}`"
       no-gutters
     >
       <v-col class="leftName">
@@ -21,7 +21,7 @@
     </v-row>
     <v-row
       v-for="nodeState in stateType.states.length"
-      :key="nodeState"
+      :key="`nS${nodeState}`"
       no-gutters
     >
       <v-col class="leftName">
