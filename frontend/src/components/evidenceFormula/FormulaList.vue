@@ -118,7 +118,12 @@ export default Vue.extend({
       this.$emit("update:loading", true);
       this.axios
         .delete(`/evidence-formulas/${formula.id}`)
-        .then(() => this.$emit("update-list"))
+        .then(resp => {
+          this.$emit("update-list");
+          if (resp.data.length > 0) {
+            this.$emit("graphs-changed", resp.data);
+          }
+        })
         .then(() => this.$emit("update:loading", false));
     },
 

@@ -25,6 +25,10 @@ export default class NodeMap {
     return Object.keys(this.map).find(uuid => this.map[uuid].name == name);
   }
 
+  getNodeFromName(name: string): dcbn.Node | undefined {
+    return Object.values(this.map).find(node => node.name === name);
+  }
+
   uuids(): string[] {
     return Object.keys(this.map);
   }

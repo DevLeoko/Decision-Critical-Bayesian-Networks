@@ -84,13 +84,15 @@ export function createGraph(
       id: nodeId,
       label: node.name,
       x: node.position.x * scaling,
-      y: node.position.y * scaling
+      y: node.position.y * scaling,
+      color: node.color
     });
 
     edges.push(
       ...(node.timeTDependency.parents as string[]).map(parent => ({
         from: nodeMap.getUuidFromName(parent),
-        to: nodeId
+        to: nodeId,
+        color: defaultColor
       }))
     );
 

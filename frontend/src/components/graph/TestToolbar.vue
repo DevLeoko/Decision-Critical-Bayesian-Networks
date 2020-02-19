@@ -1,8 +1,13 @@
 <template>
   <div>
     <v-toolbar small bottom style="width: 100%">
-      <v-btn color="success" class="ml-3" @click="evaluate($route.params.id)">
-        <v-icon class="mr-1">check</v-icon>{{ $t("testToolbar.test") }}
+      <v-btn
+        color="success"
+        class="ml-3"
+        @click="evaluate($route.params.id)"
+        :loading="loading"
+      >
+        <v-icon class="mr-1">check</v-icon> {{ $t("testToolbar.test") }}
       </v-btn>
       <v-spacer></v-spacer>
       <v-btn small color="primary" class="ml-3" @click="$emit('clear')">{{
@@ -53,7 +58,8 @@ export default Vue.extend({
   data() {
     return {
       hasErrorBar: false,
-      errorMessage: ""
+      errorMessage: "",
+      loading: false
     };
   },
 
@@ -75,6 +81,7 @@ export default Vue.extend({
           valueMap[node] = valueArray;
         }
       });
+      this.loading = true;
       this.axios
         .post(`/graphs/${id}/evaluate`, valueMap)
         .then(res => {
@@ -83,7 +90,8 @@ export default Vue.extend({
         .catch(error => {
           this.errorMessage = error.response.data.message;
           this.hasErrorBar = true;
-        });
+        })
+        .then(() => (this.loading = false));
     }
   }
 });
