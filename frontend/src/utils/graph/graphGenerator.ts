@@ -65,7 +65,7 @@ export function createGraph(
   container: HTMLElement,
   graph: dcbn.Graph,
   options: vis.Options,
-  scaling = 1
+  xScaling = 1
 ) {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
@@ -83,8 +83,8 @@ export function createGraph(
     nodes.push({
       id: nodeId,
       label: node.name,
-      x: node.position.x * scaling,
-      y: node.position.y * scaling,
+      x: node.position.x * xScaling,
+      y: node.position.y,
       color: node.color
     });
 

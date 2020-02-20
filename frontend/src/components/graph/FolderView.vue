@@ -41,7 +41,7 @@
       <v-treeview
         :items="treeItems"
         :search="search"
-        :active="active"
+        :active.sync="active"
         @update:active="arr => selectGraph(arr[0])"
         activatable
         open-on-click
@@ -108,7 +108,7 @@
               <v-icon>add</v-icon> {{ $t("folderView.addNewGraph") }}
             </v-btn>
           </v-col>
-          <br />
+          <v-col cols="12" class="pa-0 ma-0" />
           <v-col class="flex-grow-0 mb-4">
             <v-btn small color="primary lighten-2" @click="triggerImport()">
               <v-icon small class="mr-2">cloud_upload</v-icon>
@@ -348,6 +348,21 @@ export default Vue.extend({
       if (this.$route.params && this.$route.params.id) {
         this.active = [this.$route.params.id as any];
       }
+    },
+
+    active() {
+      if (this.$route.params && this.$route.params.id) {
+        if (this.active[0] != (this.$route.params.id as any))
+          this.active = [this.$route.params.id as any];
+        return;
+      }
+      if (this.active.length != 0) this.active = [];
+    },
+
+    "$route.params.id": function() {
+      if (this.$route.params && this.$route.params.id)
+        this.active = [this.$route.params.id as any];
+      else this.active = [];
     }
   },
 
