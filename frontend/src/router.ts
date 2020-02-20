@@ -96,16 +96,26 @@ export const router = new Router({
 
 // Make sure to not add any redirect loops!
 router.beforeEach((to, from, next) => {
+  let lang = "en";
+  if (to.params && to.params.lang) lang = to.params.lang;
+
   if (store.state.isUserLoggedIn) {
-    if (!to.name) {
+    if (!to.name || to.name == "Login") {
+      console.log("Uff", to, from);
       if ((store.state.user.role as Role) == "SUPERADMIN") {
         next({
-          name: "SuperAdmin"
+          name: "SuperAdmin",
+          params: {
+            lang
+          }
         });
         return;
       } else {
         next({
-          name: "GraphBase"
+          name: "GraphBase",
+          params: {
+            lang
+          }
         });
         return;
       }
@@ -113,7 +123,10 @@ router.beforeEach((to, from, next) => {
   } else {
     if (!to.meta.unauthorized) {
       next({
-        name: "Login"
+        name: "Login",
+        params: {
+          lang
+        }
       });
       return;
     }
