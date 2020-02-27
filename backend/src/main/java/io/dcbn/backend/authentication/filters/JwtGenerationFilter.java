@@ -43,8 +43,7 @@ public class JwtGenerationFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request,
-                                                HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         ObjectMapper mapper = new JsonMapper();
         try {
             LoginRequest loginRequest = mapper.readValue(request.getReader(), LoginRequest.class);
