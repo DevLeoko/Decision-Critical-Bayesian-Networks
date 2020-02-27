@@ -1,4 +1,4 @@
-package io.dcbn.backend.evidenceFormula.model;
+package io.dcbn.backend.evidenceformula.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

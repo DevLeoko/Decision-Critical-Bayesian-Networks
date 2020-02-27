@@ -1,12 +1,11 @@
-package io.dcbn.backend.evidenceFormula.services;
+package io.dcbn.backend.evidenceformula.services;
 
-import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
-import io.dcbn.backend.evidenceFormula.services.exceptions.EvaluationException;
-import io.dcbn.backend.evidenceFormula.services.exceptions.ParameterSizeMismatchException;
-import io.dcbn.backend.evidenceFormula.services.exceptions.SymbolNotFoundException;
-import io.dcbn.backend.evidenceFormula.services.exceptions.TypeMismatchException;
-import io.dcbn.backend.evidenceFormula.services.visitors.FunctionWrapper;
+import io.dcbn.backend.evidenceformula.services.exceptions.EvaluationException;
+import io.dcbn.backend.evidenceformula.services.exceptions.ParameterSizeMismatchException;
+import io.dcbn.backend.evidenceformula.services.exceptions.SymbolNotFoundException;
+import io.dcbn.backend.evidenceformula.services.exceptions.TypeMismatchException;
+import io.dcbn.backend.evidenceformula.services.visitors.FunctionWrapper;
 import lombok.Setter;
 
 import java.util.*;

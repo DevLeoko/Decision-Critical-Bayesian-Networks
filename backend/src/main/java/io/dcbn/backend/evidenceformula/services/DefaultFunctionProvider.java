@@ -1,4 +1,4 @@
-package io.dcbn.backend.evidenceFormula.services;
+package io.dcbn.backend.evidenceformula.services;
 
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
@@ -7,8 +7,8 @@ import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import de.fraunhofer.iosb.iad.maritime.datamodel.VesselType;
 import io.dcbn.backend.core.AoiCache;
 import io.dcbn.backend.core.VesselCache;
-import io.dcbn.backend.evidenceFormula.services.exceptions.SymbolNotFoundException;
-import io.dcbn.backend.evidenceFormula.services.visitors.FunctionWrapper;
+import io.dcbn.backend.evidenceformula.services.exceptions.SymbolNotFoundException;
+import io.dcbn.backend.evidenceformula.services.visitors.FunctionWrapper;
 
 import java.util.*;
 
@@ -88,11 +88,6 @@ public class DefaultFunctionProvider extends FunctionProvider {
         functions.put("distanceToNearest", new FunctionWrapper(Collections.emptyList(), this::distanceToNearest));
         functions.put("distanceToNearestType", new FunctionWrapper(Collections.singletonList(String.class), this::distanceToNearestType));
         super.functions = functions;
-    }
-
-    private Object inArea(List<Object> parameters, Set<Vessel> ignored, Set<AreaOfInterest> correlatedAois, int timeSlice) {
-        correlatedAois.add(new AreaOfInterest("TEST_AREA", null));
-        return "TEST_AREA".equals(parameters.get(0));
     }
 
 }

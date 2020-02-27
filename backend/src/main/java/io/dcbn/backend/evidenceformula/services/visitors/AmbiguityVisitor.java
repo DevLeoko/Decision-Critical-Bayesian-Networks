@@ -1,7 +1,7 @@
-package io.dcbn.backend.evidenceFormula.services.visitors;
+package io.dcbn.backend.evidenceformula.services.visitors;
 
-import io.dcbn.backend.evidenceFormula.services.FunctionProvider;
-import io.dcbn.backend.evidenceFormula.services.exceptions.EvaluationException;
+import io.dcbn.backend.evidenceformula.services.FunctionProvider;
+import io.dcbn.backend.evidenceformula.services.exceptions.EvaluationException;
 import io.dcbn.backend.evidenceFormulas.FormulaBaseVisitor;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.AmbiguousFunctionCallLiteralContext;
 import io.dcbn.backend.evidenceFormulas.FormulaParser.AmbiguousIdentifierLiteralContext;

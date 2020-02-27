@@ -1,14 +1,14 @@
-package io.dcbn.backend.evidenceFormula.controller;
+package io.dcbn.backend.evidenceformula.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
-import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
-import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
-import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
-import io.dcbn.backend.evidenceFormula.services.exceptions.EvaluationException;
+import io.dcbn.backend.evidenceformula.model.EvidenceFormula;
+import io.dcbn.backend.evidenceformula.repository.EvidenceFormulaRepository;
+import io.dcbn.backend.evidenceformula.services.EvidenceFormulaEvaluator;
+import io.dcbn.backend.evidenceformula.services.exceptions.EvaluationException;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.Node;
 import io.dcbn.backend.graph.repositories.GraphRepository;
@@ -94,10 +94,9 @@ public class EvidenceFormulaController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND));
 
 
-        if (!oldEvidenceFormula.getName().equals(evidenceFormula.getName())) {
-            if (repository.existsByName(evidenceFormula.getName())) {
+        if (!oldEvidenceFormula.getName().equals(evidenceFormula.getName())
+                && repository.existsByName(evidenceFormula.getName())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ALREADY_EXISTS);
-            }
         }
 
         evidenceFormula.setId(oldEvidenceFormula.getId());

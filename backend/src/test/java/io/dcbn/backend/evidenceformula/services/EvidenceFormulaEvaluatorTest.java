@@ -1,16 +1,16 @@
-package io.dcbn.backend.evidenceFormula.services;
+package io.dcbn.backend.evidenceformula.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
-import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
-import io.dcbn.backend.evidenceFormula.services.exceptions.ParameterSizeMismatchException;
-import io.dcbn.backend.evidenceFormula.services.exceptions.ParseException;
-import io.dcbn.backend.evidenceFormula.services.exceptions.SymbolNotFoundException;
-import io.dcbn.backend.evidenceFormula.services.exceptions.TypeMismatchException;
-import io.dcbn.backend.evidenceFormula.services.visitors.FunctionWrapper;
+import io.dcbn.backend.evidenceformula.model.EvidenceFormula;
+import io.dcbn.backend.evidenceformula.services.exceptions.ParameterSizeMismatchException;
+import io.dcbn.backend.evidenceformula.services.exceptions.ParseException;
+import io.dcbn.backend.evidenceformula.services.exceptions.SymbolNotFoundException;
+import io.dcbn.backend.evidenceformula.services.exceptions.TypeMismatchException;
+import io.dcbn.backend.evidenceformula.services.visitors.FunctionWrapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

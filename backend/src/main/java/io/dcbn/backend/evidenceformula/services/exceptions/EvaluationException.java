@@ -1,4 +1,4 @@
-package io.dcbn.backend.evidenceFormula.services.exceptions;
+package io.dcbn.backend.evidenceformula.services.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

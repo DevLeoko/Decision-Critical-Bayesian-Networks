@@ -1,4 +1,4 @@
-package io.dcbn.backend.evidenceFormula.services;
+package io.dcbn.backend.evidenceformula.services;
 
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;

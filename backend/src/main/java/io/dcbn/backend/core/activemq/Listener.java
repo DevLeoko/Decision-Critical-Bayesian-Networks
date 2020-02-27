@@ -44,10 +44,9 @@ public class Listener {
      * Takes AreaOfInterest from activemq as Json String and forwards it to the aoi handler.
      *
      * @param aoi AreaOfInterest as Json String
-     * @throws JsonProcessingException
      */
     @JmsListener(destination = "${spring.activemq.queue.aoi}", containerFactory="jsaFactory")
-    public void receiveAoi(String aoi) throws JsonProcessingException {
+    public void receiveAoi(String aoi) {
         aoiHandler.handleAoi(JsonMapper.fromJsonToAreaOfInterest(aoi));
     }
 }

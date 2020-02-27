@@ -1,10 +1,10 @@
-package io.dcbn.backend.evidenceFormula.model;
+package io.dcbn.backend.evidenceformula.model;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import de.fraunhofer.iosb.iad.maritime.datamodel.VesselType;
-import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
-import io.dcbn.backend.evidenceFormula.services.exceptions.EvaluationException;
+import io.dcbn.backend.evidenceformula.services.EvidenceFormulaEvaluator;
+import io.dcbn.backend.evidenceformula.services.exceptions.EvaluationException;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 

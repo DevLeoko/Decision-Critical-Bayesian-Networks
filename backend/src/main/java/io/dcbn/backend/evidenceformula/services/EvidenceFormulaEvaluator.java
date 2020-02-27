@@ -1,14 +1,13 @@
-package io.dcbn.backend.evidenceFormula.services;
+package io.dcbn.backend.evidenceformula.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
-import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
-import io.dcbn.backend.evidenceFormula.services.exceptions.ParseException;
-import io.dcbn.backend.evidenceFormula.services.visitors.BooleanVisitor;
+import io.dcbn.backend.evidenceformula.model.EvidenceFormula;
+import io.dcbn.backend.evidenceformula.services.exceptions.ParseException;
+import io.dcbn.backend.evidenceformula.services.visitors.BooleanVisitor;
 import io.dcbn.backend.evidenceFormulas.FormulaLexer;
 import io.dcbn.backend.evidenceFormulas.FormulaParser;
 import org.antlr.v4.runtime.*;
@@ -29,8 +28,7 @@ public class EvidenceFormulaEvaluator {
 
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
-                                int charPositionInLine, String msg, RecognitionException e)
-                throws ParseException {
+                                int charPositionInLine, String msg, RecognitionException e) {
             Token token = (Token) offendingSymbol;
 
             ParseException exception = new ParseException(token.getText());

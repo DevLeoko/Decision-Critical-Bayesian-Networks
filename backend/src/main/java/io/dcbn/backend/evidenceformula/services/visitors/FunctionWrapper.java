@@ -1,4 +1,4 @@
-package io.dcbn.backend.evidenceFormula.services.visitors;
+package io.dcbn.backend.evidenceformula.services.visitors;
 
 import lombok.Data;
 

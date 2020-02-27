@@ -1,6 +1,6 @@
-package io.dcbn.backend.evidenceFormula.repository;
+package io.dcbn.backend.evidenceformula.repository;
 
-import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
+import io.dcbn.backend.evidenceformula.model.EvidenceFormula;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

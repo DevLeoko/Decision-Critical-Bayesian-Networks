@@ -8,6 +8,8 @@ import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 
 public class JsonMapper {
 
+    private JsonMapper() {}
+
     private static ObjectMapper mapper = new ObjectMapper();
 
     public static AreaOfInterest fromJsonToAreaOfInterest(String json) {

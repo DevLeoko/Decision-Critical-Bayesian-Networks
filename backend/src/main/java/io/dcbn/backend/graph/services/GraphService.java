@@ -1,12 +1,10 @@
 package io.dcbn.backend.graph.services;
 
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
-import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
-import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
+import io.dcbn.backend.evidenceformula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.Node;
-import io.dcbn.backend.inference.Algorithm;
 import io.dcbn.backend.inference.InferenceManager;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
-package io.dcbn.backend.evidenceFormula.controller;
+package io.dcbn.backend.evidenceformula.controller;
 
-import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
+import io.dcbn.backend.evidenceformula.model.EvidenceFormula;
 import lombok.Data;
 
 import java.util.Map;
