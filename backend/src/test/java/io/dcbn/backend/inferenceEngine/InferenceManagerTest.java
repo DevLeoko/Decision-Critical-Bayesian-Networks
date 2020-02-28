@@ -2,13 +2,12 @@ package io.dcbn.backend.inferenceEngine;
 
 
 import com.google.common.collect.Lists;
-import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.core.VesselCache;
 import io.dcbn.backend.datamodel.Outcome;
-import io.dcbn.backend.evidenceFormula.model.EvidenceFormula;
-import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
-import io.dcbn.backend.evidenceFormula.services.EvidenceFormulaEvaluator;
+import io.dcbn.backend.evidence_formula.model.EvidenceFormula;
+import io.dcbn.backend.evidence_formula.repository.EvidenceFormulaRepository;
+import io.dcbn.backend.evidence_formula.services.EvidenceFormulaEvaluator;
 import io.dcbn.backend.graph.*;
 import io.dcbn.backend.graph.repositories.GraphRepository;
 import io.dcbn.backend.inference.Algorithm;

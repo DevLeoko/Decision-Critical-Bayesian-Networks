@@ -2,8 +2,8 @@ package io.dcbn.backend.authentication.controllers;
 
 import io.dcbn.backend.authentication.models.DcbnUser;
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
-import io.dcbn.backend.passwordReset.models.MailType;
-import io.dcbn.backend.passwordReset.services.MailService;
+import io.dcbn.backend.password_reset.models.MailType;
+import io.dcbn.backend.password_reset.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -71,16 +71,12 @@ public class DcbnUserController {
         }
         DcbnUser oldUser = optional.get();
 
-        if (!oldUser.getUsername().equals(user.getUsername())) {
-            if (dcbnUserRepository.existsByUsername(user.getUsername())) {
-                return ResponseEntity.badRequest().build();
-            }
+        if (!oldUser.getUsername().equals(user.getUsername()) && dcbnUserRepository.existsByUsername(user.getUsername())) {
+            return ResponseEntity.badRequest().build();
         }
 
-        if (!oldUser.getEmail().equals(user.getEmail())) {
-            if (dcbnUserRepository.existsByEmail(user.getEmail())) {
-                return ResponseEntity.badRequest().build();
-            }
+        if (!oldUser.getEmail().equals(user.getEmail()) && dcbnUserRepository.existsByEmail(user.getEmail())) {
+            return ResponseEntity.badRequest().build();
         }
 
         oldUser.setUsername(user.getUsername());

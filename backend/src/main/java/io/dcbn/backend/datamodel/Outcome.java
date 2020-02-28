@@ -1,6 +1,5 @@
 package io.dcbn.backend.datamodel;
 
-import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import io.dcbn.backend.graph.Graph;
 import lombok.AllArgsConstructor;

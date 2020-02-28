@@ -18,7 +18,7 @@ public class AoiCache {
     /**
      * Actual cache HashMap
      */
-    private Map<String, AreaOfInterest> aoiCache = new HashMap<>();
+    private Map<String, AreaOfInterest> cache = new HashMap<>();
 
     /**
      * Takes an AreaOfInterest and its name and inserts it into the cache if no Aoi with the given name already exists
@@ -30,10 +30,10 @@ public class AoiCache {
     public void insert(String name, AreaOfInterest aoi) {
         if (aoi == null || name == null) {
             throw new IllegalArgumentException("Name and Aoi must not be null!");
-        } else if (aoiCache.containsKey(name)) {
+        } else if (cache.containsKey(name)) {
             throw new IllegalArgumentException("Area of interest with the given name already exists!");
         } else {
-            aoiCache.put(name, aoi);
+            cache.put(name, aoi);
         }
     }
 
@@ -44,7 +44,7 @@ public class AoiCache {
      * @return the aoi matching the name
      */
     public AreaOfInterest getAoi(String name) {
-        return aoiCache.get(name);
+        return cache.get(name);
     }
 
     /**
@@ -53,6 +53,6 @@ public class AoiCache {
      * @return all Aois in that are in the cache
      */
     public Collection<AreaOfInterest> getAllAois() {
-        return aoiCache.values();
+        return cache.values();
     }
 }

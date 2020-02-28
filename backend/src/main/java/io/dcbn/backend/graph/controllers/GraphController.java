@@ -23,7 +23,9 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -32,6 +34,7 @@ public class GraphController {
 
     private final GraphRepository repository;
     private final GraphService graphService;
+    private static final String GRAPH_NOT_FOUND = "Graph not found";
 
     @Autowired
     public GraphController(GraphRepository repository, GraphService graphService) {
@@ -41,11 +44,13 @@ public class GraphController {
 
     @GetMapping("/graphs")
     public Iterable<Graph> getGraphs(@RequestParam boolean withStructure) {
-        return StreamSupport.stream(repository.findAll().spliterator(), false).peek(graph -> {
+        Supplier<Stream<Graph>> streamSupplier = () -> StreamSupport.stream(repository.findAll().spliterator(), false);
+        streamSupplier.get().forEach(graph -> {
             if (!withStructure) {
                 graph.setNodes(Collections.emptyList());
             }
-        }).collect(Collectors.toList());
+        });
+        return streamSupplier.get().collect(Collectors.toList());
     }
 
     @GetMapping("/graphs/{id}")
@@ -66,7 +71,7 @@ public class GraphController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Graph has cycles!");
         }
 
-        if(graphService.notAllEvidenceFormulasExist(graph)) {
+        if (graphService.notAllEvidenceFormulasExist(graph)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Some evidence formulas do not exist!");
         }
 
@@ -77,7 +82,7 @@ public class GraphController {
     @DeleteMapping("/graphs/{id}")
     public void deleteById(@PathVariable long id, Principal principal) {
         if (!repository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, GRAPH_NOT_FOUND);
         }
 
         try {
@@ -101,7 +106,7 @@ public class GraphController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Graph has cycles!");
         }
 
-        if(graphService.notAllEvidenceFormulasExist(graph)) {
+        if (graphService.notAllEvidenceFormulasExist(graph)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Some evidence formulas do not exist!");
         }
 
@@ -116,7 +121,7 @@ public class GraphController {
 
     @PostMapping("/graphs/{id}/name")
     public void renameGraphById(@PathVariable long id, @RequestBody String name) {
-        Graph graph = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph not found"));
+        Graph graph = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, GRAPH_NOT_FOUND));
         //Checking that the graph name is unique
         for (Graph graphSaved : repository.findAll()) {
             if (graphSaved.getName().equals(name)) {
@@ -210,7 +215,7 @@ public class GraphController {
     @GetMapping("/graphs/{id}/export")
     public ResponseEntity<String> exportGraph(@PathVariable long id) {
         Graph graph = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, GRAPH_NOT_FOUND));
         GenieConverter genieConverter = new GenieConverter();
         try {
             return ResponseEntity.ok()

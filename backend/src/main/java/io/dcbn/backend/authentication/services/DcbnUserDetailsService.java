@@ -21,7 +21,7 @@ public class DcbnUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         Optional<DcbnUser> user = dcbnUserRepository.findByUsernameOrEmail(username, username);
         return user.map(DcbnUser::toUserDetails).orElseThrow(() ->
                 new UsernameNotFoundException("Couldn't find user with username or email: " + username));

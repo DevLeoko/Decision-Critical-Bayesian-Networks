@@ -18,10 +18,10 @@ public class VesselCache {
     @Value("${time.steps}")
     private int timeSteps;
 
-    private Map<String, Vessel[]> vesselCache;
+    private Map<String, Vessel[]> cache;
 
     public VesselCache() {
-        vesselCache = new HashMap<>();
+        cache = new HashMap<>();
     }
 
     /**
@@ -31,7 +31,7 @@ public class VesselCache {
      */
     public VesselCache(int timeSteps) {
         this.timeSteps = timeSteps;
-        vesselCache = new HashMap<>();
+        cache = new HashMap<>();
     }
 
     /**
@@ -42,7 +42,7 @@ public class VesselCache {
      * @return An array with Vessels matching the uuid. each array entry represents one time slice.
      */
     public Vessel[] getVesselsByUuid(String uuid) {
-        return vesselCache.get(uuid);
+        return cache.get(uuid);
     }
 
     /**
@@ -51,7 +51,7 @@ public class VesselCache {
      * @return all vessel uuids that are currently in the cache
      */
     public Set<String> getAllVesselUuids() {
-        return vesselCache.keySet();
+        return cache.keySet();
     }
 
     /**
@@ -65,7 +65,7 @@ public class VesselCache {
             throw new IllegalArgumentException("time slice must be between 0 and 'timeSteps' - 1");
         }
 
-        return vesselCache.values().stream()
+        return cache.values().stream()
                 .map(vesselArr -> vesselArr[timeSlice])
                 .collect(Collectors.toSet());
     }
@@ -82,7 +82,7 @@ public class VesselCache {
             throw new IllegalArgumentException("time slice must be between 0 and 'timeSteps' - 1");
         }
 
-        return vesselCache.values().stream()
+        return cache.values().stream()
                 .filter(vesselsArr -> vesselsArr[0].getVesselType().equals(type))
                 .map(vesselArr -> vesselArr[timeSlice])
                 .collect(Collectors.toSet());
@@ -102,21 +102,21 @@ public class VesselCache {
         String uuid = vessel.getUuid();
 
         // Insert vessel if its not currently in the cache map
-        if (!vesselCache.containsKey(uuid)) {
-            vesselCache.put(uuid, new Vessel[timeSteps]);
+        if (!cache.containsKey(uuid)) {
+            cache.put(uuid, new Vessel[timeSteps]);
             // Fill all time slices of the cache with the given ship
-            for (int i = 0; i < vesselCache.get(uuid).length; i++) {
+            for (int i = 0; i < cache.get(uuid).length; i++) {
                 if (i == 0) {
-                    vesselCache.get(uuid)[0] = vessel;
+                    cache.get(uuid)[0] = vessel;
                 } else {
-                    vesselCache.get(uuid)[i] = Vessel.copy(vessel);
-                    vesselCache.get(uuid)[i].setFiller(true);
+                    cache.get(uuid)[i] = Vessel.copy(vessel);
+                    cache.get(uuid)[i].setFiller(true);
                 }
             }
             return;
         }
 
-        vesselCache.get(uuid)[0] = vessel;
+        cache.get(uuid)[0] = vessel;
     }
 
     /**
@@ -125,7 +125,7 @@ public class VesselCache {
      */
     @Scheduled(fixedRateString = "${time.step.length}")
     public void updateTimeSlices() {
-        for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
+        for (Map.Entry<String, Vessel[]> entry : cache.entrySet()) {
             for (int i = entry.getValue().length - 1; i > 0; i--) {
                 entry.getValue()[i] = entry.getValue()[i - 1];
             }
@@ -141,7 +141,7 @@ public class VesselCache {
     @Scheduled(fixedRateString = "${cache.refresh.time}")
     public void refreshCache() {
         List<String> toDelete = new ArrayList<>();
-        for (Map.Entry<String, Vessel[]> entry : vesselCache.entrySet()) {
+        for (Map.Entry<String, Vessel[]> entry : cache.entrySet()) {
             for (int i = 0; i < entry.getValue().length; i++) {
                 if (!entry.getValue()[i].isFiller()) {
                     break;
@@ -151,6 +151,6 @@ public class VesselCache {
             }
         }
 
-        vesselCache.keySet().removeAll(toDelete);
+        cache.keySet().removeAll(toDelete);
     }
 }

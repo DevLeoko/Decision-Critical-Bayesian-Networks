@@ -5,7 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iosb.iad.maritime.datamodel.AreaOfInterest;
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonMapper {
 
     private static ObjectMapper mapper = new ObjectMapper();
