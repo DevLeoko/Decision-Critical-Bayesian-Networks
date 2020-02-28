@@ -83,7 +83,7 @@ public class VesselCacheTest {
         Set<Vessel> vesselSet = vesselCache.getAllVesselsInTimeSlice(0);
         assertTrue(vesselSet.contains(vessel));
         assertTrue(vesselSet.contains(vesselTwo));
-        assertEquals(vesselSet.size(), 2);
+        assertEquals(2, vesselSet.size());
 
         for(Vessel vessel : vesselSet) {
             if(vessel.getUuid().equals("Vessel1")) {

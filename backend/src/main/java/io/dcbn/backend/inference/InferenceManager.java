@@ -131,7 +131,7 @@ public class InferenceManager {
                 .collect(Collectors.toList());
 
         //Running inference
-        InferenceAlgorithm inferenceAlgorithm = algorithm.getAlgorithm();
+        InferenceAlgorithm inferenceAlgorithm = algorithm.getInferenceAlgorithm();
         inferenceAlgorithm.setParallelMode(true);
         FactoredFrontierForDBN FFalgorithm = new FactoredFrontierForDBN(inferenceAlgorithm);
         InferenceEngineForDBN.setInferenceAlgorithmForDBN(FFalgorithm);
