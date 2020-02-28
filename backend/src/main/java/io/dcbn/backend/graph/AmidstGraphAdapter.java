@@ -153,15 +153,11 @@ public class AmidstGraphAdapter {
         }
 
         for (Variable variable : tempChildVariables) {
-            ValueNode node =
-                    (ValueNode)
-                            variables.stream()
-                                    .filter(
-                                            var ->
-                                                    var.getKey().getName().equals(variable.getName().replace(TEMP_CHILD, "")))
-                                    .findAny()
-                                    .map(Pair::getValue)
-                                    .orElse(null);
+            ValueNode node = (ValueNode) variables.stream()
+                    .filter(var -> var.getKey().getName().equals(variable.getName().replace(TEMP_CHILD, "")))
+                    .findAny()
+                    .map(Pair::getValue)
+                    .orElse(null);
             Multinomial_MultinomialParents multinomialParentsT0 =
                     dbn.getConditionalDistributionTime0(variable);
             Multinomial_MultinomialParents multinomialParentsTT =
