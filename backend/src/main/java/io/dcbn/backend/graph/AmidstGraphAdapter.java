@@ -153,6 +153,7 @@ public class AmidstGraphAdapter {
         }
 
         for (Variable variable : tempChildVariables) {
+            //Never null because generated above
             ValueNode node = (ValueNode) variables.stream()
                     .filter(var -> var.getKey().getName().equals(variable.getName().replace(TEMP_CHILD, "")))
                     .findAny()

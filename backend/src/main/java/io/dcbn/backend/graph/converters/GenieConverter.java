@@ -6,6 +6,8 @@ import io.dcbn.backend.graph.Position;
 import io.dcbn.backend.graph.StateType;
 import io.dcbn.backend.utils.Pair;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -400,7 +402,8 @@ public class GenieConverter {
                 return nodeList.item(i);
             }
         }
-        return null;
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "Import failed (ExtractChildren returned null, Node not found)");
     }
 
     /**
