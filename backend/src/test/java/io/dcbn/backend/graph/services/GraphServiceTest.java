@@ -2,7 +2,7 @@ package io.dcbn.backend.graph.services;
 
 import io.dcbn.backend.authentication.models.DcbnUser;
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
-import io.dcbn.backend.evidenceformula.repository.EvidenceFormulaRepository;
+import io.dcbn.backend.evidence_formula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.graph.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

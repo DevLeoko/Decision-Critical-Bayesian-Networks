@@ -23,6 +23,7 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -43,13 +44,13 @@ public class GraphController {
 
     @GetMapping("/graphs")
     public Iterable<Graph> getGraphs(@RequestParam boolean withStructure) {
-        Stream<Graph> graphStream = StreamSupport.stream(repository.findAll().spliterator(), false);
-        graphStream.forEach(graph -> {
+        Supplier<Stream<Graph>> streamSupplier = () -> StreamSupport.stream(repository.findAll().spliterator(), false);
+        streamSupplier.get().forEach(graph -> {
             if (!withStructure) {
                 graph.setNodes(Collections.emptyList());
             }
         });
-        return graphStream.collect(Collectors.toList());
+        return streamSupplier.get().collect(Collectors.toList());
     }
 
     @GetMapping("/graphs/{id}")

@@ -10,9 +10,9 @@ import eu.amidst.dynamic.inference.InferenceEngineForDBN;
 import eu.amidst.dynamic.utils.DynamicBayesianNetworkSampler;
 import io.dcbn.backend.core.VesselCache;
 import io.dcbn.backend.datamodel.Outcome;
-import io.dcbn.backend.evidenceformula.model.EvidenceFormula;
-import io.dcbn.backend.evidenceformula.repository.EvidenceFormulaRepository;
-import io.dcbn.backend.evidenceformula.services.EvidenceFormulaEvaluator;
+import io.dcbn.backend.evidence_formula.model.EvidenceFormula;
+import io.dcbn.backend.evidence_formula.repository.EvidenceFormulaRepository;
+import io.dcbn.backend.evidence_formula.services.EvidenceFormulaEvaluator;
 import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.Node;
@@ -133,8 +133,8 @@ public class InferenceManager {
         //Running inference
         InferenceAlgorithm inferenceAlgorithm = algorithm.getInferenceAlgorithm();
         inferenceAlgorithm.setParallelMode(true);
-        FactoredFrontierForDBN FFalgorithm = new FactoredFrontierForDBN(inferenceAlgorithm);
-        InferenceEngineForDBN.setInferenceAlgorithmForDBN(FFalgorithm);
+        FactoredFrontierForDBN ffAlgorithm = new FactoredFrontierForDBN(inferenceAlgorithm);
+        InferenceEngineForDBN.setInferenceAlgorithmForDBN(ffAlgorithm);
         InferenceEngineForDBN.setModel(adaptedGraph.getDbn());
 
         //Creating the output graph

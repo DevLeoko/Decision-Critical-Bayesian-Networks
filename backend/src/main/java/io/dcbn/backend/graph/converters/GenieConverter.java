@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * This class is a converter for the Genie file format (.xdsl)
  */
 @NoArgsConstructor
-public class  GenieConverter {
+public class GenieConverter {
 
     private static final String ID = "id";
     private static final List<io.dcbn.backend.graph.Node> EMPTY_NODE_LIST = new ArrayList<>();
@@ -73,7 +73,6 @@ public class  GenieConverter {
             List<Node> states = extractChildren(node, "state");
             //copy states to array
             List<String> statesNameList = new ArrayList<>();
-            int index = 0;
             states.forEach(state -> statesNameList.add(state.getAttributes().getNamedItem(ID).getNodeValue()));
             String[] statesNameArray = new String[states.size()];
             statesNameList.toArray(statesNameArray);
@@ -99,20 +98,14 @@ public class  GenieConverter {
             }
             //----------Creating the Parents--------------
             List<io.dcbn.backend.graph.Node> parents;
-            if (extractParentNodes(node, dcbnNodes) == null) {
-                parents = EMPTY_NODE_LIST;
-            } else {
-                parents = extractParentNodes(node, dcbnNodes);
-            }
+            extractParentNodes(node, dcbnNodes);
+            parents = extractParentNodes(node, dcbnNodes);
             List<io.dcbn.backend.graph.Node> parentsTm1;
             if (dynamicNode == null) {
                 parentsTm1 = EMPTY_NODE_LIST;
             } else {
-                if (extractParentNodes(dynamicNode, dcbnNodes) == null) {
-                    parentsTm1 = EMPTY_NODE_LIST;
-                } else {
-                    parentsTm1 = extractParentNodes(dynamicNode, dcbnNodes);
-                }
+                extractParentNodes(dynamicNode, dcbnNodes);
+                parentsTm1 = extractParentNodes(dynamicNode, dcbnNodes);
             }
 
             //-----------Creating the node dependencies-------------
@@ -219,7 +212,7 @@ public class  GenieConverter {
             Element positionElement = document.createElement("position");
             double nodeX = node.getPosition().getX();
             double nodeY = node.getPosition().getY();
-            //default sizes;
+            //default sizes
             double xTopL = nodeX + 24;
             double xBotR = nodeX - 24;
             double yTopL = nodeY + 15;
@@ -261,7 +254,7 @@ public class  GenieConverter {
             }
             //-----For Time T------
             NodeDependency timeTDependency = node.getTimeTDependency();
-            if (timeTDependency.getParentsTm1().size() > 0) {
+            if (!timeTDependency.getParentsTm1().isEmpty()) {
                 //Creating the cpt element
                 Element cptElementTime = document.createElement("cpt");
                 cptElementTime.setAttribute("id", nodeID);
@@ -295,6 +288,7 @@ public class  GenieConverter {
     /**
      * This method sorts a {@link List<io.dcbn.backend.graph.Node>} by the number
      * of parents (direct and indirectly linked)
+     *
      * @param graph The graph containing the nodes
      * @return the {@link List<io.dcbn.backend.graph.Node>} sorted by the number
      * parents (direct and indirectly linked)
@@ -327,6 +321,7 @@ public class  GenieConverter {
 
     /**
      * This method returns the number of parents (direct and indirect) of th given {@link io.dcbn.backend.graph.Node}
+     *
      * @param node the {@link io.dcbn.backend.graph.Node}
      * @return returns the number of parents (direct and indirect)
      */
@@ -351,6 +346,7 @@ public class  GenieConverter {
 
     /**
      * This returns a new {@link Position} with the maximum x and y value of the nodes {@link Position}
+     *
      * @param nodes the {@link List<io.dcbn.backend.graph.Node>} to inspect
      * @return A new {@link Position} with the maximum x and y value of the nodes {@link Position}
      */
@@ -455,7 +451,7 @@ public class  GenieConverter {
      * @return the {@link List<io.dcbn.backend.graph.Node>} of parents described in the "parent" sub node of the given {@link Node}.
      */
     private List<io.dcbn.backend.graph.Node> extractParentNodes(Node node, List<io.dcbn.backend.graph.Node> existingDcbnNodes) {
-        if (extractChildren(node, PARENT).size() != 0) {
+        if (!extractChildren(node, PARENT).isEmpty()) {
             String[] parentsT0TTString = extractChildren(node, PARENT)
                     .get(0).getTextContent().split(" ");
             List<io.dcbn.backend.graph.Node> parentNodes = new ArrayList<>();
@@ -469,8 +465,9 @@ public class  GenieConverter {
 
     /**
      * Returns the {@link io.dcbn.backend.graph.Node} with the given name.
+     *
      * @param nodes the {@link List<io.dcbn.backend.graph.Node>} to search into
-     * @param name the name to search after.
+     * @param name  the name to search after.
      * @return The {@link io.dcbn.backend.graph.Node} with the given name.
      */
     private io.dcbn.backend.graph.Node findDcbnNodeByName(List<io.dcbn.backend.graph.Node> nodes, String name) {

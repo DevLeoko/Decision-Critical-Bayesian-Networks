@@ -1,7 +1,7 @@
 package io.dcbn.backend.graph.services;
 
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
-import io.dcbn.backend.evidenceformula.repository.EvidenceFormulaRepository;
+import io.dcbn.backend.evidence_formula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.Node;
@@ -30,10 +30,10 @@ public class GraphService {
     //checks if Graph has cycles
     public boolean hasCycles(Graph graph) {
         AmidstGraphAdapter graphAdapter = new AmidstGraphAdapter(graph);
-        return graph.getNodes().size() != 0 && graphAdapter.getDbn().getDynamicDAG().containCycles();
+        return !graph.getNodes().isEmpty() && graphAdapter.getDbn().getDynamicDAG().containCycles();
     }
 
-    public void updateLock(long graphId, String userName) throws IllegalArgumentException {
+    public void updateLock(long graphId, String userName) {
         long userId = dcbnUserRepository.findByUsername(userName)
                 .orElseThrow(() -> new IllegalArgumentException("User does not exist!")).getId();
 

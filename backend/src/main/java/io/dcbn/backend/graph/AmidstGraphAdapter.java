@@ -21,7 +21,7 @@ import java.util.List;
 
 public class AmidstGraphAdapter {
 
-    private final String TEMP_CHILD = "tempChild";
+    private static final String TEMP_CHILD = "tempChild";
 
     @Getter
     private DynamicBayesianNetwork dbn;
