@@ -56,4 +56,9 @@ public class Graph {
         }
         return graph.getNodes().containsAll(nodes);
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

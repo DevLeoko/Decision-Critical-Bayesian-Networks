@@ -70,4 +70,9 @@ public class NodeDependency {
         }
         return true;
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

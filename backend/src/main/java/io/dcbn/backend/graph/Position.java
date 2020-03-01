@@ -26,4 +26,9 @@ public class Position {
 
         return Math.abs(x - position.getX()) <= 0.01 && Math.abs(y - position.getY()) <= 0.01;
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

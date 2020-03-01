@@ -74,4 +74,9 @@ public class ValueNode extends Node {
         ValueNode node = (ValueNode) o;
         return  super.equals(o) && Arrays.deepEquals(value, node.getValue());
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

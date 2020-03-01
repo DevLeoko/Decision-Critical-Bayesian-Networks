@@ -91,4 +91,9 @@ public class Node {
                 && (evidenceFormulaName != null || node.getEvidenceFormulaName() == null)
                 && (evidenceFormulaName == null || node.getEvidenceFormulaName() != null);
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
