@@ -1,7 +1,8 @@
 import { AxiosError } from "axios";
+import { i18n } from "@/internationalization/translation";
 
 function baseMessage(line: number, col: number): string {
-  return `Error at line: ${line}, column: ${col}:`;
+  return i18n.t("formulaView.errors.base", { line, col }).toString();
 }
 
 export function parameterSize(error: AxiosError): string {
@@ -15,10 +16,14 @@ export function parameterSize(error: AxiosError): string {
   let expected = data.parameterSize.expectedParameterSize;
   let actual = data.parameterSize.actualParameterSize;
 
-  return `${baseMessage(
-    line,
-    col
-  )} function "${functionName}" expected ${expected} parameters but got ${actual}.`;
+  return i18n
+    .t("formulaView.errors.parameterSize", {
+      base: baseMessage(line, col),
+      functionName,
+      expected,
+      actual
+    })
+    .toString();
 }
 
 export function typeMismatch(error: AxiosError): string {
@@ -34,10 +39,13 @@ export function typeMismatch(error: AxiosError): string {
   expected = expected.substr(expected.lastIndexOf(".") + 1);
   actual = actual.substr(actual.lastIndexOf(".") + 1);
 
-  return `${baseMessage(
-    line,
-    col
-  )} expected type ${expected} but got ${actual}.`;
+  return i18n
+    .t("formulaView.errors.typeMismatch", {
+      base: baseMessage(line, col),
+      expected,
+      actual
+    })
+    .toString();
 }
 
 export function parse(error: AxiosError): string {
@@ -49,7 +57,9 @@ export function parse(error: AxiosError): string {
   let col = data.parse.col;
   let offending = data.parse.offendingText;
 
-  return `${baseMessage(line, col)} failed to parse "${offending}".`;
+  return i18n
+    .t("formulaView.errors.parse", { base: baseMessage(line, col), offending })
+    .toString();
 }
 
 export function symbolNotFound(error: AxiosError): string {
@@ -61,5 +71,10 @@ export function symbolNotFound(error: AxiosError): string {
   let col = data.symbolNotFound.col;
   let symbol = data.symbolNotFound.symbolName;
 
-  return `${baseMessage(line, col)} could not find symbol "${symbol}".`;
+  return i18n
+    .t("formulaView.errors.symbolNotFound", {
+      base: baseMessage(line, col),
+      symbol
+    })
+    .toString();
 }

@@ -6,14 +6,22 @@
       "sureToDelete2": "'. Are you sure you want to do this? This action can not be undone, please confirm.",
       "cancel": "Cancel",
       "delete": "Delete",
-      "newExpression": "New Expression"
+      "newExpression": "New Expression",
+      "graphChanged": "Following graphs that were using this evidence formula have been changed: {changedGraphs}"
     },
     "formulaView": {
       "name": "Name",
       "formula": "Formula",
       "test": "Test",
       "testData": "Test data",
-      "save": "Save"
+      "save": "Save",
+      "errors": {
+        "base": "Error at line: {line}, column: {col}:",
+        "parameterSize": "{base} function {functionName} expected {exprected} but got {actual} parameters!",
+        "typeMismatch": "{base} expected type {expected} but got {actual}!",
+        "parse": "{base} failed to parse {offending}!",
+        "symbolNotFound": "{base} could not find symbol {symbol}!"
+      }
     },
     "infoDialog": {
       "title": "How to use the Evidence-Formula Editor",

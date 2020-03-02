@@ -24,8 +24,7 @@
       </v-layout>
     </v-flex>
     <v-snackbar color="orange darker-2" v-model="graphsChanged" timeout="7500">
-      The graphs {{ changedGraphs }} that where using this evidence formula have
-      been changed!
+      {{ $t("formulaList.graphChanged", { changedGraphs }) }}
     </v-snackbar>
   </v-layout>
 </template>

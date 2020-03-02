@@ -6,14 +6,22 @@
       "sureToDelete2": "'. Sicher, dass du das tun möchtest? Die Aktion kann nicht rückgängig gemacht werden, bitte bestätigen.",
       "cancel": "Abbrechen",
       "delete": "Löschen",
-      "newExpression": "Neuer Ausdruck"
+      "newExpression": "Neuer Ausdruck",
+      "graphChanged": "Die folgenden Graphen welche diese Evidenzformel benutzt haben wurden angepasst: {changedGraphs}"
     },
     "formulaView": {
       "name": "Name",
       "formula": "Formeln",
       "test": "Testen",
       "testData": "Testdaten",
-      "save": "Speichern"
+      "save": "Speichern",
+      "errors": {
+        "base": "Fehler in Zeile: {line}, Spalte: {col}:",
+        "parameterSize": "{base} Funktion {functionName} erwartet {expected} Parameter aber es wurden {actual} übergeben!",
+        "typeMismatch": "{base} Objekt vom Typ {expected} erwartet aber ein Objekt vom Typ {actual} erhalten!",
+        "parse": "{base} konnte {offending} nicht parsen!",
+        "symbolNotFound": "{base} konnte Symbol {symbol} nicht finden!"
+      }
     },
     "infoDialog": {
       "title": "Wie man den Evidenzformel-Editor benutzt",
