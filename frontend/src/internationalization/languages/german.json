@@ -31,33 +31,6 @@
       "example": "Ein Ausdruck könnte beispielsweise wie folgt aussehen: 'speed > 10 &amp; inArea(WRECKAGE)'.",
       "gotIt": "Verstanden!"
     },
-    "editorToolbar": {
-      "switchToTest": "Zur Testumgebung wechseln",
-      "time": "Zeit",
-      "format": "Formatieren",
-      "timeSteps": "Zeitschritte"
-    },
-    "folderView": {
-      "duplicate": "Duplizieren",
-      "rename": "Umbenennen",
-      "move": "Verschieben",
-      "delete": "Löschen",
-      "export": "Exportieren",
-      "import": "Importieren",
-      "addNewGraph": "Neuen Graph hinzufügen",
-      "importGraph": "Graph importieren",
-      "searchForGraph": "Graph suchen"
-    },
-    "folderViewActions": {
-      "confirmDeletion": "Löschen bestätigen",
-      "sureToDelete": "Du bist dabei folgenden Graphen zu löschen: '{graph}'. Sicher, dass du das tun möchtest? Die Aktion kann nicht rückgängig gemacht werden, bitte bestätigen.",
-      "cancel": "Abbrechen",
-      "delete": "Löschen",
-      "changeName": "Name ändern",
-      "rename": "Umbenennen",
-      "moveTo": "Verschieben nach",
-      "newFolder": "Neuer Ordner"
-    },
     "testToolbar": {
       "test": "Testen",
       "clearGraph": "Graph säubern",
@@ -116,16 +89,49 @@
       "passwordRequired": "Bitte ein Passwort eingeben!",
       "passwordRequirements": "Das Passwort muss eine Mindestlänge von 8 Zeichen haben und mindestens einen Buchstaben und eine Zahl beinhalten.",
       "nameRequired": "Name ist notwendig",
-      "nameInvalid": "Ungültiger name"
+      "nameInvalid": "Ungültiger Name"
     },
 
     "graph": {
       "common": {
         "timeStep": "Zeitschritt | Zeitschritte"
       },
+
       "index": {
         "selectOrCreate": "Bitte einen neuen Graphen erstellen oder einen Bestehenden auswählen!"
       },
+
+      "folderView": {
+        "duplicate": "Duplizieren",
+        "rename": "Umbenennen",
+        "move": "Verschieben",
+        "delete": "Löschen",
+        "export": "Exportieren",
+        "import": "Importieren",
+        "addNewGraph": "Neuen Graph hinzufügen",
+        "importGraph": "Graph importieren",
+        "searchForGraph": "Graph suchen",
+
+        "actions": {
+          "confirmDeletion": "Löschen bestätigen",
+          "sureToDelete": "Du bist dabei folgenden Graphen zu löschen: '{graph}'. Sicher, dass du das tun möchtest? Die Aktion kann nicht rückgängig gemacht werden, bitte bestätigen.",
+          "cancel": "Abbrechen",
+          "delete": "Löschen",
+          "changeName": "Name ändern",
+          "rename": "Umbenennen",
+          "moveTo": "Verschieben nach",
+          "newFolder": "Neuer Ordner"
+        },
+
+        "responses": {
+          "created": "Der Graph wurde erzeugt.",
+          "duplicated": "Graph {name} wurde zu {copy} dupliziert.",
+          "renamed": "Graph zu {name} umbenannt.",
+          "deleted": "Graph gelöscht.",
+          "imported": "Graph importiert."
+        }
+      },
+
       "test": {
         "virtualEvidence": "Virtuelle Evidenz",
         "setVirtualEvidence": "Virtuelle Evidenz setzen",
@@ -138,6 +144,7 @@
         "reset": "Zurücksetzen",
         "done": "Fertig"
       },
+
       "edit": {
         "properties": "Einstellungen",
         "delete": "Löschen",
@@ -153,6 +160,13 @@
           "text": "Im aktuellen Graph sind noch ungepseicherte Änderungen. Wenn du die Seite wechselst gehen diese verloren!",
           "cancel": "Abbrechen",
           "discard": "Änderungen verwerfen"
+        },
+
+        "toolbar": {
+          "switchToTest": "Zur Testumgebung wechseln",
+          "time": "Zeit",
+          "format": "Formatieren",
+          "timeSteps": "@:graph.common.timeStep"
         },
 
         "nodeProperties": {

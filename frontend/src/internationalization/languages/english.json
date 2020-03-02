@@ -31,33 +31,6 @@
       "example": "An expression could for example look like this: 'speed > 10 &amp; inArea(WRECKAGE)'.",
       "gotIt": "Got it!"
     },
-    "editorToolbar": {
-      "switchToTest": "Switch to Test Environment",
-      "time": "Time",
-      "format": "Format",
-      "timeSteps": "Time Steps"
-    },
-    "folderView": {
-      "duplicate": "Duplicate",
-      "rename": "Rename",
-      "move": "Move",
-      "delete": "Delete",
-      "export": "Export",
-      "import": "Import",
-      "addNewGraph": "Add new graph",
-      "importGraph": "Import graph",
-      "searchForGraph": "Search for Graph"
-    },
-    "folderViewActions": {
-      "confirmDeletion": "Confirm deletion",
-      "sureToDelete": "You are about to delete graph '{graph}'. Are you sure you want to do this? This action can not be undone, please confirm.",
-      "cancel": "Cancel",
-      "delete": "Delete",
-      "changeName": "Change name",
-      "rename": "Rename",
-      "moveTo": "Move to",
-      "newFolder": "New folder"
-    },
     "testToolbar": {
       "test": "Test",
       "clearGraph": "Clear graph",
@@ -122,9 +95,42 @@
       "common": {
         "timeStep": "timestep | timesteps"
       },
+
       "index": {
         "selectOrCreate": "Please select a graph or create a new one!"
       },
+
+      "folderView": {
+        "duplicate": "Duplicate",
+        "rename": "Rename",
+        "move": "Move",
+        "delete": "Delete",
+        "export": "Export",
+        "import": "Import",
+        "addNewGraph": "Add new graph",
+        "importGraph": "Import graph",
+        "searchForGraph": "Search for Graph",
+
+        "actions": {
+          "confirmDeletion": "Confirm deletion",
+          "sureToDelete": "You are about to delete graph '{graph}'. Are you sure you want to do this? This action can not be undone, please confirm.",
+          "cancel": "Cancel",
+          "delete": "Delete",
+          "changeName": "Change name",
+          "rename": "Rename",
+          "moveTo": "Move to",
+          "newFolder": "New folder"
+        },
+
+        "responses": {
+          "created": "The graph has been created.",
+          "duplicated": "Graph {name} duplicated to {copy}.",
+          "renamed": "Graph renamed to {name}.",
+          "deleted": "Graph deleted.",
+          "imported": "Graph imported."
+        }
+      },
+
       "test": {
         "virtualEvidence": "Virtual Evidence",
         "setVirtualEvidence": "Set virtual evidence",
@@ -137,6 +143,7 @@
         "reset": "Reset",
         "done": "Done"
       },
+
       "edit": {
         "properties": "Properties",
         "delete": "Delete",
@@ -152,6 +159,13 @@
           "text": "You have made changes to the current graph that have not been saved yet. If you decide to leave anyway those changes will be discarded!",
           "cancel": "Cancel",
           "discard": "Discard changes"
+        },
+
+        "toolbar": {
+          "switchToTest": "Switch to Test Environment",
+          "time": "Time",
+          "format": "Format",
+          "timeSteps": "@:graph.common.timeStep"
         },
 
         "nodeProperties": {
