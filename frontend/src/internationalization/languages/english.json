@@ -2,8 +2,7 @@
   "en": {
     "formulaList": {
       "confirmDeletion": "Confirm deletion",
-      "sureToDelete1": "You are about to delete the evidence formula '",
-      "sureToDelete2": "'. Are you sure you want to do this? This action can not be undone, please confirm.",
+      "sureToDelete": "You are about to delete the evidence formula '{formula}'. Are you sure you want to do this? This action can not be undone, please confirm.",
       "cancel": "Cancel",
       "delete": "Delete",
       "newExpression": "New Expression",
@@ -27,13 +26,13 @@
       "title": "How to use the Evidence-Formula Editor",
       "introduction": "The Evidence-Formula Editor currently supports boolean expressions including number comparisons, variables and function calls. More complex behaviour has to be done in pre-defined functions.",
       "availableFunctions": "Currently available functions are:",
-      "variable": "The available variables can be seen on the right. Keep in mind that currently only Boolean and Number type variables can be used directly inside the Evidence-Formula all others are instead used when evaluating functions.",
-      "testing": "The formulas can be tested by pressing the 'Test' button at the bottom. When testing an Evidence-Formula the variables in the gray box on the right are used.",
+      "variable": "The available variables can be seen on the right. Keep in mind that currently only Boolean and Number type variables can be used directly inside the Evidence-Formula, all others are instead used when evaluating functions.",
+      "testing": "The formulas can be tested by pressing the '@:formulaView.test' button at the bottom. When testing an Evidence-Formula the variables in the gray box on the right are used.",
       "example": "An expression could for example look like this: 'speed > 10 &amp; inArea(WRECKAGE)'.",
       "gotIt": "Got it!"
     },
     "editorToolbar": {
-      "switchToTest": "Switch to Testenvironment",
+      "switchToTest": "Switch to Test Environment",
       "time": "Time",
       "format": "Format",
       "timeSteps": "Time Steps"
@@ -51,8 +50,7 @@
     },
     "folderViewActions": {
       "confirmDeletion": "Confirm deletion",
-      "sureToDelete1": "You are about to delete graph '",
-      "sureToDelete2": "'. Are you sure you want to do this? This action can not be undone, please confirm.",
+      "sureToDelete": "You are about to delete graph '{graph}'. Are you sure you want to do this? This action can not be undone, please confirm.",
       "cancel": "Cancel",
       "delete": "Delete",
       "changeName": "Change name",
@@ -71,17 +69,6 @@
       "logout": "Logout",
       "evidenceFormulas": "Evidence-Formulas",
       "graphView": "Graphview"
-    },
-    "graphIndex": {
-      "selectOrCreate": "Please select a graph or create a new one!"
-    },
-    "graphTest": {
-      "virtualEvidence": "Virtual Evidence",
-      "binaryEvidence": "Binary Evidence",
-      "setVirtualEvidence": "Set virtual evidence",
-      "reset": "Reset",
-      "done": "Done",
-      "setEvidences": "Set evidences"
     },
     "evidenceFormula": {
       "selectOrCreate": "Please select an evidence formula or create a new one!"
@@ -107,7 +94,7 @@
       "retypeNewPassword": "retype new password",
       "resetPassword": "Reset password",
       "backToLogin": "Back to login",
-      "missingResetToken": "Missing reset-token! Visit 'forgot your password?' first.",
+      "missingResetToken": "Missing reset-token! Visit '@:login.forgotPwQ' first.",
       "passwordChanged": "Password changed! You can sign in now."
     },
     "superAdmin": {
@@ -131,36 +118,61 @@
       "nameRequired": "Name is required",
       "nameInvalid": "Invalid name"
     },
-    "cptContainer": {
-      "conditionalProbabilityTable": "Conditional Probability Table",
-      "currentTime": "Current: Time",
-      "autocomplete": "Press ENTER within an input field to autocomplete propabilities"
-    },
-    "generalTab": {
-      "name": "Name",
-      "color": "Color"
-    },
-    "nodeProperties": {
-      "properties": "Properties",
-      "save": "Save",
-      "general": "General",
-      "definition": "Definition",
-      "evidenceFormula": "Evidence Formula"
-    },
-    "test": {
-      "virtualEvidence": "Virtual Evidence",
-      "binaryEvidence": "Binary Evidences",
-      "values": "Values",
-      "valuesOf": "Values of ",
-      "close": "Close"
-    },
-    "edit": {
-      "properties": "Properties",
-      "delete": "Delete",
-      "unsavedChanges": "Unsaved changes!",
-      "unsavedChangesText": "You have made changes to the current graph that have not been saved yet. If you decide to leave anyway those changes will be discarded!",
-      "unsavedChangesCancel": "Cancel",
-      "unsavedChangesDiscard": "Discard changes"
+    "graph": {
+      "common": {
+        "timeStep": "timestep | timesteps"
+      },
+      "index": {
+        "selectOrCreate": "Please select a graph or create a new one!"
+      },
+      "test": {
+        "virtualEvidence": "Virtual Evidence",
+        "setVirtualEvidence": "Set virtual evidence",
+        "binaryEvidence": "Binary Evidences",
+        "setEvidences": "Set evidences",
+        "values": "Values",
+        "valuesOf": "Values of {name}",
+        "close": "Close",
+        "unknownNode": "No node with name {name} found!",
+        "reset": "Reset",
+        "done": "Done"
+      },
+      "edit": {
+        "properties": "Properties",
+        "delete": "Delete",
+
+        "errors": {
+          "duplicateEdge": "Cannot add duplicate edge between {from} and {to}!",
+          "emptyNodeName": "Node name cannot be empty!",
+          "duplicateName": "Node with name {name} exists already!"
+        },
+
+        "unsavedChanges": {
+          "title": "Unsaved changes!",
+          "text": "You have made changes to the current graph that have not been saved yet. If you decide to leave anyway those changes will be discarded!",
+          "cancel": "Cancel",
+          "discard": "Discard changes"
+        },
+
+        "nodeProperties": {
+          "properties": "Properties",
+          "save": "Save",
+          "general": "General",
+          "definition": "Definition",
+          "evidenceFormula": "Evidence Formula",
+
+          "generalTab": {
+            "name": "Name",
+            "color": "Color"
+          },
+
+          "definitionTab": {
+            "conditionalProbabilityTable": "Conditional Probability Table",
+            "currentTime": "Current: Time",
+            "autocomplete": "Press ENTER within an input field to autocomplete propabilities"
+          }
+        }
+      }
     }
   }
 }

@@ -13,7 +13,7 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>{{
-            $t("nodeProperties.properties")
+            $t("graph.edit.nodeProperties.properties")
           }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
@@ -23,8 +23,8 @@
           </v-toolbar-items>
         </v-toolbar>
         <v-tabs v-model="propertyTabs">
-          <v-tab>{{ $t("nodeProperties.general") }}</v-tab>
-          <v-tab>{{ $t("nodeProperties.definition") }}</v-tab>
+          <v-tab>{{ $t("graph.edit.nodeProperties.general") }}</v-tab>
+          <v-tab>{{ $t("graph.edit.nodeProperties.definition") }}</v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="propertyTabs">
@@ -34,7 +34,7 @@
             <v-select
               :items="evidenceFormulas"
               style="max-width: 300px; margin: auto"
-              :label="this.$t('nodeProperties.evidenceFormula')"
+              :label="$t('graph.edit.nodeProperties.evidenceFormula')"
               v-model="node.evidenceFormulaName"
               clearable
             />

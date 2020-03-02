@@ -16,8 +16,9 @@
           {{ $t("folderViewActions.confirmDeletion") }}
         </v-card-title>
         <v-card-text>
-          {{ $t("folderViewActions.sureToDelete1") }}{{ currentGraph.name
-          }}{{ $t("folderViewActions.sureToDelete2") }}
+          {{
+            $t("folderViewActions.sureToDelete", { graph: currentGraph.name })
+          }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -47,7 +48,6 @@
           {{ $t("folderViewActions.changeName") }}
         </v-card-title>
         <v-card-text class="pb-3">
-          <!-- Enter a new name: -->
           <v-text-field v-model="newName" outlined hide-details></v-text-field>
         </v-card-text>
         <v-card-actions>

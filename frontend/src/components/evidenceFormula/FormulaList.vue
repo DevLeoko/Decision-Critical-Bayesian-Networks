@@ -7,9 +7,7 @@
           {{ $t("formulaList.confirmDeletion") }}
         </v-card-title>
         <v-card-text>
-          {{ $t("formulaList.sureToDelete1") }}
-          {{ deletedFormula.name }}
-          {{ $t("formulaList.sureToDelete2") }}
+          {{ $t("formulaList.sureToDelete", { formula: deletedFormula.name }) }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>

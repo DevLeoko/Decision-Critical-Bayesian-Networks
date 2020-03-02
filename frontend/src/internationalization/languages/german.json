@@ -2,8 +2,7 @@
   "de": {
     "formulaList": {
       "confirmDeletion": "Löschen bestätigen",
-      "sureToDelete1": "Du bist dabei folgende Evidenzformel zu löschen: '",
-      "sureToDelete2": "'. Sicher, dass du das tun möchtest? Die Aktion kann nicht rückgängig gemacht werden, bitte bestätigen.",
+      "sureToDelete": "Du bist dabei folgende Evidenzformel zu löschen: '{formula}'. Sicher, dass du das tun möchtest? Die Aktion kann nicht rückgängig gemacht werden, bitte bestätigen.",
       "cancel": "Abbrechen",
       "delete": "Löschen",
       "newExpression": "Neuer Ausdruck",
@@ -27,8 +26,8 @@
       "title": "Wie man den Evidenzformel-Editor benutzt",
       "introduction": "Der Evidenzformel-Editor unterstützt aktuell boole'sche Ausdrücke, inklusive dem Vergleichen von Zahlen, Variablen und Funktionsaufrufen. Komplexeres Verhalten muss in vordefinierten Funktionen durchgeführt werden.",
       "availableFunctions": "Aktuell verfügbare Funktionen:",
-      "variable": "Die verfügbaren Variablen stehen am rechten Rand. Bisher können nur Variablen vom Typ boolean oder Zahl direkt in der Evidenzformel verwendet werden. Die anderen Typen können genutzt werden, wenn man Funktionen evaluiert.",
-      "testing": "Die Formeln können durch Drücken des 'Test' Buttons, am unteren Rand, getestet werden. Beim Testen werden die Variablen, aus der grauen Box am rechten Rand, verwendet.",
+      "variable": "Die verfügbaren Variablen stehen am rechten Rand. Bisher können nur Variablen vom Typ Boolean oder Zahl direkt in der Evidenzformel verwendet werden. Die anderen Typen können genutzt werden, wenn man Funktionen evaluiert.",
+      "testing": "Die Formeln können durch Drücken des '@:formulaView.test' Knopfs, am unteren Rand, getestet werden. Beim Testen werden die Variablen, aus der grauen Box am rechten Rand, verwendet.",
       "example": "Ein Ausdruck könnte beispielsweise wie folgt aussehen: 'speed > 10 &amp; inArea(WRECKAGE)'.",
       "gotIt": "Verstanden!"
     },
@@ -51,8 +50,7 @@
     },
     "folderViewActions": {
       "confirmDeletion": "Löschen bestätigen",
-      "sureToDelete1": "Du bist dabei folgenden Graphen zu löschen: '",
-      "sureToDelete2": "'. Sicher, dass du das tun möchtest? Die Aktion kann nicht rückgängig gemacht werden, bitte bestätigen.",
+      "sureToDelete": "Du bist dabei folgenden Graphen zu löschen: '{graph}'. Sicher, dass du das tun möchtest? Die Aktion kann nicht rückgängig gemacht werden, bitte bestätigen.",
       "cancel": "Abbrechen",
       "delete": "Löschen",
       "changeName": "Name ändern",
@@ -71,17 +69,6 @@
       "logout": "Abmelden",
       "evidenceFormulas": "Evidenzformeln",
       "graphView": "Graphansicht"
-    },
-    "graphIndex": {
-      "selectOrCreate": "Bitte einen neuen Graphen erstellen oder einen Bestehenden auswählen!"
-    },
-    "graphTest": {
-      "virtualEvidence": "Virtuelle Evidenz",
-      "binaryEvidence": "Binäre Evidenz",
-      "setVirtualEvidence": "Virtuelle Evidenz setzen",
-      "reset": "Zurücksetzen",
-      "done": "Fertig",
-      "setEvidences": "Evidenzen setzen"
     },
     "evidenceFormula": {
       "selectOrCreate": "Bitte eine neue Evidenzformel erstellen oder eine Bestehende auswählen!"
@@ -107,7 +94,7 @@
       "retypeNewPassword": "neues Passwort wiederholen",
       "resetPassword": "Passwort zurücksetzen",
       "backToLogin": "Zurück zur Anmeldung",
-      "missingResetToken": "Fehlender Reset-Token! Gehe zuerst auf 'Passwort vergesen?'",
+      "missingResetToken": "Fehlender Reset-Token! Gehe zuerst auf '@:login.forgotPwQ'",
       "passwordChanged": "Passwort geändert! Du kannst dich jetzt anmelden."
     },
     "superAdmin": {
@@ -131,36 +118,62 @@
       "nameRequired": "Name ist notwendig",
       "nameInvalid": "Ungültiger name"
     },
-    "cptContainer": {
-      "conditionalProbabilityTable": "Bedingte Wahrscheinlichkeitstabelle",
-      "currentTime": "Aktuell: Zeit ",
-      "autocomplete": "Drücke in einem Eingabefeld ENTER um Wahrscheinlichkeiten automatisch zu ergänzen"
-    },
-    "generalTab": {
-      "name": "Name",
-      "color": "Farbe"
-    },
-    "nodeProperties": {
-      "properties": "Einstellungen",
-      "save": "Speichern",
-      "general": "Allgemein",
-      "definition": "Definition",
-      "evidenceFormula": "Evidenzformel"
-    },
-    "test": {
-      "virtualEvidence": "Virtuelle Evidenz",
-      "binaryEvidence": "Binäre Evidenzen",
-      "values": "Werte",
-      "valuesOf": "Werte von ",
-      "close": "Schließen"
-    },
-    "edit": {
-      "properties": "Einstellungen",
-      "delete": "Löschen",
-      "unsavedChanges": "Speichern vergessen?",
-      "unsavedChangesText": "Im aktuellen Graph sind noch ungepseicherte Änderungen. Wenn du die Seite wechselst gehen diese verloren!",
-      "unsavedChangesCancel": "Abbrechen",
-      "unsavedChangesDiscard": "Änderungen verwerfen"
+
+    "graph": {
+      "common": {
+        "timeStep": "Zeitschritt | Zeitschritte"
+      },
+      "index": {
+        "selectOrCreate": "Bitte einen neuen Graphen erstellen oder einen Bestehenden auswählen!"
+      },
+      "test": {
+        "virtualEvidence": "Virtuelle Evidenz",
+        "setVirtualEvidence": "Virtuelle Evidenz setzen",
+        "binaryEvidence": "Binäre Evidenzen",
+        "setEvidences": "Evidenzen setzen",
+        "values": "Werte",
+        "valuesOf": "Werte von {name}",
+        "close": "Schließen",
+        "unknownNode": "Kein Knoten mit Namen {name} gefunden!",
+        "reset": "Zurücksetzen",
+        "done": "Fertig"
+      },
+      "edit": {
+        "properties": "Einstellungen",
+        "delete": "Löschen",
+
+        "errors": {
+          "duplicateEdge": "Kann keine doppelte Kante zwischen {from} und {to} hinzufügen!",
+          "emptyNodeName": "Knoten Name kann nicht leer sein!",
+          "duplicateName": "Knoten mit Namen {name} existiert bereits!"
+        },
+
+        "unsavedChanges": {
+          "title": "Speichern vergessen?",
+          "text": "Im aktuellen Graph sind noch ungepseicherte Änderungen. Wenn du die Seite wechselst gehen diese verloren!",
+          "cancel": "Abbrechen",
+          "discard": "Änderungen verwerfen"
+        },
+
+        "nodeProperties": {
+          "properties": "Einstellungen",
+          "save": "Speichern",
+          "general": "Allgemein",
+          "definition": "Definition",
+          "evidenceFormula": "Evidenzformel",
+
+          "generalTab": {
+            "name": "Name",
+            "color": "Farbe"
+          },
+
+          "definitionTab": {
+            "conditionalProbabilityTable": "Bedingte Wahrscheinlichkeitstabelle",
+            "currentTime": "Aktuell: Zeit ",
+            "autocomplete": "Drücke in einem Eingabefeld ENTER um Wahrscheinlichkeiten automatisch zu ergänzen"
+          }
+        }
+      }
     }
   }
 }
