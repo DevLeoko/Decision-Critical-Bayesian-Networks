@@ -6,12 +6,15 @@ import io.dcbn.backend.graph.Position;
 import io.dcbn.backend.graph.StateType;
 import io.dcbn.backend.utils.Pair;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -50,6 +53,7 @@ public class GenieConverter {
      */
     public Graph fromGenieToDcbn(InputStream file) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(file);
         doc.getDocumentElement().normalize();
@@ -89,7 +93,12 @@ public class GenieConverter {
             double[][] probabilitiesT0 = extractProbabilities(node, statesNameArray.length);
             //Creating the probability array for Time T
             Node dynamic = extractChildren(root, DYNAMIC).get(0);
-            Node dynamicNode = getNodeWithID(dynamic.getChildNodes(), nodeID);
+            Node dynamicNode;
+            if (dynamic.getChildNodes().toString().equals("[dynamic: null]")) {
+                dynamicNode = null;
+            } else {
+                dynamicNode = getNodeWithID(dynamic.getChildNodes(), nodeID);
+            }
             double[][] probabilitiesTT;
             if (dynamicNode == null) {
                 probabilitiesTT = probabilitiesT0;
@@ -115,7 +124,6 @@ public class GenieConverter {
             //-----Getting color of the node----------
             String color = extractChildren(nodeAttribute, "interior")
                     .get(0).getAttributes().getNamedItem(COLOR).getNodeValue();
-
             //--------Getting the position------------
             String[] positionsString = extractChildren(nodeAttribute, "position")
                     .get(0).getTextContent().split(" ");
@@ -148,6 +156,7 @@ public class GenieConverter {
 
     public String fromDcbnToGenie(Graph graph) throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+        documentFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
         Document document = documentBuilder.newDocument();
         document.setXmlVersion("1.0");
@@ -400,7 +409,8 @@ public class GenieConverter {
                 return nodeList.item(i);
             }
         }
-        return null;
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "Import failed (ExtractChildren returned null, Node not found)");
     }
 
     /**
