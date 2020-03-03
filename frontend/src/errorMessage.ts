@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { i18n } from "@/internationalization/translation";
 
 function baseMessage(line: number, col: number): string {
-  return i18n.t("formulaView.errors.base", { line, col }).toString();
+  return i18n.t("formula.view.errors.base", { line, col }).toString();
 }
 
 export function parameterSize(error: AxiosError): string {
@@ -17,7 +17,7 @@ export function parameterSize(error: AxiosError): string {
   let actual = data.parameterSize.actualParameterSize;
 
   return i18n
-    .t("formulaView.errors.parameterSize", {
+    .t("formula.view.errors.parameterSize", {
       base: baseMessage(line, col),
       functionName,
       expected,
@@ -40,7 +40,7 @@ export function typeMismatch(error: AxiosError): string {
   actual = actual.substr(actual.lastIndexOf(".") + 1);
 
   return i18n
-    .t("formulaView.errors.typeMismatch", {
+    .t("formula.view.errors.typeMismatch", {
       base: baseMessage(line, col),
       expected,
       actual
@@ -58,7 +58,7 @@ export function parse(error: AxiosError): string {
   let offending = data.parse.offendingText;
 
   return i18n
-    .t("formulaView.errors.parse", { base: baseMessage(line, col), offending })
+    .t("formula.view.errors.parse", { base: baseMessage(line, col), offending })
     .toString();
 }
 
@@ -72,7 +72,7 @@ export function symbolNotFound(error: AxiosError): string {
   let symbol = data.symbolNotFound.symbolName;
 
   return i18n
-    .t("formulaView.errors.symbolNotFound", {
+    .t("formula.view.errors.symbolNotFound", {
       base: baseMessage(line, col),
       symbol
     })

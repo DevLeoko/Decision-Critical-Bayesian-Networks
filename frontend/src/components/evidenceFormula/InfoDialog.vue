@@ -2,15 +2,15 @@
   <v-dialog v-model="open" max-width="600">
     <v-card>
       <v-card-title class="headline">
-        {{ $t("infoDialog.title") }}
+        {{ $t("formula.infoDialog.title") }}
       </v-card-title>
 
       <v-card-text>
         <p>
-          {{ $t("infoDialog.introduction") }}
+          {{ $t("formula.infoDialog.introduction") }}
         </p>
         <div>
-          {{ $t("infoDialog.availableFunctions") }}
+          {{ $t("formula.infoDialog.availableFunctions") }}
           <ul>
             <li>inArea(&lt;area name&gt;)</li>
             <li>distanceToNearest()</li>
@@ -18,20 +18,20 @@
           </ul>
         </div>
         <p>
-          {{ $t("infoDialog.variable") }}
+          {{ $t("formula.infoDialog.variable") }}
         </p>
         <p>
-          {{ $t("infoDialog.testing") }}
+          {{ $t("formula.infoDialog.testing") }}
         </p>
         <p>
-          {{ $t("infoDialog.example") }}
+          {{ $t("formula.infoDialog.example") }}
         </p>
       </v-card-text>
 
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="primary" text @click="open = false">
-          {{ $t("infoDialog.gotIt") }}
+          {{ $t("formula.infoDialog.gotIt") }}
         </v-btn>
       </v-card-actions>
     </v-card>

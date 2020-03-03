@@ -6,7 +6,7 @@
           v-model="internalFormula.name"
           hide-details
           :error="hasError && nameError"
-          :label="$t('formulaView.name')"
+          :label="$t('formula.view.name')"
           outlined
         ></v-text-field>
       </v-col>
@@ -28,7 +28,7 @@
           class="formula-area"
           height="60vh"
           outlined
-          :label="$t('formulaView.formula')"
+          :label="$t('formula.view.formula')"
           counter="500"
           v-model="internalFormula.formula"
           :error="hasError && formulaError"
@@ -41,7 +41,7 @@
           style="overflow-y: auto; max-height: 60vh"
         >
           <v-card-title primary-title>
-            {{ $t("formulaView.testData") }}
+            {{ $t("formula.view.testData") }}
           </v-card-title>
           <v-card-text>
             <v-container>
@@ -95,10 +95,11 @@
     <v-row mt-2>
       <v-col>
         <v-btn color="success" @click="save(internalFormula)"
-          ><v-icon class="mr-1">save</v-icon>{{ $t("formulaView.save") }}</v-btn
+          ><v-icon class="mr-1">save</v-icon
+          >{{ $t("formula.view.save") }}</v-btn
         >
         <v-btn class="ml-2" color="primary" @click="test()">
-          <v-icon class="mr-1">colorize</v-icon>{{ $t("formulaView.test") }}
+          <v-icon class="mr-1">colorize</v-icon>{{ $t("formula.view.test") }}
         </v-btn>
       </v-col>
     </v-row>
@@ -222,7 +223,6 @@ export default Vue.extend({
     generateErrorMessage(error: AxiosError) {
       if (error.response) {
         let data = error.response.data;
-        let errorBase = `Error in line: ${data.line}, column: ${data.col}: `;
 
         if (data.parameterSize) {
           this.formulaError = true;
@@ -238,7 +238,9 @@ export default Vue.extend({
           this.errorMessage = typeMismatch(error);
         } else {
           this.nameError = true;
-          this.errorMessage = `Formula with name ${this.savedName} exists already!`;
+          this.errorMessage = this.$t("formula.list.responses.duplicateName", {
+            name: this.savedName
+          }).toString();
         }
       }
     },
@@ -246,7 +248,9 @@ export default Vue.extend({
     setSuccess() {
       this.$emit("update-list");
       this.success = true;
-      this.successMessage = "Formula successfully saved!";
+      this.successMessage = this.$t(
+        "formula.list.responses.formulaSaved"
+      ).toString();
     },
 
     showResponse(data: boolean) {

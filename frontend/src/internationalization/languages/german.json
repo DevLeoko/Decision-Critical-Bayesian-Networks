@@ -1,50 +1,53 @@
 {
   "de": {
-    "formulaList": {
-      "confirmDeletion": "Löschen bestätigen",
-      "sureToDelete": "Du bist dabei folgende Evidenzformel zu löschen: '{formula}'. Sicher, dass du das tun möchtest? Die Aktion kann nicht rückgängig gemacht werden, bitte bestätigen.",
-      "cancel": "Abbrechen",
-      "delete": "Löschen",
-      "newExpression": "Neuer Ausdruck",
-      "graphChanged": "Die folgenden Graphen welche diese Evidenzformel benutzt haben wurden angepasst: {changedGraphs}"
-    },
-    "formulaView": {
-      "name": "Name",
-      "formula": "Formeln",
-      "test": "Testen",
-      "testData": "Testdaten",
-      "save": "Speichern",
-      "errors": {
-        "base": "Fehler in Zeile: {line}, Spalte: {col}:",
-        "parameterSize": "{base} Funktion {functionName} erwartet {expected} Parameter aber es wurden {actual} übergeben!",
-        "typeMismatch": "{base} Objekt vom Typ {expected} erwartet aber ein Objekt vom Typ {actual} erhalten!",
-        "parse": "{base} konnte {offending} nicht parsen!",
-        "symbolNotFound": "{base} konnte Symbol {symbol} nicht finden!"
+    "formula": {
+      "index": {
+        "selectOrCreate": "Bitte eine neue Evidenzformel erstellen oder eine Bestehende auswählen!"
+      },
+
+      "list": {
+        "confirmDeletion": "Löschen bestätigen",
+        "sureToDelete": "Du bist dabei folgende Evidenzformel zu löschen: '{formula}'. Sicher, dass du das tun möchtest? Die Aktion kann nicht rückgängig gemacht werden, bitte bestätigen.",
+        "cancel": "Abbrechen",
+        "delete": "Löschen",
+        "newExpression": "Neuer Ausdruck",
+
+        "responses": {
+          "graphChanged": "Die folgenden Graphen welche diese Evidenzformel benutzt haben wurden angepasst: {changedGraphs}",
+          "formulaSaved": "Evidenz Formel gespeichert!",
+          "duplicateName": "Evidenz Formel mit Namen {name} existiert bereits!"
+        }
+      },
+
+      "view": {
+        "name": "Name",
+        "formula": "Formeln",
+        "test": "Testen",
+        "testData": "Testdaten",
+        "save": "Speichern",
+        "errors": {
+          "base": "Fehler in Zeile: {line}, Spalte: {col}:",
+          "parameterSize": "{base} Funktion {functionName} erwartet {expected} Parameter aber es wurden {actual} übergeben!",
+          "typeMismatch": "{base} Objekt vom Typ {expected} erwartet aber ein Objekt vom Typ {actual} erhalten!",
+          "parse": "{base} konnte {offending} nicht parsen!",
+          "symbolNotFound": "{base} konnte Symbol {symbol} nicht finden!"
+        }
+      },
+
+      "infoDialog": {
+        "title": "Wie man den Evidenzformel-Editor benutzt",
+        "introduction": "Der Evidenzformel-Editor unterstützt aktuell boole'sche Ausdrücke, inklusive dem Vergleichen von Zahlen, Variablen und Funktionsaufrufen. Komplexeres Verhalten muss in vordefinierten Funktionen durchgeführt werden.",
+        "availableFunctions": "Aktuell verfügbare Funktionen:",
+        "variable": "Die verfügbaren Variablen stehen am rechten Rand. Bisher können nur Variablen vom Typ Boolean oder Zahl direkt in der Evidenzformel verwendet werden. Die anderen Typen können genutzt werden, wenn man Funktionen evaluiert.",
+        "testing": "Die Formeln können durch Drücken des '@:formula.view.test' Knopfs, am unteren Rand, getestet werden. Beim Testen werden die Variablen, aus der grauen Box am rechten Rand, verwendet.",
+        "example": "Ein Ausdruck könnte beispielsweise wie folgt aussehen: 'speed > 10 & inArea(WRECKAGE)'.",
+        "gotIt": "Verstanden!"
       }
-    },
-    "infoDialog": {
-      "title": "Wie man den Evidenzformel-Editor benutzt",
-      "introduction": "Der Evidenzformel-Editor unterstützt aktuell boole'sche Ausdrücke, inklusive dem Vergleichen von Zahlen, Variablen und Funktionsaufrufen. Komplexeres Verhalten muss in vordefinierten Funktionen durchgeführt werden.",
-      "availableFunctions": "Aktuell verfügbare Funktionen:",
-      "variable": "Die verfügbaren Variablen stehen am rechten Rand. Bisher können nur Variablen vom Typ Boolean oder Zahl direkt in der Evidenzformel verwendet werden. Die anderen Typen können genutzt werden, wenn man Funktionen evaluiert.",
-      "testing": "Die Formeln können durch Drücken des '@:formulaView.test' Knopfs, am unteren Rand, getestet werden. Beim Testen werden die Variablen, aus der grauen Box am rechten Rand, verwendet.",
-      "example": "Ein Ausdruck könnte beispielsweise wie folgt aussehen: 'speed > 10 &amp; inArea(WRECKAGE)'.",
-      "gotIt": "Verstanden!"
-    },
-    "testToolbar": {
-      "test": "Testen",
-      "clearGraph": "Graph säubern",
-      "exportState": "Zustand exportieren",
-      "importState": "Zustand importieren",
-      "switchToEditor": "Zum Editor wechseln"
     },
     "menuBar": {
       "logout": "Abmelden",
       "evidenceFormulas": "Evidenzformeln",
       "graphView": "Graphansicht"
-    },
-    "evidenceFormula": {
-      "selectOrCreate": "Bitte eine neue Evidenzformel erstellen oder eine Bestehende auswählen!"
     },
     "forgotPassword": {
       "forgotPwQ": "Passwort vergessen?",
@@ -142,7 +145,15 @@
         "close": "Schließen",
         "unknownNode": "Kein Knoten mit Namen {name} gefunden!",
         "reset": "Zurücksetzen",
-        "done": "Fertig"
+        "done": "Fertig",
+
+        "toolbar": {
+          "test": "Testen",
+          "clearGraph": "Graph säubern",
+          "exportState": "Zustand exportieren",
+          "importState": "Zustand importieren",
+          "switchToEditor": "Zum Editor wechseln"
+        }
       },
 
       "edit": {
