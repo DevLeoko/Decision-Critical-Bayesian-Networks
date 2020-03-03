@@ -2,6 +2,7 @@ package io.dcbn.backend.graph;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
@@ -13,22 +14,12 @@ import javax.persistence.Embeddable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
+@EqualsAndHashCode
 public class Position {
     private Double x;
     private Double y;
 
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Position)) {
-            return false;
-        }
-        Position position = (Position) o;
-
+    public boolean equalsApproximately(Position position) {
         return Math.abs(x - position.getX()) <= 0.01 && Math.abs(y - position.getY()) <= 0.01;
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
     }
 }
