@@ -49,9 +49,11 @@
               0
             ) == 1 || 'failed'
           "
+          :ref="`propInput${inputFields}-${nodeState}`"
           @keydown.enter="
             fillProps(dependency.probabilities[inputFields - 1], nodeState - 1);
             $event.target.blur();
+            reTarget(`propInput${inputFields + 1}-${nodeState}`);
           "
         />
       </v-col>
@@ -134,6 +136,13 @@ export default Vue.extend({
       }
 
       prop[index] = Math.round(prop[index] * 100) / 100;
+    },
+
+    reTarget(id: string) {
+      if (this.$refs[id] && (this.$refs[id] as any)[0]) {
+        (this.$refs[id] as any)[0].focus();
+        (this.$refs[id] as any)[0].select();
+      }
     }
   }
 });
