@@ -70,30 +70,6 @@ public class AmidstGraphAdapter {
         dbn = new DynamicBayesianNetwork(dynamicDAG);
         //setting the probabilities
         setProbabilities();
-
-        for (Variable variable : tempChildVariables) {
-            ValueNode node = (ValueNode) variables.stream()
-                    .filter(var -> var.getKey().getName().equals(variable.getName().replace(TEMP_CHILD, "")))
-                    .findAny()
-                    .map(Pair::getValue)
-                    .orElse(null);
-            Multinomial_MultinomialParents multinomialParentsT0 =
-                    dbn.getConditionalDistributionTime0(variable);
-            Multinomial_MultinomialParents multinomialParentsTT =
-                    dbn.getConditionalDistributionTimeT(variable);
-            multinomialParentsT0
-                    .getMultinomial(0)
-                    .setProbabilities(new double[]{node.getValue()[0][0], node.getValue()[0][1]});
-            multinomialParentsT0
-                    .getMultinomial(1)
-                    .setProbabilities(new double[]{node.getValue()[0][1], node.getValue()[0][0]});
-            multinomialParentsTT
-                    .getMultinomial(0)
-                    .setProbabilities(new double[]{node.getValue()[0][0], node.getValue()[0][1]});
-            multinomialParentsTT
-                    .getMultinomial(1)
-                    .setProbabilities(new double[]{node.getValue()[0][1], node.getValue()[0][0]});
-        }
     }
 
     /**
