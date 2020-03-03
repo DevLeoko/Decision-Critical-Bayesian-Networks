@@ -63,33 +63,33 @@
             </template>
             <v-list>
               <template v-if="$store.state.user.role == 'ADMIN'">
-              <v-list-item @click="duplicateGraph(item.graph)">
-                <v-list-item-title>
-                  <v-icon class="mr-2">file_copy</v-icon>
-                  {{ $t("graph.folderView.duplicate") }}
-                </v-list-item-title>
-              </v-list-item>
+                <v-list-item @click="duplicateGraph(item.graph)">
+                  <v-list-item-title>
+                    <v-icon class="mr-2">file_copy</v-icon>
+                    {{ $t("graph.folderView.duplicate") }}
+                  </v-list-item-title>
+                </v-list-item>
 
-              <v-list-item @click="() => $refs.actions.renameGraph(item)">
-                <v-list-item-title>
-                  <v-icon class="mr-2">text_fields</v-icon>
-                  {{ $t("graph.folderView.rename") }}
-                </v-list-item-title>
-              </v-list-item>
+                <v-list-item @click="() => $refs.actions.renameGraph(item)">
+                  <v-list-item-title>
+                    <v-icon class="mr-2">text_fields</v-icon>
+                    {{ $t("graph.folderView.rename") }}
+                  </v-list-item-title>
+                </v-list-item>
 
-              <v-list-item @click="() => $refs.actions.moveGraph(item)">
-                <v-list-item-title>
-                  <v-icon class="mr-2">double_arrow</v-icon>
-                  {{ $t("graph.folderView.move") }}
-                </v-list-item-title>
-              </v-list-item>
+                <v-list-item @click="() => $refs.actions.moveGraph(item)">
+                  <v-list-item-title>
+                    <v-icon class="mr-2">double_arrow</v-icon>
+                    {{ $t("graph.folderView.move") }}
+                  </v-list-item-title>
+                </v-list-item>
 
-              <v-list-item @click="() => $refs.actions.deleteGraph(item)">
-                <v-list-item-title>
-                  <v-icon class="mr-2">delete</v-icon>
-                  {{ $t("graph.folderView.delete") }}
-                </v-list-item-title>
-              </v-list-item>
+                <v-list-item @click="() => $refs.actions.deleteGraph(item)">
+                  <v-list-item-title>
+                    <v-icon class="mr-2">delete</v-icon>
+                    {{ $t("graph.folderView.delete") }}
+                  </v-list-item-title>
+                </v-list-item>
               </template>
               <v-list-item @click="exportGraph(item.graph)">
                 <v-list-item-title>
