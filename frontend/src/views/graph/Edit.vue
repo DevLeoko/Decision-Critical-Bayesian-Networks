@@ -17,16 +17,16 @@
     <div id="mynetwork" ref="network"></div>
     <action-selector ref="nodeActionSelector">
       <v-btn tile @click="editProperties = true">
-        {{ $t("edit.properties") }}
+        {{ $t("graph.edit.properties") }}
       </v-btn>
       <v-btn tile @click="deleteNode()">
-        {{ $t("edit.delete") }}
+        {{ $t("graph.edit.delete") }}
       </v-btn>
     </action-selector>
 
     <action-selector ref="edgeActionSelector" isEdgeSelector>
       <v-btn tile @click="deleteEdge()">
-        {{ $t("edit.delete") }}
+        {{ $t("graph.edit.delete") }}
       </v-btn>
     </action-selector>
 
@@ -43,14 +43,14 @@
     <v-dialog :value="saveAlert.value" width="400" persistent>
       <v-card>
         <v-card-title>
-          {{ $t("edit.unsavedChanges") }}
+          {{ $t("graph.edit.unsavedChanges.title") }}
         </v-card-title>
         <v-card-text>
-          {{ $t("edit.unsavedChangesText") }}
+          {{ $t("graph.edit.unsavedChanges.text") }}
         </v-card-text>
         <v-card-actions class="px-4 pb-4">
           <v-btn @click="saveAlert.value = false" color="grey" text>
-            {{ $t("edit.unsavedChangesCancel") }}
+            {{ $t("graph.edit.unsavedChanges.cancel") }}
           </v-btn>
           <v-spacer />
           <v-btn
@@ -61,7 +61,7 @@
             color="error"
             text
           >
-            {{ $t("edit.unsavedChangesDiscard") }}
+            {{ $t("graph.edit.unsavedChanges.discard") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -322,7 +322,10 @@ export default Vue.extend({
         (!this.timeEdge && toNode.timeZeroDependency.parents.includes(fromName))
       ) {
         this.hasError = true;
-        this.errorMessage = `Trying to add duplicate edge between ${fromName} and ${toNode.name}!`;
+        this.errorMessage = this.$t("graph.edit.errors.duplicateEdge", {
+          from: fromName,
+          to: toNode.name
+        }).toString();
         return;
       }
 
@@ -491,7 +494,9 @@ export default Vue.extend({
 
       if (/^\s*$/.test(node.name)) {
         this.hasError = true;
-        this.errorMessage = "Node name cannot be empty!";
+        this.errorMessage = this.$t(
+          "graph.edit.errors.emptyNodeName"
+        ).toString();
         return;
       }
       if (name !== node.name) {
@@ -500,7 +505,9 @@ export default Vue.extend({
           .filter(n => n.name === node.name);
         if (nodesWithSameName.length !== 0) {
           this.hasError = true;
-          this.errorMessage = `Node with name ${node.name} exists already!`;
+          this.errorMessage = this.$t("graph.edit.errors.duplicateName", {
+            name: node.name
+          }).toString();
           return;
         }
       }

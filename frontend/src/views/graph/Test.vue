@@ -19,7 +19,7 @@
           }
           virtualEvidenceOpen = true;
         "
-        >{{ $t("test.virtualEvidence") }}</v-btn
+        >{{ $t("graph.test.virtualEvidence") }}</v-btn
       >
       <v-btn
         tile
@@ -31,20 +31,20 @@
           binaryEvidenceOpen = true;
         "
       >
-        {{ $t("test.binaryEvidence") }}
+        {{ $t("graph.test.binaryEvidence") }}
       </v-btn>
       <v-btn
         tile
         @click="valuesOpen = true"
         v-if="activeId !== -1 && presentValues[activeId].computed.length"
-        >{{ $t("test.values") }}</v-btn
+        >{{ $t("graph.test.values") }}</v-btn
       >
     </action-selector>
 
     <v-dialog v-model="virtualEvidenceOpen" width="550" v-if="activeId !== -1">
       <v-card>
         <v-card-title>
-          {{ $t("graphTest.setVirtualEvidence") }}
+          {{ $t("graph.test.setVirtualEvidence") }}
         </v-card-title>
 
         <v-card-text class="py-3">
@@ -86,14 +86,14 @@
               presentValues[activeId].virtualEvidence = null;
             "
           >
-            {{ $t("graphTest.reset") }}
+            {{ $t("graph.test.reset") }}
           </v-btn>
           <v-btn
             color="grey darken-2"
             text
             @click="virtualEvidenceOpen = false"
           >
-            {{ $t("graphTest.done") }}
+            {{ $t("graph.test.done") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -102,14 +102,14 @@
     <v-dialog v-model="binaryEvidenceOpen" width="550" v-if="activeId !== -1">
       <v-card>
         <v-card-title>
-          {{ $t("graphTest.setEvidences") }}
+          {{ $t("graph.test.setEvidences") }}
         </v-card-title>
 
         <v-card-text>
           <v-switch
             v-for="i in timeSlices"
             :key="i"
-            :label="`: Timestep ${i}`"
+            :label="`: ${$tc('graph.common.timeStep', 1)} ${i}`"
             v-model="presentValues[activeId].evidences[i - 1]"
             color="primary"
             hide-details
@@ -126,10 +126,10 @@
               presentValues[activeId].evidences = [];
             "
           >
-            {{ $t("graphTest.reset") }}
+            {{ $t("graph.test.reset") }}
           </v-btn>
           <v-btn color="grey darken-2" text @click="binaryEvidenceOpen = false">
-            {{ $t("graphTest.done") }}
+            {{ $t("graph.test.done") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -137,7 +137,7 @@
     <v-dialog v-model="valuesOpen" width="550" v-if="activeId !== -1">
       <v-card>
         <v-card-title>
-          {{ $t("test.valuesOf") }} {{ nodeIndices[activeId] }}
+          {{ $t("graph.test.valuesOf", { name: nodeIndices[activeId] }) }}
         </v-card-title>
 
         <v-card-text>
@@ -162,7 +162,7 @@
           <v-spacer></v-spacer>
 
           <v-btn color="primary" text @click="valuesOpen = false">
-            {{ $t("test.close") }}
+            {{ $t("graph.test.close") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -341,7 +341,9 @@ export default Vue.extend({
       for (let name of fileNodeIndices) {
         if (!this.nodeIndices.includes(name)) {
           this.error = true;
-          this.errorMessage = `No node with name ${name} found!`;
+          this.errorMessage = this.$t("graph.test.unknownNode", {
+            name
+          }).toString();
           return;
         }
       }

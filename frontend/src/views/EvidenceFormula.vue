@@ -18,14 +18,13 @@
       <v-layout v-else row wrap>
         <v-flex xs6 offset-xs3>
           <v-alert type="info" :value="true">
-            {{ $t("evidenceFormula.selectOrCreate") }}
+            {{ $t("formula.index.selectOrCreate") }}
           </v-alert>
         </v-flex>
       </v-layout>
     </v-flex>
     <v-snackbar color="orange darker-2" v-model="graphsChanged" timeout="7500">
-      The graphs {{ changedGraphs }} that where using this evidence formula have
-      been changed!
+      {{ $t("formula.list.graphChanged", { changedGraphs }) }}
     </v-snackbar>
   </v-layout>
 </template>

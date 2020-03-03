@@ -57,7 +57,7 @@
       </v-col>
     </v-row>
     <span class="grey--text font-weight-light">
-      ({{ $t("cptContainer.autocomplete") }})
+      ({{ $t("graph.edit.nodeProperties.definitionTab.autocomplete") }})
     </span>
   </v-container>
 </template>

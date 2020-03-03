@@ -71,16 +71,16 @@ public class InferenceManager {
         Vessel[] vessels = vesselCache.getVesselsByUuid(vesselUuid);
 
         //Iterating over all graphs
-            AmidstGraphAdapter adaptedGraph = new AmidstGraphAdapter(graph);
-            Graph calculatedGraph = calculateInference(adaptedGraph, (i, formula) -> {
-                Vessel vessel = vessels != null ? vessels[i] : defaultVessel;
-                return evidenceFormulaEvaluator.evaluate(i, vessel, formula) ? "true" : "false";
-            }, Algorithm.IMPORTANCE_SAMPLING);
-            Set<Vessel> correlatedVessels = evidenceFormulaEvaluator.getCorrelatedVessels();
-            correlatedVessels.add(vessels != null ? vessels[0] : defaultVessel);
-            return new Outcome(UUID.randomUUID().toString(), System.currentTimeMillis(),
-                    calculatedGraph, correlatedVessels,
-                    evidenceFormulaEvaluator.getCorrelatedAois());
+        AmidstGraphAdapter adaptedGraph = new AmidstGraphAdapter(graph);
+        Graph calculatedGraph = calculateInference(adaptedGraph, (i, formula) -> {
+            Vessel vessel = vessels != null ? vessels[i] : defaultVessel;
+            return evidenceFormulaEvaluator.evaluate(i, vessel, formula) ? "true" : "false";
+        }, Algorithm.IMPORTANCE_SAMPLING);
+        Set<Vessel> correlatedVessels = evidenceFormulaEvaluator.getCorrelatedVessels();
+        correlatedVessels.add(vessels != null ? vessels[0] : defaultVessel);
+        return new Outcome(UUID.randomUUID().toString(), System.currentTimeMillis(),
+                calculatedGraph, correlatedVessels,
+                evidenceFormulaEvaluator.getCorrelatedAois());
     }
 
     /**
@@ -99,7 +99,7 @@ public class InferenceManager {
 
         List<Node> nodes = adaptedGraph.getAdaptedGraph().getNodes();
         List<Node> nodesWithFormula = nodes.stream()
-                .filter(var -> !var.isValueNode() && (var.getEvidenceFormulaName() == null  || !var.getEvidenceFormulaName().equals("") || evidenceFormulaRepository.existsByName(var.getEvidenceFormulaName())))
+                .filter(var -> !var.isValueNode() && (var.getEvidenceFormulaName() == null || !var.getEvidenceFormulaName().equals("") || evidenceFormulaRepository.existsByName(var.getEvidenceFormulaName())))
                 .collect(Collectors.toList());
         List<Node> nodesWithVirEvi = nodes.stream()
                 .filter(var -> var.isValueNode() && ((ValueNode) var).getValue().length == 1).collect(Collectors.toList());
@@ -110,7 +110,6 @@ public class InferenceManager {
                 .collect(Collectors.toList());
 
         //Hiding the variables we want to evaluate during inference calculations
-
         nodesWithVirEvi.stream()
                 .map(Node::getName)
                 .map(adaptedGraph::getVariableByName)
@@ -122,13 +121,6 @@ public class InferenceManager {
         DataStream<DynamicDataInstance> dataPredict = dynamicSampler
                 .sampleToDataBase(1, adaptedGraph.getAdaptedGraph().getTimeSlices());
 
-        List<Node> nodesToSetValues = nodes.stream()
-                .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() != null && !var.getEvidenceFormulaName().equals("") && evidenceFormulaRepository.existsByName(var.getEvidenceFormulaName()))
-                .collect(Collectors.toList());
-        List<Node> nodesToSetValuesFromValueNode = nodes.stream()
-                .filter(Node::isValueNode)
-                .filter(var -> ((ValueNode) var).checkValuesAreStates())
-                .collect(Collectors.toList());
 
         //Running inference
         InferenceAlgorithm inferenceAlgorithm = algorithm.getInferenceAlgorithm();
@@ -136,6 +128,31 @@ public class InferenceManager {
         FactoredFrontierForDBN ffAlgorithm = new FactoredFrontierForDBN(inferenceAlgorithm);
         InferenceEngineForDBN.setInferenceAlgorithmForDBN(ffAlgorithm);
         InferenceEngineForDBN.setModel(adaptedGraph.getDbn());
+
+        return runInference(adaptedGraph, dataPredict, formulaResolver, tempChildVariables, nodes);
+    }
+
+    /**
+     * This method runs the inference Engine of AMIDST on the given graph
+     * @param adaptedGraph the graph
+     * @param dataPredict the evidences for each timestep
+     * @param formulaResolver the evidence formulas
+     * @param tempChildVariables the temporary child nodes for the virtual evidences
+     * @param nodes the nodes of the graph
+     * @return the new calculated graph with the values in the nodes
+     */
+    private Graph runInference(AmidstGraphAdapter adaptedGraph, DataStream<DynamicDataInstance> dataPredict,
+                               BiFunction<Integer, EvidenceFormula, String> formulaResolver,
+                               List<Variable> tempChildVariables,
+                               List<Node> nodes) {
+        List<Node> nodesToSetValuesFromValueNode = nodes.stream()
+                .filter(Node::isValueNode)
+                .filter(var -> ((ValueNode) var).checkValuesAreStates())
+                .collect(Collectors.toList());
+        List<Node> nodesToSetValues = nodes.stream()
+                .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() != null && !var.getEvidenceFormulaName().equals("") && evidenceFormulaRepository.existsByName(var.getEvidenceFormulaName()))
+                .collect(Collectors.toList());
+
 
         //Creating the output graph
         List<Node> returnedNodes = new ArrayList<>();
@@ -155,7 +172,7 @@ public class InferenceManager {
             }
 
             //Setting the evidences
-            for(Node node : nodesToSetValuesFromValueNode) {
+            for (Node node : nodesToSetValuesFromValueNode) {
                 int state = ((ValueNode) node).getIndexOfState(time);
                 Variable variable = adaptedGraph.getVariableByName(node.getName());
                 instance.setValue(variable, state);
@@ -181,6 +198,7 @@ public class InferenceManager {
             }
             time++;
         }
+
         return new Graph(adaptedGraph.getAdaptedGraph().getId(),
                 adaptedGraph.getAdaptedGraph().getName()
                 , adaptedGraph.getAdaptedGraph().getTimeSlices(), returnedNodes);
