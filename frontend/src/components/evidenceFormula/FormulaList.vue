@@ -4,18 +4,18 @@
       <v-card>
         <v-card-title>
           <v-icon class="mr-2">delete_sweep</v-icon>
-          {{ $t("formulaList.confirmDeletion") }}
+          {{ $t("formula.list.confirmDeletion") }}
         </v-card-title>
         <v-card-text>
-          {{ $t("formulaList.sureToDelete1") }}
-          {{ deletedFormula.name }}
-          {{ $t("formulaList.sureToDelete2") }}
+          {{
+            $t("formula.list.sureToDelete", { formula: deletedFormula.name })
+          }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
 
           <v-btn color="gray" text @click="deleteWarning = false">
-            {{ $t("formulaList.cancel") }}
+            {{ $t("formula.list.cancel") }}
           </v-btn>
 
           <v-btn
@@ -26,7 +26,7 @@
               deleteFormula(deletedFormula);
             "
           >
-            {{ $t("formulaList.delete") }}
+            {{ $t("formula.list.delete") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -63,7 +63,7 @@
       <v-flex class="pa-4" style="text-align: center">
         <v-btn small color="primary" @click="addFormula()">
           <v-icon class="mr-1" color="white">add_box</v-icon>
-          {{ $t("formulaList.newExpression") }}
+          {{ $t("formula.list.newExpression") }}
         </v-btn>
       </v-flex>
     </template>

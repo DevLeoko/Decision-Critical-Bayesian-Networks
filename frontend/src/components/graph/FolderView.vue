@@ -27,7 +27,7 @@
           <v-col>
             <v-text-field
               v-model="search"
-              :label="$t('folderView.searchForGraph')"
+              :label="$t('graph.folderView.searchForGraph')"
               solo
               class="ma-3"
               hide-details
@@ -65,34 +65,34 @@
               <v-list-item @click="duplicateGraph(item.graph)">
                 <v-list-item-title>
                   <v-icon class="mr-2">file_copy</v-icon>
-                  {{ $t("folderView.duplicate") }}
+                  {{ $t("graph.folderView.duplicate") }}
                 </v-list-item-title>
               </v-list-item>
 
               <v-list-item @click="() => $refs.actions.renameGraph(item)">
                 <v-list-item-title>
                   <v-icon class="mr-2">text_fields</v-icon>
-                  {{ $t("folderView.rename") }}
+                  {{ $t("graph.folderView.rename") }}
                 </v-list-item-title>
               </v-list-item>
 
               <v-list-item @click="() => $refs.actions.moveGraph(item)">
                 <v-list-item-title>
                   <v-icon class="mr-2">double_arrow</v-icon>
-                  {{ $t("folderView.move") }}
+                  {{ $t("graph.folderView.move") }}
                 </v-list-item-title>
               </v-list-item>
 
               <v-list-item @click="() => $refs.actions.deleteGraph(item)">
                 <v-list-item-title>
                   <v-icon class="mr-2">delete</v-icon>
-                  {{ $t("folderView.delete") }}
+                  {{ $t("graph.folderView.delete") }}
                 </v-list-item-title>
               </v-list-item>
               <v-list-item @click="exportGraph(item.graph)">
                 <v-list-item-title>
                   <v-icon class="mr-2">import_export</v-icon>
-                  {{ $t("folderView.export") }}
+                  {{ $t("graph.folderView.export") }}
                 </v-list-item-title>
               </v-list-item>
             </v-list>
@@ -105,14 +105,14 @@
         <v-row justify="center">
           <v-col class="flex-grow-0 mt-4 pb-0">
             <v-btn medium color="primary" @click="createGraph()">
-              <v-icon>add</v-icon> {{ $t("folderView.addNewGraph") }}
+              <v-icon>add</v-icon> {{ $t("graph.folderView.addNewGraph") }}
             </v-btn>
           </v-col>
           <v-col cols="12" class="pa-0 ma-0" />
           <v-col class="flex-grow-0 mb-4">
             <v-btn small color="primary lighten-2" @click="triggerImport()">
               <v-icon small class="mr-2">cloud_upload</v-icon>
-              {{ $t("folderView.importGraph") }}
+              {{ $t("graph.folderView.importGraph") }}
             </v-btn>
           </v-col>
         </v-row>
@@ -199,7 +199,9 @@ export default Vue.extend({
           name: newName,
           id: res.data
         });
-        this.throwSuccess("The graph has been generated");
+        this.throwSuccess(
+          this.$t("graph.folderView.responses.created").toString()
+        );
         this.selectGraph(res.data);
       } catch (err) {
         this.throwError(err.response.data.message);
@@ -227,7 +229,10 @@ export default Vue.extend({
               copy.id = resp.data;
               this.graphs.push({ name: copy.name, id: copy.id });
               this.throwSuccess(
-                `Graph ${graph.name} duplicated to ${copy.name}`
+                this.$t("graph.folderView.responses.duplicated", {
+                  name: graph.name,
+                  copy: copy.name
+                }).toString()
               );
             })
             .catch(error => this.throwError(error.response.data.message));
@@ -246,7 +251,9 @@ export default Vue.extend({
         })
         .then(() => {
           graph.name = name;
-          this.throwSuccess(`Graph renamed to ${name}`);
+          this.throwSuccess(
+            this.$t("graph.folderView.responses.renamed", { name }).toString()
+          );
         })
         .catch(error => this.throwError(error.response.data.message))
         .then(() => (this.loading = false));
@@ -258,7 +265,9 @@ export default Vue.extend({
         .delete(`/graphs/${graph.id}`)
         .then(() => {
           this.graphs.splice(this.graphs.indexOf(graph), 1);
-          this.throwSuccess("Graph deleted");
+          this.throwSuccess(
+            this.$t("graph.folderView.responses.deleted").toString()
+          );
         })
         .catch(error => this.throwError(error.response.data.message))
         .then(() => (this.loading = false));
@@ -314,7 +323,9 @@ export default Vue.extend({
           })
           .then(res => {
             this.graphs.push({ name: res.data.name, id: res.data.id });
-            this.throwSuccess("Graph imported");
+            this.throwSuccess(
+              this.$t("graph.folderView.responses.imported").toString()
+            );
           })
           .catch(error => {
             this.throwError(error.response.data.message);
