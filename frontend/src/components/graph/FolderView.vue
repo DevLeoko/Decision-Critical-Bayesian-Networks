@@ -62,45 +62,36 @@
               </v-btn>
             </template>
             <v-list>
-              <v-list-item
-                @click="duplicateGraph(item.graph)"
-                v-if="$store.state.user.role == 'ADMIN'"
-              >
-                <v-list-item-title>
-                  <v-icon class="mr-2">file_copy</v-icon>
-                  {{ $t("folderView.duplicate") }}
-                </v-list-item-title>
-              </v-list-item>
+              <template v-if="$store.state.user.role == 'ADMIN'">
+                <v-list-item @click="duplicateGraph(item.graph)">
+                  <v-list-item-title>
+                    <v-icon class="mr-2">file_copy</v-icon>
+                    {{ $t("folderView.duplicate") }}
+                  </v-list-item-title>
+                </v-list-item>
 
-              <v-list-item
-                @click="() => $refs.actions.renameGraph(item)"
-                v-if="$store.state.user.role == 'ADMIN'"
-              >
-                <v-list-item-title>
-                  <v-icon class="mr-2">text_fields</v-icon>
-                  {{ $t("folderView.rename") }}
-                </v-list-item-title>
-              </v-list-item>
+                <v-list-item @click="() => $refs.actions.renameGraph(item)">
+                  <v-list-item-title>
+                    <v-icon class="mr-2">text_fields</v-icon>
+                    {{ $t("folderView.rename") }}
+                  </v-list-item-title>
+                </v-list-item>
 
-              <v-list-item
-                @click="() => $refs.actions.moveGraph(item)"
-                v-if="$store.state.user.role == 'ADMIN'"
-              >
-                <v-list-item-title>
-                  <v-icon class="mr-2">double_arrow</v-icon>
-                  {{ $t("folderView.move") }}
-                </v-list-item-title>
-              </v-list-item>
+                <v-list-item @click="() => $refs.actions.moveGraph(item)">
+                  <v-list-item-title>
+                    <v-icon class="mr-2">double_arrow</v-icon>
+                    {{ $t("folderView.move") }}
+                  </v-list-item-title>
+                </v-list-item>
 
-              <v-list-item
-                @click="() => $refs.actions.deleteGraph(item)"
-                v-if="$store.state.user.role == 'ADMIN'"
-              >
-                <v-list-item-title>
-                  <v-icon class="mr-2">delete</v-icon>
-                  {{ $t("folderView.delete") }}
-                </v-list-item-title>
-              </v-list-item>
+                <v-list-item @click="() => $refs.actions.deleteGraph(item)">
+                  <v-list-item-title>
+                    <v-icon class="mr-2">delete</v-icon>
+                    {{ $t("folderView.delete") }}
+                  </v-list-item-title>
+                </v-list-item>
+              </template>
+
               <v-list-item @click="exportGraph(item.graph)">
                 <v-list-item-title>
                   <v-icon class="mr-2">import_export</v-icon>
@@ -111,7 +102,7 @@
           </v-menu>
         </template>
       </v-treeview>
-      <template v-slot:append>
+      <template v-slot:append v-if="$store.state.user.role == 'ADMIN'">
         <v-divider></v-divider>
         <v-progress-linear indeterminate v-if="loading" />
         <v-row justify="center">
