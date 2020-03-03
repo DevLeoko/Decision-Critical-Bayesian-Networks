@@ -168,7 +168,7 @@
 
         "unsavedChanges": {
           "title": "Speichern vergessen?",
-          "text": "Im aktuellen Graph sind noch ungespeicherte Änderungen. Wenn Sie die Seite wechselst gehen diese verloren!",
+          "text": "Im aktuellen Graph sind noch ungespeicherte Änderungen. Wenn Sie die Seite wechseln gehen diese verloren!",
           "cancel": "Abbrechen",
           "discard": "Änderungen verwerfen"
         },
