@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @RestController
-@PreAuthorize("hasRole('MODERATOR')")
+@PreAuthorize("hasRole('ADMIN')")
 public class GraphController {
 
     private final GraphRepository repository;
@@ -43,6 +43,7 @@ public class GraphController {
     }
 
     @GetMapping("/graphs")
+    @PreAuthorize("hasRole('MODERATOR')")
     public Iterable<Graph> getGraphs(@RequestParam boolean withStructure) {
         Supplier<Stream<Graph>> streamSupplier = () -> StreamSupport.stream(repository.findAll().spliterator(), false);
         streamSupplier.get().forEach(graph -> {
@@ -54,6 +55,7 @@ public class GraphController {
     }
 
     @GetMapping("/graphs/{id}")
+    @PreAuthorize("hasRole('MODERATOR')")
     public Graph getGraphById(@PathVariable long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -135,6 +137,7 @@ public class GraphController {
     }
 
     @PostMapping("/graphs/{id}/evaluate")
+    @PreAuthorize("hasRole('MODERATOR')")
     public Map<String, double[][]> evaluateGraphById(@PathVariable long id, @RequestBody Map<String, double[][]> values) {
         Graph graph = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Graph does not exist!"));
         Map<String, Node> nodeMap = graph.getNodes().stream().collect(Collectors.toMap(Node::getName, node -> node));
@@ -213,6 +216,7 @@ public class GraphController {
     }
 
     @GetMapping("/graphs/{id}/export")
+    @PreAuthorize("hasRole('MODERATOR')")
     public ResponseEntity<String> exportGraph(@PathVariable long id) {
         Graph graph = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, GRAPH_NOT_FOUND));
