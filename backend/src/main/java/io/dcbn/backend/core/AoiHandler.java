@@ -12,12 +12,10 @@ import org.springframework.stereotype.Service;
 public class AoiHandler {
 
     private final AoiCache aoiCache;
-    private final Producer producer;
 
     @Autowired
     public AoiHandler(AoiCache aoiCache, Producer producer) {
         this.aoiCache = aoiCache;
-        this.producer = producer;
     }
 
     /**

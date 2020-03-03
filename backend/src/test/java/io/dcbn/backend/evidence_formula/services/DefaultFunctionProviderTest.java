@@ -86,7 +86,7 @@ public class DefaultFunctionProviderTest {
         provider.setCurrentVessel(vessel);
         provider.setCurrentTimeSlice(0);
         List<Object> params = new ArrayList<>();
-        assertEquals(2.0, (double) provider.call("distanceToNearest", params));
+        assertEquals(222638.9815584128, (double) provider.call("distanceToNearest", params), 0.0001);
     }
 
     @Test
@@ -95,6 +95,6 @@ public class DefaultFunctionProviderTest {
         provider.setCurrentTimeSlice(0);
         List<Object> params = new ArrayList<>();
         params.add(VesselType.CARGO.toString());
-        assertEquals(3.0, (double) provider.call("distanceToNearestType", params));
+        assertEquals(333958.4723376192, (double) provider.call("distanceToNearestType", params), 0.0001);
     }
 }
