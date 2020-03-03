@@ -3,6 +3,7 @@ package io.dcbn.backend.graph;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Data
+@EqualsAndHashCode
 public class NodeDependency {
 
     @Id
@@ -41,33 +43,5 @@ public class NodeDependency {
         this.parents = parents;
         this.parentsTm1 = parentsTm1;
         this.probabilities = probabilities;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof NodeDependency)) {
-            return false;
-        }
-        NodeDependency dependency = (NodeDependency) o;
-        if (id != dependency.getId() || parents.size() != dependency.getParents().size()
-                || parentsTm1.size() != dependency.getParentsTm1().size()
-                || probabilities.length != dependency.getProbabilities().length
-                || probabilities[0].length != dependency.getProbabilities()[0].length) {
-            return false;
-        }
-        if (!dependency.getParents().containsAll(parents)) {
-            return false;
-        }
-        if (!dependency.getParentsTm1().containsAll(parentsTm1)) {
-            return false;
-        }
-        for (int i = 0; i < probabilities.length; i++) {
-            for (int j = 0; j < probabilities[0].length; j++) {
-                if (Math.abs(probabilities[i][j] - dependency.getProbabilities()[i][j]) > 0.01) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }

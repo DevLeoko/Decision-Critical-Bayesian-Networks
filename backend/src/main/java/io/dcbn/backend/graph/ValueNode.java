@@ -1,18 +1,14 @@
 package io.dcbn.backend.graph;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.Arrays;
+import lombok.*;
 
 /**
  * This extension of a node represents a node with a evidence (Input) of with calculated values (Output).
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class ValueNode extends Node {
 
     @Getter
@@ -64,14 +60,5 @@ public class ValueNode extends Node {
             }
         }
         return -1;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof ValueNode)) {
-            return false;
-        }
-        ValueNode node = (ValueNode) o;
-        return  super.equals(o) && Arrays.deepEquals(value, node.getValue());
     }
 }
