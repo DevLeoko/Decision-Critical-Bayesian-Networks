@@ -51,11 +51,11 @@
     },
     "forgotPassword": {
       "forgotPwQ": "Passwort vergessen?",
-      "resetInstruction": "Keine Sorge! Gib einfach deine Email ein und wir senden dir einen Link zum Zurücksetzen.",
+      "resetInstruction": "Keine Sorge! Geben Sie einfach Ihre Email ein und wir senden Ihnen einen Link zum Zurücksetzen.",
       "email": "Email",
       "reset": "Passwort zurücksetzen",
       "backToLogin": "Zurück zur Anmeldung",
-      "resetEmailSent": "Alles erledigt! Sieh in deinen Emails nach."
+      "resetEmailSent": "Alles erledigt! Überprüfen Sie in Ihre Emails."
     },
     "login": {
       "signIn": "Anmelden",
@@ -195,7 +195,7 @@
           "definitionTab": {
             "conditionalProbabilityTable": "Bedingte Wahrscheinlichkeitstabelle",
             "currentTime": "Aktuell: Zeit ",
-            "autocomplete": "Drücke in einem Eingabefeld ENTER um Wahrscheinlichkeiten automatisch zu ergänzen"
+            "autocomplete": "Drücken Sie in einem Eingabefeld ENTER um Wahrscheinlichkeiten automatisch zu ergänzen"
           }
         }
       }
