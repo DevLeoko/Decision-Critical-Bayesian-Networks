@@ -66,9 +66,8 @@ public class DcbnUserController {
         String password = generatePassword();
         user.setPassword(password);
 
+        user = dcbnUserRepository.save(user.withEncryptedPassword(passwordEncoder));
         mailService.sendMail(user, MailType.PASSWORD_RESET);
-
-        dcbnUserRepository.save(user.withEncryptedPassword(passwordEncoder));
         return ResponseEntity.noContent().build();
     }
 

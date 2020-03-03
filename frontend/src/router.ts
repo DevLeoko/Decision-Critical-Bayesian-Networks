@@ -7,15 +7,6 @@ import { messages } from "./internationalization/translation";
 
 Vue.use(Router);
 
-function generateDefaultRoute(name: String, children = undefined) {
-  return {
-    path: `/${name.toLowerCase()}`,
-    name: name.toLowerCase(),
-    component: () => import(`./views/${name}.vue`),
-    children
-  };
-}
-
 export const router = new Router({
   routes: [
     {
@@ -101,8 +92,7 @@ router.beforeEach((to, from, next) => {
 
   if (store.state.isUserLoggedIn) {
     if (!to.name || to.name == "Login") {
-      console.log("Uff", to, from);
-      if ((store.state.user.role as Role) == "SUPERADMIN") {
+      if (store.state.user.role == "SUPERADMIN") {
         next({
           name: "SuperAdmin",
           params: {
