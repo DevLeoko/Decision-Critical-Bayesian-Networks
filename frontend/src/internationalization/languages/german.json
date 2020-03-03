@@ -149,7 +149,7 @@
 
         "toolbar": {
           "test": "Testen",
-          "clearGraph": "Graph säubern",
+          "clearGraph": "Graph zurücksetzen",
           "exportState": "Zustand exportieren",
           "importState": "Zustand importieren",
           "switchToEditor": "Zum Editor wechseln"
