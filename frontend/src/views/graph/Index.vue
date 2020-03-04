@@ -42,7 +42,6 @@ export default Vue.extend({
     fetchGraphs(delayed: boolean) {
       this.axios.get(`/graphs?delayed=${delayed}`).then(res => {
         const graphArray = res.data as { graph: dcbn.Graph; locked: boolean }[];
-        console.log(graphArray, this.graphs);
 
         this.graphs = [];
         graphArray.forEach(obj => {
