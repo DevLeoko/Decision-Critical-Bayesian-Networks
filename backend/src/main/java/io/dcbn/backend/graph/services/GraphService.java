@@ -6,6 +6,7 @@ import io.dcbn.backend.graph.AmidstGraphAdapter;
 import io.dcbn.backend.graph.Graph;
 import io.dcbn.backend.graph.Node;
 import io.dcbn.backend.inference.InferenceManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -14,6 +15,9 @@ import java.util.Map;
 
 @Service
 public class GraphService {
+
+    @Value("${graph.lock.expire.time}")
+    private long graphLockExpireTime;
 
     private Map<Long, GraphLock> lock;
     private final DcbnUserRepository dcbnUserRepository;
@@ -27,6 +31,10 @@ public class GraphService {
         this.lock = new HashMap<>();
     }
 
+    public void setGraphLockExpireTime(long graphLockExpireTime) {
+        this.graphLockExpireTime = graphLockExpireTime;
+    }
+
     //checks if Graph has cycles
     public boolean hasCycles(Graph graph) {
         AmidstGraphAdapter graphAdapter = new AmidstGraphAdapter(graph);
@@ -38,11 +46,13 @@ public class GraphService {
                 .orElseThrow(() -> new IllegalArgumentException("User does not exist!")).getId();
 
         if (!lock.containsKey(graphId)) {
-            lock.put(graphId, new GraphLock(userId));
+            lock.values().removeIf(l -> l.getUserId() == userId);
+            lock.put(graphId, new GraphLock(userId, graphLockExpireTime));
         } else if (lock.get(graphId).getUserId() == userId) {
-            lock.put(graphId, new GraphLock(userId));
+            lock.put(graphId, new GraphLock(userId, graphLockExpireTime));
         } else if (lock.get(graphId).getUserId() != userId && lock.get(graphId).isExpired()) {
-            lock.put(graphId, new GraphLock(userId));
+            lock.values().removeIf(l -> l.getUserId() == userId);
+            lock.put(graphId, new GraphLock(userId, graphLockExpireTime));
         } else {
             throw new IllegalArgumentException("Graph already locked by another user!");
         }

@@ -64,6 +64,8 @@ public class DcbnApplication {
                     new DcbnUser("superadmin", "superadmin@dcbn.io", passwordEncoder().encode("superadmin"),
                             Role.SUPERADMIN));
 
+            dcbnUserRepository.save(new DcbnUser("a", "a@a.de", passwordEncoder().encode("a"), Role.ADMIN));
+
             Node smuggling = new Node("smuggling", null, null, "#ff00ff", null, StateType.BOOLEAN,
                     new Position(0.0, 0.0));
             Node nullSpeed = new Node("nullSpeed", null, null, "#ff9900",

@@ -56,13 +56,22 @@ public class GraphController {
 
     @GetMapping("/graphs/{id}")
     @PreAuthorize("hasRole('MODERATOR')")
-    public Graph getGraphById(@PathVariable long id) {
-        return repository.findById(id)
+    public Graph getGraphById(@PathVariable long id, Principal principal) {
+        Graph graph = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        // TODO: Currently only one user can access the graph structure,
+        //  it doesn't matter whether the user is testing or editing the graph.
+        try {
+            graphService.updateLock(graph.getId(), principal.getName());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        return graph;
     }
 
     @PostMapping("/graphs")
     public long createGraph(@Valid @RequestBody Graph graph, Principal principal) {
+        graph = repository.save(graph);
         try {
             graphService.updateLock(graph.getId(), principal.getName());
         } catch (IllegalArgumentException e) {
@@ -77,7 +86,6 @@ public class GraphController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Some evidence formulas do not exist!");
         }
 
-        repository.save(graph);
         return graph.getId();
     }
 
