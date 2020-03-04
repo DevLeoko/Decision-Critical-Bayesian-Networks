@@ -42,6 +42,7 @@
         :items="treeItems"
         :search="search"
         :active.sync="active"
+        item-disabled="locked"
         @update:active="arr => selectGraph(arr[0])"
         activatable
         open-on-click
@@ -156,6 +157,7 @@ export interface TreeItem {
   id: string | number;
   graph?: dcbn.DenseGraph;
   children: TreeItem[];
+  locked: boolean;
 }
 
 import Vue from "vue";
@@ -197,14 +199,9 @@ export default Vue.extend({
           timeSlices: 5,
           nodes: []
         });
-        this.graphs.push({
-          name: newName,
-          id: res.data
-        });
         this.throwSuccess(
           this.$t("graph.folderView.responses.created").toString()
         );
-        this.selectGraph(res.data);
       } catch (err) {
         this.throwError(err.response.data.message);
       } finally {
@@ -229,7 +226,6 @@ export default Vue.extend({
             .post("/graphs", copy)
             .then(resp => {
               copy.id = resp.data;
-              this.graphs.push({ name: copy.name, id: copy.id });
               this.throwSuccess(
                 this.$t("graph.folderView.responses.duplicated", {
                   name: graph.name,
@@ -266,7 +262,6 @@ export default Vue.extend({
       this.axios
         .delete(`/graphs/${graph.id}`)
         .then(() => {
-          this.graphs.splice(this.graphs.indexOf(graph), 1);
           this.throwSuccess(
             this.$t("graph.folderView.responses.deleted").toString()
           );
@@ -324,7 +319,11 @@ export default Vue.extend({
             }
           })
           .then(res => {
-            this.graphs.push({ name: res.data.name, id: res.data.id });
+            this.graphs.push({
+              name: res.data.name,
+              id: res.data.id,
+              locked: res.data.locked
+            });
             this.throwSuccess(
               this.$t("graph.folderView.responses.imported").toString()
             );
@@ -384,7 +383,8 @@ export default Vue.extend({
       let result: TreeItem = {
         name: "Root",
         id: -1,
-        children: []
+        children: [],
+        locked: false
       };
 
       this.graphs
@@ -410,7 +410,7 @@ export default Vue.extend({
             // check whether the next subfolder alrady exists
             const targetFolder: TreeItem = currentFolder.find(
               subFolder => subFolder.name == element
-            ) || { name: element, id: -1, children: [] };
+            ) || { name: element, id: -1, children: [], locked: false };
 
             // if not, add it to the current folder
             if (targetFolder.id == -1) {
@@ -427,7 +427,8 @@ export default Vue.extend({
             name: graphName,
             id: entry.id,
             children: [],
-            graph: entry
+            graph: entry,
+            locked: entry.locked
           });
         });
 

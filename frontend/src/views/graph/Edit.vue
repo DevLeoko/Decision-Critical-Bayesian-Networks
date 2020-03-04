@@ -527,6 +527,12 @@ export default Vue.extend({
 
       this.updateNodeName(name, node.name);
       this.nodes.update({ id: uuid, color: node.color, label: node.name });
+    },
+
+    updateLock() {
+      this.axios
+        .put(`/graphs/${this.$route.params.id}/lock`)
+        .then(() => setTimeout(this.updateLock.bind(this), 2500));
     }
   },
 
@@ -583,6 +589,8 @@ export default Vue.extend({
         this.errorMessage = error.response.data.message;
         this.hasError = true;
       });
+
+    this.updateLock();
   },
 
   computed: {

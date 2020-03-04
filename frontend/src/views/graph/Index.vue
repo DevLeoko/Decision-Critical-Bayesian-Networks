@@ -38,16 +38,27 @@ export default Vue.extend({
     };
   },
 
-  created() {
-    this.axios.get("/graphs?withStructure=false").then(res => {
-      const graphArray = res.data as dcbn.Graph[];
-      graphArray.forEach(graph => {
-        this.graphs.push({
-          name: graph.name,
-          id: graph.id
+  methods: {
+    fetchGraphs(delayed: boolean) {
+      this.axios.get(`/graphs?delayed=${delayed}`).then(res => {
+        const graphArray = res.data as { graph: dcbn.Graph; locked: boolean }[];
+        console.log(graphArray, this.graphs);
+
+        this.graphs = [];
+        graphArray.forEach(obj => {
+          this.graphs.push({
+            name: obj.graph.name,
+            id: obj.graph.id,
+            locked: obj.locked
+          });
         });
+        setTimeout(() => this.fetchGraphs(true), 100);
       });
-    });
+    }
+  },
+
+  created() {
+    this.fetchGraphs(false);
   }
 });
 </script>

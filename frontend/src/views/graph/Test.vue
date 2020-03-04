@@ -228,7 +228,9 @@ export default Vue.extend({
       }[],
 
       error: false,
-      errorMessage: ""
+      errorMessage: "",
+
+      lockInterval: 0
     };
   },
 
@@ -350,6 +352,12 @@ export default Vue.extend({
 
       this.presentValues = fileContent.presentValues;
       this.rerenderAll();
+    },
+
+    updateLock() {
+      this.axios
+        .put(`/graphs/${this.$route.params.id}/lock`)
+        .then(() => setTimeout(this.updateLock.bind(this), 2500));
     }
   },
 
@@ -394,6 +402,8 @@ export default Vue.extend({
         this.errorMessage = error.response.data.message;
         this.error = true;
       });
+
+    this.updateLock();
   },
 
   watch: {
