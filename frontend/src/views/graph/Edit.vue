@@ -530,9 +530,11 @@ export default Vue.extend({
     },
 
     updateLock() {
-      this.axios
-        .put(`/graphs/${this.$route.params.id}/lock`)
-        .then(() => setTimeout(this.updateLock.bind(this), 2500));
+      if (this.$route.params.id !== undefined) {
+        this.axios
+          .put(`/graphs/${this.$route.params.id}/lock`)
+          .then(() => setTimeout(this.updateLock.bind(this), 2500));
+      }
     }
   },
 

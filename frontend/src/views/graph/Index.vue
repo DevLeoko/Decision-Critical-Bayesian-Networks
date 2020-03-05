@@ -51,7 +51,7 @@ export default Vue.extend({
             locked: obj.locked
           });
         });
-        setTimeout(() => this.fetchGraphs(true), 100);
+        this.fetchGraphs(true);
       });
     }
   },
