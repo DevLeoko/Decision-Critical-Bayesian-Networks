@@ -50,7 +50,24 @@ public class InferenceManager {
         this.graphRepository = graphRepository;
         this.evidenceFormulaRepository = evidenceFormulaRepository;
         this.evidenceFormulaEvaluator = evidenceFormulaEvaluator;
+
+        // TODO: This is really dumb...
         defaultVessel = new Vessel("", 0);
+        defaultVessel.setWidth(10.0);
+        defaultVessel.setLength(10.0);
+        defaultVessel.setDraught(10.0);
+        defaultVessel.setHeading(10.0);
+        defaultVessel.setCog(10.0);
+        defaultVessel.setAltitude(10.0);
+        defaultVessel.setLatitude(10.0);
+        defaultVessel.setLongitude(10.0);
+        defaultVessel.setSpeed(10.0);
+        defaultVessel.setFiller(true);
+        defaultVessel.setMmsi(0L);
+        defaultVessel.setImo(0L);
+        defaultVessel.setEta(0L);
+        defaultVessel.setName("DEFAULT");
+        defaultVessel.setCallsign("DEFAULT");
     }
 
     /**
