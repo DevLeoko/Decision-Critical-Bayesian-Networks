@@ -13,7 +13,6 @@
 <script lang="ts">
 import MenuBar from "@/components/MenuBar.vue";
 import Vue from "vue";
-import { Role } from "./store";
 
 export default Vue.extend({
   name: "App",

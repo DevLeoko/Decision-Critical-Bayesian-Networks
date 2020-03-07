@@ -27,12 +27,12 @@ public enum MailType {
                     .setExpiration(now.getTime())
                     .compact();
 
-            return "http://localhost:8080/#/reset-password?key=" + token;
+            return "http://localhost:8080/#/en/reset-password?key=" + token;
         }
     };
 
     @Component
-    public static class ReportTypeServiceInjector {
+    public static class MailTypeInjector {
         @Value("${jwt.secret}")
         private String secret;
 

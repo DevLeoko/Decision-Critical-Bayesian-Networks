@@ -44,14 +44,6 @@
         "gotIt": "Got it!"
       }
     },
-
-    "testToolbar": {
-      "test": "Test",
-      "clearGraph": "Clear graph",
-      "exportState": "Export state",
-      "importState": "Import state",
-      "switchToEditor": "Switch to Editor"
-    },
     "menuBar": {
       "logout": "Logout",
       "evidenceFormulas": "Evidence-Formulas",
@@ -152,7 +144,15 @@
         "close": "Close",
         "unknownNode": "No node with name {name} found!",
         "reset": "Reset",
-        "done": "Done"
+        "done": "Done",
+
+        "toolbar": {
+          "test": "Test",
+          "clearGraph": "Clear graph",
+          "exportState": "Export state",
+          "importState": "Import state",
+          "switchToEditor": "Switch to Editor"
+        }
       },
 
       "edit": {

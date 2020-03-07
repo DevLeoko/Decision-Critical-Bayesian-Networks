@@ -89,7 +89,7 @@ export function createGraph(
     });
 
     edges.push(
-      ...(node.timeTDependency.parents as string[]).map(parent => ({
+      ...node.timeTDependency.parents.map(parent => ({
         from: nodeMap.getUuidFromName(parent),
         to: nodeId,
         color: defaultColor
@@ -97,7 +97,7 @@ export function createGraph(
     );
 
     edges.push(
-      ...(node.timeTDependency.parentsTm1 as string[]).map(
+      ...node.timeTDependency.parentsTm1.map(
         (parent): Edge => {
           const uuid = vis.util.randomUUID();
           timeEdges.push(uuid);

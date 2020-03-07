@@ -53,8 +53,8 @@ public class PasswordController {
                     .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
                     .parseClaimsJws(resetRequest.getToken())
                     .getBody();
-
             long id = Long.parseLong(claims.getSubject());
+
             DcbnUser user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
                     HttpStatus.NOT_FOUND));
 

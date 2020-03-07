@@ -18,7 +18,7 @@
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn dark text @click="save()">{{
-              $t("nodeProperties.save")
+              $t("graph.edit.nodeProperties.save")
             }}</v-btn>
           </v-toolbar-items>
         </v-toolbar>

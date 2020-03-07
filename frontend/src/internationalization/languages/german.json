@@ -7,7 +7,7 @@
 
       "list": {
         "confirmDeletion": "Löschen bestätigen",
-        "sureToDelete": "Du bist dabei folgende Evidenzformel zu löschen: '{formula}'. Sicher, dass du das tun möchtest? Die Aktion kann nicht rückgängig gemacht werden, bitte bestätigen.",
+        "sureToDelete": "Sie sind dabei folgende Evidenzformel zu löschen: '{formula}'. Sind Sie sich sicher, dass Sie das tun möchten? Die Aktion kann nicht rückgängig gemacht werden.",
         "cancel": "Abbrechen",
         "delete": "Löschen",
         "newExpression": "Neuer Ausdruck",
@@ -51,11 +51,11 @@
     },
     "forgotPassword": {
       "forgotPwQ": "Passwort vergessen?",
-      "resetInstruction": "Keine Sorge! Gib einfach deine Email ein und wir senden dir einen Link zum Zurücksetzen.",
+      "resetInstruction": "Keine Sorge! Geben Sie einfach Ihre Email ein und wir senden Ihnen einen Link zum Zurücksetzen.",
       "email": "Email",
       "reset": "Passwort zurücksetzen",
       "backToLogin": "Zurück zur Anmeldung",
-      "resetEmailSent": "Alles erledigt! Sieh in deinen Emails nach."
+      "resetEmailSent": "Alles erledigt! Überprüfen Sie in Ihre Emails."
     },
     "login": {
       "signIn": "Anmelden",
@@ -71,7 +71,7 @@
       "resetPassword": "Passwort zurücksetzen",
       "backToLogin": "Zurück zur Anmeldung",
       "missingResetToken": "Fehlender Reset-Token! Gehe zuerst auf '@:login.forgotPwQ'",
-      "passwordChanged": "Passwort geändert! Du kannst dich jetzt anmelden."
+      "passwordChanged": "Passwort geändert! Sie können sich jetzt anmelden."
     },
     "superAdmin": {
       "username": "Benutzername",
@@ -117,7 +117,7 @@
 
         "actions": {
           "confirmDeletion": "Löschen bestätigen",
-          "sureToDelete": "Du bist dabei folgenden Graphen zu löschen: '{graph}'. Sicher, dass du das tun möchtest? Die Aktion kann nicht rückgängig gemacht werden, bitte bestätigen.",
+          "sureToDelete": "Sie sind dabei folgenden Graphen zu löschen: '{graph}'. Sind Sie sicher, dass Sie das tun möchten? Die Aktion kann nicht rückgängig gemacht werden.",
           "cancel": "Abbrechen",
           "delete": "Löschen",
           "changeName": "Name ändern",
@@ -149,7 +149,7 @@
 
         "toolbar": {
           "test": "Testen",
-          "clearGraph": "Graph säubern",
+          "clearGraph": "Graph zurücksetzen",
           "exportState": "Zustand exportieren",
           "importState": "Zustand importieren",
           "switchToEditor": "Zum Editor wechseln"
@@ -168,7 +168,7 @@
 
         "unsavedChanges": {
           "title": "Speichern vergessen?",
-          "text": "Im aktuellen Graph sind noch ungepseicherte Änderungen. Wenn du die Seite wechselst gehen diese verloren!",
+          "text": "Im aktuellen Graph sind noch ungespeicherte Änderungen. Wenn Sie die Seite wechseln gehen diese verloren!",
           "cancel": "Abbrechen",
           "discard": "Änderungen verwerfen"
         },
@@ -195,7 +195,7 @@
           "definitionTab": {
             "conditionalProbabilityTable": "Bedingte Wahrscheinlichkeitstabelle",
             "currentTime": "Aktuell: Zeit ",
-            "autocomplete": "Drücke in einem Eingabefeld ENTER um Wahrscheinlichkeiten automatisch zu ergänzen"
+            "autocomplete": "Drücken Sie in einem Eingabefeld ENTER um Wahrscheinlichkeiten automatisch zu ergänzen"
           }
         }
       }

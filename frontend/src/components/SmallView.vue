@@ -3,7 +3,7 @@
     <v-flex xs5>
       <v-layout row wrap fill-height align-content-center>
         <v-flex xs12>
-          <img src="@/assets/LogoDark.svg" />
+          <img src="@/assets/LogoDark.svg" alt="DCBN" />
         </v-flex>
       </v-layout>
     </v-flex>
