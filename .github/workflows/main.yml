@@ -37,6 +37,11 @@ jobs:
       run: |
         cd backend/libs/MaritimeDatamodel
         mvn -B install --file pom.xml
+      
+    - name: Install DCBN
+      run: |
+        cd backend/
+        mvn -B install --file pom.xml
         
     - name: Run tests with Maven
       run: |
