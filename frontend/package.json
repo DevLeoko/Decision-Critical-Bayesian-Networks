@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@egjs/hammerjs": "^2.0.17",
-    "@types/dagre": "^0.7.42",
     "axios": "^0.19.1",
     "core-js": "^3.4.4",
     "dagre": "^0.8.5",
@@ -37,6 +36,8 @@
     "@babel/preset-env": "^7.8.7",
     "@babel/preset-typescript": "^7.8.3",
     "@types/axios": "^0.14.0",
+    "@types/jest": "^25.1.4",
+    "@types/dagre": "^0.7.42",
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-plugin-eslint": "^4.1.0",
     "@vue/cli-plugin-pwa": "^4.1.0",
