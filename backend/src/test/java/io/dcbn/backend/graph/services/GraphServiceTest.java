@@ -46,6 +46,7 @@ public class GraphServiceTest {
     @BeforeEach
     public void setUp() {
         service = new GraphService(dcbnRepository, evidenceFormulaRepository, null);
+        service.setGraphLockExpireTime(1000);
     }
 
     @Test
@@ -58,7 +59,13 @@ public class GraphServiceTest {
     public void extendLock() {
         service.updateLock(1, "user1");
         assertThrows(IllegalArgumentException.class, () -> service.updateLock(1, "user2"));
-        service.updateLock(1, "user1");
+        try {
+            Thread.sleep(500);
+            service.updateLock(1, "user1");
+            Thread.sleep(900);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
         assertThrows(IllegalArgumentException.class, () -> service.updateLock(1, "user2"));
     }
 

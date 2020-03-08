@@ -84,7 +84,7 @@
       <v-card>
         <v-card-title>
           <v-icon class="mr-2">folder</v-icon>
-          {{ $t("grpah.folderView.actions.moveTo") }}
+          {{ $t("graph.folderView.actions.moveTo") }}
         </v-card-title>
         <v-card-text class="pb-3" style="max-height: 700px; overflow: auto">
           <v-list shaped>
@@ -153,7 +153,12 @@ export default Vue.extend({
       duplicateOpen: false,
       newName: "",
       newFolder: "",
-      currentGraph: { name: "", id: -1, children: [] } as TreeItem
+      currentGraph: {
+        name: "",
+        id: -1,
+        children: [],
+        locked: false
+      } as TreeItem
     };
   },
 
