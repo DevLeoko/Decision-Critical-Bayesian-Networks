@@ -38,8 +38,6 @@
 <script lang="ts">
 import Vue from "vue";
 
-// TODO fetch actual response from backend
-// import graphResp from "@/../tests/resources/graph1_resp.json";
 export default Vue.extend({
   props: {
     nodeIndices: {
