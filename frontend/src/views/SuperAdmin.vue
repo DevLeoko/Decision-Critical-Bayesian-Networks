@@ -171,8 +171,8 @@ export default Vue.extend({
     deleteUser(user: User) {
       this.axios
         .delete(`/users/${user.id}`)
-        .then(_ => this.updateUserList())
-        .catch(err => console.log(err.response));
+        .then(() => this.updateUserList())
+        .catch(this.displayError);
     },
 
     editUser(user: User) {
@@ -187,9 +187,9 @@ export default Vue.extend({
       (this.$refs.userForm as any).reset();
     },
 
-    loginError(error: String) {
+    displayError() {
       this.hasError = true;
-      this.error = this.$t("superAdmin.failedToCreateUser").toString();
+      this.error = this.$t("superAdmin.failedAction").toString();
     },
 
     resetError() {
@@ -201,19 +201,19 @@ export default Vue.extend({
       if (user.id === -1) {
         this.axios
           .post("/users", user)
-          .then(_ => {
+          .then(() => {
             this.updateUserList();
             this.stopEditing();
           })
-          .catch(err => this.loginError(err.response.message));
+          .catch(this.displayError);
       } else {
         this.axios
           .put(`/users/${user.id}`, user)
-          .then(_ => {
+          .then(() => {
             this.updateUserList();
             this.stopEditing();
           })
-          .catch(err => this.loginError(err.response.message));
+          .catch(this.displayError);
       }
     },
 
@@ -221,7 +221,7 @@ export default Vue.extend({
       this.axios
         .get("/users")
         .then(resp => (this.users = resp.data))
-        .catch(err => console.log(err.response));
+        .catch(this.displayError);
     },
 
     defaultUser(): User {

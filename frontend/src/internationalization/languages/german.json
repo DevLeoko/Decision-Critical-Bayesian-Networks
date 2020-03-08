@@ -82,7 +82,7 @@
       "users": "Nutzer",
       "noUsersFound": "Keine Nutzer gefunden!",
       "createUser": "Nutzer erstellen",
-      "failedToCreateUser": "Erstellen von neuem Nutzer fehlgeschlagen!",
+      "failedAction": "Diese Aktion ist leider fehlgeschlagen!",
       "editUser": "Nutzer bearbeiten",
       "searchUsers": "Nutzer suchen"
     },
@@ -186,6 +186,7 @@
           "general": "Allgemein",
           "definition": "Definition",
           "evidenceFormula": "Evidenzformel",
+          "failedFormulaFetch": "Evidenzformeln konnten nicht geladen werden",
 
           "generalTab": {
             "name": "Name",
