@@ -186,9 +186,6 @@ import ActionSelector from "@/components/graph/ActionSelector.vue";
 import Vue from "vue";
 import vis, { network } from "vis-network";
 
-// TODO fetch actual graph from backend
-import graph from "@/../tests/resources/graph1.json";
-
 import FileDownload from "js-file-download";
 import { dcbn } from "@/utils/graph/graph";
 import { generateStatsSVG } from "@/utils/graph/generateStatsSVG";

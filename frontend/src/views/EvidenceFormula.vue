@@ -23,8 +23,8 @@
         </v-flex>
       </v-layout>
     </v-flex>
-    <v-snackbar color="orange darker-2" v-model="graphsChanged" timeout="7500">
-      {{ $t("formula.list.graphChanged", { changedGraphs }) }}
+    <v-snackbar color="orange darker-2" v-model="graphsChanged" :timeout="7500">
+      {{ $t("formula.list.responses.graphChanged", { changedGraphs }) }}
     </v-snackbar>
   </v-layout>
 </template>

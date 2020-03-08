@@ -124,7 +124,6 @@ export default Vue.extend({
 
   data() {
     return {
-      //TODO null problems?
       graph: {} as dcbn.Graph,
       nodes: {} as vis.DataSet<vis.Node>,
       edges: {} as vis.DataSet<vis.Edge>,
@@ -136,7 +135,6 @@ export default Vue.extend({
       activeId: -1,
       editProperties: false,
       timeEdge: false,
-      //TODO replace with $emit?
       selectedNode: {} as dcbn.Node,
       hasError: false,
       errorMessage: "",

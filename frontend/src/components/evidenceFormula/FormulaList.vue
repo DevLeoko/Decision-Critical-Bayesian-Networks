@@ -33,13 +33,14 @@
     </v-dialog>
 
     <v-list style=" max-height: 80vh; overflow: auto">
-      <v-list-item-group color="primary">
+      <v-list-item-group color="primary" v-model="selectedFormula">
         <v-list-item
           @click="changeSelection(formula)"
           :key="formula.id"
+          :value="formula.id"
           v-for="formula in sortedFormulas"
         >
-          <v-list-item-content>
+          <v-list-item-content class="pl-3">
             <v-list-item-title>{{ formula.name }}</v-list-item-title>
           </v-list-item-content>
 
@@ -87,7 +88,9 @@ export default Vue.extend({
   data() {
     return {
       deletedFormula: {} as Formula,
-      deleteWarning: false
+      deleteWarning: false,
+
+      selectedFormula: null as null | number
     };
   },
 
@@ -128,14 +131,28 @@ export default Vue.extend({
     },
 
     changeSelection(formula: Formula) {
-      this.$router.push({
-        name: "EvidenceFormula",
-        params: {
-          lang: this.$i18n.locale,
-          id: `${formula.id}`
-        }
-      });
+      if (this.selectedFormula === formula.id) {
+        this.selectedFormula = null;
+
+        this.$router.push({
+          name: "EvidenceFormulaBase"
+        });
+      } else {
+        this.selectedFormula = formula.id;
+
+        this.$router.push({
+          name: "EvidenceFormula",
+          params: {
+            id: `${formula.id}`
+          }
+        });
+      }
     }
+  },
+
+  mounted() {
+    const id = this.$route.params.id;
+    this.selectedFormula = id ? Number.parseInt(id) : null;
   },
 
   computed: {

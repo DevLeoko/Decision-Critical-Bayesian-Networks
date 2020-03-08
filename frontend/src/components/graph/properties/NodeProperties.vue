@@ -35,6 +35,8 @@
               :items="evidenceFormulas"
               style="max-width: 300px; margin: auto"
               :label="$t('graph.edit.nodeProperties.evidenceFormula')"
+              :error="!!error"
+              :error-messages="error"
               v-model="node.evidenceFormulaName"
               clearable
             />
@@ -58,7 +60,9 @@ export default Vue.extend({
       time0: true,
       propertyTabs: null,
       oldName: "",
-      evidenceFormulas: [] as string[]
+      evidenceFormulas: [] as string[],
+
+      error: null as string | null
     };
   },
   components: {
@@ -99,8 +103,9 @@ export default Vue.extend({
         this.evidenceFormulas = resp.data.map((formula: any) => formula.name);
       })
       .catch(err => {
-        //TODO: DISPLAY ERROR.
-        console.log(err);
+        this.error = this.$t(
+          "graph.edit.nodeProperties.failedFormulaFetch"
+        ).toString();
       });
   }
 });

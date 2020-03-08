@@ -26,5 +26,5 @@ export const required = (message: string) => [
 ];
 
 export const matchValidation = (message: string, match: any) => [
-  (v: any) => v == match || i18n.t(message)
+  (v: any) => v === match || i18n.t(message)
 ];

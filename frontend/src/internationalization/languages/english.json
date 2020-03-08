@@ -82,7 +82,7 @@
       "users": "Users",
       "noUsersFound": "No users found!",
       "createUser": "Create user",
-      "failedToCreateUser": "Failed to create user!",
+      "failedAction": "The action you perferomed failed!",
       "editUser": "Edit user",
       "searchUsers": "Search users"
     },
@@ -185,6 +185,7 @@
           "general": "General",
           "definition": "Definition",
           "evidenceFormula": "Evidence Formula",
+          "failedFormulaFetch": "Failed to load evidence formula",
 
           "generalTab": {
             "name": "Name",
