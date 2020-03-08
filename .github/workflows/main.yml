@@ -1,0 +1,23 @@
+name: Testing front- & backend
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v1.1.0
+
+    - name: Setup project
+      run: | 
+        cd frontend/
+        npm install
+
+    - name: Run tests using Jest
+      run: npm run test
