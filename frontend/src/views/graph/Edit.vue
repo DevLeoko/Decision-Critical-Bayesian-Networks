@@ -4,6 +4,9 @@
       :timeSteps.sync="graph.timeSlices"
       :loading="saveLoading"
       :upToDate="upToDate"
+      :addNodeModeActive="addNodeModeActive"
+      :addEdgeModeActive="addEdgeModeActive"
+      :addTimeEdgeModeActive="addTimeEdgeModeActive"
       @save="save()"
       @nodeAdd="addNode()"
       @edgeAdd="addEdge()"
@@ -142,7 +145,11 @@ export default Vue.extend({
       saveLoading: false,
       serverGraph: "",
       undoStack: [] as GraphState[],
-      redoStack: [] as GraphState[]
+      redoStack: [] as GraphState[],
+
+      addNodeModeActive: false,
+      addEdgeModeActive: false,
+      addTimeEdgeModeActive: false
     };
   },
 
@@ -166,7 +173,11 @@ export default Vue.extend({
     },
 
     addNode() {
-      network.addNodeMode();
+      this.addNodeModeActive = !this.addNodeModeActive;
+      this.addEdgeModeActive = false;
+      this.addTimeEdgeModeActive = false;
+      if (this.addNodeModeActive) network.addNodeMode();
+      else network.disableEditMode();
     },
 
     deleteNode() {
@@ -174,12 +185,20 @@ export default Vue.extend({
     },
 
     addEdge() {
+      this.addNodeModeActive = false;
+      this.addTimeEdgeModeActive = false;
+      this.addEdgeModeActive = !this.addEdgeModeActive;
       this.timeEdge = false;
-      network.addEdgeMode();
+      if (this.addEdgeModeActive) network.addEdgeMode();
+      else network.disableEditMode();
     },
     addTEdge() {
+      this.addNodeModeActive = false;
+      this.addEdgeModeActive = false;
+      this.addTimeEdgeModeActive = !this.addTimeEdgeModeActive;
       this.timeEdge = true;
-      network.addEdgeMode();
+      if (this.addTimeEdgeModeActive) network.addEdgeMode();
+      else network.disableEditMode();
     },
 
     deleteEdge() {
@@ -303,6 +322,7 @@ export default Vue.extend({
       this.nodeMap.put(data.id, node);
       this.graph.nodes.push(node);
 
+      this.addNodeModeActive = false;
       callback(data);
     },
 
@@ -360,6 +380,9 @@ export default Vue.extend({
           color: defaultColor
         };
       }
+
+      this.addEdgeModeActive = false;
+      this.addTimeEdgeModeActive = false;
       callback(data);
     },
 
@@ -414,12 +437,14 @@ export default Vue.extend({
       const state = this.undoStack.pop()!;
       this.pushCurrentStateTo(this.redoStack);
       this.updateGraphStates(state);
+      this.addEdgeModeActive = this.addTimeEdgeModeActive = this.addNodeModeActive = false;
     },
 
     redo() {
       const state = this.redoStack.pop()!;
       this.pushCurrentStateTo(this.undoStack);
       this.updateGraphStates(state);
+      this.addEdgeModeActive = this.addTimeEdgeModeActive = this.addNodeModeActive = false;
     },
 
     updateGraphStates(state: GraphState) {
