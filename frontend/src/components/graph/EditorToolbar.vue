@@ -10,13 +10,28 @@
     >
       <v-icon>save</v-icon>
     </v-btn>
-    <v-btn small color="primary" class="ml-3" @click="$emit('nodeAdd')">
-      <v-icon>add </v-icon>
+    <v-btn
+      small
+      :color="addNodeModeActive ? `${activeColor}` : `${inactiveColor}`"
+      class="ml-3"
+      @click="$emit('nodeAdd')"
+    >
+      <v-icon>add</v-icon>
     </v-btn>
-    <v-btn small color="primary" class="ml-3" @click="$emit('edgeAdd')">
+    <v-btn
+      small
+      :color="addEdgeModeActive ? `${activeColor}` : `${inactiveColor}`"
+      class="ml-3"
+      @click="$emit('edgeAdd')"
+    >
       <v-icon>arrow_right_alt</v-icon>
     </v-btn>
-    <v-btn small color="primary" class="ml-3" @click="$emit('edgeTAdd')">
+    <v-btn
+      small
+      :color="addTimeEdgeModeActive ? `${activeColor}` : `${inactiveColor}`"
+      class="ml-3"
+      @click="$emit('edgeTAdd')"
+    >
       <v-icon>arrow_right_alt</v-icon>{{ $t("graph.edit.toolbar.time") }}
     </v-btn>
     <v-btn
@@ -70,7 +85,18 @@ export default Vue.extend({
     loading: Boolean,
     upToDate: Boolean,
     undoDisabled: Boolean,
-    redoDisabled: Boolean
+    redoDisabled: Boolean,
+
+    addNodeModeActive: Boolean,
+    addEdgeModeActive: Boolean,
+    addTimeEdgeModeActive: Boolean
+  },
+
+  data() {
+    return {
+      activeColor: "primary darken-3",
+      inactiveColor: "primary"
+    };
   }
 });
 </script>
