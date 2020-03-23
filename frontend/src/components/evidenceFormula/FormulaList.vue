@@ -3,19 +3,19 @@
     <v-dialog v-model="deleteWarning" persistent max-width="400">
       <v-card>
         <v-card-title>
-          <v-icon class="mr-2">delete_sweep</v-icon> Confirm deletion
+          <v-icon class="mr-2">delete_sweep</v-icon>
+          {{ $t("formula.list.confirmDeletion") }}
         </v-card-title>
         <v-card-text>
-          You are about to delete the evidence formula '{{
-            deletedFormula.name
-          }}'. Are you sure you want to do this? This action can not be undone,
-          please confirm.
+          {{
+            $t("formula.list.sureToDelete", { formula: deletedFormula.name })
+          }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
 
           <v-btn color="gray" text @click="deleteWarning = false">
-            Cancel
+            {{ $t("formula.list.cancel") }}
           </v-btn>
 
           <v-btn
@@ -26,20 +26,21 @@
               deleteFormula(deletedFormula);
             "
           >
-            Delete
+            {{ $t("formula.list.delete") }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <v-list style=" max-height: 80vh; overflow: auto">
-      <v-list-item-group color="primary">
+      <v-list-item-group color="primary" v-model="selectedFormula">
         <v-list-item
           @click="changeSelection(formula)"
           :key="formula.id"
+          :value="formula.id"
           v-for="formula in sortedFormulas"
         >
-          <v-list-item-content>
+          <v-list-item-content class="pl-3">
             <v-list-item-title>{{ formula.name }}</v-list-item-title>
           </v-list-item-content>
 
@@ -63,7 +64,7 @@
       <v-flex class="pa-4" style="text-align: center">
         <v-btn small color="primary" @click="addFormula()">
           <v-icon class="mr-1" color="white">add_box</v-icon>
-          New Expression
+          {{ $t("formula.list.newExpression") }}
         </v-btn>
       </v-flex>
     </template>
@@ -87,7 +88,9 @@ export default Vue.extend({
   data() {
     return {
       deletedFormula: {} as Formula,
-      deleteWarning: false
+      deleteWarning: false,
+
+      selectedFormula: null as null | number
     };
   },
 
@@ -118,18 +121,38 @@ export default Vue.extend({
       this.$emit("update:loading", true);
       this.axios
         .delete(`/evidence-formulas/${formula.id}`)
-        .then(() => this.$emit("update-list"))
+        .then(resp => {
+          this.$emit("update-list");
+          if (resp.data.length > 0) {
+            this.$emit("graphs-changed", resp.data);
+          }
+        })
         .then(() => this.$emit("update:loading", false));
     },
 
     changeSelection(formula: Formula) {
-      this.$router.push({
-        name: "EvidenceFormula",
-        params: {
-          id: `${formula.id}`
-        }
-      });
+      if (this.selectedFormula === formula.id) {
+        this.selectedFormula = null;
+
+        this.$router.push({
+          name: "EvidenceFormulaBase"
+        });
+      } else {
+        this.selectedFormula = formula.id;
+
+        this.$router.push({
+          name: "EvidenceFormula",
+          params: {
+            id: `${formula.id}`
+          }
+        });
+      }
     }
+  },
+
+  mounted() {
+    const id = this.$route.params.id;
+    this.selectedFormula = id ? Number.parseInt(id) : null;
   },
 
   computed: {

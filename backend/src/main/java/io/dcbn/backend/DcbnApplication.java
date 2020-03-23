@@ -6,9 +6,9 @@ import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
 import io.dcbn.backend.authentication.services.DcbnUserDetailsService;
 import io.dcbn.backend.core.AoiCache;
 import io.dcbn.backend.core.VesselCache;
-import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
-import io.dcbn.backend.evidenceFormula.services.DefaultFunctionProvider;
-import io.dcbn.backend.evidenceFormula.services.FunctionProvider;
+import io.dcbn.backend.evidence_formula.repository.EvidenceFormulaRepository;
+import io.dcbn.backend.evidence_formula.services.DefaultFunctionProvider;
+import io.dcbn.backend.evidence_formula.services.FunctionProvider;
 import io.dcbn.backend.graph.*;
 import io.dcbn.backend.graph.repositories.GraphRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -64,14 +64,16 @@ public class DcbnApplication {
                     new DcbnUser("superadmin", "superadmin@dcbn.io", passwordEncoder().encode("superadmin"),
                             Role.SUPERADMIN));
 
-            Node smuggling = new Node("smuggling", null, null, "#ffffff", null, StateType.BOOLEAN,
+            dcbnUserRepository.save(new DcbnUser("a", "a@a.de", passwordEncoder().encode("a"), Role.ADMIN));
+
+            Node smuggling = new Node("smuggling", null, null, "#ff00ff", null, StateType.BOOLEAN,
                     new Position(0.0, 0.0));
-            Node nullSpeed = new Node("nullSpeed", null, null, "#ffffff",
-                    "nullSpeed", StateType.BOOLEAN, new Position(200.0, 0.0));
-            Node inTrajectoryArea = new Node("inTrajectoryArea", null, null, "#ffffff",
-                    "inTrajectory", StateType.BOOLEAN, new Position(0.0, 200.0));
-            Node isInReportedArea = new Node("isInReportedArea", null, null, "#ffffff",
-                    "inArea", StateType.BOOLEAN, new Position(-200.0, 0.0));
+            Node nullSpeed = new Node("nullSpeed", null, null, "#ff9900",
+                    null, StateType.BOOLEAN, new Position(200.0, 0.0));
+            Node inTrajectoryArea = new Node("inTrajectoryArea", null, null, "#00ffff",
+                    null, StateType.BOOLEAN, new Position(0.0, 200.0));
+            Node isInReportedArea = new Node("isInReportedArea", null, null, "#ffff00",
+                    null, StateType.BOOLEAN, new Position(-200.0, 0.0));
 
             List<Node> smugglingParentsList = Arrays
                     .asList(nullSpeed, inTrajectoryArea, isInReportedArea);
@@ -79,7 +81,7 @@ public class DcbnApplication {
                     {0.2, 0.8}, {0.001, 0.999}, {0.001, 0.999}};
             NodeDependency smuggling0Dep = new NodeDependency(smugglingParentsList,
                     new ArrayList<>(), probabilities);
-            NodeDependency smugglingTDep = new NodeDependency(smugglingParentsList, Collections.singletonList(isInReportedArea),
+            NodeDependency smugglingTDep = new NodeDependency(smugglingParentsList, Collections.emptyList(),
                     probabilities);
             smuggling.setTimeZeroDependency(smuggling0Dep);
             smuggling.setTimeTDependency(smugglingTDep);

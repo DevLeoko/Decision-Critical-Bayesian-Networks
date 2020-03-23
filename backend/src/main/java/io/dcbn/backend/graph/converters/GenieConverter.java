@@ -6,12 +6,15 @@ import io.dcbn.backend.graph.Position;
 import io.dcbn.backend.graph.StateType;
 import io.dcbn.backend.utils.Pair;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,11 +35,14 @@ import java.util.stream.Collectors;
  * This class is a converter for the Genie file format (.xdsl)
  */
 @NoArgsConstructor
-public class  GenieConverter {
+public class GenieConverter {
 
     private static final String ID = "id";
     private static final List<io.dcbn.backend.graph.Node> EMPTY_NODE_LIST = new ArrayList<>();
     private static final Position ZERO_POSITION = new Position(0.0, 0.0);
+    private static final String DYNAMIC = "dynamic";
+    private static final String COLOR = "color";
+    private static final String PARENT = "parents";
 
 
     /**
@@ -47,6 +53,7 @@ public class  GenieConverter {
      */
     public Graph fromGenieToDcbn(InputStream file) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(file);
         doc.getDocumentElement().normalize();
@@ -70,7 +77,6 @@ public class  GenieConverter {
             List<Node> states = extractChildren(node, "state");
             //copy states to array
             List<String> statesNameList = new ArrayList<>();
-            int index = 0;
             states.forEach(state -> statesNameList.add(state.getAttributes().getNamedItem(ID).getNodeValue()));
             String[] statesNameArray = new String[states.size()];
             statesNameList.toArray(statesNameArray);
@@ -86,8 +92,13 @@ public class  GenieConverter {
             //Creating the probability array for Time 0
             double[][] probabilitiesT0 = extractProbabilities(node, statesNameArray.length);
             //Creating the probability array for Time T
-            Node dynamic = extractChildren(root, "dynamic").get(0);
-            Node dynamicNode = getNodeWithID(dynamic.getChildNodes(), nodeID);
+            Node dynamic = extractChildren(root, DYNAMIC).get(0);
+            Node dynamicNode;
+            if (dynamic.getChildNodes().toString().equals("[dynamic: null]")) {
+                dynamicNode = null;
+            } else {
+                dynamicNode = getNodeWithID(dynamic.getChildNodes(), nodeID);
+            }
             double[][] probabilitiesTT;
             if (dynamicNode == null) {
                 probabilitiesTT = probabilitiesT0;
@@ -96,20 +107,14 @@ public class  GenieConverter {
             }
             //----------Creating the Parents--------------
             List<io.dcbn.backend.graph.Node> parents;
-            if (extractParentNodes(node, dcbnNodes) == null) {
-                parents = EMPTY_NODE_LIST;
-            } else {
-                parents = extractParentNodes(node, dcbnNodes);
-            }
+            extractParentNodes(node, dcbnNodes);
+            parents = extractParentNodes(node, dcbnNodes);
             List<io.dcbn.backend.graph.Node> parentsTm1;
             if (dynamicNode == null) {
                 parentsTm1 = EMPTY_NODE_LIST;
             } else {
-                if (extractParentNodes(dynamicNode, dcbnNodes) == null) {
-                    parentsTm1 = EMPTY_NODE_LIST;
-                } else {
-                    parentsTm1 = extractParentNodes(dynamicNode, dcbnNodes);
-                }
+                extractParentNodes(dynamicNode, dcbnNodes);
+                parentsTm1 = extractParentNodes(dynamicNode, dcbnNodes);
             }
 
             //-----------Creating the node dependencies-------------
@@ -118,8 +123,7 @@ public class  GenieConverter {
 
             //-----Getting color of the node----------
             String color = extractChildren(nodeAttribute, "interior")
-                    .get(0).getAttributes().getNamedItem("color").getNodeValue();
-
+                    .get(0).getAttributes().getNamedItem(COLOR).getNodeValue();
             //--------Getting the position------------
             String[] positionsString = extractChildren(nodeAttribute, "position")
                     .get(0).getTextContent().split(" ");
@@ -137,7 +141,7 @@ public class  GenieConverter {
             dcbnNode.setStateType(stateType);
             dcbnNode.setPosition(position);
         }
-        int timeSlices = Integer.parseInt(root.getElementsByTagName("dynamic").item(0)
+        int timeSlices = Integer.parseInt(root.getElementsByTagName(DYNAMIC).item(0)
                 .getAttributes().getNamedItem("numslices").getNodeValue());
         //--------Setting the real names for the nodes---------
         for (Node node : nodesFile) {
@@ -152,6 +156,7 @@ public class  GenieConverter {
 
     public String fromDcbnToGenie(Graph graph) throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+        documentFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
         Document document = documentBuilder.newDocument();
         document.setXmlVersion("1.0");
@@ -165,7 +170,7 @@ public class  GenieConverter {
         document.appendChild(root);
         Element nodesElement = document.createElement("nodes");
         root.appendChild(nodesElement);
-        Element dynamicElement = document.createElement("dynamic");
+        Element dynamicElement = document.createElement(DYNAMIC);
         dynamicElement.setAttribute("numslices", "" + graph.getTimeSlices());
         root.appendChild(dynamicElement);
         Element extensionsElement = document.createElement("extensions");
@@ -188,7 +193,7 @@ public class  GenieConverter {
         List<io.dcbn.backend.graph.Node> sortedNodes = sortNodesAfterNumberOfParents(graph);
 
         for (io.dcbn.backend.graph.Node node : sortedNodes) {
-            String nodeID = node.getName().replaceAll(" ", "_");
+            String nodeID = node.getName().replace(" ", "_");
 
             //------------Creating node attribute----------------
             Element nodeElement = document.createElement("node");
@@ -200,15 +205,15 @@ public class  GenieConverter {
             nodeElement.appendChild(nameElement);
             //Setting the color
             Element interiorElement = document.createElement("interior");
-            interiorElement.setAttribute("color", node.getColor().replace("#", ""));
+            interiorElement.setAttribute(COLOR, node.getColor().replace("#", ""));
             nodeElement.appendChild(interiorElement);
             //Setting default outline color
             Element outlineElement = document.createElement("outline");
-            outlineElement.setAttribute("color", "000080");
+            outlineElement.setAttribute(COLOR, "000080");
             nodeElement.appendChild(outlineElement);
             //Setting default font settings
             Element fontElement = document.createElement("font");
-            fontElement.setAttribute("color", "000000");
+            fontElement.setAttribute(COLOR, "000000");
             fontElement.setAttribute("name", "Arial");
             fontElement.setAttribute("size", "8");
             nodeElement.appendChild(fontElement);
@@ -216,10 +221,11 @@ public class  GenieConverter {
             Element positionElement = document.createElement("position");
             double nodeX = node.getPosition().getX();
             double nodeY = node.getPosition().getY();
-            double xTopL = nodeX + 24; //default size;
-            double xBotR = nodeX - 24; //default size;
-            double yTopL = nodeY + 15; //default size;
-            double yBotR = nodeY - 15; //default size;
+            //default sizes
+            double xTopL = nodeX + 24;
+            double xBotR = nodeX - 24;
+            double yTopL = nodeY + 15;
+            double yBotR = nodeY - 15;
             positionElement.setTextContent((int) xTopL + " " + (int) yTopL + " " + (int) xBotR + " " + (int) yBotR);
             nodeElement.appendChild(positionElement);
             //Setting default barchart settings
@@ -235,7 +241,7 @@ public class  GenieConverter {
             Element cptElement = document.createElement("cpt");
             //Creating cpt element
             cptElement.setAttribute("id", nodeID);
-            cptElement.setAttribute("dynamic", "plate");
+            cptElement.setAttribute(DYNAMIC, "plate");
             nodesElement.appendChild(cptElement);
             //Setting states
             for (String state : node.getStateType().getStates()) {
@@ -249,15 +255,15 @@ public class  GenieConverter {
             StringBuilder parentsString = new StringBuilder();
             if (!timeZeroDependency.getParents().isEmpty()) {
                 for (io.dcbn.backend.graph.Node parent : timeZeroDependency.getParents()) {
-                    parentsString.append(parent.getName().replaceAll(" ", "_")).append(" ");
+                    parentsString.append(parent.getName().replace(" ", "_")).append(" ");
                 }
-                Element parentsElement = document.createElement("parents");
+                Element parentsElement = document.createElement(PARENT);
                 parentsElement.setTextContent(parentsString.toString());
                 cptElement.appendChild(parentsElement);
             }
             //-----For Time T------
             NodeDependency timeTDependency = node.getTimeTDependency();
-            if (timeTDependency.getParentsTm1().size() > 0) {
+            if (!timeTDependency.getParentsTm1().isEmpty()) {
                 //Creating the cpt element
                 Element cptElementTime = document.createElement("cpt");
                 cptElementTime.setAttribute("id", nodeID);
@@ -266,9 +272,9 @@ public class  GenieConverter {
                 //Setting the parents
                 StringBuilder parentsStringTime = new StringBuilder();
                 for (io.dcbn.backend.graph.Node parent : timeTDependency.getParentsTm1()) {
-                    parentsStringTime.append(parent.getName().replaceAll(" ", "_")).append(" ");
+                    parentsStringTime.append(parent.getName().replace(" ", "_")).append(" ");
                 }
-                Element parentsElementTime = document.createElement("parents");
+                Element parentsElementTime = document.createElement(PARENT);
                 parentsElementTime.setTextContent(parentsStringTime.toString());
                 cptElementTime.appendChild(parentsElementTime);
                 //Setting the probabilities
@@ -291,6 +297,7 @@ public class  GenieConverter {
     /**
      * This method sorts a {@link List<io.dcbn.backend.graph.Node>} by the number
      * of parents (direct and indirectly linked)
+     *
      * @param graph The graph containing the nodes
      * @return the {@link List<io.dcbn.backend.graph.Node>} sorted by the number
      * parents (direct and indirectly linked)
@@ -323,6 +330,7 @@ public class  GenieConverter {
 
     /**
      * This method returns the number of parents (direct and indirect) of th given {@link io.dcbn.backend.graph.Node}
+     *
      * @param node the {@link io.dcbn.backend.graph.Node}
      * @return returns the number of parents (direct and indirect)
      */
@@ -347,6 +355,7 @@ public class  GenieConverter {
 
     /**
      * This returns a new {@link Position} with the maximum x and y value of the nodes {@link Position}
+     *
      * @param nodes the {@link List<io.dcbn.backend.graph.Node>} to inspect
      * @return A new {@link Position} with the maximum x and y value of the nodes {@link Position}
      */
@@ -400,7 +409,8 @@ public class  GenieConverter {
                 return nodeList.item(i);
             }
         }
-        return null;
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "Import failed (ExtractChildren returned null, Node not found)");
     }
 
     /**
@@ -451,8 +461,8 @@ public class  GenieConverter {
      * @return the {@link List<io.dcbn.backend.graph.Node>} of parents described in the "parent" sub node of the given {@link Node}.
      */
     private List<io.dcbn.backend.graph.Node> extractParentNodes(Node node, List<io.dcbn.backend.graph.Node> existingDcbnNodes) {
-        if (extractChildren(node, "parents").size() != 0) {
-            String[] parentsT0TTString = extractChildren(node, "parents")
+        if (!extractChildren(node, PARENT).isEmpty()) {
+            String[] parentsT0TTString = extractChildren(node, PARENT)
                     .get(0).getTextContent().split(" ");
             List<io.dcbn.backend.graph.Node> parentNodes = new ArrayList<>();
             for (String s : parentsT0TTString) {
@@ -460,13 +470,14 @@ public class  GenieConverter {
             }
             return parentNodes;
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /**
      * Returns the {@link io.dcbn.backend.graph.Node} with the given name.
+     *
      * @param nodes the {@link List<io.dcbn.backend.graph.Node>} to search into
-     * @param name the name to search after.
+     * @param name  the name to search after.
      * @return The {@link io.dcbn.backend.graph.Node} with the given name.
      */
     private io.dcbn.backend.graph.Node findDcbnNodeByName(List<io.dcbn.backend.graph.Node> nodes, String name) {

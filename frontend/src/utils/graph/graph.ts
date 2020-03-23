@@ -45,6 +45,7 @@ export declare module dcbn {
   export interface DenseGraph {
     name: string;
     id: number;
+    locked: boolean;
   }
 
   export interface GraphResult {

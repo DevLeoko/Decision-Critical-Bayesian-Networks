@@ -14,7 +14,7 @@ export function formatGraph(
   visNodes.forEach(node => {
     g.setNode(node.id as string, {
       label: node.id,
-      width: 300,
+      width: 100,
       height: 100
     });
   });

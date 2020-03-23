@@ -19,7 +19,7 @@
           }
           virtualEvidenceOpen = true;
         "
-        >Virtual Evidence</v-btn
+        >{{ $t("graph.test.virtualEvidence") }}</v-btn
       >
       <v-btn
         tile
@@ -31,20 +31,20 @@
           binaryEvidenceOpen = true;
         "
       >
-        Binary Evidences
+        {{ $t("graph.test.binaryEvidence") }}
       </v-btn>
       <v-btn
         tile
         @click="valuesOpen = true"
         v-if="activeId !== -1 && presentValues[activeId].computed.length"
-        >Values</v-btn
+        >{{ $t("graph.test.values") }}</v-btn
       >
     </action-selector>
 
     <v-dialog v-model="virtualEvidenceOpen" width="550" v-if="activeId !== -1">
       <v-card>
         <v-card-title>
-          Set virtual evidence
+          {{ $t("graph.test.setVirtualEvidence") }}
         </v-card-title>
 
         <v-card-text class="py-3">
@@ -86,14 +86,14 @@
               presentValues[activeId].virtualEvidence = null;
             "
           >
-            Reset
+            {{ $t("graph.test.reset") }}
           </v-btn>
           <v-btn
             color="grey darken-2"
             text
             @click="virtualEvidenceOpen = false"
           >
-            Done
+            {{ $t("graph.test.done") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -102,14 +102,14 @@
     <v-dialog v-model="binaryEvidenceOpen" width="550" v-if="activeId !== -1">
       <v-card>
         <v-card-title>
-          Set evidences
+          {{ $t("graph.test.setEvidences") }}
         </v-card-title>
 
         <v-card-text>
           <v-switch
             v-for="i in timeSlices"
             :key="i"
-            :label="`: Timestep ${i}`"
+            :label="`: ${$tc('graph.common.timeStep', 1)} ${i}`"
             v-model="presentValues[activeId].evidences[i - 1]"
             color="primary"
             hide-details
@@ -126,17 +126,19 @@
               presentValues[activeId].evidences = [];
             "
           >
-            RESET
+            {{ $t("graph.test.reset") }}
           </v-btn>
           <v-btn color="grey darken-2" text @click="binaryEvidenceOpen = false">
-            Done
+            {{ $t("graph.test.done") }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog v-model="valuesOpen" width="550" v-if="activeId !== -1">
       <v-card>
-        <v-card-title> Values of {{ nodeIndices[activeId] }} </v-card-title>
+        <v-card-title>
+          {{ $t("graph.test.valuesOf", { name: nodeIndices[activeId] }) }}
+        </v-card-title>
 
         <v-card-text>
           <v-row
@@ -160,7 +162,7 @@
           <v-spacer></v-spacer>
 
           <v-btn color="primary" text @click="valuesOpen = false">
-            Close
+            {{ $t("graph.test.close") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -183,9 +185,6 @@ import TestToolbar from "@/components/graph/TestToolbar.vue";
 import ActionSelector from "@/components/graph/ActionSelector.vue";
 import Vue from "vue";
 import vis, { network } from "vis-network";
-
-// TODO fetch actual graph from backend
-import graph from "@/../tests/resources/graph1.json";
 
 import FileDownload from "js-file-download";
 import { dcbn } from "@/utils/graph/graph";
@@ -226,7 +225,9 @@ export default Vue.extend({
       }[],
 
       error: false,
-      errorMessage: ""
+      errorMessage: "",
+
+      lockInterval: 0
     };
   },
 
@@ -339,13 +340,23 @@ export default Vue.extend({
       for (let name of fileNodeIndices) {
         if (!this.nodeIndices.includes(name)) {
           this.error = true;
-          this.errorMessage = `No node with name ${name} found!`;
+          this.errorMessage = this.$t("graph.test.unknownNode", {
+            name
+          }).toString();
           return;
         }
       }
 
       this.presentValues = fileContent.presentValues;
       this.rerenderAll();
+    },
+
+    updateLock() {
+      if (this.$route.params.id !== undefined) {
+        this.axios
+          .put(`/graphs/${this.$route.params.id}/lock`)
+          .then(() => setTimeout(this.updateLock.bind(this), 2500));
+      }
     }
   },
 
@@ -390,6 +401,8 @@ export default Vue.extend({
         this.errorMessage = error.response.data.message;
         this.error = true;
       });
+
+    this.updateLock();
   },
 
   watch: {

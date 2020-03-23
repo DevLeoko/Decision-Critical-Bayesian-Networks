@@ -12,20 +12,35 @@
           <v-btn icon dark @click="updateOpen(false)">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Properties</v-toolbar-title>
+          <v-toolbar-title>{{
+            $t("graph.edit.nodeProperties.properties")
+          }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="updateOpen(false)">Save</v-btn>
+            <v-btn dark text @click="save()">{{
+              $t("graph.edit.nodeProperties.save")
+            }}</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-tabs v-model="propertyTabs">
-          <v-tab>General</v-tab>
-          <v-tab>Definition</v-tab>
+          <v-tab>{{ $t("graph.edit.nodeProperties.general") }}</v-tab>
+          <v-tab>{{ $t("graph.edit.nodeProperties.definition") }}</v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="propertyTabs">
-          <v-tab-item><general-tab :node="node"></general-tab></v-tab-item>
-          <v-tab-item>Definition</v-tab-item>
+          <v-tab-item><general-tab :node="node"/></v-tab-item>
+          <v-tab-item>
+            <cpt-container :node="node" />
+            <v-select
+              :items="evidenceFormulas"
+              style="max-width: 300px; margin: auto"
+              :label="$t('graph.edit.nodeProperties.evidenceFormula')"
+              :error="!!error"
+              :error-messages="error"
+              v-model="node.evidenceFormulaName"
+              clearable
+            />
+          </v-tab-item>
         </v-tabs-items>
       </v-card>
     </v-dialog>
@@ -35,7 +50,7 @@
 <script lang="ts">
 import Vue from "vue";
 import GeneralTab from "@/components/graph/properties/GeneralTab.vue";
-// import CptContainer from "@/components/graph/CptContainer.vue";
+import CptContainer from "@/components/graph/properties/CptContainer.vue";
 import { dcbn } from "@/utils/graph/graph";
 
 export default Vue.extend({
@@ -43,11 +58,16 @@ export default Vue.extend({
     return {
       properties: true,
       time0: true,
-      propertyTabs: null
+      propertyTabs: null,
+      oldName: "",
+      evidenceFormulas: [] as string[],
+
+      error: null as string | null
     };
   },
   components: {
-    GeneralTab
+    GeneralTab,
+    CptContainer
   },
   // components: { CptContainer },
   props: { open: Boolean, node: Object as () => dcbn.Node },
@@ -60,7 +80,33 @@ export default Vue.extend({
     },
     changeName(name: any) {
       this.node.name = name;
+    },
+
+    save() {
+      this.$emit("save", { oldName: this.oldName, node: this.node });
+      this.updateOpen(false);
     }
+  },
+
+  watch: {
+    open(val) {
+      if (val) {
+        this.oldName = this.node.name;
+      }
+    }
+  },
+
+  mounted() {
+    this.axios
+      .get("/evidence-formulas")
+      .then(resp => {
+        this.evidenceFormulas = resp.data.map((formula: any) => formula.name);
+      })
+      .catch(err => {
+        this.error = this.$t(
+          "graph.edit.nodeProperties.failedFormulaFetch"
+        ).toString();
+      });
   }
 });
 </script>

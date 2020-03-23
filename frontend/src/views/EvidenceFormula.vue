@@ -5,6 +5,7 @@
         :loading.sync="loading"
         :formulas="formulas"
         @update-list="updateList()"
+        @graphs-changed="updateChangedGraphs($event)"
       />
     </v-flex>
     <v-flex xs9 pa-3>
@@ -17,11 +18,14 @@
       <v-layout v-else row wrap>
         <v-flex xs6 offset-xs3>
           <v-alert type="info" :value="true">
-            Please select an evidence formula or create a new one!
+            {{ $t("formula.index.selectOrCreate") }}
           </v-alert>
         </v-flex>
       </v-layout>
     </v-flex>
+    <v-snackbar color="orange darker-2" v-model="graphsChanged" :timeout="7500">
+      {{ $t("formula.list.responses.graphChanged", { changedGraphs }) }}
+    </v-snackbar>
   </v-layout>
 </template>
 
@@ -40,7 +44,9 @@ export default Vue.extend({
   data() {
     return {
       formulas: [] as Formula[],
-      loading: false
+      loading: false,
+      graphsChanged: false,
+      changedGraphs: ""
     };
   },
   components: {
@@ -61,6 +67,11 @@ export default Vue.extend({
         }
       }
       return null;
+    },
+
+    updateChangedGraphs(graphs: string[]) {
+      this.graphsChanged = true;
+      this.changedGraphs = graphs.join(", ");
     }
   },
 

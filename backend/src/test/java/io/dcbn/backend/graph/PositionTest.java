@@ -18,7 +18,7 @@ public class PositionTest {
     public void EqualsDeltaTest() {
         Position p1 = new Position(0.0, 0.1);
         Position p2 = new Position(0.001, 0.099);
-        assertEquals(p1, (p2));
+        assertTrue(p1.equalsApproximately(p2));
     }
 
     @Test

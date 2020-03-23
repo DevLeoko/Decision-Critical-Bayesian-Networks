@@ -2,7 +2,7 @@ package io.dcbn.backend.graph.services;
 
 import io.dcbn.backend.authentication.models.DcbnUser;
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
-import io.dcbn.backend.evidenceFormula.repository.EvidenceFormulaRepository;
+import io.dcbn.backend.evidence_formula.repository.EvidenceFormulaRepository;
 import io.dcbn.backend.graph.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +43,7 @@ public class GraphServiceTest {
     @BeforeEach
     public void setUp() {
         service = new GraphService(dcbnRepository, evidenceFormulaRepository, null);
+        service.setGraphLockExpireTime(1000);
     }
 
     @Test
@@ -55,7 +56,13 @@ public class GraphServiceTest {
     public void extendLockTest() {
         service.updateLock(1, "user1");
         assertThrows(IllegalArgumentException.class, () -> service.updateLock(1, "user2"));
-        service.updateLock(1, "user1");
+        try {
+            Thread.sleep(500);
+            service.updateLock(1, "user1");
+            Thread.sleep(900);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
         assertThrows(IllegalArgumentException.class, () -> service.updateLock(1, "user2"));
     }
 

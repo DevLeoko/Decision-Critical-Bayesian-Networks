@@ -1,17 +1,23 @@
 <template>
   <div>
     <v-toolbar small bottom style="width: 100%">
-      <v-btn color="success" class="ml-3" @click="evaluate($route.params.id)">
-        <v-icon class="mr-1">check</v-icon>Test
+      <v-btn
+        color="success"
+        class="ml-3"
+        @click="evaluate($route.params.id)"
+        :loading="loading"
+      >
+        <v-icon class="mr-1">check</v-icon> {{ $t("graph.test.toolbar.test") }}
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn small color="primary" class="ml-3" @click="$emit('clear')"
-        >Clear graph</v-btn
-      >
-      <v-btn small color="primary" class="ml-3" @click="$emit('export')"
-        >Export state</v-btn
+      <v-btn small color="primary" class="ml-3" @click="$emit('clear')">{{
+        $t("graph.test.toolbar.clearGraph")
+      }}</v-btn>
+      <v-btn small color="primary" class="ml-3" @click="$emit('export')">{{
+        $t("graph.test.toolbar.exportState")
+      }}</v-btn
       ><v-btn small color="primary" class="ml-3" @click="$emit('import')">
-        Import state</v-btn
+        {{ $t("graph.test.toolbar.importState") }}</v-btn
       >
       <v-spacer></v-spacer>
       <v-btn
@@ -19,7 +25,7 @@
         small
         color="primary lighten-2"
         @click="$router.push({ name: 'Edit Graph' })"
-        >Switch to Editor</v-btn
+        >{{ $t("graph.test.toolbar.switchToEditor") }}</v-btn
       >
     </v-toolbar>
     <v-snackbar v-model="hasErrorBar" color="error" :timeout="5000">
@@ -32,8 +38,6 @@
 <script lang="ts">
 import Vue from "vue";
 
-// TODO fetch actual response from backend
-// import graphResp from "@/../tests/resources/graph1_resp.json";
 export default Vue.extend({
   props: {
     nodeIndices: {
@@ -52,7 +56,8 @@ export default Vue.extend({
   data() {
     return {
       hasErrorBar: false,
-      errorMessage: ""
+      errorMessage: "",
+      loading: false
     };
   },
 
@@ -74,6 +79,7 @@ export default Vue.extend({
           valueMap[node] = valueArray;
         }
       });
+      this.loading = true;
       this.axios
         .post(`/graphs/${id}/evaluate`, valueMap)
         .then(res => {
@@ -82,7 +88,8 @@ export default Vue.extend({
         .catch(error => {
           this.errorMessage = error.response.data.message;
           this.hasErrorBar = true;
-        });
+        })
+        .then(() => (this.loading = false));
     }
   }
 });

@@ -27,7 +27,7 @@
           <v-col>
             <v-text-field
               v-model="search"
-              label="Search for graph"
+              :label="$t('graph.folderView.searchForGraph')"
               solo
               class="ma-3"
               hide-details
@@ -41,7 +41,8 @@
       <v-treeview
         :items="treeItems"
         :search="search"
-        :active="active"
+        :active.sync="active"
+        item-disabled="locked"
         @update:active="arr => selectGraph(arr[0])"
         activatable
         open-on-click
@@ -62,51 +63,59 @@
               </v-btn>
             </template>
             <v-list>
-              <v-list-item @click="duplicateGraph(item.graph)">
-                <v-list-item-title>
-                  <v-icon class="mr-2">file_copy</v-icon> Duplicate
-                </v-list-item-title>
-              </v-list-item>
+              <template v-if="$store.state.user.role == 'ADMIN'">
+                <v-list-item @click="duplicateGraph(item.graph)">
+                  <v-list-item-title>
+                    <v-icon class="mr-2">file_copy</v-icon>
+                    {{ $t("graph.folderView.duplicate") }}
+                  </v-list-item-title>
+                </v-list-item>
 
-              <v-list-item @click="() => $refs.actions.renameGraph(item)">
-                <v-list-item-title>
-                  <v-icon class="mr-2">text_fields</v-icon> Rename
-                </v-list-item-title>
-              </v-list-item>
+                <v-list-item @click="() => $refs.actions.renameGraph(item)">
+                  <v-list-item-title>
+                    <v-icon class="mr-2">text_fields</v-icon>
+                    {{ $t("graph.folderView.rename") }}
+                  </v-list-item-title>
+                </v-list-item>
 
-              <v-list-item @click="() => $refs.actions.moveGraph(item)">
-                <v-list-item-title>
-                  <v-icon class="mr-2">double_arrow</v-icon> Move
-                </v-list-item-title>
-              </v-list-item>
+                <v-list-item @click="() => $refs.actions.moveGraph(item)">
+                  <v-list-item-title>
+                    <v-icon class="mr-2">double_arrow</v-icon>
+                    {{ $t("graph.folderView.move") }}
+                  </v-list-item-title>
+                </v-list-item>
 
-              <v-list-item @click="() => $refs.actions.deleteGraph(item)">
-                <v-list-item-title>
-                  <v-icon class="mr-2">delete</v-icon> Delete
-                </v-list-item-title>
-              </v-list-item>
+                <v-list-item @click="() => $refs.actions.deleteGraph(item)">
+                  <v-list-item-title>
+                    <v-icon class="mr-2">delete</v-icon>
+                    {{ $t("graph.folderView.delete") }}
+                  </v-list-item-title>
+                </v-list-item>
+              </template>
               <v-list-item @click="exportGraph(item.graph)">
                 <v-list-item-title>
                   <v-icon class="mr-2">import_export</v-icon>
-                  Export
+                  {{ $t("graph.folderView.export") }}
                 </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
         </template>
       </v-treeview>
-      <template v-slot:append>
+      <template v-slot:append v-if="$store.state.user.role == 'ADMIN'">
         <v-divider></v-divider>
         <v-progress-linear indeterminate v-if="loading" />
         <v-row justify="center">
           <v-col class="flex-grow-0 mt-4 pb-0">
             <v-btn medium color="primary" @click="createGraph()">
-              <v-icon>add</v-icon> Add new graph
+              <v-icon>add</v-icon> {{ $t("graph.folderView.addNewGraph") }}
             </v-btn>
           </v-col>
+          <v-col cols="12" class="pa-0 ma-0" />
           <v-col class="flex-grow-0 mb-4">
             <v-btn small color="primary lighten-2" @click="triggerImport()">
-              <v-icon small class="mr-2">cloud_upload</v-icon> Import graph
+              <v-icon small class="mr-2">cloud_upload</v-icon>
+              {{ $t("graph.folderView.importGraph") }}
             </v-btn>
           </v-col>
         </v-row>
@@ -148,6 +157,7 @@ export interface TreeItem {
   id: string | number;
   graph?: dcbn.DenseGraph;
   children: TreeItem[];
+  locked: boolean;
 }
 
 import Vue from "vue";
@@ -189,12 +199,9 @@ export default Vue.extend({
           timeSlices: 5,
           nodes: []
         });
-        this.graphs.push({
-          name: newName,
-          id: res.data
-        });
-        this.throwSuccess("The graph has been generated");
-        this.selectGraph(res.data);
+        this.throwSuccess(
+          this.$t("graph.folderView.responses.created").toString()
+        );
       } catch (err) {
         this.throwError(err.response.data.message);
       } finally {
@@ -219,9 +226,11 @@ export default Vue.extend({
             .post("/graphs", copy)
             .then(resp => {
               copy.id = resp.data;
-              this.graphs.push({ name: copy.name, id: copy.id });
               this.throwSuccess(
-                `Graph ${graph.name} duplicated to ${copy.name}`
+                this.$t("graph.folderView.responses.duplicated", {
+                  name: graph.name,
+                  copy: copy.name
+                }).toString()
               );
             })
             .catch(error => this.throwError(error.response.data.message));
@@ -240,7 +249,9 @@ export default Vue.extend({
         })
         .then(() => {
           graph.name = name;
-          this.throwSuccess(`Graph renamed to ${name}`);
+          this.throwSuccess(
+            this.$t("graph.folderView.responses.renamed", { name }).toString()
+          );
         })
         .catch(error => this.throwError(error.response.data.message))
         .then(() => (this.loading = false));
@@ -251,8 +262,9 @@ export default Vue.extend({
       this.axios
         .delete(`/graphs/${graph.id}`)
         .then(() => {
-          this.graphs.splice(this.graphs.indexOf(graph), 1);
-          this.throwSuccess("Graph deleted");
+          this.throwSuccess(
+            this.$t("graph.folderView.responses.deleted").toString()
+          );
         })
         .catch(error => this.throwError(error.response.data.message))
         .then(() => (this.loading = false));
@@ -307,8 +319,14 @@ export default Vue.extend({
             }
           })
           .then(res => {
-            this.graphs.push({ name: res.data.name, id: res.data.id });
-            this.throwSuccess("Graph imported");
+            this.graphs.push({
+              name: res.data.name,
+              id: res.data.id,
+              locked: res.data.locked
+            });
+            this.throwSuccess(
+              this.$t("graph.folderView.responses.imported").toString()
+            );
           })
           .catch(error => {
             this.throwError(error.response.data.message);
@@ -342,6 +360,21 @@ export default Vue.extend({
       if (this.$route.params && this.$route.params.id) {
         this.active = [this.$route.params.id as any];
       }
+    },
+
+    active() {
+      if (this.$route.params && this.$route.params.id) {
+        if (this.active[0] != (this.$route.params.id as any))
+          this.active = [this.$route.params.id as any];
+        return;
+      }
+      if (this.active.length != 0) this.active = [];
+    },
+
+    "$route.params.id": function() {
+      if (this.$route.params && this.$route.params.id)
+        this.active = [this.$route.params.id as any];
+      else this.active = [];
     }
   },
 
@@ -350,7 +383,8 @@ export default Vue.extend({
       let result: TreeItem = {
         name: "Root",
         id: -1,
-        children: []
+        children: [],
+        locked: false
       };
 
       this.graphs
@@ -376,7 +410,7 @@ export default Vue.extend({
             // check whether the next subfolder alrady exists
             const targetFolder: TreeItem = currentFolder.find(
               subFolder => subFolder.name == element
-            ) || { name: element, id: -1, children: [] };
+            ) || { name: element, id: -1, children: [], locked: false };
 
             // if not, add it to the current folder
             if (targetFolder.id == -1) {
@@ -393,7 +427,8 @@ export default Vue.extend({
             name: graphName,
             id: entry.id,
             children: [],
-            graph: entry
+            graph: entry,
+            locked: entry.locked
           });
         });
 

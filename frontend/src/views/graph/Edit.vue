@@ -3,7 +3,10 @@
     <edit-bar
       :timeSteps.sync="graph.timeSlices"
       :loading="saveLoading"
-      :upToDate="serverGraph == JSON.stringify(this.graph)"
+      :upToDate="upToDate"
+      :addNodeModeActive="addNodeModeActive"
+      :addEdgeModeActive="addEdgeModeActive"
+      :addTimeEdgeModeActive="addTimeEdgeModeActive"
       @save="save()"
       @nodeAdd="addNode()"
       @edgeAdd="addEdge()"
@@ -17,24 +20,55 @@
     <div id="mynetwork" ref="network"></div>
     <action-selector ref="nodeActionSelector">
       <v-btn tile @click="editProperties = true">
-        Properties
+        {{ $t("graph.edit.properties") }}
       </v-btn>
       <v-btn tile @click="deleteNode()">
-        Delete
+        {{ $t("graph.edit.delete") }}
       </v-btn>
     </action-selector>
 
     <action-selector ref="edgeActionSelector" isEdgeSelector>
       <v-btn tile @click="deleteEdge()">
-        Delete
+        {{ $t("graph.edit.delete") }}
       </v-btn>
     </action-selector>
 
-    <node-properties :open.sync="editProperties" :node="selectedNode" />
+    <node-properties
+      :open.sync="editProperties"
+      :node="selectedNode"
+      @save="saveProperties($event)"
+    />
     <v-snackbar v-model="hasError" color="error" :timeout="5000">
       {{ errorMessage }}
       <v-btn icon @click="hasError = false"><v-icon>clear</v-icon></v-btn>
     </v-snackbar>
+
+    <v-dialog :value="saveAlert.value" width="400" persistent>
+      <v-card>
+        <v-card-title>
+          {{ $t("graph.edit.unsavedChanges.title") }}
+        </v-card-title>
+        <v-card-text>
+          {{ $t("graph.edit.unsavedChanges.text") }}
+        </v-card-text>
+        <v-card-actions class="px-4 pb-4">
+          <v-btn @click="saveAlert.value = false" color="grey" text>
+            {{ $t("graph.edit.unsavedChanges.cancel") }}
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            @click="
+              saveAlert.value = false;
+              saveAlert.proceedAction();
+            "
+            color="error"
+            text
+          >
+            {{ $t("graph.edit.unsavedChanges.discard") }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -52,8 +86,25 @@ import {
 } from "@/utils/graph/graphGenerator";
 import NodeMap from "../../utils/nodeMap";
 import { formatGraph } from "../../utils/graph/graphFormatter";
+import { router } from "../../router";
 
 let network = {} as vis.Network;
+let upToDate = true;
+let saveAlert = {
+  value: false,
+  proceedAction: null as Function | null
+};
+
+router.beforeEach((to, from, next) => {
+  if (from.name == "Edit Graph") {
+    if (!upToDate) {
+      saveAlert.value = true;
+      saveAlert.proceedAction = next;
+      return;
+    }
+  }
+  next();
+});
 
 interface EdgeAndNodeData {
   edges: vis.Edge[];
@@ -76,17 +127,17 @@ export default Vue.extend({
 
   data() {
     return {
-      //TODO null problems?
       graph: {} as dcbn.Graph,
       nodes: {} as vis.DataSet<vis.Node>,
       edges: {} as vis.DataSet<vis.Edge>,
       timeEdges: [] as string[],
       nodeMap: new NodeMap(),
 
+      saveAlert,
+
       activeId: -1,
       editProperties: false,
       timeEdge: false,
-      //TODO replace with $emit?
       selectedNode: {} as dcbn.Node,
       hasError: false,
       errorMessage: "",
@@ -94,7 +145,11 @@ export default Vue.extend({
       saveLoading: false,
       serverGraph: "",
       undoStack: [] as GraphState[],
-      redoStack: [] as GraphState[]
+      redoStack: [] as GraphState[],
+
+      addNodeModeActive: false,
+      addEdgeModeActive: false,
+      addTimeEdgeModeActive: false
     };
   },
 
@@ -118,7 +173,11 @@ export default Vue.extend({
     },
 
     addNode() {
-      network.addNodeMode();
+      this.addNodeModeActive = !this.addNodeModeActive;
+      this.addEdgeModeActive = false;
+      this.addTimeEdgeModeActive = false;
+      if (this.addNodeModeActive) network.addNodeMode();
+      else network.disableEditMode();
     },
 
     deleteNode() {
@@ -126,31 +185,45 @@ export default Vue.extend({
     },
 
     addEdge() {
+      this.addNodeModeActive = false;
+      this.addTimeEdgeModeActive = false;
+      this.addEdgeModeActive = !this.addEdgeModeActive;
       this.timeEdge = false;
-      network.addEdgeMode();
+      if (this.addEdgeModeActive) network.addEdgeMode();
+      else network.disableEditMode();
     },
     addTEdge() {
+      this.addNodeModeActive = false;
+      this.addEdgeModeActive = false;
+      this.addTimeEdgeModeActive = !this.addTimeEdgeModeActive;
       this.timeEdge = true;
-      network.addEdgeMode();
+      if (this.addTimeEdgeModeActive) network.addEdgeMode();
+      else network.disableEditMode();
     },
 
     deleteEdge() {
       network.deleteSelected();
     },
 
-    findPowerOfTwo(toNode: dcbn.Node, nodeName: string): number {
-      const totalList = Object.assign(
-        [],
-        toNode.timeTDependency.parents
-      ) as string[];
-      totalList.push(...toNode.timeTDependency.parentsTm1);
+    findPowerOfTwo(
+      dependency: dcbn.TimeZeroDependency,
+      nodeName: string
+    ): number {
+      const totalList = Object.assign([], dependency.parents) as string[];
+      totalList.push(...dependency.parentsTm1);
       return 2 ** (totalList.length - totalList.indexOf(nodeName) - 1);
     },
 
-    addToDependencies(dependency: dcbn.TimeZeroDependency, powerOfTwo: number) {
+    addToDependencies(dependency: dcbn.TimeZeroDependency, fromName: string) {
+      const powerOfTwo = this.findPowerOfTwo(dependency, fromName);
+
       let index = powerOfTwo;
       while (index <= dependency.probabilities.length) {
-        const toAdd = dependency.probabilities.slice(index - powerOfTwo, index);
+        const toAdd = JSON.parse(
+          JSON.stringify(
+            dependency.probabilities.slice(index - powerOfTwo, index)
+          )
+        );
         dependency.probabilities.splice(index, 0, ...toAdd);
         index += 2 * powerOfTwo;
       }
@@ -158,8 +231,10 @@ export default Vue.extend({
 
     removeFromDependencies(
       dependency: dcbn.TimeZeroDependency,
-      powerOfTwo: number
+      fromName: string
     ) {
+      const powerOfTwo = this.findPowerOfTwo(dependency, fromName);
+
       let index = powerOfTwo;
       while (index <= dependency.probabilities.length) {
         dependency.probabilities.splice(index, powerOfTwo);
@@ -176,26 +251,30 @@ export default Vue.extend({
         return;
       }
 
-      const powerOfTwo = this.findPowerOfTwo(toNode, fromName);
       if (!isTimeDependency) {
-        this.removeFromDependencies(toNode.timeZeroDependency, powerOfTwo);
+        this.removeFromDependencies(toNode.timeZeroDependency, fromName);
       }
-
-      this.removeFromDependencies(toNode.timeTDependency, powerOfTwo);
+      this.removeFromDependencies(toNode.timeTDependency, fromName);
 
       if (isTimeDependency) {
-        toNode.timeTDependency.parentsTm1.splice(
-          toNode.timeTDependency.parentsTm1.indexOf(fromName),
-          1
-        );
+        const index = toNode.timeTDependency.parentsTm1.indexOf(fromName);
+        if (index !== -1) {
+          toNode.timeTDependency.parentsTm1.splice(index, 1);
+        }
       } else {
-        toNode.timeZeroDependency.parents.splice(
-          toNode.timeZeroDependency.parents.indexOf(fromName),
-          1
-        );
-        toNode.timeTDependency.parents.splice(
-          toNode.timeTDependency.parents.indexOf(fromName),
-          1
+        let index = toNode.timeZeroDependency.parents.indexOf(fromName);
+        if (index !== -1) {
+          toNode.timeZeroDependency.parents.splice(index, 1);
+        }
+        index = toNode.timeTDependency.parents.indexOf(fromName);
+        if (index !== -1) {
+          toNode.timeTDependency.parents.splice(index, 1);
+        }
+      }
+
+      if (!toNode.timeTDependency.parentsTm1.length) {
+        toNode.timeTDependency.probabilities = JSON.parse(
+          JSON.stringify(toNode.timeZeroDependency.probabilities)
         );
       }
     },
@@ -243,6 +322,7 @@ export default Vue.extend({
       this.nodeMap.put(data.id, node);
       this.graph.nodes.push(node);
 
+      this.addNodeModeActive = false;
       callback(data);
     },
 
@@ -254,6 +334,19 @@ export default Vue.extend({
       const fromName = this.nodeMap.get(fromId)!.name;
       const toNode = this.nodeMap.get(toId)!;
 
+      if (
+        (this.timeEdge &&
+          toNode.timeTDependency.parentsTm1.includes(fromName)) ||
+        (!this.timeEdge && toNode.timeZeroDependency.parents.includes(fromName))
+      ) {
+        this.hasError = true;
+        this.errorMessage = this.$t("graph.edit.errors.duplicateEdge", {
+          from: fromName,
+          to: toNode.name
+        }).toString();
+        return;
+      }
+
       if (this.timeEdge) {
         toNode.timeTDependency.parentsTm1.push(fromName);
       } else {
@@ -261,12 +354,17 @@ export default Vue.extend({
         toNode.timeTDependency.parents.push(fromName);
       }
 
-      const powerOfTwo = this.findPowerOfTwo(toNode, fromName);
       if (!this.timeEdge) {
-        this.addToDependencies(toNode.timeZeroDependency, powerOfTwo);
+        this.addToDependencies(toNode.timeZeroDependency, fromName);
       }
 
-      this.addToDependencies(toNode.timeTDependency, powerOfTwo);
+      this.addToDependencies(toNode.timeTDependency, fromName);
+
+      if (!toNode.timeTDependency.parentsTm1.length) {
+        toNode.timeTDependency.probabilities = JSON.parse(
+          JSON.stringify(toNode.timeZeroDependency.probabilities)
+        );
+      }
 
       if (this.timeEdge) {
         const uuid = vis.util.randomUUID();
@@ -276,7 +374,15 @@ export default Vue.extend({
           ...data,
           ...timeEdgeOptions
         };
+      } else {
+        data = {
+          ...data,
+          color: defaultColor
+        };
       }
+
+      this.addEdgeModeActive = false;
+      this.addTimeEdgeModeActive = false;
       callback(data);
     },
 
@@ -293,7 +399,9 @@ export default Vue.extend({
         const fromName = this.nodeMap.get(edge.from as string)!.name;
 
         this.removeDependencies(toNode, fromName, false);
-        this.removeDependencies(toNode, fromName, true);
+        if (this.timeEdges.includes(edgeUuid)) {
+          this.removeDependencies(toNode, fromName, true);
+        }
       }
       this.graph!.nodes.splice(
         this.graph!.nodes.findIndex(
@@ -329,12 +437,14 @@ export default Vue.extend({
       const state = this.undoStack.pop()!;
       this.pushCurrentStateTo(this.redoStack);
       this.updateGraphStates(state);
+      this.addEdgeModeActive = this.addTimeEdgeModeActive = this.addNodeModeActive = false;
     },
 
     redo() {
       const state = this.redoStack.pop()!;
       this.pushCurrentStateTo(this.undoStack);
       this.updateGraphStates(state);
+      this.addEdgeModeActive = this.addTimeEdgeModeActive = this.addNodeModeActive = false;
     },
 
     updateGraphStates(state: GraphState) {
@@ -381,6 +491,73 @@ export default Vue.extend({
         nodeMap: nodeMapCopy,
         timeEdges: timeEdgesCopy
       };
+    },
+
+    updateNodeName(oldName: string, newName: string) {
+      for (const node of this.nodeMap.nodes()) {
+        const parents = [
+          node.timeZeroDependency.parents,
+          node.timeZeroDependency.parentsTm1,
+          node.timeTDependency.parents,
+          node.timeTDependency.parentsTm1
+        ];
+        for (const parentList of parents) {
+          const index = parentList.findIndex(name => name === oldName);
+          if (index !== -1) {
+            parentList[index] = newName;
+          }
+        }
+      }
+    },
+
+    saveProperties(event: any) {
+      const name = event.oldName as string;
+      const node = event.node as dcbn.Node;
+      const uuid = this.nodeMap.getUuidFromName(name)!;
+
+      if (/^\s*$/.test(node.name)) {
+        this.hasError = true;
+        this.errorMessage = this.$t(
+          "graph.edit.errors.emptyNodeName"
+        ).toString();
+        return;
+      }
+      if (name !== node.name) {
+        const nodesWithSameName = this.nodeMap
+          .nodes()
+          .filter(n => n.name === node.name);
+        if (nodesWithSameName.length !== 0) {
+          this.hasError = true;
+          this.errorMessage = this.$t("graph.edit.errors.duplicateName", {
+            name: node.name
+          }).toString();
+          return;
+        }
+      }
+
+      this.addToUndoStack();
+
+      const nodeToSaveTo = this.nodeMap.get(uuid)!;
+      nodeToSaveTo.color = node.color;
+      nodeToSaveTo.name = node.name;
+      nodeToSaveTo.timeZeroDependency.probabilities =
+        node.timeZeroDependency.probabilities;
+      nodeToSaveTo.timeTDependency.probabilities = node.timeTDependency
+        .parentsTm1.length
+        ? node.timeTDependency.probabilities
+        : node.timeZeroDependency.probabilities;
+      nodeToSaveTo.evidenceFormulaName = node.evidenceFormulaName;
+
+      this.updateNodeName(name, node.name);
+      this.nodes.update({ id: uuid, color: node.color, label: node.name });
+    },
+
+    updateLock() {
+      if (this.$route.params.id !== undefined) {
+        this.axios
+          .put(`/graphs/${this.$route.params.id}/lock`)
+          .then(() => setTimeout(this.updateLock.bind(this), 2500));
+      }
     }
   },
 
@@ -413,9 +590,9 @@ export default Vue.extend({
 
         network.on("click", graph => {
           if (graph.nodes[0]) {
-            this.selectedNode = this.nodeMap.get(graph.nodes[0])!;
-          } else {
-            this.selectedNode = {} as dcbn.Node;
+            this.selectedNode = JSON.parse(
+              JSON.stringify(this.nodeMap.get(graph.nodes[0]))
+            );
           }
         });
 
@@ -437,6 +614,15 @@ export default Vue.extend({
         this.errorMessage = error.response.data.message;
         this.hasError = true;
       });
+
+    this.updateLock();
+  },
+
+  computed: {
+    upToDate(): Boolean {
+      upToDate = this.serverGraph == JSON.stringify(this.graph);
+      return upToDate;
+    }
   }
 });
 </script>

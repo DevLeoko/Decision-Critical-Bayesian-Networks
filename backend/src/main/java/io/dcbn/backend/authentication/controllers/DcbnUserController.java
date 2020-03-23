@@ -2,8 +2,8 @@ package io.dcbn.backend.authentication.controllers;
 
 import io.dcbn.backend.authentication.models.DcbnUser;
 import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
-import io.dcbn.backend.passwordReset.models.MailType;
-import io.dcbn.backend.passwordReset.services.MailService;
+import io.dcbn.backend.password_reset.models.MailType;
+import io.dcbn.backend.password_reset.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 public class DcbnUserController {
@@ -43,7 +44,16 @@ public class DcbnUserController {
     }
 
     private String generatePassword() {
-        return "TEST";
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 32;
+        Random random = new Random();
+
+        return random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 
     @PostMapping("/users")
@@ -56,9 +66,8 @@ public class DcbnUserController {
         String password = generatePassword();
         user.setPassword(password);
 
+        user = dcbnUserRepository.save(user.withEncryptedPassword(passwordEncoder));
         mailService.sendMail(user, MailType.PASSWORD_RESET);
-
-        dcbnUserRepository.save(user.withEncryptedPassword(passwordEncoder));
         return ResponseEntity.noContent().build();
     }
 
@@ -71,16 +80,12 @@ public class DcbnUserController {
         }
         DcbnUser oldUser = optional.get();
 
-        if (!oldUser.getUsername().equals(user.getUsername())) {
-            if (dcbnUserRepository.existsByUsername(user.getUsername())) {
-                return ResponseEntity.badRequest().build();
-            }
+        if (!oldUser.getUsername().equals(user.getUsername()) && dcbnUserRepository.existsByUsername(user.getUsername())) {
+            return ResponseEntity.badRequest().build();
         }
 
-        if (!oldUser.getEmail().equals(user.getEmail())) {
-            if (dcbnUserRepository.existsByEmail(user.getEmail())) {
-                return ResponseEntity.badRequest().build();
-            }
+        if (!oldUser.getEmail().equals(user.getEmail()) && dcbnUserRepository.existsByEmail(user.getEmail())) {
+            return ResponseEntity.badRequest().build();
         }
 
         oldUser.setUsername(user.getUsername());

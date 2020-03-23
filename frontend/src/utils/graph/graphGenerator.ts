@@ -65,7 +65,7 @@ export function createGraph(
   container: HTMLElement,
   graph: dcbn.Graph,
   options: vis.Options,
-  scaling = 1
+  xScaling = 1
 ) {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
@@ -83,19 +83,21 @@ export function createGraph(
     nodes.push({
       id: nodeId,
       label: node.name,
-      x: node.position.x * scaling,
-      y: node.position.y * scaling
+      x: node.position.x * xScaling,
+      y: node.position.y,
+      color: node.color
     });
 
     edges.push(
-      ...(node.timeTDependency.parents as string[]).map(parent => ({
+      ...node.timeTDependency.parents.map(parent => ({
         from: nodeMap.getUuidFromName(parent),
-        to: nodeId
+        to: nodeId,
+        color: defaultColor
       }))
     );
 
     edges.push(
-      ...(node.timeTDependency.parentsTm1 as string[]).map(
+      ...node.timeTDependency.parentsTm1.map(
         (parent): Edge => {
           const uuid = vis.util.randomUUID();
           timeEdges.push(uuid);

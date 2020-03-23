@@ -14,14 +14,14 @@ public enum Algorithm {
     IMPORTANCE_SAMPLING(ImportanceSampling::new),
     IMPORTANCE_SAMPLING_ROBUST(ImportanceSamplingRobust::new);
 
-    private final Supplier<InferenceAlgorithm> algorithm;
+    private final Supplier<InferenceAlgorithm> inferenceAlgorithm;
 
-    Algorithm(Supplier<InferenceAlgorithm> algorithm) {
-        this.algorithm = algorithm;
+    Algorithm(Supplier<InferenceAlgorithm> inferenceAlgorithm) {
+        this.inferenceAlgorithm = inferenceAlgorithm;
     }
 
-    public InferenceAlgorithm getAlgorithm() {
-        return algorithm.get();
+    public InferenceAlgorithm getInferenceAlgorithm() {
+        return inferenceAlgorithm.get();
     }
 
 }

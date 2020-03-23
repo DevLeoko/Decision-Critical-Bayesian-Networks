@@ -26,9 +26,8 @@ public enum StateType {
     }
 
     public int getIndexOfState(String state) {
-        String[] states = this.states;
-        for (int i = 0; i < states.length; i++) {
-            if (state.equals(states[i])) {
+        for (int i = 0; i < this.states.length; i++) {
+            if (state.equals(this.states[i])) {
                 return i;
             }
         }

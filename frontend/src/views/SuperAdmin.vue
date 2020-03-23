@@ -24,7 +24,7 @@
                 <v-col>
                   <v-text-field
                     v-model="editedUser.username"
-                    label="Username"
+                    :label="$t('superAdmin.username')"
                     :rules="nameValidation"
                   ></v-text-field>
                 </v-col>
@@ -33,7 +33,7 @@
                 <v-col>
                   <v-text-field
                     v-model="editedUser.email"
-                    label="Email"
+                    :label="$t('superAdmin.email')"
                     :rules="mailValidation"
                   ></v-text-field>
                 </v-col>
@@ -43,14 +43,14 @@
                   <v-select
                     :items="roles"
                     v-model="editedUser.role"
-                    label="Role"
+                    :label="$t('superAdmin.role')"
                   />
                 </v-col>
               </v-row>
               <v-row>
                 <v-spacer />
                 <v-btn color="error" text @click="stopEditing()">
-                  Cancel
+                  {{ $t("superAdmin.cancel") }}
                 </v-btn>
                 <v-btn
                   :disabled="!valid"
@@ -58,7 +58,7 @@
                   type="submit"
                   class="ml-2"
                 >
-                  Save
+                  {{ $t("superAdmin.save") }}
                 </v-btn>
               </v-row>
             </v-form>
@@ -76,18 +76,20 @@
           clearable
           clear-icon="clear"
           solo
-          label="Search users"
+          :label="this.$t('superAdmin.searchUsers')"
           hide-details
         />
         <v-list elevation="4" class="py-0">
           <v-subheader class="headline">
-            Users
+            {{ $t("superAdmin.users") }}
             <v-spacer />
           </v-subheader>
           <v-divider />
 
           <v-list-item v-if="filteredUsers.length === 0">
-            <v-list-item-title>No users found!</v-list-item-title>
+            <v-list-item-title>{{
+              $t("superAdmin.noUsersFound")
+            }}</v-list-item-title>
           </v-list-item>
 
           <v-list-item
@@ -114,7 +116,7 @@
           </v-list-item>
         </v-list>
         <v-btn class="primary mt-5" @click="editUser(defaultUser)">
-          <v-icon>add</v-icon> Create User
+          <v-icon>add</v-icon> {{ $t("superAdmin.createUser") }}
         </v-btn>
       </v-col>
     </v-row>
@@ -169,8 +171,8 @@ export default Vue.extend({
     deleteUser(user: User) {
       this.axios
         .delete(`/users/${user.id}`)
-        .then(_ => this.updateUserList())
-        .catch(err => console.log(err.response));
+        .then(() => this.updateUserList())
+        .catch(this.displayError);
     },
 
     editUser(user: User) {
@@ -185,9 +187,9 @@ export default Vue.extend({
       (this.$refs.userForm as any).reset();
     },
 
-    loginError(error: String) {
+    displayError() {
       this.hasError = true;
-      this.error = "Failed to create user!";
+      this.error = this.$t("superAdmin.failedAction").toString();
     },
 
     resetError() {
@@ -199,19 +201,19 @@ export default Vue.extend({
       if (user.id === -1) {
         this.axios
           .post("/users", user)
-          .then(_ => {
+          .then(() => {
             this.updateUserList();
             this.stopEditing();
           })
-          .catch(err => this.loginError(err.response.message));
+          .catch(this.displayError);
       } else {
         this.axios
           .put(`/users/${user.id}`, user)
-          .then(_ => {
+          .then(() => {
             this.updateUserList();
             this.stopEditing();
           })
-          .catch(err => this.loginError(err.response.message));
+          .catch(this.displayError);
       }
     },
 
@@ -219,7 +221,7 @@ export default Vue.extend({
       this.axios
         .get("/users")
         .then(resp => (this.users = resp.data))
-        .catch(err => console.log(err.response));
+        .catch(this.displayError);
     },
 
     defaultUser(): User {
@@ -246,8 +248,8 @@ export default Vue.extend({
     },
     formTitle(): String {
       return this.editedUser === this.defaultUser()
-        ? "Create User"
-        : "Edit User";
+        ? this.$t("superAdmin.createUser").toString()
+        : this.$t("superAdmin.editUser").toString();
     }
   }
 });

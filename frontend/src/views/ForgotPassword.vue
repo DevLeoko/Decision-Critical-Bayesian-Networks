@@ -1,24 +1,17 @@
 <template>
   <small-view>
-    <h1 class="font-weight-light">
-      Forgot your password?
-    </h1>
+    <h1 class="font-weight-light">{{ $t("forgotPassword.forgotPwQ") }}</h1>
 
-    <v-alert type="success" v-if="success" outlined>
-      {{ success }}
-    </v-alert>
-    <v-alert type="error" v-model="hasError" dismissible outlined dense>
-      {{ error }}
-    </v-alert>
+    <v-alert type="success" v-if="success" outlined>{{ success }}</v-alert>
+    <v-alert type="error" v-model="hasError" dismissible outlined dense>{{
+      error
+    }}</v-alert>
 
     <v-form v-model="valid" v-if="!success" @submit="submit">
-      <p>
-        No worries! Just enter your email address and we will send you a link to
-        rest you password.
-      </p>
+      <p>{{ $t("forgotPassword.resetInstruction") }}</p>
 
       <v-text-field
-        label="email"
+        :label="$t('forgotPassword.email')"
         v-model="email"
         :rules="mailValidation"
         solo
@@ -31,13 +24,12 @@
         :loading="loading"
         color="primary"
         class="mt-2 ml-2"
+        >{{ $t("forgotPassword.reset") }}</v-btn
       >
-        Reset password
-      </v-btn>
 
-      <v-btn color="primary" depressed class="ml-4 mt-2" dark to="login">
-        Back to login
-      </v-btn>
+      <v-btn color="primary" depressed class="ml-4 mt-2" dark to="Login">{{
+        $t("forgotPassword.backToLogin")
+      }}</v-btn>
     </v-form>
   </small-view>
 </template>
@@ -81,7 +73,7 @@ export default Vue.extend({
           headers: { "Content-Type": "text/plain" }
         })
         .then(() => {
-          this.success = "All done! Check your emails for the reset-link.";
+          this.success = this.$t("forgotPassword.resetEmailSent").toString();
         })
         .catch(err => {
           this.hasError = true;

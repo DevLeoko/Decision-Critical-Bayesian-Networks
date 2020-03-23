@@ -1,0 +1,204 @@
+{
+  "en": {
+    "formula": {
+      "index": {
+        "selectOrCreate": "Please select an evidence formula or create a new one!"
+      },
+
+      "list": {
+        "confirmDeletion": "Confirm deletion",
+        "sureToDelete": "You are about to delete the evidence formula '{formula}'. Are you sure you want to do this? This action can not be undone, please confirm.",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "newExpression": "New Expression",
+
+        "responses": {
+          "graphChanged": "Following graphs that were using this evidence formula have been changed: {changedGraphs}",
+          "formulaSaved": "Formula successfully saved!",
+          "duplicateName": "Formula with name {name} exists already!"
+        }
+      },
+
+      "view": {
+        "name": "Name",
+        "formula": "Formula",
+        "test": "Test",
+        "testData": "Test data",
+        "save": "Save",
+        "errors": {
+          "base": "Error at line: {line}, column: {col}:",
+          "parameterSize": "{base} function {functionName} expected {exprected} but got {actual} parameters!",
+          "typeMismatch": "{base} expected type {expected} but got {actual}!",
+          "parse": "{base} failed to parse {offending}!",
+          "symbolNotFound": "{base} could not find symbol {symbol}!"
+        }
+      },
+
+      "infoDialog": {
+        "title": "How to use the Evidence-Formula Editor",
+        "introduction": "The Evidence-Formula Editor currently supports boolean expressions including number comparisons, variables and function calls. More complex behaviour has to be done in pre-defined functions.",
+        "availableFunctions": "Currently available functions are:",
+        "variable": "The available variables can be seen on the right. Keep in mind that currently only Boolean and Number type variables can be used directly inside the Evidence-Formula, all others are instead used when evaluating functions.",
+        "testing": "The formulas can be tested by pressing the '@:formula.view.test' button at the bottom. When testing an Evidence-Formula the variables in the gray box on the right are used.",
+        "example": "An expression could for example look like this: 'speed > 10 & inArea(WRECKAGE)'.",
+        "gotIt": "Got it!"
+      }
+    },
+    "menuBar": {
+      "logout": "Logout",
+      "evidenceFormulas": "Evidence-Formulas",
+      "graphView": "Graphview"
+    },
+    "forgotPassword": {
+      "forgotPwQ": "Forgot your password?",
+      "resetInstruction": "No worries! Just enter your email address and we will send you a link to reset you password.",
+      "email": "email",
+      "reset": "Reset password",
+      "backToLogin": "Back to login",
+      "resetEmailSent": "All done! Check your emails for the reset-link."
+    },
+    "login": {
+      "signIn": "Sign In",
+      "email": "email",
+      "password": "password",
+      "passwordRequired": "Please enter a password!",
+      "forgotPwQ": "Forgot your password?",
+      "invalidUserNameOrPassword": "Invalid username and/or password!"
+    },
+    "resetPassword": {
+      "newPassword": "new password",
+      "retypeNewPassword": "retype new password",
+      "resetPassword": "Reset password",
+      "backToLogin": "Back to login",
+      "missingResetToken": "Missing reset-token! Visit '@:login.forgotPwQ' first.",
+      "passwordChanged": "Password changed! You can sign in now."
+    },
+    "superAdmin": {
+      "username": "Username",
+      "email": "Email",
+      "role": "Role",
+      "cancel": "Cancel",
+      "save": "Save",
+      "users": "Users",
+      "noUsersFound": "No users found!",
+      "createUser": "Create user",
+      "failedAction": "The action you perferomed failed!",
+      "editUser": "Edit user",
+      "searchUsers": "Search users"
+    },
+    "validation": {
+      "emailRequired": "Please enter an email!",
+      "emailInvalid": "This is not a valid email!",
+      "passwordRequired": "Please enter a password!",
+      "passwordRequirements": "The password requires a min. length of 8 and has to contain at least one letter and one number",
+      "nameRequired": "Name is required",
+      "nameInvalid": "Invalid name"
+    },
+    "graph": {
+      "common": {
+        "timeStep": "timestep | timesteps"
+      },
+
+      "index": {
+        "selectOrCreate": "Please select a graph or create a new one!"
+      },
+
+      "folderView": {
+        "duplicate": "Duplicate",
+        "rename": "Rename",
+        "move": "Move",
+        "delete": "Delete",
+        "export": "Export",
+        "import": "Import",
+        "addNewGraph": "Add new graph",
+        "importGraph": "Import graph",
+        "searchForGraph": "Search for Graph",
+
+        "actions": {
+          "confirmDeletion": "Confirm deletion",
+          "sureToDelete": "You are about to delete graph '{graph}'. Are you sure you want to do this? This action can not be undone, please confirm.",
+          "cancel": "Cancel",
+          "delete": "Delete",
+          "changeName": "Change name",
+          "rename": "Rename",
+          "moveTo": "Move to",
+          "newFolder": "New folder"
+        },
+
+        "responses": {
+          "created": "The graph has been created.",
+          "duplicated": "Graph {name} duplicated to {copy}.",
+          "renamed": "Graph renamed to {name}.",
+          "deleted": "Graph deleted.",
+          "imported": "Graph imported."
+        }
+      },
+
+      "test": {
+        "virtualEvidence": "Virtual Evidence",
+        "setVirtualEvidence": "Set virtual evidence",
+        "binaryEvidence": "Binary Evidences",
+        "setEvidences": "Set evidences",
+        "values": "Values",
+        "valuesOf": "Values of {name}",
+        "close": "Close",
+        "unknownNode": "No node with name {name} found!",
+        "reset": "Reset",
+        "done": "Done",
+
+        "toolbar": {
+          "test": "Test",
+          "clearGraph": "Clear graph",
+          "exportState": "Export state",
+          "importState": "Import state",
+          "switchToEditor": "Switch to Editor"
+        }
+      },
+
+      "edit": {
+        "properties": "Properties",
+        "delete": "Delete",
+
+        "errors": {
+          "duplicateEdge": "Cannot add duplicate edge between {from} and {to}!",
+          "emptyNodeName": "Node name cannot be empty!",
+          "duplicateName": "Node with name {name} exists already!"
+        },
+
+        "unsavedChanges": {
+          "title": "Unsaved changes!",
+          "text": "You have made changes to the current graph that have not been saved yet. If you decide to leave anyway those changes will be discarded!",
+          "cancel": "Cancel",
+          "discard": "Discard changes"
+        },
+
+        "toolbar": {
+          "switchToTest": "Switch to Test Environment",
+          "time": "Time",
+          "format": "Format",
+          "timeSteps": "@:graph.common.timeStep"
+        },
+
+        "nodeProperties": {
+          "properties": "Properties",
+          "save": "Save",
+          "general": "General",
+          "definition": "Definition",
+          "evidenceFormula": "Evidence Formula",
+          "failedFormulaFetch": "Failed to load evidence formula",
+
+          "generalTab": {
+            "name": "Name",
+            "color": "Color"
+          },
+
+          "definitionTab": {
+            "conditionalProbabilityTable": "Conditional Probability Table",
+            "currentTime": "Current: Time",
+            "autocomplete": "Press ENTER within an input field to autocomplete propabilities"
+          }
+        }
+      }
+    }
+  }
+}

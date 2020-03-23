@@ -4,16 +4,16 @@
     "module": "esnext",
     "strict": true,
     "noImplicitThis": true,
-    "resolveJsonModule": true,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": ["webpack-env", "mocha", "chai", "vuetify"],
+    "types": ["webpack-env", "jest", "vuetify"],
     "paths": {
       "@/*": ["src/*"]
     },
