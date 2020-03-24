@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.io.File;
 import java.io.StringReader;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -71,11 +72,7 @@ public class GraphControllerTest {
     }
 
     private long getIdByName(String name) throws Exception {
-        MvcResult result = this.mockMvc.perform(get("/graphs?withStructure=false")
-                .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andReturn();
-        List<Graph> graphs = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<Graph>>(){});
+        List<Graph> graphs = getAllGraphs();
         for (Graph entry : graphs) {
             if(entry.getName().equals(name)) {
                 return entry.getId();
@@ -96,11 +93,15 @@ public class GraphControllerTest {
     }
 
     private List<Graph> getAllGraphs() throws Exception {
-        MvcResult result = this.mockMvc.perform(get("/graphs?withStructure=false")
+        MvcResult result = this.mockMvc.perform(get("/graphs")
             .header("Authorization", "Bearer " + token))
+            .andReturn();
+        mockMvc
+            .perform(asyncDispatch(result))
             .andExpect(status().isOk())
             .andReturn();
-        return mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<Graph>>(){});
+        System.out.println(result.getResponse());
+        return mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<PotentiallyLockedGraph>>(){}).stream().map(PotentiallyLockedGraph::getGraph).collect(Collectors.toList());
     }
 
     private void replaceGraphWithId(long id, Graph graph) throws Exception {

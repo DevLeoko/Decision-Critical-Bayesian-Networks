@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
  * Cache for all current Vessels. Vessels that came before the last time step get deleted.
  */
 @Service
-@NoArgsConstructor
 public class VesselCache {
 
     @Value("${time.steps}")
@@ -29,6 +28,10 @@ public class VesselCache {
      */
     public VesselCache(int timeSteps) {
         this.timeSteps = timeSteps;
+        cache = new HashMap<>();
+    }
+
+    public VesselCache() {
         cache = new HashMap<>();
     }
 
