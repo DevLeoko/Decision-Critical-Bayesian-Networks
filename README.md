@@ -26,7 +26,7 @@ The documentation folder contains:
 
 ### Frontend
 
-The frontend is a PWA build with **Vue**, TypeScript, Vuetify, and d3js.\
+The frontend is a PWA build with **Vue**, TypeScript, Vuetify, and visNetwork.\
 _Using npm for dependency management._
 
 ### Backend
