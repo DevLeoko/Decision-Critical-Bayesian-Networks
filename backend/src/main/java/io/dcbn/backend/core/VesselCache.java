@@ -22,10 +22,6 @@ public class VesselCache {
 
     private Map<String, Vessel[]> cache;
 
-    public VesselCache() {
-        cache = new HashMap<>();
-    }
-
     /**
      * Constructor to manually set timeSteps
      *
