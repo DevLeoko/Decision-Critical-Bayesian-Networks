@@ -2,6 +2,7 @@ package io.dcbn.backend.core;
 
 import de.fraunhofer.iosb.iad.maritime.datamodel.Vessel;
 import de.fraunhofer.iosb.iad.maritime.datamodel.VesselType;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,6 @@ public class VesselCache {
 
     private Map<String, Vessel[]> cache;
 
-    public VesselCache() {
-        cache = new HashMap<>();
-    }
-
     /**
      * Constructor to manually set timeSteps
      *
@@ -31,6 +28,10 @@ public class VesselCache {
      */
     public VesselCache(int timeSteps) {
         this.timeSteps = timeSteps;
+        cache = new HashMap<>();
+    }
+
+    public VesselCache() {
         cache = new HashMap<>();
     }
 

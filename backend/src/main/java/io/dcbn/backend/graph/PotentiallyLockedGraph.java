@@ -1,9 +1,13 @@
 package io.dcbn.backend.graph;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PotentiallyLockedGraph {
-    private final Graph graph;
-    private final boolean locked;
+    private Graph graph;
+    private boolean locked;
 }
