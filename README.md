@@ -5,14 +5,15 @@
 > Application for the identification of decision-critical situations through dynamic bayesian networks.
 
 This project is in its core a Progressive Web App used for modeling dynamic bayesian networks.
-The backend also integrates with the Frauenhofers IOSB servers through ActiveMQ to serve inference calculations for the modeled networks.\
+With the backend serving inference calculations through ActiveMQ for those modeled networks.\
+Currently, DCBN is designed with the observation of maritime space in mind and is used to rapidly and in realtime evaluate situations involving vessels.
 The main features are:
 
 - **User System** with two privilege groups
 - **Network editor** to model dynamic bayesian networks
 - **Network playground** to experiment with the networks
 - **Evidence editor** to define expressions converting metadata to evidence used by the networks
-- Backend integration with ActiveMQ to calculate inference for given metadata
+- Backend integration with ActiveMQ to **calculate inference** for given metadata
 
 ## Repo Structure
 
@@ -20,7 +21,6 @@ The main features are:
 
 The documentation folder contains:
 
-- Protocols of the weekly meetings
 - The project specifications
 - Any other non-code-related files
 
