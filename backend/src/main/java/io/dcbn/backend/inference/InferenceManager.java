@@ -164,7 +164,7 @@ public class InferenceManager {
                                List<Node> nodes) {
         List<Node> nodesToSetValuesFromValueNode = nodes.stream()
                 .filter(Node::isValueNode)
-                .filter(var -> ((ValueNode) var).checkValuesAreStates())
+                .filter(var -> ((ValueNode) var).checkValuesAreStates() && ((ValueNode) var).getValue().length == adaptedGraph.getAdaptedGraph().getTimeSlices())
                 .collect(Collectors.toList());
         List<Node> nodesToSetValues = nodes.stream()
                 .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() != null && !var.getEvidenceFormulaName().equals("") && evidenceFormulaRepository.existsByName(var.getEvidenceFormulaName()))

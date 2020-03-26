@@ -92,12 +92,13 @@ public class GenieConverter {
             //Creating the probability array for Time 0
             double[][] probabilitiesT0 = extractProbabilities(node, statesNameArray.length);
             //Creating the probability array for Time T
-            Node dynamic = extractChildren(root, DYNAMIC).get(0);
             Node dynamicNode;
-            if (dynamic.getChildNodes().toString().equals("[dynamic: null]")) {
+            final List<Node> dynamicNodes = extractChildren(root, DYNAMIC);
+            if (dynamicNodes.isEmpty()
+                    || dynamicNodes.get(0).getChildNodes().toString().equals("[dynamic: null]")) {
                 dynamicNode = null;
             } else {
-                dynamicNode = getNodeWithID(dynamic.getChildNodes(), nodeID);
+                dynamicNode = getNodeWithID(dynamicNodes.get(0).getChildNodes(), nodeID);
             }
             double[][] probabilitiesTT;
             if (dynamicNode == null) {
@@ -141,8 +142,13 @@ public class GenieConverter {
             dcbnNode.setStateType(stateType);
             dcbnNode.setPosition(position);
         }
-        int timeSlices = Integer.parseInt(root.getElementsByTagName(DYNAMIC).item(0)
-                .getAttributes().getNamedItem("numslices").getNodeValue());
+        int timeSlices;
+        Node dynamicItem = root.getElementsByTagName(DYNAMIC).item(0);
+        if (dynamicItem == null) {
+            timeSlices = 1;
+        } else {
+            timeSlices = Integer.parseInt(dynamicItem.getAttributes().getNamedItem("numslices").getNodeValue());
+        }
         //--------Setting the real names for the nodes---------
         for (Node node : nodesFile) {
             String nodeID = node.getAttributes().getNamedItem(ID).getNodeValue();
