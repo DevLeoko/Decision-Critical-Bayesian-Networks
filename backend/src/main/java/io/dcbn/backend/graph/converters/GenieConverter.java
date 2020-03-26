@@ -81,8 +81,9 @@ public class GenieConverter {
             String[] statesNameArray = new String[states.size()];
             statesNameList.toArray(statesNameArray);
             StateType stateType;
-            if (statesNameArray[0].equals("false") && statesNameArray[1].equals("true")) {
-                stateType = StateType.INVERTED_BOOLEAN;
+            if (statesNameArray.length == 2
+                    && statesNameArray[0].equals("false") && statesNameArray[1].equals("true")) {
+                throw new IllegalArgumentException("The states True and False are inverted. Please put True first, then false");
             } else if (statesNameArray.length == 2) {
                 stateType = StateType.BOOLEAN;
             } else {
