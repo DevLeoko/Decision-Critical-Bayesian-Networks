@@ -15,7 +15,8 @@ import java.util.Arrays;
  */
 public enum StateType {
 
-    BOOLEAN("true", "false");
+    BOOLEAN("true", "false"),
+    INVERTED_BOOLEAN("false","true");
 
     @Getter
     private final String[] states;
