@@ -81,7 +81,10 @@ public class GenieConverter {
             String[] statesNameArray = new String[states.size()];
             statesNameList.toArray(statesNameArray);
             StateType stateType;
-            if (statesNameArray[0].equals("true") && statesNameArray[1].equals("false")) {
+            if (statesNameArray.length == 2
+                    && statesNameArray[0].equals("false") && statesNameArray[1].equals("true")) {
+                throw new IllegalArgumentException("The states True and False are inverted. Please put True first, then false");
+            } else if (statesNameArray.length == 2) {
                 stateType = StateType.BOOLEAN;
             } else {
                 throw new IllegalArgumentException("The DBN in the document contains nodes that have different states" +
