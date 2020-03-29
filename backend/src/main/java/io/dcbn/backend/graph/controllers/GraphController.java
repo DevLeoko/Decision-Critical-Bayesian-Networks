@@ -75,7 +75,10 @@ public class GraphController {
         if (!delayed) {
             result.setResult(getPotentiallyLockedGraphs(principal.getName()));
         } else {
-            resultMap.put(principal.getName(), result);
+            DeferredResult<Iterable<PotentiallyLockedGraph>> old = resultMap.put(principal.getName(), result);
+            if(old != null){
+                old.setResult(getPotentiallyLockedGraphs(principal.getName()));
+            }
         }
         return result;
     }
