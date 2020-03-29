@@ -72,7 +72,7 @@ public class GenieConverter {
 
         for (Node node : nodesFile) {
             String nodeID = node.getAttributes().getNamedItem(ID).getNodeValue();
-            Node nodeAttribute = getNodeWithID(nodesAttributes, nodeID);
+            Node nodeAttribute = getNodeWithID(nodesAttributes, nodeID, false);
             //------Setting the state for this node-------
             List<Node> states = extractChildren(node, "state");
             //copy states to array
@@ -95,14 +95,7 @@ public class GenieConverter {
             //Creating the probability array for Time 0
             double[][] probabilitiesT0 = extractProbabilities(node, statesNameArray.length);
             //Creating the probability array for Time T
-            Node dynamicNode;
-            final List<Node> dynamicNodes = extractChildren(root, DYNAMIC);
-            if (dynamicNodes.isEmpty()
-                    || dynamicNodes.get(0).getChildNodes().toString().equals("[dynamic: null]")) {
-                dynamicNode = null;
-            } else {
-                dynamicNode = getNodeWithID(dynamicNodes.get(0).getChildNodes(), nodeID);
-            }
+            Node dynamicNode = getNodeWithID(root.getElementsByTagName(DYNAMIC).item(0).getChildNodes(), nodeID, true);
             double[][] probabilitiesTT;
             if (dynamicNode == null) {
                 probabilitiesTT = probabilitiesT0;
@@ -155,7 +148,7 @@ public class GenieConverter {
         //--------Setting the real names for the nodes---------
         for (Node node : nodesFile) {
             String nodeID = node.getAttributes().getNamedItem(ID).getNodeValue();
-            Node nodeAttribute = getNodeWithID(nodesAttributes, nodeID);
+            Node nodeAttribute = getNodeWithID(nodesAttributes, nodeID, false);
             String name = extractChildren(nodeAttribute, "name").get(0).getTextContent();
             findDcbnNodeByName(dcbnNodes, nodeID).setName(name);
         }
@@ -411,15 +404,19 @@ public class GenieConverter {
      * @param id       the id to search after.
      * @return the {@link Node} with the given id.
      */
-    private Node getNodeWithID(NodeList nodeList, String id) {
+    private Node getNodeWithID(NodeList nodeList, String id, boolean isDynamic) {
         for (int i = 0; i < nodeList.getLength(); i++) {
             if (nodeList.item(i).hasAttributes()
                     && nodeList.item(i).getAttributes().getNamedItem(ID).getNodeValue().equals(id)) {
                 return nodeList.item(i);
             }
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "Import failed (ExtractChildren returned null, Node not found)");
+        if (isDynamic) {
+            return null;
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Import failed (ExtractChildren returned null, Node not found)");
+        }
     }
 
     /**
