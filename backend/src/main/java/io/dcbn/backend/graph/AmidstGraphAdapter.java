@@ -96,13 +96,6 @@ public class AmidstGraphAdapter {
             Variable variable = entry.getKey();
             Node node = entry.getValue();
 
-            // --------TIME 0-------------
-            ParentSet variableParentSet0 = dynamicDAG.getParentSetTime0(variable);
-            Lists.reverse(node.getTimeZeroDependency().getParents()).stream()
-                    .map(Node::getName)
-                    .map(this::getVariableByName)
-                    .forEach(variableParentSet0::addParent);
-
             // --------TIME T-------------
             ParentSet variableParentSetT = dynamicDAG.getParentSetTimeT(variable);
 
