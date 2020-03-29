@@ -7,7 +7,7 @@
       error
     }}</v-alert>
 
-    <v-form v-model="valid" v-if="!success" @submit="submit">
+    <v-form v-model="valid" v-if="!success" @submit.prevent="submit">
       <p>{{ $t("forgotPassword.resetInstruction") }}</p>
 
       <v-text-field
@@ -27,7 +27,7 @@
         >{{ $t("forgotPassword.reset") }}</v-btn
       >
 
-      <v-btn color="primary" depressed class="ml-4 mt-2" dark to="Login">{{
+      <v-btn color="primary" text class="ml-4 mt-2" dark to="Login">{{
         $t("forgotPassword.backToLogin")
       }}</v-btn>
     </v-form>

@@ -545,7 +545,7 @@ export default Vue.extend({
       nodeToSaveTo.timeTDependency.probabilities = node.timeTDependency
         .parentsTm1.length
         ? JSON.parse(JSON.stringify(node.timeTDependency.probabilities))
-        : JSON.parse(JSON.stringify(node.timeTDependency.probabilities));
+        : JSON.parse(JSON.stringify(node.timeZeroDependency.probabilities));
       nodeToSaveTo.evidenceFormulaName = node.evidenceFormulaName;
 
       this.updateNodeName(name, node.name);
