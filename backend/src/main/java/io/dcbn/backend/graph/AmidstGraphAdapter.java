@@ -96,6 +96,8 @@ public class AmidstGraphAdapter {
             Variable variable = entry.getKey();
             Node node = entry.getValue();
 
+            //Time 0 is automatically set
+
             // --------TIME T-------------
             ParentSet variableParentSetT = dynamicDAG.getParentSetTimeT(variable);
 

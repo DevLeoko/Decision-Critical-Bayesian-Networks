@@ -174,7 +174,6 @@ public class InferenceManager {
         nodes.forEach(var -> returnedNodes
                 .add(new ValueNode(var, new double[adaptedGraph.getAdaptedGraph().getTimeSlices()][2])));
 
-        System.out.println(adaptedGraph.getDbn());
         int time = 0;
         for (DynamicDataInstance instance : dataPredict) {
             //Setting the results of the evidence formulas
@@ -199,24 +198,17 @@ public class InferenceManager {
                 instance.setValue(variable, 0);
             }
 
-            for (Variable variable : adaptedGraph.getDbn().getDynamicVariables()) {
-                System.out.println(variable.getName() + " state " + instance.getValue(variable));
-            }
             //We set the evidence.
             InferenceEngineForDBN.addDynamicEvidence(instance);
             //Then we run inference
             InferenceEngineForDBN.runInference();
 
-            for (Variable variable : adaptedGraph.getDbn().getDynamicVariables()) {
-//                System.out.println( "AFTER    " + variable.getName() + " state " + instance.getValue(variable));
-            }
             //Setting the values calculated by the inference engine
             for (Node node : returnedNodes) {
                 for (int i = 0; i < node.getStateType().getStates().length; i++) {
                     ((ValueNode) node).getValue()[time][i] = InferenceEngineForDBN
                             .getFilteredPosterior(adaptedGraph.getVariableByName(node.getName()))
                             .getProbability(i);
-//                    System.out.println(node.getName() + " time : " + time + " state" + i + " : " + ((ValueNode) node).getValue()[time][i]);
                 }
             }
             time++;
