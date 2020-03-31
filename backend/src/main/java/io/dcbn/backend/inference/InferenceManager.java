@@ -21,10 +21,7 @@ import io.dcbn.backend.graph.repositories.GraphRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -115,38 +112,33 @@ public class InferenceManager {
                 adaptedGraph.getDbn());
 
         List<Node> nodes = adaptedGraph.getAdaptedGraph().getNodes();
-        List<Node> nodesWithFormula = nodes.stream()
-                .filter(var -> !var.isValueNode() && (var.getEvidenceFormulaName() == null || !var.getEvidenceFormulaName().equals("") || evidenceFormulaRepository.existsByName(var.getEvidenceFormulaName())))
-                .collect(Collectors.toList());
         List<Node> nodesWithVirEvi = nodes.stream()
                 .filter(var -> var.isValueNode() && ((ValueNode) var).getValue().length == 1).collect(Collectors.toList());
 
         //finding all the temporary child nodes fot the
         List<Variable> tempChildVariables = adaptedGraph.getDbn().getDynamicVariables().getListOfDynamicVariables().stream()
-                .filter(var -> var.getName().length() >= 9 && var.getName().substring(0, 9).equals("tempChild"))
+                .filter(var -> var.getName().startsWith("tempChild"))
+                .collect(Collectors.toList());
+
+        List<Node> nodesWithEvidenceFormula = nodes.stream()
+                .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() != null && !var.getEvidenceFormulaName().equals("") && evidenceFormulaRepository.existsByName(var.getEvidenceFormulaName()))
+                .collect(Collectors.toList());
+
+        List<Node> nodesWithBinaryEvidence = nodes.stream()
+                .filter(Node::isValueNode)
+                .filter(var -> ((ValueNode) var).checkValuesAreStates() && ((ValueNode) var).getValue().length == adaptedGraph.getAdaptedGraph().getTimeSlices())
                 .collect(Collectors.toList());
 
         //Hiding the variables we want to evaluate during inference calculations
-        nodesWithVirEvi.stream()
-                .map(Node::getName)
-                .map(adaptedGraph::getVariableByName)
-                .forEach(dynamicSampler::setHiddenVar);
-        nodesWithFormula.stream()
+        nodes.stream()
+                .filter(var -> !nodesWithEvidenceFormula.contains(var) && !nodesWithBinaryEvidence.contains(var))
                 .map(Node::getName)
                 .map(adaptedGraph::getVariableByName)
                 .forEach(dynamicSampler::setHiddenVar);
         DataStream<DynamicDataInstance> dataPredict = dynamicSampler
                 .sampleToDataBase(1, adaptedGraph.getAdaptedGraph().getTimeSlices());
 
-
-        //Running inference
-        InferenceAlgorithm inferenceAlgorithm = algorithm.getInferenceAlgorithm();
-        inferenceAlgorithm.setParallelMode(true);
-        FactoredFrontierForDBN ffAlgorithm = new FactoredFrontierForDBN(inferenceAlgorithm);
-        InferenceEngineForDBN.setInferenceAlgorithmForDBN(ffAlgorithm);
-        InferenceEngineForDBN.setModel(adaptedGraph.getDbn());
-
-        return runInference(adaptedGraph, dataPredict, formulaResolver, tempChildVariables, nodes);
+        return runInference(adaptedGraph, dataPredict, formulaResolver, tempChildVariables, nodes, algorithm);
     }
 
     /**
@@ -161,15 +153,21 @@ public class InferenceManager {
     private Graph runInference(AmidstGraphAdapter adaptedGraph, DataStream<DynamicDataInstance> dataPredict,
                                BiFunction<Integer, EvidenceFormula, String> formulaResolver,
                                List<Variable> tempChildVariables,
-                               List<Node> nodes) {
-        List<Node> nodesToSetValuesFromValueNode = nodes.stream()
+                               List<Node> nodes, Algorithm algorithm) {
+        List<Node> nodesWithBinaryEvidence = nodes.stream()
                 .filter(Node::isValueNode)
                 .filter(var -> ((ValueNode) var).checkValuesAreStates() && ((ValueNode) var).getValue().length == adaptedGraph.getAdaptedGraph().getTimeSlices())
                 .collect(Collectors.toList());
-        List<Node> nodesToSetValues = nodes.stream()
+        List<Node> nodesWithEvidenceFormula = nodes.stream()
                 .filter(var -> !var.isValueNode() && var.getEvidenceFormulaName() != null && !var.getEvidenceFormulaName().equals("") && evidenceFormulaRepository.existsByName(var.getEvidenceFormulaName()))
                 .collect(Collectors.toList());
 
+        //Running inference
+        InferenceAlgorithm inferenceAlgorithm = algorithm.getInferenceAlgorithm();
+        inferenceAlgorithm.setParallelMode(true);
+        FactoredFrontierForDBN ffAlgorithm = new FactoredFrontierForDBN(inferenceAlgorithm);
+        InferenceEngineForDBN.setInferenceAlgorithmForDBN(ffAlgorithm);
+        InferenceEngineForDBN.setModel(adaptedGraph.getDbn());
 
         //Creating the output graph
         List<Node> returnedNodes = new ArrayList<>();
@@ -179,7 +177,7 @@ public class InferenceManager {
         int time = 0;
         for (DynamicDataInstance instance : dataPredict) {
             //Setting the results of the evidence formulas
-            for (Node node : nodesToSetValues) {
+            for (Node node : nodesWithEvidenceFormula) {
                 Variable variable = adaptedGraph.getVariableByName(node.getName());
                 EvidenceFormula formula = evidenceFormulaRepository
                         .findByName(node.getEvidenceFormulaName()).orElse(null);
@@ -189,7 +187,7 @@ public class InferenceManager {
             }
 
             //Setting the evidences
-            for (Node node : nodesToSetValuesFromValueNode) {
+            for (Node node : nodesWithBinaryEvidence) {
                 int state = ((ValueNode) node).getIndexOfState(time);
                 Variable variable = adaptedGraph.getVariableByName(node.getName());
                 instance.setValue(variable, state);

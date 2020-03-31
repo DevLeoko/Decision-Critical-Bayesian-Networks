@@ -68,6 +68,7 @@ public class AmidstGraphAdapter {
         setParents(dynamicDAG);
 
         dbn = new DynamicBayesianNetwork(dynamicDAG);
+
         //setting the probabilities
         setProbabilities();
     }
@@ -95,12 +96,7 @@ public class AmidstGraphAdapter {
             Variable variable = entry.getKey();
             Node node = entry.getValue();
 
-            // --------TIME 0-------------
-            ParentSet variableParentSet0 = dynamicDAG.getParentSetTime0(variable);
-            Lists.reverse(node.getTimeZeroDependency().getParents()).stream()
-                    .map(Node::getName)
-                    .map(this::getVariableByName)
-                    .forEach(variableParentSet0::addParent);
+            //Time 0 is automatically set
 
             // --------TIME T-------------
             ParentSet variableParentSetT = dynamicDAG.getParentSetTimeT(variable);
@@ -146,14 +142,13 @@ public class AmidstGraphAdapter {
 
             boolean parentsT0Empty =
                     dbn.getDynamicDAG().getParentSetTime0(variable).getParents().isEmpty();
+            double[][] probabilitiesT0 = node.getTimeZeroDependency().getProbabilities();
             if (parentsT0Empty) {
                 // case no parents
-                double[][] probabilitiesT0 = node.getTimeZeroDependency().getProbabilities();
                 Multinomial variableMultinomial0 = dbn.getConditionalDistributionTime0(variable);
                 variableMultinomial0.setProbabilities(probabilitiesT0[0]);
             } else {
                 // case has parents
-                double[][] probabilitiesT0 = node.getTimeZeroDependency().getProbabilities();
                 Multinomial_MultinomialParents multinomialParents =
                         dbn.getConditionalDistributionTime0(variable);
                 for (int i = 0; i < probabilitiesT0.length; i++) {
@@ -164,14 +159,13 @@ public class AmidstGraphAdapter {
 
             boolean parentsTEmpty =
                     dbn.getDynamicDAG().getParentSetTimeT(variable).getParents().isEmpty();
+            double[][] probabilitiesT = node.getTimeTDependency().getProbabilities();
             if (parentsTEmpty) {
                 // case no parents
-                double[][] probabilitiesT = node.getTimeTDependency().getProbabilities();
                 Multinomial variableMultinomialT = dbn.getConditionalDistributionTimeT(variable);
                 variableMultinomialT.setProbabilities(probabilitiesT[0]);
             } else {
                 // case has parents
-                double[][] probabilitiesT = node.getTimeTDependency().getProbabilities();
                 Multinomial_MultinomialParents multinomialParents =
                         dbn.getConditionalDistributionTimeT(variable);
                 for (int i = 0; i < probabilitiesT.length; i++) {
