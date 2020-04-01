@@ -5,17 +5,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.dcbn.backend.authentication.models.DcbnUser;
 import io.dcbn.backend.authentication.models.LoginRequest;
+import io.dcbn.backend.authentication.models.Role;
+import io.dcbn.backend.authentication.repositories.DcbnUserRepository;
 import io.dcbn.backend.graph.*;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -26,6 +32,7 @@ import java.util.stream.Collectors;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class GraphControllerTest {
 
     private static final String RESOURCE_PATH = "src/test/resources";
@@ -33,9 +40,17 @@ public class GraphControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private DcbnUserRepository userRepository;
+
     private String token;
 
-    ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
+
+    @BeforeAll
+    private void classSetup() {
+        userRepository.save(new DcbnUser("admin", "admin@dcbn.io", new BCryptPasswordEncoder().encode("admin"), Role.ADMIN));
+    }
 
     @BeforeEach
     public void setUp() throws Exception {
