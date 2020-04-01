@@ -46,11 +46,6 @@ public class DcbnApplication {
     }
 
     @Bean
-    public MailSender mailSender() {
-        return new JavaMailSenderImpl();
-    }
-
-    @Bean
     public CommandLineRunner commandLineRunner(DcbnUserRepository dcbnUserRepository,
                                                GraphRepository graphRepository,
                                                EvidenceFormulaRepository evidenceFormulaRepository) {

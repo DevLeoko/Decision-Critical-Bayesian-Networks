@@ -56,6 +56,8 @@ export function generateStatsSVG(
     svgContainer.appendChild(virtualLine);
   }
   if (graphValue) {
+    if (graphValue.length === 1) graphValue.push(graphValue[0]);
+
     const graphString =
       "M" +
       graphValue

@@ -319,11 +319,12 @@ export default Vue.extend({
             }
           })
           .then(res => {
-            this.graphs.push({
-              name: res.data.name,
-              id: res.data.id,
-              locked: res.data.locked
-            });
+            // # Updated by lock watcher anyway
+            // this.graphs.push({
+            //   name: res.data.name,
+            //   id: res.data.id,
+            //   locked: res.data.locked
+            // });
             this.throwSuccess(
               this.$t("graph.folderView.responses.imported").toString()
             );

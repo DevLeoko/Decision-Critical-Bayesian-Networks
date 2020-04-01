@@ -6,7 +6,7 @@
       error
     }}</v-alert>
 
-    <v-form ref="form" v-model="valid" @submit="submit">
+    <v-form ref="form" v-model="valid" @submit.prevent="submit">
       <v-text-field
         :rules="passwordValidation"
         @change="$refs.form.validate()"
@@ -32,7 +32,7 @@
         >{{ $t("resetPassword.resetPassword") }}</v-btn
       >
 
-      <v-btn color="primary" depressed class="ml-4 mt-2" dark to="login">{{
+      <v-btn color="primary" text class="ml-4 mt-2" dark to="login">{{
         $t("resetPassword.backToLogin")
       }}</v-btn>
     </v-form>
@@ -71,10 +71,10 @@ export default Vue.extend({
   created() {
     if (!this.$route.query || !this.$route.query.key) {
       this.$router.push({
-        name: "login",
+        name: "Login",
         params: {
           lang: this.$i18n.locale,
-          info: this.$t("passwordReset.missingResetToken").toString()
+          info: this.$t("resetPassword.missingResetToken").toString()
         }
       });
     }
@@ -91,18 +91,16 @@ export default Vue.extend({
         })
         .then(() => {
           this.$router.push({
-            name: "login",
+            name: "Login",
             params: {
               lang: this.$i18n.locale,
-              info: this.$t("passwordReset.passwordChanged").toString()
+              info: this.$t("resetPassword.passwordChanged").toString()
             }
           });
         })
         .catch(err => {
           this.hasError = true;
           this.error = err.response.data.message;
-        })
-        .then(() => {
           this.loading = false;
         });
     }
