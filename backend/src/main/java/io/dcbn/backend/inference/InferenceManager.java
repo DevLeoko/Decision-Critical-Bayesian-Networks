@@ -48,7 +48,6 @@ public class InferenceManager {
         this.evidenceFormulaRepository = evidenceFormulaRepository;
         this.evidenceFormulaEvaluator = evidenceFormulaEvaluator;
 
-        // TODO: This is really dumb...
         defaultVessel = new Vessel("", 0);
         defaultVessel.setWidth(10.0);
         defaultVessel.setLength(10.0);
@@ -71,7 +70,7 @@ public class InferenceManager {
      * This method is used to evaluate all graphs on the given {@link Vessel}
      *
      * @param vesselUuid the uuid of the {@link Vessel}.
-     * @return TODO Complete
+     * @return the list of inference calculation outcomes
      */
     public List<Outcome> calculateInference(String vesselUuid) {
         List<Outcome> outcomes = new ArrayList<>();
