@@ -62,7 +62,6 @@ public class PasswordController {
             userRepository.save(user);
 
         } catch (JwtException e) {
-            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
