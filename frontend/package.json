@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@egjs/hammerjs": "^2.0.17",
-    "axios": "^0.19.1",
+    "axios": "^0.21.1",
     "core-js": "^3.4.4",
     "dagre": "^0.8.5",
     "js-file-download": "^0.4.9",
